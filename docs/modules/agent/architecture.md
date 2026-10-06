@@ -88,8 +88,8 @@ For complex tasks, the LLM can create a multi-step plan:
 1. The LLM calls `create_plan` with a title and steps
 2. The client shows the plan for user approval
 3. On approval, the server feeds one step at a time to the LLM
-4. After each step, the LLM calls `complete_plan_step`
-5. When all steps are done, the LLM calls `plan_completed`
+4. After each step, the LLM calls `complete_plan_step`, which returns the next
+   step; after the last one, the plan is done
 
 Plans give users visibility into what the agent intends to do and let them
 approve or reject the overall approach before any changes are made.
@@ -131,70 +131,82 @@ restored:
 
 ## Built-in Tools
 
+Most tools are lazy: the system prompt only lists them, and the LLM loads them
+with `load_tools` before it uses them (or a skill or prompt loads them).
+
 ### Query Tools
 
-| Tool                     | Description                                                                 |
-| ------------------------ | --------------------------------------------------------------------------- |
-| `find_blocks`            | Find blocks matching filters (bundle, structure, content, options)          |
-| `search_text`            | Search for text in block content with regex support                         |
-| `get_selected_blocks`    | Get currently selected blocks                                               |
-| `get_blocks_in_viewport` | Get blocks visible in the viewport                                          |
-| `get_child_blocks`       | Get all child fields and blocks for a page or block                         |
-| `get_block_context`      | Comprehensive context for a single block (parent chain, siblings, children) |
-| `get_content_fields`     | Get all content fields (text, media, links) for blocks                      |
-| `get_block_options`      | Get available options and current values                                    |
-| `get_bundle_info`        | Get information about block types that can be added to a field              |
-| `get_all_page_content`   | Get all text content from the entire page                                   |
-| `get_all_fragments`      | Get all available fragments                                                 |
-| `get_mutation_history`   | Get undo/redo history information                                           |
-| `search_media`           | Search the media library                                                    |
-| `search_templates`       | Search available templates                                                  |
-| `search_reusable_blocks` | Search reusable blocks from library                                         |
-| `ask_question`           | Ask the user a question with predefined options                             |
-| `web_fetch`              | Fetch and extract content from web pages                                    |
+| Tool                          | Description                                                                         |
+| ----------------------------- | ----------------------------------------------------------------------------------- |
+| `find_paragraphs`             | Find paragraphs matching filters (bundle, structure, content, options)              |
+| `search_text`                 | Search for text in paragraph content                                                |
+| `get_selected_paragraphs`     | Get the paragraphs the user selected                                                |
+| `get_paragraphs_in_viewport`  | Get the paragraphs visible in the viewport                                          |
+| `get_child_paragraphs`        | Get all child fields and paragraphs of the page or a paragraph                      |
+| `get_paragraph_context`       | Context of one paragraph: parent chain, siblings, children, content fields, options |
+| `get_content_fields`          | Get the content fields (text, media, links) of paragraphs                           |
+| `get_paragraph_options`       | Get the available options and their current values                                  |
+| `get_bundle_info`             | Which paragraph types can be added to a field                                       |
+| `get_page_structure`          | The page as a tree of paragraphs, fields and content previews                       |
+| `get_page_text`               | The rendered page as Markdown                                                       |
+| `get_all_page_content`        | A flat list of every paragraph on the page                                          |
+| `get_referenced_entities`     | The entities (media, nodes, terms) that paragraphs reference                        |
+| `get_all_fragments`           | Get all available fragments                                                         |
+| `get_mutation_history`        | Get undo/redo history information                                                   |
+| `get_readability_issues`      | Run the readability analyzers on the page                                           |
+| `check_readability_for_texts` | Readability scores for given texts                                                  |
+| `search_content`              | Search content items in a content search tab                                        |
+| `search_media`                | Search the media library                                                            |
+| `select_media`                | Let the user pick from media items                                                  |
+| `search_templates`            | Search available templates                                                          |
+| `search_reusable_paragraphs`  | Search reusable paragraphs from the library                                         |
+| `ask_question`                | Ask the user a question with predefined options                                     |
+| `web_fetch`                   | Fetch and extract content from web pages (`allowedFetchOrigins`)                    |
 
 ### Mutation Tools
 
-| Tool                          | Description                                           |
-| ----------------------------- | ----------------------------------------------------- |
-| `add_blocks`                  | Add one or more new blocks (supports nested children) |
-| `add_media_block`             | Add a block using a media item                        |
-| `add_content_search_block`    | Add a block using a content search result             |
-| `add_reusable_block`          | Add a reusable block                                  |
-| `add_fragment`                | Add a fragment block                                  |
-| `add_template`                | Add a template                                        |
-| `delete_blocks`               | Delete one or more blocks                             |
-| `duplicate_blocks`            | Duplicate blocks with all children                    |
-| `move_blocks`                 | Move blocks to a different parent field               |
-| `swap_blocks`                 | Swap positions of two blocks                          |
-| `rearrange_blocks`            | Reorder blocks within a field                         |
-| `update_text_fields`          | Rewrite text in multiple fields at once               |
-| `set_block_options`           | Set options on blocks                                 |
-| `replace_media_field`         | Replace media on an existing block                    |
-| `replace_content_search_item` | Replace a content reference                           |
-| `detach_reusable_block`       | Detach library blocks to create editable copies       |
-| `go_to_history_index`         | Navigate to a specific point in undo/redo history     |
+| Tool                            | Description                                                    |
+| ------------------------------- | -------------------------------------------------------------- |
+| `add_paragraphs`                | Add one or more new paragraphs (supports nested children)      |
+| `add_media_paragraph`           | Add a paragraph using a media item                             |
+| `add_content_search_paragraphs` | Add a paragraph using a content search result                  |
+| `add_reusable_paragraph`        | Add a reusable paragraph                                       |
+| `add_fragment`                  | Add a fragment                                                 |
+| `add_template`                  | Add a template                                                 |
+| `delete_paragraphs`             | Delete one or more paragraphs                                  |
+| `duplicate_paragraphs`          | Duplicate paragraphs with all children                         |
+| `move_paragraphs`               | Move paragraphs to a different parent field                    |
+| `swap_paragraphs`               | Swap positions of two paragraphs                               |
+| `rearrange_paragraphs`          | Reorder paragraphs within a field                              |
+| `update_text_fields`            | Update text in several fields at once                          |
+| `delegate_text_rewrite`         | Rewrite, translate or generate texts, streamed (see `/stream`) |
+| `auto_translate_paragraphs`     | Translate paragraphs with the backend's translation service    |
+| `set_paragraph_options`         | Set options on paragraphs                                      |
+| `replace_media_field`           | Replace media on an existing paragraph                         |
+| `replace_content_search_item`   | Replace a content reference                                    |
+| `detach_reusable_paragraph`     | Detach library paragraphs to create editable copies            |
+| `go_to_history_index`           | Navigate to a specific point in undo/redo history              |
 
 ### Server-side Tools
 
 These tools are handled entirely on the server:
 
-| Tool                 | Description                                  |
-| -------------------- | -------------------------------------------- |
-| `load_skill`         | Load a skill's content into the conversation |
-| `load_tools`         | Activate lazy tools                          |
-| `create_plan`        | Create a multi-step plan for user approval   |
-| `complete_plan_step` | Mark the current plan step as complete       |
-| `plan_completed`     | Mark the entire plan as complete             |
+| Tool                 | Description                                          |
+| -------------------- | ---------------------------------------------------- |
+| `load_skills`        | Load up to three skills' content                     |
+| `load_tools`         | Activate lazy tools                                  |
+| `create_plan`        | Create a multi-step plan for user approval           |
+| `complete_plan_step` | Mark the current plan step as done, get the next one |
 
 ## Built-in Skills
 
-| Skill                          | Description                                                |
-| ------------------------------ | ---------------------------------------------------------- |
-| `page-review`                  | Guidance for reviewing and analyzing page content          |
-| `rewrite-and-translate`        | Guidelines for batch rewriting and translating text        |
-| `from-library-reusable-blocks` | How to work with reusable blocks from the library          |
-| `adding-new-blocks`            | Comprehensive guide for adding blocks with nested children |
+| Skill                              | Description                                                    |
+| ---------------------------------- | -------------------------------------------------------------- |
+| `page-review`                      | Guidance for reviewing and analyzing page content              |
+| `rewrite-and-translate`            | Guidelines for batch rewriting and translating text            |
+| `assess-and-fix-readability`       | How to assess and fix readability                              |
+| `from-library-reusable-paragraphs` | How to work with reusable paragraphs from the library          |
+| `adding-new-paragraphs`            | Comprehensive guide for adding paragraphs with nested children |
 
 ## Error Types
 

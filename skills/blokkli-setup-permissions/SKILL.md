@@ -15,7 +15,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export).
 metadata:
   author: blokkli
-  version: '1.0.0'
+  version: '1.0.1'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/configuration#drupal-permissions-reference
 ---
@@ -102,6 +102,8 @@ with blökkli (e.g. `page`, `news`).
   `view scheduled paragraph` if scheduling is used
 - `view the administration theme`: blökkli opens Drupal's forms (add, edit,
   translate)
+- the AI agent, if it's set up: `use paragraphs blokkli agent` (see the
+  `blokkli-setup-agent` skill). The agent can't do more than its user.
 - GraphQL access (`execute <server id> arbitrary graphql requests`)
 
 **Editor** (edits and publishes):
@@ -134,6 +136,7 @@ with blökkli (e.g. `page`, `news`).
 - `bypass paragraphs type content access` (or update per type)
 
 **Admins only:** `administer …`, `manage default paragraph templates`,
+`manage all blokkli agent conversations`,
 `publish paragraphs blokkli edit state with validation errors` (it skips
 validation), `transfer blokkli paragraphs` (copy and paste between pages) unless
 editors should have it.

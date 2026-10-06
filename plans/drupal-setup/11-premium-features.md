@@ -26,6 +26,9 @@ failing, and they can't use it even through direct API calls.
 - [ ] Before the key: the agent's `/route` and `/fetch` endpoints check the auth
       token, as `/stream` does (F49). `/route` calls the routing model with the
       server's key for anyone today.
+- [ ] Unique agent tokens (F51): all premium sandboxes share one secret, so two
+      of them opening the agent in the same second get the same token, and the
+      second is rejected.
 
 ## Acceptance criteria
 
@@ -46,3 +49,13 @@ From [chunk 09](09-control-plane.md) (2026-10-02):
 - **settings.php can't see which sandboxes are premium.** Only the control app's
   database knows. A marker file in the sandbox's directory would do, written by
   `blokkli-sandbox:create --premium` when an invitation is claimed.
+
+From [13i](13i-agent-and-modules.md) (2026-10-06):
+
+- **The marker exists:** since 09b, `blokkli-sandbox:create` writes
+  `sandboxes/<id>/lifetime.json`, and a premium claim's has no `idle`. Either
+  `settings.php` reads that, or a `--premium` flag writes an explicit field.
+- **All four test users** have `use paragraphs blokkli agent`. In a normal
+  sandbox, only the missing secret keeps them from the agent: the token mutation
+  throws. The `availableFeatures` flag (the first task) makes the frontend hide
+  the agent instead.

@@ -5,9 +5,10 @@ custom tools to extend the agent with project-specific capabilities.
 
 ## File Location
 
-Place tool files in `blokkli/tools/` in your project root. Each tool is a
-TypeScript file (or directory with `index.ts`) that default-exports a tool
-definition. They are auto-discovered at build time.
+Place tool files in `blokkli/tools/` in the Nuxt app's root directory, next to
+`nuxt.config.ts` (not in `app/`). Each tool is a TypeScript file (or directory
+with `index.ts`) that default-exports a tool definition. They are
+auto-discovered at build time.
 
 ```
 blokkli/

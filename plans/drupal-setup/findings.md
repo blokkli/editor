@@ -59,6 +59,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F48 | [A preview grant opens more than the preview](#f48-a-preview-grant-opens-more-than-the-preview)                         | `paragraphs_blokkli` | low      | open       | –        |
 | F49 | [Agent endpoints without authentication](#f49-agent-endpoints-without-authentication)                                   | `@blokkli/editor`    | medium   | open       | chunk 11 |
 | F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                     | `texts`              | low      | open       | –        |
+| F51 | [Agent tokens of the same second collide](#f51-agent-tokens-of-the-same-second-collide)                                 | both                 | low      | open       | chunk 11 |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
 `fixed`.
@@ -1076,3 +1077,18 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   - since chunk 10, anonymous visitors with a preview grant;
   - on the dev site, everyone, with `blokkli_playground_public`.
 - **Fix idea:** create keys only with a permission, or only in development.
+
+## F51: Agent tokens of the same second collide
+
+- **Found:** 2026-10-06, 13i, with two tokens fetched in a row.
+- **Symptom:** an agent token is `timestamp:HMAC(timestamp)`, with nothing that
+  differs between requests (`GenerateAgentToken.php:88` in
+  `paragraphs_blokkli_agent`). Two tokens made in the same second are the same
+  string. The agent server allows each token once
+  (`SessionManager::authenticate()`,
+  `src/modules/agent/runtime/server/classes/SessionManager/index.ts:50` in this
+  repository). So the second connection of that second is rejected as
+  unauthorized: two tabs, two users, or, with one secret for all premium
+  sandboxes, two sandboxes.
+- **Fix idea:** a random nonce in the token
+  (`timestamp:nonce:HMAC(timestamp:nonce)`), in both repositories.

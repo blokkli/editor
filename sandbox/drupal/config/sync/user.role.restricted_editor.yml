@@ -20,6 +20,7 @@ dependencies:
     - node
     - paragraphs
     - paragraphs_blokkli
+    - paragraphs_blokkli_agent
     - paragraphs_blokkli_comment
     - paragraphs_blokkli_template
     - paragraphs_library
@@ -157,6 +158,7 @@ permissions:
   - 'update paragraph content text'
   - 'update paragraph content title'
   - 'update paragraph content video'
+  - 'use paragraphs blokkli agent'
   - 'view all revisions'
   - 'view blokkli comments'
   - 'view own unpublished content'

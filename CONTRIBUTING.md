@@ -125,8 +125,9 @@ ddev dotenv set .ddev/.env.web --nuxt-blokkli-agent-auth-secret=<random string>
 ddev dotenv set .ddev/.env.web --nuxt-blokkli-agent-api-key=…
 ```
 
-- The agent needs the auth secret. Without an API key, only its mock provider
-  works.
+- **The agent** needs both: the auth secret, which Drupal and Nuxt share, and an
+  API key. Without the key, it only replays scripts (its mock provider, for the
+  E2E tests); typing to it fails. Give the key a spend limit at the provider.
 - **The control app's settings** are all optional locally, and required when
   hosted:
   - `--nuxt-sandbox-login-secret` signs the sandbox logins.
@@ -135,6 +136,23 @@ ddev dotenv set .ddev/.env.web --nuxt-blokkli-agent-api-key=…
     captcha. Cloudflare's test keys work locally.
 - Don't enter the DeepL key in Drupal's settings form: it would end up in the
   exported config.
+
+### The agent
+
+All four test users can use the agent in the editor. Drupal checks each change
+against the user's role, so Jonas's agent is as restricted as he is.
+
+The demo's own skills, tool and prompts are in `sandbox/frontend/blokkli/`, not
+in `app/`: the agent module only looks next to `nuxt.config.ts`.
+
+- **Skills:** how the town's pages are built, and its writing rules in each
+  language.
+- **The tool `get_town_data`:** the fees and statistics, so the agent doesn't
+  invent numbers.
+- **Prompts:** "Write a service page", "Check the style guide" and "Link related
+  pages".
+
+Their DE and FR strings are in `translations` in `nuxt.config.ts`.
 
 ### Where things live
 

@@ -1,7 +1,6 @@
 # 13i: Agent and modules
 
-- **Status:** in progress (the table of contents, the charts, the analyzer and
-  the embed are done; the agent is postponed, the user, 2026-09-28)
+- **Status:** done (2026-10-06; the agent was postponed on 2026-09-28, the user)
 - **Milestone:** M1 Local dev site
 - **Depends on:** 13b
 - **Part of:** [chunk 13](13-editor-features.md)
@@ -14,7 +13,7 @@ and the analyzers.
 
 ## Tasks
 
-- [ ] **Agent:** `paragraphs_blokkli_agent` (the `auth_secret` from the
+- [x] **Agent:** `paragraphs_blokkli_agent` (the `auth_secret` from the
       environment is wired in chunk 03). Example skills, tools and prompts under
       `sandbox/frontend/blokkli/` (see winterthur's `frontend/blokkli/`),
       fitting a town's website.
@@ -34,9 +33,9 @@ and the analyzers.
       winterthur's `frontend/app/blokkli/analyzer/`), e.g. "every service page
       has a contact block". The planted mistakes on the landing page (14b) are
       for the built-in ones.
-- [ ] Skills:
+- [x] Skills:
   - [x] review `blokkli-analyze`
-  - [ ] new `blokkli-setup-agent`
+  - [x] new `blokkli-setup-agent`
   - [x] new `blokkli-setup-charts`
   - [x] iframes: a skill, unless the docs (`docs/modules/`) already cover the
         setup. Decided: no skill. The docs cover the module; the rest is a
@@ -57,8 +56,8 @@ and the analyzers.
 
 ## Notes
 
-- **The agent's API key** is optional: the mock provider works without it (chunk
-  06).
+- **The agent's API key:** without it, the agent only replays scripts (the mock
+  provider, for E2E tests); typing to it needs the key. See "The agent" below.
 
 From [13d](13d-reusable-content.md) (2026-09-27):
 
@@ -346,3 +345,102 @@ Verification:
     and FR); each page's frame has its title and its language
     (`/de/embed/fee-calculator`).
 - Not checked: the server render (anonymous visitors get a 403 locally).
+
+## The agent (2026-10-06)
+
+Decisions (the user, from Claude's proposals):
+
+- **The demo's own tool: the town's data** (`get_town_data`), so the agent
+  writes with the town's numbers instead of inventing them. The other option was
+  a tool that finds untranslated texts, reusing the analyzer.
+- **Three ready-made prompts:** "Write a service page", "Check the style guide",
+  "Link related pages". Not taken: "Translate leftover texts".
+- **All four test users** can use the agent. Drupal still checks every change
+  against the user's role, which Jonas shows.
+- **Sonnet 5.5** is the default model (the current Sonnet, the same price as
+  Sonnet 5), Haiku 4.5 the routing model. Proposed by Claude.
+
+As built:
+
+- **Drupal:** `use paragraphs blokkli agent` for `content_editor`, `reviewer`,
+  `translator` and `restricted_editor`.
+- **`sandbox/frontend/blokkli/`** (in Nuxt's root directory: the agent module
+  doesn't look in `app/`):
+  - `tools/get_town_data`: a lazy query tool. `fees` comes from the fee
+    calculator's `RATES`, with the calculator's path for an embed. `population`,
+    `budget` and `languages` come from the charts' data sources
+    (`/api/chart-data`), in the page's language.
+  - `skills/pages.ts` (`blockingen-pages`): how the town's pages are built:
+    - the content types;
+    - the service page from its template;
+    - title paragraphs as headings;
+    - link lists;
+    - teasers in "Related topics";
+    - facts from `get_town_data` or from the editor, never invented.
+
+    It loads `get_town_data`.
+
+  - `skills/style.ts` (`blockingen-style-guide`): 14b's writing rules in DE, FR
+    and EN, taken from the content:
+    - amounts ("Fr. 45.–" in DE and FR, "CHF 45" in EN);
+    - times ("8.00 Uhr", "8 h 15", "8:00");
+    - numbers;
+    - quotation marks;
+    - paired gender forms.
+
+    Through `streamTemplates`, every rewrite, readability fix, generated text
+    and translation gets it, in place of the templates' defaults (it says what
+    those said).
+
+  - `prompts/`:
+    - `servicePage.ts` (welcome screen);
+    - `styleGuide.ts` (welcome screen and a paragraph's menu; the selection or
+      the page);
+    - `relatedPages.ts` (welcome screen, only on hosts with `field_related`).
+
+    Each prompt is a sentence an editor could type, in their language. The agent
+    answers in the language of the first message, so an English instruction
+    would get English answers. The instructions are in the skills the prompts
+    load.
+
+  - The DE and FR strings in the module's `translations` (`nuxt.config.ts`),
+    with formal Sie and vous.
+- **`nuxt.config.ts`:** Sonnet 5.5, prices in USD from Anthropic's pricing page,
+  and a comment that `enableMock` is local only (12 turns it off).
+- **Skill:** `blokkli-setup-agent` (1.0.0), listed in `blokkli-setup-drupal`
+  (1.0.8). The agent's permissions are in `blokkli-setup-permissions` (1.0.1).
+- **Docs** (`docs/modules/agent/`), which were out of date:
+  - **Quick start:** the secret in Drupal's `settings.php`, the permission's
+    real title, the SDK, and a step for the web server.
+  - **Configuration:** `routing`, `agentName`, `routes` and `enableMock`.
+  - **Custom skills:** `load_skills`, `tools` and `streamTemplates`.
+  - **`blokkli/`:** in the Nuxt app's root directory.
+  - **Architecture:** the tools' current names, the server tools and the skills.
+  - **Adapter:** `swapBlocks` and `rearrangeBlocks` depend on their own
+    mutations, not the token.
+  - **The repo's `agent` skill:** the current options.
+- **Found:**
+  - F51: two agent tokens of the same second are the same, and the second
+    connection is rejected.
+  - `drush role:perm:add` takes one role. With several separated by commas, it
+    reports success and changes nothing.
+  - A session needs at least one tool that isn't lazy (the editor always sends
+    some).
+
+Verification:
+
+- **The build:** `.nuxt/blokkli/agent-server.js` imports both skills and the
+  tool; `AgentSkillName` lists the skills; no collector warnings.
+  `typecheck:sandbox-frontend` covers the tool and the prompts. The skills are
+  only in the server's tsconfig, which no script checks for this app.
+- **GraphQL, as each of the four users** (dev site and a1): `use_agent` is true,
+  and the token mutation returns a token. Anonymous: 403.
+- **The WebSocket** (`wss://blokkli.ddev.site/api/blokkli/agent`, a throwaway
+  bun script, `tmp/13i-agent-ws.ts`):
+  - A made-up token is rejected.
+  - With Anna's token, a mock script makes the server ask for `get_town_data`
+    (`topic: fees`), then finishes.
+  - A real message gets Sonnet 5.5's answer.
+- **The bakes:** EN and DE. a1 is recreated with the limits.
+- **The user, in the browser:** the agent works. "Verwandte Seiten verlinken"
+  (German) worked well.

@@ -13,11 +13,14 @@ needed.
 1. Enable the `paragraphs_blokkli_agent` Drupal submodule
 2. Add the "Paragraphs Blökkli Agent" extension to your GraphQL server
    configuration
-3. Grant the "Use paragraphs blökkli agent" permission to the appropriate roles
+3. Set its `auth_secret` in `settings.php` (see
+   [Quick Start](/modules/agent/quick-start#drupal-adapter))
+4. Grant the "Use blökkli AI agent" permission to the appropriate roles
 
 Once enabled, the Drupal adapter detects the `paragraphsBlokkliAgentToken`
-mutation in the schema and automatically sets up `getAgentAuthToken()`,
-`swapBlocks()`, `rearrangeBlocks()`, and `agentConversations`.
+mutation in the schema and automatically sets up `getAgentAuthToken()` and
+`agentConversations`. `swapBlocks()` and `rearrangeBlocks()` come with the
+`pbSwapParagraphs` and `pbRearrangeParagraphs` mutations of the main extension.
 
 The rest of this page documents the adapter methods for **custom adapter**
 implementations.

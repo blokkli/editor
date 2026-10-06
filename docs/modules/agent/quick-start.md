@@ -76,6 +76,12 @@ NUXT_BLOKKLI_AGENT_API_KEY=sk-ant-...    # Your Anthropic or OpenAI API key
 NUXT_BLOKKLI_AGENT_AUTH_SECRET=my-secret  # Any random string for HMAC signing
 ```
 
+The backend signs the agent's tokens with the same secret (step 4). Keep both
+out of version control.
+
+The provider's SDK is a peer dependency: install `@anthropic-ai/sdk` (or
+`openai`) in your Nuxt app.
+
 ## Step 4: Set Up the Adapter
 
 The agent requires the adapter to provide an authentication token and the
@@ -90,13 +96,21 @@ enabled:
    `paragraphs_blokkli_agent` module in your Drupal site
 2. **Enable the GraphQL extension** — add the "Paragraphs Blökkli Agent"
    extension to your GraphQL server configuration
-3. **Grant permission** — assign the "Use paragraphs blökkli agent" permission
-   to the appropriate Drupal roles
+3. **Set the secret** — in `settings.php`, from the same environment variable as
+   Nuxt's, never in exported config:
+
+   ```php
+   $config['paragraphs_blokkli_agent.settings']['auth_secret'] = getenv('NUXT_BLOKKLI_AGENT_AUTH_SECRET') ?: '';
+   ```
+
+4. **Grant permission** — assign the "Use blökkli AI agent" permission
+   (`use paragraphs blokkli agent`) to the appropriate Drupal roles
 
 Once the GraphQL schema exposes the `paragraphsBlokkliAgentToken` mutation, the
-Drupal adapter automatically registers `getAgentAuthToken()`, `swapBlocks()`,
-`rearrangeBlocks()`, and `agentConversations`. No adapter code changes are
-needed.
+Drupal adapter automatically registers `getAgentAuthToken()` and
+`agentConversations`. No adapter code changes are needed. `swapBlocks()` and
+`rearrangeBlocks()` come with their own mutations (`pbSwapParagraphs`,
+`pbRearrangeParagraphs`) of the main GraphQL extension.
 
 ### Custom Adapter
 
@@ -110,7 +124,16 @@ In short:
 2. Implement `getAgentAuthToken()` in your adapter to fetch from that endpoint
 3. Return `'use_agent'` from your adapter's `getPermissions()` method
 
-## Step 5: Start Chatting
+## Step 5: Pass the WebSocket Through
+
+If a web server (nginx, Traefik, …) sits in front of Nuxt, it must pass
+`/api/blokkli/agent` and the paths below it to Nuxt with the WebSocket upgrade
+headers (`Upgrade`, `Connection: upgrade`, HTTP/1.1) and long read and send
+timeouts. A Content-Security-Policy needs the WebSocket in `connect-src`
+(`'self'` covers the same origin), and basic auth in front of the site must let
+these paths through.
+
+## Step 6: Start Chatting
 
 Start your dev server and open the editor. You'll see a new chat icon in the
 toolbar. Click it to open the agent sidebar and start chatting.

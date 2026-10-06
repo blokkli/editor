@@ -24,6 +24,9 @@ This chunk starts only once M0–M2 work locally.
         `IS_DDEV_HOSTED=true` in `.ddev/config.local.yaml`
   - [ ] Nuxt runs as a production build daemon (`node .output/server/index.mjs`)
         instead of `nuxi dev`
+  - [ ] the agent's `enableMock` off in that build
+        (`sandbox/frontend/nuxt.config.ts`): with it, any client can skip the
+        API key and have the server run tool calls of its choosing (13i)
 - [ ] TLS with a wildcard certificate via the DNS-01 challenge:
   - ddev's built-in Let's Encrypt uses TLS-ALPN-01 (the router's static config
     has `acme-tlsChallenge`), which can't issue wildcards. A certificate per

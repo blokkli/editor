@@ -7,16 +7,21 @@ that the LLM doesn't need in every conversation — only when relevant.
 ## How Skills Work
 
 Skills are listed by name and description in the system prompt. When the LLM
-determines it needs a skill, it calls the built-in `load_skill` tool. The skill
-content is then injected into the conversation.
+determines it needs a skill, it calls the built-in `load_skills` tool (up to
+three at once). The skill content is then injected into the conversation. Skills
+are also loaded before the first message by routing (see
+[Configuration](/modules/agent/configuration#models)), and by
+[prompts](/modules/agent/custom-prompts) that list them.
 
 This keeps the base system prompt small while still giving the LLM access to
 extensive domain knowledge when needed.
 
 ## File Location
 
-Place skill files in `blokkli/skills/` in your project root. Each file
-default-exports a skill definition. They are auto-discovered at build time.
+Place skill files in `blokkli/skills/` in the Nuxt app's root directory, next to
+`nuxt.config.ts` (not in `app/`). Each file default-exports a skill definition.
+They are auto-discovered at build time. The `name` must be a string literal:
+it's read at build time, and a skill without one is left out with a warning.
 
 ```
 blokkli/
@@ -57,12 +62,41 @@ export default defineBlokkliAgentSkill({
 
 ## Properties
 
-| Property      | Type                                       | Description                                     |
-| ------------- | ------------------------------------------ | ----------------------------------------------- |
-| `name`        | `string`                                   | Unique identifier in kebab-case                 |
-| `label`       | `string \| SkillLabel`                     | Human-readable label shown in the UI            |
-| `description` | `string`                                   | Tells the LLM when to use this skill            |
-| `getContents` | `(context: PageContext) => string \| null` | Returns the skill content, or `null` to hide it |
+| Property          | Type                                       | Description                                     |
+| ----------------- | ------------------------------------------ | ----------------------------------------------- |
+| `name`            | `string`                                   | Unique identifier in kebab-case                 |
+| `label`           | `string \| SkillLabel`                     | Human-readable label shown in the UI            |
+| `description`     | `string`                                   | Tells the LLM when to use this skill            |
+| `getContents`     | `(context: PageContext) => string \| null` | Returns the skill content, or `null` to hide it |
+| `tools`           | `string[]?`                                | Lazy tools to load together with the skill      |
+| `streamTemplates` | `StreamTemplate[]?`                        | See below                                       |
+
+## Rules for Rewrites and Translations
+
+Some tools hand texts to a separate rewrite request: rewriting, fixing
+readability, generating content and translating. A skill with `streamTemplates`
+adds its content to those requests:
+
+```ts
+export default defineBlokkliAgentSkill({
+  name: 'style-guide',
+  label: 'Style guide',
+  description: 'Writing rules. Load it before you write or check texts.',
+  streamTemplates: [
+    'rewrite',
+    'generate_content',
+    'fix_readability',
+    'translate',
+  ],
+  getContents: () => `...`,
+})
+```
+
+- **Every request** of a listed template gets it, whether or not the agent
+  loaded the skill.
+- **It replaces the template's default instructions**, e.g. "Preserve the
+  original tone" for translations. Say what still applies in the skill.
+- The templates: `rewrite`, `generate_content`, `fix_readability`, `translate`.
 
 ## Translatable Labels
 

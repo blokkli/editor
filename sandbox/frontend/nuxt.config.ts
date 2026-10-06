@@ -153,10 +153,23 @@ export default defineNuxtConfig({
       },
     },
     colorOptions: CHART_COLORS,
-    // The strings of the demo's own analyzer (app/blokkli/analyzers). English
-    // is the default in the code.
+    // The strings of the demo's own analyzer (app/blokkli/analyzers) and of its
+    // agent tool and prompts (blokkli/). English is the default in the code.
     translations: {
       de: {
+        blockingenAgentTownData: 'Daten der Gemeinde werden geladen',
+        blockingenAgentTownDataDone: 'Daten der Gemeinde geladen',
+        blockingenAgentServicePage: 'Dienstleistungsseite schreiben',
+        blockingenAgentServicePagePrompt:
+          'Schreiben Sie diese Seite als Dienstleistungsseite der Gemeinde. Fragen Sie mich zuerst, was sie abdecken soll.',
+        blockingenAgentStyleGuide: 'Schreibregeln prüfen',
+        blockingenAgentStyleGuidePrompt:
+          'Prüfen Sie die Texte dieser Seite anhand der Schreibregeln, und korrigieren Sie, was dagegen verstösst.',
+        blockingenAgentStyleGuidePromptSelection:
+          'Prüfen Sie die ausgewählten Blöcke anhand der Schreibregeln, und korrigieren Sie, was dagegen verstösst.',
+        blockingenAgentRelatedPages: 'Verwandte Seiten verlinken',
+        blockingenAgentRelatedPagesPrompt:
+          'Suchen Sie bis zu drei Seiten, die mit dieser verwandt sind, und fügen Sie sie als Teaser unter «Verwandte Themen» ein.',
         blockingenWrongLanguageLabel: 'Sprache der Texte',
         blockingenWrongLanguage: 'Text in einer anderen Sprache',
         blockingenWrongLanguageDescriptionOne:
@@ -169,6 +182,19 @@ export default defineNuxtConfig({
           'Alle Texte sind auf @language.',
       },
       fr: {
+        blockingenAgentTownData: 'Chargement des données de la commune',
+        blockingenAgentTownDataDone: 'Données de la commune chargées',
+        blockingenAgentServicePage: 'Rédiger une page de prestation',
+        blockingenAgentServicePagePrompt:
+          'Rédigez cette page comme page de prestation de la commune. Demandez-moi d’abord ce qu’elle doit couvrir.',
+        blockingenAgentStyleGuide: 'Vérifier les règles de rédaction',
+        blockingenAgentStyleGuidePrompt:
+          'Vérifiez les textes de cette page selon les règles de rédaction et corrigez ce qui ne les respecte pas.',
+        blockingenAgentStyleGuidePromptSelection:
+          'Vérifiez les blocs sélectionnés selon les règles de rédaction et corrigez ce qui ne les respecte pas.',
+        blockingenAgentRelatedPages: 'Lier des pages apparentées',
+        blockingenAgentRelatedPagesPrompt:
+          'Trouvez jusqu’à trois pages apparentées à celle-ci et ajoutez-les comme aperçus dans « Thèmes associés ».',
         blockingenWrongLanguageLabel: 'Langue des textes',
         blockingenWrongLanguage: 'Texte dans une autre langue',
         blockingenWrongLanguageDescriptionOne:
@@ -197,9 +223,13 @@ export default defineNuxtConfig({
     schemaOptionsPath: optionsSchemaPath,
     modules: [
       drupal({ templateEditRouteName: 'blokkli-template' }),
+      // The demo's own skills, tool and prompts are in ./blokkli.
       agent({
         provider: 'anthropic',
+        // Lets a client replay a scripted conversation instead of the model
+        // (E2E tests). Local only: the hosted build turns it off (chunk 12).
         enableMock: true,
+        // Prices in USD per million tokens, from Anthropic's pricing page.
         models: [
           {
             name: 'claude-haiku-4-5',
@@ -208,8 +238,8 @@ export default defineNuxtConfig({
             pricing: { input: 1, cacheWrite: 1.25, cacheRead: 0.1, output: 5 },
           },
           {
-            name: 'claude-sonnet-5',
-            label: 'Claude Sonnet 5',
+            name: 'claude-sonnet-5-5',
+            label: 'Claude Sonnet 5.5',
             isDefault: true,
             pricing: { input: 2, cacheWrite: 2.5, cacheRead: 0.2, output: 10 },
           },

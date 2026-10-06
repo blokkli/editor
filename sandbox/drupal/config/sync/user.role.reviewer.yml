@@ -6,6 +6,7 @@ dependencies:
     - node
     - paragraphs
     - paragraphs_blokkli
+    - paragraphs_blokkli_agent
     - paragraphs_blokkli_comment
     - scheduler
     - system
@@ -20,6 +21,7 @@ permissions:
   - 'load id and name of blokkli users'
   - 'post blokkli comments'
   - 'review paragraphs blokkli edit state'
+  - 'use paragraphs blokkli agent'
   - 'view all revisions'
   - 'view blokkli comments'
   - 'view paragraphs blokkli edit state'

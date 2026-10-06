@@ -15,7 +15,7 @@ compatibility: >-
   backend (composer, drush) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.7'
+  version: '1.0.8'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/overview
 ---
@@ -86,11 +86,12 @@ drush en paragraphs_blokkli paragraphs_blokkli_graphql media
   `blokkli-setup-templates`, `blokkli-setup-publishing` (scheduling, revisions,
   preview grants), `blokkli-setup-translations` (content translation, DeepL,
   outdated translations), `blokkli-setup-search` (the editor's content search),
-  `blokkli-setup-charts` (charts and their data sources),
-  `blokkli-setup-comments` (comments, mentions, notifications) and
-  `blokkli-setup-permissions` (roles, per-type permissions). Custom transforms
-  and conversions: `blokkli-write-drupal-plugin`. Start with the base; add
-  features once the editor works.
+  `blokkli-setup-charts` (charts and their data sources), `blokkli-setup-agent`
+  (the AI agent, its skills, tools and prompts), `blokkli-setup-comments`
+  (comments, mentions, notifications) and `blokkli-setup-permissions` (roles,
+  per-type permissions). Custom transforms and conversions:
+  `blokkli-write-drupal-plugin`. Start with the base; add features once the
+  editor works.
 
 ## 3. Paragraphs fields
 

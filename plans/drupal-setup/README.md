@@ -157,7 +157,7 @@ Milestones:
 | 13f | [Translation](13f-translation.md)                                                                   | M1        | done        | 13c                               |
 | 13g | [Search and plugins](13g-search-and-plugins.md)                                                     | M1        | done        | 13c, 13d                          |
 | 13h | [Collaboration and roles](13h-collaboration-roles.md)                                               | M1        | done        | 13b–13g, 13i                      |
-| 13i | [Agent and modules](13i-agent-and-modules.md)                                                       | M1        | in progress | 13b                               |
+| 13i | [Agent and modules](13i-agent-and-modules.md)                                                       | M1        | done        | 13b                               |
 | 13j | [Skill tests](13j-skill-tests.md)                                                                   | M1        | todo        | 13a–13i                           |
 | 14a | [Demo concept](14a-demo-concept.md)                                                                 | M1        | done        | 04                                |
 | 14b | [Demo content](14b-demo-content.md)                                                                 | M3        | in progress | 05, 13, 14a                       |
@@ -174,10 +174,8 @@ Milestones:
 Statuses: `todo`, `in progress`, `done`, `dropped`.
 
 Chunks 13 and 14 are split into lettered sub-chunks; 13's file is the overview
-(order, skill conventions, feature matrix). 05, 13a–13h, 14a and 15a–15i are
-done: `ddev bake` seeds the content from `sandbox/drupal/content`. 13i is in
-progress: the table of contents, the charts, the analyzer and the embed are
-done; the agent is postponed.
+(order, skill conventions, feature matrix). 05, 13a–13i, 14a and 15a–15i are
+done: `ddev bake` seeds the content from `sandbox/drupal/content`.
 
 Bugs in other projects found along the way (mostly `paragraphs_blokkli`) are
 tracked in [findings.md](findings.md) and fixed separately. F1 and F2, which

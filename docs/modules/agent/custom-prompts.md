@@ -12,7 +12,8 @@ for common tasks.
 
 ### File Location
 
-Place prompt files in `blokkli/prompts/` in your project root:
+Place prompt files in `blokkli/prompts/` in the Nuxt app's root directory, next
+to `nuxt.config.ts` (not in `app/`):
 
 ```
 blokkli/
@@ -112,7 +113,8 @@ modifications.
 
 ### File Location
 
-Place system prompt files in `blokkli/system-prompts/` in your project root:
+Place system prompt files in `blokkli/system-prompts/` in the Nuxt app's root
+directory:
 
 ```
 blokkli/

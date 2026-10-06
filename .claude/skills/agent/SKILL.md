@@ -40,21 +40,24 @@ src/modules/agent/
 
 ```typescript
 // nuxt.config.ts
+import agent from '@blokkli/editor/agent'
+
 blokkli: {
-  modules: {
-    agent: {
-      provider: 'anthropic' | 'openai',  // Required
-      model: string,                      // Required
+  modules: [
+    agent({
+      provider: 'anthropic' | 'openai',   // Required
+      models: [                           // Required, at least one
+        { name, label, isDefault?, routing?, pricing? },
+      ],
       allowedFetchOrigins?: string[],     // Whitelist for web_fetch tool
       debugPrompt?: boolean,              // Dev: allow asking about internals
       defaultPrompts?: string[],          // Welcome screen suggestions
-    }
-  }
+      agentName?: string,                 // Defaults to 'Superblökkli'
+      enableMock?: boolean,               // E2E: replay scripted replies
+      routes?: { agent?, fetch?, stream?, routing? },
+    }),
+  ],
 }
-
-// Environment variables
-NUXT_BLOKKLI_AGENT_API_KEY      // LLM provider API key
-NUXT_BLOKKLI_AGENT_AUTH_SECRET  // HMAC secret for WebSocket auth
 ```
 
 ## Communication Flow
@@ -78,7 +81,8 @@ Tools use an MCP-inspired pattern with Zod schemas for parameters.
 
 - **Query tools** (`category: 'query'`): Read-only, execute immediately
 - **Mutation tools** (`category: 'mutation'`): Require user approval
-- **Lazy tools**: Loaded on demand via `load_skill` to keep context small
+- **Lazy tools**: Loaded on demand via `load_tools` (or a skill's `tools`) to
+  keep context small
 - **Interactive tools**: Render Vue components for user interaction (e.g., diff
   UI for batch rewrites)
 - **Tool factories**: Generate tools dynamically from runtime context
@@ -103,8 +107,9 @@ Projects can add custom sections in `blokkli/system-prompts/*.ts` using
 
 ## Skills (Server-Side)
 
-On-demand knowledge blocks the LLM loads via a `load_skill` server tool. Keeps
-the base prompt lean. Built-in skills are in `runtime/server/default-skills/`.
+On-demand knowledge blocks the LLM loads via the `load_skills` server tool.
+Keeps the base prompt lean. Built-in skills are in
+`runtime/server/default-skills/`.
 
 Projects can add custom skills in `blokkli/skills/*.ts` using
 `defineBlokkliAgentSkill()`.
