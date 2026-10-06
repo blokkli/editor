@@ -10,8 +10,8 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | #   | Finding                                                                                                                 | Project              | Severity | Status     | Blocks   |
 | --- | ----------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- | -------- |
 | F1  | [Duplicate edit states](#f1-duplicate-edit-states)                                                                      | `paragraphs_blokkli` | high     | fixed      | –        |
-| F2  | [Lost mutations on concurrent writes](#f2-lost-mutations-on-concurrent-writes)                                          | `paragraphs_blokkli` | high     | open       | 09b      |
-| F3  | [Edit state in the persistent entity cache](#f3-edit-state-in-the-persistent-entity-cache)                              | `paragraphs_blokkli` | low      | open       | –        |
+| F2  | [Lost mutations on concurrent writes](#f2-lost-mutations-on-concurrent-writes)                                          | `paragraphs_blokkli` | high     | fixed      | –        |
+| F3  | [Edit state in the persistent entity cache](#f3-edit-state-in-the-persistent-entity-cache)                              | `paragraphs_blokkli` | low      | fixed      | –        |
 | F4  | [`clearOutdated` type mismatch](#f4-clearoutdated-type-mismatch)                                                        | `paragraphs_blokkli` | low      | open       | –        |
 | F5  | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                               | Drupal core          | high     | workaround | –        |
 | F6  | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                | `blokkli_starterkit` | low      | open       | –        |
@@ -138,6 +138,34 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
     one's, and their editor gets the merged state back in the response. A
     mutation that refers to a paragraph the other user removed fails with a
     normal error.
+- **Fixed (2026-10-02, `paragraphs_blokkli` `5c771cf`..`074a60c`):**
+  - Every write changes the state as stored, while holding F1's lock per host
+    entity. After taking the lock, it loads the state again (`loadUnchanged()`).
+    The writes:
+    - `ParagraphsBlokkliManager::updateState()`: mutations, undo, redo, history
+      index, mutation status, take ownership, schedule, unschedule, and the add,
+      edit and translate forms
+    - `publish()`, cron included
+    - `revertAllChanges()`
+  - The resolvers return the reloaded state, so the editor gets the merged
+    state.
+  - `saveState()` is removed.
+  - `publish()` throws `MutationViolationException` on validation errors instead
+    of returning FALSE.
+  - Tested by `EditStateUpdateTest`, `EditStateWriteDataProducerTest` and two
+    races:
+    - On the dev site, 10 processes adding a paragraph at the same instant
+      stored 1 mutation before the fix and 10 after.
+    - Over HTTP on a sandbox, 10 parallel adds got the indexes 0–9.
+  - Known limits:
+    - The edit state's admin forms (add, edit, delete) don't take the lock.
+    - A write that holds the lock for more than 30 s (the lock's expiry) makes
+      waiting writes fail with `LockAcquiringException`. That can be a big page,
+      a remote video lookup or a publish.
+    - A write to a state that was published or reverted while it waited fails,
+      and the editor shows its generic error.
+    - A mutation that refers to a paragraph another user removed: `edit` fails
+      with an error, and `add` after it appends at the end.
 
 ## F3: Edit state in the persistent entity cache
 
@@ -157,6 +185,16 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
   (`src/Entity/ParagraphsBlokkliEditState.php:40`). The state changes with every
   mutation and is loaded about once per request, so the cache gains little. This
   makes the module safe on SQLite sites that don't change the cache bin.
+- **Fixed (2026-10-02, `paragraphs_blokkli` `3ca469f`, with F2):**
+  - `persistent_cache: FALSE` on the edit state.
+  - `paragraphs_blokkli_update_9007()` sets it on the installed definition. The
+    storage uses the installed definition, so a cache rebuild isn't enough.
+- **Why F2 needs it:** F2's reload (`loadUnchanged()`) reads the persistent
+  cache first.
+  - With the memory bin (the workaround above), that cache lives per process.
+  - The reload then returned the copy the request had loaded before taking the
+    lock.
+  - The dev site's race stored 1 of 10 until the update ran.
 
 ## F4: `clearOutdated` type mismatch
 
