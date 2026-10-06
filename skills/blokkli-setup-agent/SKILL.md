@@ -16,7 +16,7 @@ compatibility: >-
   the web server's config.
 metadata:
   author: blokkli
-  version: '1.0.0'
+  version: '1.0.1'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/agent/overview
 ---
@@ -55,7 +55,9 @@ drush en paragraphs_blokkli_agent
     `auth_secret: ''`.
   - Don't use the module's settings form (`/admin/config/content/blokkli/agent`)
     for it: the form stores the secret in config.
-  - Without a secret, the token mutation throws.
+  - Without a secret, Drupal makes no tokens, and the editor hides the agent
+    (`paragraphsBlokkliAvailableFeatures.agent`). That's also how to turn the
+    agent off on some instances of a site.
 
 - **Permissions:** tell the developer who needs which; don't assign them
   yourself.
@@ -282,7 +284,8 @@ export default defineBlokkliAgentPrompt({
    file the frontend uses.
 2. `.nuxt/blokkli/agent-server.js` imports the project's skills and tools.
 3. As a user with the permission, open the editor: the agent's button is in the
-   toolbar. A user without it doesn't see it.
+   toolbar. A user without it doesn't see it, nor does anyone on an instance
+   without the secret.
 4. Open the chat. In the browser's developer tools, the WebSocket to
    `/api/blokkli/agent` stays open. Ask something: an answer arrives.
 5. The project's prompts are on the welcome screen, in every language.
@@ -290,14 +293,14 @@ export default defineBlokkliAgentPrompt({
 
 ## Traps, by symptom
 
-- **No agent button:** the user lacks `use paragraphs blokkli agent`, or the
-  schema lacks the token mutation (section 1).
-- **Drupal throws when the chat opens:** the secret is empty (section 1).
+- **No agent button:** the user lacks `use paragraphs blokkli agent`, the schema
+  lacks the token mutation, or Drupal's secret is empty (section 1).
 - **"Unauthorized":**
   - The two secrets differ (sections 1, 2).
   - The clocks are more than 5 minutes apart: tokens expire after 300 seconds.
-  - A token was used twice. Two tokens made in the same second are the same
-    token, so a second connection in that second is rejected: try again.
+  - A token was used twice. With an older `paragraphs_blokkli`, two tokens made
+    in the same second are the same token, so a second connection in that second
+    is rejected. Update the module: its tokens have a nonce.
 - **The chat can't connect:** the web server doesn't pass the WebSocket through,
   or the CSP blocks it (section 3).
 - **A typed message fails, and only scripts work:** no API key (section 2).

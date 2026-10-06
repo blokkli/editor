@@ -13,27 +13,31 @@ import type {
 export const TOKEN_EXPIRY_SECONDS = 300
 
 /**
- * Validate an HMAC auth token: well-formed `<timestamp>:<hmac>`, not expired,
- * and HMAC matches. Does NOT track one-time use — `SessionManager` layers its
- * replay check on top. Returns false (never throws) on any malformed input.
+ * Validate an HMAC auth token: well-formed `<timestamp>:<nonce>:<hmac>`, not
+ * expired, and the HMAC of `<timestamp>:<nonce>` matches. The nonce keeps two
+ * tokens of the same second apart. Tokens without a nonce
+ * (`<timestamp>:<hmac>`, from older backends) are accepted too.
+ *
+ * Does NOT track one-time use — `SessionManager` layers its replay check on
+ * top. Returns false (never throws) on any malformed input.
  */
 export function validateToken(token: string, secret: string): boolean {
   if (!secret || !token) return false
 
-  const colonIndex = token.indexOf(':')
-  if (colonIndex === -1) return false
+  const hmacIndex = token.lastIndexOf(':')
+  if (hmacIndex === -1) return false
 
-  const timestampStr = token.substring(0, colonIndex)
-  const providedHmac = token.substring(colonIndex + 1)
+  const payload = token.substring(0, hmacIndex)
+  const providedHmac = token.substring(hmacIndex + 1)
 
-  const timestamp = parseInt(timestampStr, 10)
+  const timestamp = parseInt(payload.split(':')[0]!, 10)
   if (isNaN(timestamp)) return false
 
   const now = Math.floor(Date.now() / 1000)
   if (Math.abs(now - timestamp) > TOKEN_EXPIRY_SECONDS) return false
 
   const expectedHmac = createHmac('sha256', secret)
-    .update(timestampStr)
+    .update(payload)
     .digest('hex')
 
   if (providedHmac.length !== expectedHmac.length) return false

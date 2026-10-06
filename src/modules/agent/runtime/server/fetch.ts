@@ -1,6 +1,15 @@
-import { createError, defineEventHandler, readBody } from '#imports'
+import {
+  createError,
+  defineEventHandler,
+  readBody,
+  useRuntimeConfig,
+} from '#imports'
 import { allowedFetchOrigins } from '#blokkli-build/agent-server'
 import TurndownService from 'turndown'
+import { validateToken } from './helpers/security'
+
+/** Redirects followed before giving up. */
+const MAX_REDIRECTS = 5
 
 type OutputFormat = 'markdown' | 'html'
 
@@ -18,6 +27,71 @@ function isOriginAllowed(url: URL): boolean {
       url.hostname.endsWith('.' + allowedUrl.hostname)
     )
   })
+}
+
+/**
+ * Throw unless the URL may be fetched: HTTPS, and an allowed origin. Checked
+ * for the requested URL and for every redirect.
+ */
+function assertFetchable(url: URL): void {
+  if (url.protocol !== 'https:') {
+    throw createError({
+      statusCode: 400,
+      message: 'Only HTTPS URLs are allowed',
+    })
+  }
+
+  if (allowedFetchOrigins.length === 0) {
+    throw createError({
+      statusCode: 403,
+      message:
+        'No allowed origins configured. Configure allowedFetchOrigins in the agent module options.',
+    })
+  }
+
+  if (!isOriginAllowed(url)) {
+    throw createError({
+      statusCode: 403,
+      message: `Origin not allowed: ${url.origin}. Allowed origins: ${allowedFetchOrigins.join(', ')}`,
+    })
+  }
+}
+
+/**
+ * Fetch a URL, following redirects only to fetchable URLs.
+ */
+async function fetchFollowingRedirects(
+  url: URL,
+): Promise<{ response: Response; url: URL }> {
+  let current = url
+  for (let redirects = 0; ; redirects++) {
+    let response: Response
+    try {
+      response = await fetch(current, {
+        redirect: 'manual',
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; BlokkliAgent/1.0)',
+          Accept:
+            'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        },
+      })
+    } catch (error) {
+      throw createError({
+        statusCode: 502,
+        message: `Failed to fetch URL: ${(error as Error).message}`,
+      })
+    }
+
+    const location = response.headers.get('location')
+    if (response.status < 300 || response.status >= 400 || !location) {
+      return { response, url: current }
+    }
+    if (redirects === MAX_REDIRECTS) {
+      throw createError({ statusCode: 502, message: 'Too many redirects' })
+    }
+    current = new URL(location, current)
+    assertFetchable(current)
+  }
 }
 
 /**
@@ -84,9 +158,21 @@ function truncateContent(content: string, maxLength: number = 50000): string {
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { url, format = 'markdown' } = body as {
+  const {
+    authToken,
+    url,
+    format = 'markdown',
+  } = body as {
+    authToken?: string
     url?: string
     format?: OutputFormat
+  }
+
+  // The server fetches for the client: only for clients the backend let in,
+  // like the WebSocket and the stream.
+  const authSecret = useRuntimeConfig().blokkli?.agent?.authSecret
+  if (!authSecret || !authToken || !validateToken(authToken, authSecret)) {
+    throw createError({ statusCode: 401, message: 'Unauthorized' })
   }
 
   if (!url || typeof url !== 'string') {
@@ -114,47 +200,9 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // Only allow HTTPS
-  if (parsedUrl.protocol !== 'https:') {
-    throw createError({
-      statusCode: 400,
-      message: 'Only HTTPS URLs are allowed',
-    })
-  }
+  assertFetchable(parsedUrl)
 
-  // Check if any origins are configured
-  if (allowedFetchOrigins.length === 0) {
-    throw createError({
-      statusCode: 403,
-      message:
-        'No allowed origins configured. Configure allowedFetchOrigins in the agent module options.',
-    })
-  }
-
-  // Check if origin is allowed
-  if (!isOriginAllowed(parsedUrl)) {
-    throw createError({
-      statusCode: 403,
-      message: `Origin not allowed: ${parsedUrl.origin}. Allowed origins: ${allowedFetchOrigins.join(', ')}`,
-    })
-  }
-
-  // Fetch the URL
-  let response: Response
-  try {
-    response = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; BlokkliAgent/1.0)',
-        Accept:
-          'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-      },
-    })
-  } catch (error) {
-    throw createError({
-      statusCode: 502,
-      message: `Failed to fetch URL: ${(error as Error).message}`,
-    })
-  }
+  const { response, url: finalUrl } = await fetchFollowingRedirects(parsedUrl)
 
   if (!response.ok) {
     throw createError({
@@ -197,6 +245,6 @@ export default defineEventHandler(async (event) => {
     content,
     title,
     format,
-    url: response.url, // Return final URL in case of redirects
+    url: finalUrl.href, // The final URL in case of redirects
   }
 })

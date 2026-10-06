@@ -100,7 +100,8 @@ export default function (options: AgentServerTemplateOptions) {
           ? `export const toolDefinitions = []`
           : `export const toolDefinitions = [\n  ${tools.map((t) => t.importName).join(',\n  ')},\n]`
 
-      const originsJson = JSON.stringify(allowedFetchOrigins, null, 2)
+      // Without the option, web_fetch may fetch nothing (server/fetch.ts).
+      const originsJson = JSON.stringify(allowedFetchOrigins ?? [], null, 2)
 
       const createMockExport = enableMock
         ? 'export { createMockProvider }'

@@ -317,5 +317,7 @@ Support for frontend-defined fragments (see
 
 ### paragraphs_blokkli_agent
 
-Conversation persistence for the AI agent feature. Stores conversation state in
-Drupal.
+The [AI agent](/modules/agent/overview): the tokens that let the editor in, and
+the conversations it stores in Drupal. Without its secret, the editor hides the
+agent (see the agent's
+[quick start](/modules/agent/quick-start#drupal-adapter)).

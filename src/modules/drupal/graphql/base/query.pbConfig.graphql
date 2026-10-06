@@ -102,6 +102,7 @@ fragment paragraphsBlokkliAvailableFeatures on ParagraphsBlokkliAvailableFeature
   conversion
   comment
   library
+  agent
   mutations
 }
 

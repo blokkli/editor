@@ -124,33 +124,50 @@ function buildSendContext(options: SendPromptOptions) {
  * Ask the routing endpoint which skills/tools to preload for the first message.
  * Swallows failures (returns empty) so a routing outage never blocks the prompt.
  *
- * When `enableMock` is on and the active mock script carries a `routing` entry,
- * we forward it in the body so the server can short-circuit and return it
- * without touching the configured LLM. The full HTTP round-trip still happens —
- * that's the point — but the route handler skips its `preprocessPrompt` call.
+ * Routing calls the model with the server's key, so it needs a fresh token
+ * from the adapter, like the WebSocket. Without one, there's no routing.
+ *
+ * When `enableMock` is on and a mock script is active, we forward its routing
+ * entry (or an empty one) in the body so the server can short-circuit and
+ * return it without touching the configured LLM. The full HTTP round-trip
+ * still happens — that's the point — but the route handler skips its
+ * `preprocessPrompt` call.
  */
 async function fetchRouting(
+  adapter: FullBlokkliAdapter<any>,
   prompt: string,
   toolNames: string[],
   pageContext: PageContext,
 ): Promise<{ tools: string[]; skills: string[]; usage: UsageTurn | null }> {
+  const empty = { tools: [], skills: [], usage: null }
   try {
+    const authToken = await adapter.getAgentAuthToken?.()
+    if (!authToken) {
+      return empty
+    }
     const mockRouting = enableMock ? readMockRouting() : undefined
-    return await fetch(routeRoute, {
+    const response = await fetch(routeRoute, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt, toolNames, pageContext, mockRouting }),
-    }).then(
-      (r) =>
-        r.json() as Promise<{
-          skills: string[]
-          tools: string[]
-          usage: UsageTurn | null
-        }>,
-    )
+      body: JSON.stringify({
+        authToken,
+        prompt,
+        toolNames,
+        pageContext,
+        mockRouting,
+      }),
+    })
+    if (!response.ok) {
+      return empty
+    }
+    return (await response.json()) as {
+      skills: string[]
+      tools: string[]
+      usage: UsageTurn | null
+    }
   } catch {
     // Routing failed — proceed without preloaded skills/tools.
-    return { tools: [], skills: [], usage: null }
+    return empty
   }
 }
 
@@ -465,6 +482,7 @@ export default function agentProvider({
       // with the live state so routing only suggests tools and skills the
       // server would actually offer for this message.
       const routingResult = await fetchRouting(
+        adapter,
         prompt,
         filterToolNamesByEditMode(
           mcpTools,

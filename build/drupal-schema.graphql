@@ -7284,6 +7284,9 @@ type ParagraphsBlokkliAvailableFeatures {
   "Whether the library feature is available."
   library: Boolean!
 
+  "Whether the AI agent is available: its module is enabled and has a secret."
+  agent: Boolean!
+
   "List of all enabled mutation plugin IDs."
   mutations: [String!]
 }

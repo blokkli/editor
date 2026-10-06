@@ -55,18 +55,26 @@ getAgentAuthToken?: () => Promise<string | null>
 
 ### Token Format
 
-The token is `timestamp:hmac_sha256` where:
+The token is `timestamp:nonce:hmac_sha256` where:
 
 - `timestamp` is the current Unix timestamp in seconds
-- `hmac_sha256` is the HMAC-SHA256 of the timestamp using the auth secret
+- `nonce` is a random string without colons, so that two tokens of the same
+  second differ
+- `hmac_sha256` is the HMAC-SHA256 of `timestamp:nonce` using the auth secret
 
-Tokens expire after 5 minutes and are single-use.
+Tokens expire after 5 minutes. The WebSocket accepts each token once. The client
+fetches a fresh token for each connection and for each request to the agent's
+other routes (streaming, routing, fetching web pages).
+
+Tokens without a nonce (`timestamp:hmac_sha256`, the HMAC of the timestamp) are
+still accepted, but two of them made in the same second are the same token, so
+the second connection is rejected.
 
 ### Server Endpoint Example
 
 ```ts
 // server/api/blokkli/agent/token.ts
-import { createHmac } from 'node:crypto'
+import { createHmac, randomBytes } from 'node:crypto'
 
 export default defineEventHandler(() => {
   // Verify the user is authenticated and authorized.
@@ -81,9 +89,9 @@ export default defineEventHandler(() => {
     })
   }
 
-  const timestamp = Math.floor(Date.now() / 1000).toString()
-  const hmac = createHmac('sha256', authSecret).update(timestamp).digest('hex')
-  return { token: `${timestamp}:${hmac}` }
+  const payload = `${Math.floor(Date.now() / 1000)}:${randomBytes(12).toString('base64url')}`
+  const hmac = createHmac('sha256', authSecret).update(payload).digest('hex')
+  return { token: `${payload}:${hmac}` }
 })
 ```
 

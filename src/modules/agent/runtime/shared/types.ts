@@ -582,9 +582,11 @@ export type MockScript = z.infer<typeof mockScriptSchema>
 /**
  * Body shape of the routing preprocess request. `mockRouting`, when set
  * alongside `enableMock`, short-circuits the LLM call and the server returns
- * the listed skills/tools directly.
+ * the listed skills/tools directly. Clients with a mock script always send it.
  */
 export const routingRequestSchema = z.object({
+  /** A fresh token from the adapter's `getAgentAuthToken()`. */
+  authToken: z.string(),
   prompt: z.string(),
   toolNames: z.array(z.string()),
   pageContext: pageContextSchema,

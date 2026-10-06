@@ -463,6 +463,10 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       if (!features?.library) {
         disabled.push('library')
       }
+      // Without a secret, Drupal makes no tokens for the agent.
+      if (!features?.agent) {
+        disabled.push('agent')
+      }
       if (!mutations.includes('duplicate')) {
         disabled.push('duplicate')
       }

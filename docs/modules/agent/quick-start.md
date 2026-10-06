@@ -103,6 +103,9 @@ enabled:
    $config['paragraphs_blokkli_agent.settings']['auth_secret'] = getenv('NUXT_BLOKKLI_AGENT_AUTH_SECRET') ?: '';
    ```
 
+   Without a secret, Drupal makes no tokens and the editor hides the agent. A
+   site can turn the agent off on some of its instances this way.
+
 4. **Grant permission** — assign the "Use blökkli AI agent" permission
    (`use paragraphs blokkli agent`) to the appropriate Drupal roles
 

@@ -38,10 +38,16 @@ export default defineBlokkliAgentTool({
   async execute(ctx, params) {
     const { $t } = ctx.app
 
+    // The server fetches for us, so it needs a fresh token, like the stream.
+    const authToken = await ctx.adapter.getAgentAuthToken?.()
     const response = await fetch(routeFetch, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url: params.url, format: params.format }),
+      body: JSON.stringify({
+        authToken,
+        url: params.url,
+        format: params.format,
+      }),
     })
 
     if (!response.ok) {

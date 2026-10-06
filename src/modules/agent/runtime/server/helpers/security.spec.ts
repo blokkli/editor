@@ -13,16 +13,31 @@ import { validateToken, computeStateHash, verifyStateHash } from './security'
 describe('validateToken', () => {
   const SECRET = 's3cr3t'
 
-  function makeToken(timestamp: number, secret = SECRET): string {
-    const hmac = createHmac('sha256', secret)
-      .update(String(timestamp))
-      .digest('hex')
-    return `${timestamp}:${hmac}`
+  function makeToken(
+    timestamp: number,
+    secret = SECRET,
+    nonce = 'n0nce',
+  ): string {
+    const payload = `${timestamp}:${nonce}`
+    const hmac = createHmac('sha256', secret).update(payload).digest('hex')
+    return `${payload}:${hmac}`
   }
 
   it('accepts a fresh, correctly-signed token', () => {
     const now = Math.floor(Date.now() / 1000)
     expect(validateToken(makeToken(now), SECRET)).toBe(true)
+  })
+
+  it('accepts a token without a nonce, from older backends', () => {
+    const now = Math.floor(Date.now() / 1000)
+    const hmac = createHmac('sha256', SECRET).update(String(now)).digest('hex')
+    expect(validateToken(`${now}:${hmac}`, SECRET)).toBe(true)
+  })
+
+  it('rejects a token whose nonce was changed', () => {
+    const now = Math.floor(Date.now() / 1000)
+    const [timestamp, , hmac] = makeToken(now).split(':')
+    expect(validateToken(`${timestamp}:other:${hmac}`, SECRET)).toBe(false)
   })
 
   it('rejects an expired token', () => {

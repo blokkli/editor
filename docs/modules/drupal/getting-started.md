@@ -26,7 +26,7 @@ Enable additional submodules based on your needs:
 | `paragraphs_blokkli_template`   | Paragraph templates                    |
 | `paragraphs_blokkli_scheduler`  | Scheduling (needs contrib `scheduler`) |
 | `paragraphs_blokkli_fragments`  | Fragment support                       |
-| `paragraphs_blokkli_agent`      | AI agent conversation persistence      |
+| `paragraphs_blokkli_agent`      | AI agent: tokens and conversations     |
 
 ## Step 2: Configure Drupal Permissions
 

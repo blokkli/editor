@@ -23,7 +23,8 @@ export function readMockScript(): MockScript | undefined {
  * Extract the script's optional `routing` entry — the skills/tools the mock
  * routing endpoint should return on the first message of a conversation. Used
  * by `fetchRouting` so the test can assert auto-load actually fired without
- * touching the configured LLM.
+ * touching the configured LLM. A script without the entry routes to nothing:
+ * the server only calls the LLM for conversations without a script.
  */
 export function readMockRouting():
   | { skills: string[]; tools: string[] }
@@ -31,6 +32,5 @@ export function readMockRouting():
   const script = readMockScript()
   if (!script) return undefined
   const entry = script.find((e): e is MockRoutingEntry => e.type === 'routing')
-  if (!entry) return undefined
-  return { skills: entry.skills ?? [], tools: entry.tools ?? [] }
+  return { skills: entry?.skills ?? [], tools: entry?.tools ?? [] }
 }

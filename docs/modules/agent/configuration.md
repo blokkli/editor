@@ -84,8 +84,9 @@ The `pricing` object:
 
 ### `allowedFetchOrigins`
 
-Optional array of allowed origins for the `web_fetch` tool. When set, the agent
-can only fetch URLs from these origins.
+Optional array of allowed origins for the `web_fetch` tool. The agent can only
+fetch HTTPS URLs from these origins (and their subdomains), and only follows
+redirects to them. Without it, the tool fetches nothing.
 
 ```ts
 allowedFetchOrigins: ['https://example.com', 'https://docs.example.com']
