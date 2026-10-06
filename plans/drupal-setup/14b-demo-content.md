@@ -59,7 +59,9 @@ adds types.
 - [x] Real photos and copy for what the mockups of 15a show as placeholders: the
       view of the town, the village square, the town hall and the green waste
       are 15i's photos.
-- [ ] Suggested tasks for the sandbox's welcome panel (chunk 09).
+- [x] Suggested tasks for the sandbox: the welcome page
+      ([09c](09c-welcome-page.md)), from the lakeside pool's planted mistakes,
+      the pool opening, Anna's thread and the library item.
 
 ## The content (decided with the user, 2026-09-30)
 

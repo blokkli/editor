@@ -107,6 +107,7 @@ sandbox.expires_idle;default;Your sandbox is deleted on @date, or after @hours h
 sandbox.invite;default;Invite a colleague;Kollegin oder Kollegen einladen;Inviter une ou un collègue
 sandbox.invite_text;default;Each link logs your colleague in as that user, until the sandbox is deleted.;Jeder Link meldet Ihre Kollegin oder Ihren Kollegen als diese Person an, bis die Sandbox gelöscht wird.;Chaque lien connecte votre collègue sous ce compte, jusqu'à la suppression de la sandbox.
 sandbox.label;default;Sandbox;Sandbox;Sandbox
+sandbox.welcome;default;Things to try;Was Sie ausprobieren können;À essayer
 search.no_results;default;No results for “@text”.;Keine Ergebnisse für «@text».;Aucun résultat pour « @text ».
 search.no_results_hint;default;Try another word.;Versuchen Sie es mit einem anderen Begriff.;Essayez avec un autre terme.
 search.result;default;1 result for “@text”;1 Ergebnis für «@text»;1 résultat pour « @text »

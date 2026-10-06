@@ -110,6 +110,7 @@ fragment easyTexts on TextsLoader {
   sandbox__invite_text: getText(key: "invite_text", context: "sandbox", default: "Each link logs your colleague in as that user, until the sandbox is deleted.")
   sandbox__invite: getText(key: "invite", context: "sandbox", default: "Invite a colleague")
   sandbox__label: getText(key: "label", context: "sandbox", default: "Sandbox")
+  sandbox__welcome: getText(key: "welcome", context: "sandbox", default: "Things to try")
   search__no_results_hint: getText(key: "no_results_hint", context: "search", default: "Try another word.")
   search__no_results: getText(key: "no_results", context: "search", default: "No results for “@text”.")
   search__result: getText(key: "result", context: "search", default: "1 result for “@text”")

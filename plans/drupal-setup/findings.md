@@ -60,6 +60,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F49 | [Agent endpoints without authentication](#f49-agent-endpoints-without-authentication)                                   | `@blokkli/editor`    | medium   | fixed      | chunk 11 |
 | F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                     | `texts`              | low      | open       | –        |
 | F51 | [Agent tokens of the same second collide](#f51-agent-tokens-of-the-same-second-collide)                                 | both                 | low      | fixed      | chunk 11 |
+| F52 | [A comment's label throws](#f52-a-comments-label-throws)                                                                | `paragraphs_blokkli` | low      | open       | –        |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
 `fixed`.
@@ -1113,3 +1114,16 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
     splits at the last colon, so tokens without a nonce still validate. Tests in
     `security.spec.ts`.
   - The playground's token route and the adapter docs use the new format.
+
+## F52: A comment's label throws
+
+- **Found:** 2026-10-06, 09c, with a drush script that printed a seeded
+  comment's label.
+- **Symptom:** `BlokkliComment::label()` calls `$this->t()`, but the entity
+  doesn't use `StringTranslationTrait`
+  (`modules/paragraphs_blokkli_comment/src/Entity/BlokkliComment.php:78` at
+  `b00b2d7`). Anything that asks a comment for its label fails with "Call to
+  undefined method BlokkliComment::t()": e.g. an entity reference to a comment,
+  or a log message with the label.
+- **Fix idea:** `use StringTranslationTrait;` in the entity, or
+  `new TranslatableMarkup()`.

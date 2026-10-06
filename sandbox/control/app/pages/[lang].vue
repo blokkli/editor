@@ -167,6 +167,7 @@ async function submit() {
       method: 'POST',
       body: {
         source: source.value,
+        language: language.value,
         invitation: invitation.value,
         turnstile: form.value
           ? new FormData(form.value).get('cf-turnstile-response')?.toString()

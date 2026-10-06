@@ -91,9 +91,9 @@ ddev drush blokkli-sandbox:delete a1
   `ddev drush --uri=https://a1.blokkli.ddev.site uli` for a login link.
 - A bake doesn't change existing sandboxes. Delete and create them again.
 - A claimed sandbox has a "Sandbox" button next to Drupal's tabs above its
-  pages. Its popup says when the sandbox is deleted, with a link back to it and
-  links for colleagues. One made with drush has no button, unless it gets the
-  control app's limits:
+  pages. Its popup says when the sandbox is deleted, with a link back to it,
+  links for colleagues and a link to the welcome page. One made with drush has
+  no button, unless it gets the control app's limits:
   `ddev drush blokkli-sandbox:create a1 --expires=$(($(date +%s) + 86400)) --idle=7200`.
   It still doesn't expire.
 - Only premium sandboxes have the agent: those from an invitation, and those
@@ -105,7 +105,9 @@ ddev drush blokkli-sandbox:delete a1
 https://blokkli-control.ddev.site is how visitors get a sandbox:
 
 - **The claim page** (`/de`, `/fr`, `/en`) creates one and logs the visitor in
-  as Anna Keller, in the home page's editor.
+  as Anna Keller. They land on the welcome page in the claim page's language
+  (`/en/welcome`, `/de/willkommen`, `/fr/bienvenue`): tasks to try, each a link
+  into an editor.
 - **`/admin`** lists the sandboxes and makes invitation links. Each link creates
   one premium sandbox (7 days, with the agent), without the captcha and the
   limits.

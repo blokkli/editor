@@ -83,6 +83,9 @@ premium sandboxes by invitation. Expired sandboxes disappear.
 
 ## Notes
 
+**Changed in [09c](09c-welcome-page.md) (the user, 2026-10-06):** a claim opens
+the welcome page instead of the home page's editor.
+
 Decided with the user (2026-10-02):
 
 - **A separate app with its own database,** not a registry on the default site.

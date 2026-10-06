@@ -1,0 +1,72 @@
+# The welcome page (pages/welcome.vue): the pages its tasks open, with their
+# paths in every language, and whether the agent is available. The UUIDs are
+# the seeded content's, derived from its keys (content/README.md).
+query welcome {
+  # nodes/lakeside-pool.yml
+  lakesidePool: entityByUuid(
+    entityType: NODE
+    uuid: "d1bf0762-092c-50c6-b0ef-2bd271ce54ba"
+  ) {
+    ...welcomeTarget
+  }
+  # nodes/pool-opening.yml
+  poolOpening: entityByUuid(
+    entityType: NODE
+    uuid: "d28f53c2-dfe2-5e14-bce6-afc731757f5f"
+  ) {
+    ...welcomeTarget
+  }
+  # nodes/building-permits.yml
+  buildingPermits: entityByUuid(
+    entityType: NODE
+    uuid: "1341ca96-67f5-55de-80dc-964914c72bf0"
+  ) {
+    ...welcomeTarget
+  }
+  # nodes/sorting.yml
+  sorting: entityByUuid(
+    entityType: NODE
+    uuid: "8e8067f7-c06b-56ce-809f-fe3c44e6ba9f"
+  ) {
+    ...welcomeTarget
+  }
+  # nodes/fees.yml
+  fees: entityByUuid(
+    entityType: NODE
+    uuid: "bb33f42a-f678-5567-be95-88dbd9a14e55"
+  ) {
+    ...welcomeTarget
+  }
+  # nodes/in-numbers.yml
+  inNumbers: entityByUuid(
+    entityType: NODE
+    uuid: "58619151-70d3-5d9b-95b1-25164d2511cb"
+  ) {
+    ...welcomeTarget
+  }
+  # config_pages.yml: the footer
+  footer: entityByUuid(
+    entityType: TRANSLATABLE_CONFIG_PAGES
+    uuid: "e4377fd5-84d7-5596-9af1-d5560db9f660"
+  ) {
+    ...welcomeTarget
+  }
+  paragraphsBlokkliAvailableFeatures {
+    agent
+  }
+}
+
+fragment welcomeTarget on EntityTranslatable {
+  uuid
+  translations {
+    langcode
+    ... on Node {
+      defaultLangcode
+    }
+    ... on EntityLinkable {
+      url {
+        path
+      }
+    }
+  }
+}

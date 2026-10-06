@@ -37,6 +37,9 @@ final class SandboxLoginController implements ContainerInjectionInterface {
 
   /**
    * Logs the token's user in, then opens the front page's editor.
+   *
+   * A `destination` replaces the editor (core's RedirectResponseSubscriber):
+   * the control app's claim opens the frontend's welcome page.
    */
   public function login(Request $request, string $token): LocalRedirectResponse {
     $account = $this->account($token);

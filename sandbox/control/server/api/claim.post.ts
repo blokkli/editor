@@ -2,7 +2,8 @@ import { createHmac } from 'node:crypto'
 import { createError, defineEventHandler, getRequestHeader, readBody } from 'h3'
 import { useRuntimeConfig } from '#imports'
 import { isLanguage } from '../../../frontend/shared/languages'
-import type { ClaimError } from '../../shared/claim'
+import { WELCOME_PATHS } from '../../../frontend/shared/welcome'
+import { DEFAULT_LANGUAGE, type ClaimError } from '../../shared/claim'
 import { clientIp } from '../utils/clientIp'
 import { getDatabase, now } from '../utils/db'
 import { drush } from '../utils/drush'
@@ -21,7 +22,8 @@ function claimError(statusCode: number, code: ClaimError) {
 }
 
 /**
- * Creates a sandbox and answers with the URL that logs its visitor in.
+ * Creates a sandbox and answers with the URL that logs its visitor in and
+ * opens the welcome page, in the claim page's language.
  *
  * With an invitation, a premium sandbox: the invitation is used up, and the
  * checks are skipped. Otherwise, Turnstile, the per-IP limit and the cap on
@@ -32,6 +34,7 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event)
   const body = await readBody<{
     source?: unknown
+    language?: unknown
     turnstile?: unknown
     invitation?: unknown
   }>(event)
@@ -39,6 +42,7 @@ export default defineEventHandler(async (event) => {
   if (!isLanguage(source) || !availableSources().includes(source)) {
     throw claimError(400, 'template')
   }
+  const language = isLanguage(body.language) ? body.language : DEFAULT_LANGUAGE
   const invitation =
     typeof body.invitation === 'string' && body.invitation
       ? body.invitation
@@ -115,12 +119,16 @@ export default defineEventHandler(async (event) => {
     throw claimError(500, 'failed')
   }
 
-  // Only for the redirect that follows.
+  // Only for the redirect that follows. Drupal's login opens the editor;
+  // `destination` replaces that (core's RedirectResponseSubscriber).
   const token = createLoginToken(
     config.sandboxLoginSecret,
     id,
     SANDBOX_USER,
     now() + 300,
   )
-  return { url: `${sandboxUrl(id)}/blokkli-sandbox/login/${token}` }
+  const destination = encodeURIComponent(WELCOME_PATHS[language])
+  return {
+    url: `${sandboxUrl(id)}/blokkli-sandbox/login/${token}?destination=${destination}`,
+  }
 })

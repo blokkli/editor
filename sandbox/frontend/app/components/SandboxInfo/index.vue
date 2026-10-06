@@ -9,7 +9,7 @@
       class="flex h-[43px] cursor-pointer items-center gap-2 rounded-full px-4 text-small font-bold hover:bg-[#d9e0f9] hover:text-[#043cad]"
       :class="{ 'bg-[#d9e0f9] text-[#043cad]': isOpen }"
       :aria-expanded="isOpen"
-      @click="setOpen(!isOpen)"
+      @click="isOpen = !isOpen"
     >
       <SpriteSymbol name="clock" class="size-5" aria-hidden="true" />
       {{ $texts('sandbox.label', 'Sandbox') }}
@@ -24,11 +24,17 @@
           type="button"
           class="-m-1 shrink-0 cursor-pointer p-1 hover:text-[#043cad]"
           :aria-label="$texts('sandbox.close', 'Close')"
-          @click="setOpen(false)"
+          @click="isOpen = false"
         >
           <SpriteSymbol name="close" class="size-4" aria-hidden="true" />
         </button>
       </div>
+      <NuxtLink
+        :to="WELCOME_PATHS[language]"
+        class="self-start font-bold text-[#043cad] hover:underline"
+      >
+        {{ $texts('sandbox.welcome', 'Things to try') }}
+      </NuxtLink>
       <button
         v-if="ownLogin"
         type="button"
@@ -82,113 +88,40 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  ref,
-  useAsyncData,
-  useEasyTexts,
-  useGraphqlQuery,
-} from '#imports'
-import { SpriteSymbol } from '#components'
+import { computed, ref, useEasyTexts } from '#imports'
+import { NuxtLink, SpriteSymbol } from '#components'
+import { WELCOME_PATHS } from '#shared/welcome'
 import { useLanguage } from '~/composables/useLanguage'
-import { LOCALES } from '#shared/languages'
+import { useSandbox } from '~/composables/useSandbox'
 
 // The sandbox's button next to the local tasks, in Drupal's admin style (Gin),
-// with a popup: when the sandbox is deleted, and links that log its users in,
-// to come back later and for colleagues. Drupal only has a sandbox for
-// logged-in users of a sandbox the control app made, so there's no button on
-// the dev site and in sandboxes made with drush.
-//
-// The popup is open until the visitor closes it. Each sandbox is its own
-// origin, so a new sandbox opens it again.
-const STORAGE_KEY = 'sandbox:info-closed'
-
+// with a popup: when the sandbox is deleted, the welcome page, and links that
+// log its users in, to come back later and for colleagues. Drupal only has a
+// sandbox for logged-in users of a sandbox the control app made, so there's no
+// button on the dev site and in sandboxes made with drush.
 const { $texts } = useEasyTexts()
 const language = useLanguage()
+const { sandbox, expiresDate, idleHours, ownLogin, colleagues, copied, copy } =
+  useSandbox()
 
-// The roles' labels are in the page's language. The query has no variables,
-// so the language goes into the key.
-const { data: sandbox } = useAsyncData(
-  () => `sandbox:${language.value}`,
-  () => useGraphqlQuery('sandbox').then((response) => response.data.sandbox),
-  { server: false },
-)
-
-// Only rendered in the browser (layouts/drupal.vue), so the storage can be
-// read right away. It may be unavailable (private windows, blocked storage).
-function isClosed(): boolean {
-  try {
-    return localStorage.getItem(STORAGE_KEY) === '1'
-  } catch {
-    return false
-  }
-}
-
-const isOpen = ref(!isClosed())
-
-function setOpen(open: boolean) {
-  isOpen.value = open
-  try {
-    if (open) {
-      localStorage.removeItem(STORAGE_KEY)
-    } else {
-      localStorage.setItem(STORAGE_KEY, '1')
-    }
-  } catch {
-    // The state then lasts until the next page load.
-  }
-}
+const isOpen = ref(false)
 
 // A click outside closes the popup, like the × (plugins/clickAway.ts).
 function onClickAway() {
-  if (isOpen.value) {
-    setOpen(false)
-  }
+  isOpen.value = false
 }
 
-const expiry = computed(() => {
-  if (!sandbox.value) {
-    return ''
-  }
-  const date = new Intl.DateTimeFormat(LOCALES[language.value], {
-    day: 'numeric',
-    month: 'long',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(new Date(sandbox.value.expires * 1000))
-  const idle = sandbox.value.idleLifetime
-  if (!idle) {
-    return $texts(
-      'sandbox.expires',
-      'Your sandbox is deleted on @date.',
-    ).replace('@date', date)
-  }
-  return $texts(
-    'sandbox.expires_idle',
-    'Your sandbox is deleted on @date, or after @hours hours without use.',
-  )
-    .replace('@date', date)
-    .replace('@hours', String(Math.round(idle / 3600)))
-})
-
-const ownLogin = computed(() =>
-  sandbox.value?.logins.find((login) => login.isCurrentUser),
+const expiry = computed(() =>
+  idleHours.value === null
+    ? $texts('sandbox.expires', 'Your sandbox is deleted on @date.').replace(
+        '@date',
+        expiresDate.value,
+      )
+    : $texts(
+        'sandbox.expires_idle',
+        'Your sandbox is deleted on @date, or after @hours hours without use.',
+      )
+        .replace('@date', expiresDate.value)
+        .replace('@hours', String(idleHours.value)),
 )
-
-const colleagues = computed(
-  () => sandbox.value?.logins.filter((login) => !login.isCurrentUser) ?? [],
-)
-
-// The URL just copied: its button says so for two seconds.
-const copied = ref<string | null>(null)
-
-async function copy(url: string) {
-  await navigator.clipboard.writeText(url)
-  copied.value = url
-  setTimeout(() => {
-    if (copied.value === url) {
-      copied.value = null
-    }
-  }, 2000)
-}
 </script>
