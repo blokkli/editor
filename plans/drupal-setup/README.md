@@ -144,11 +144,11 @@ Milestones:
 | 07  | [Dev workflow integration](07-dev-workflow-integration.md)                                          | M1        | done        | 06                                |
 | 08  | [Sandbox routing](08-sandbox-routing.md)                                                            | M2        | done        | 05                                |
 | 09  | [Control app: claim and invitations](09-control-plane.md)                                           | M2        | done        | 08                                |
-| 09b | [Sandbox banner and sharing](09b-sandbox-banner.md)                                                 | M2        | in progress | 09; F1, F2 for the colleague      |
+| 09b | [Sandbox banner and sharing](09b-sandbox-banner.md)                                                 | M2        | done        | 09; F1, F2 for the colleague      |
 | 10  | [Access and guardrails](10-access-and-guardrails.md)                                                | M2        | done        | 08                                |
 | 11  | [Premium features](11-premium-features.md)                                                          | M2        | done        | 09                                |
 | 12  | [Hosted deploy](12-hosted-deploy.md)                                                                | M3        | todo        | 09, 10; 14b for the public launch |
-| 13  | [Editor features](13-editor-features.md) (overview)                                                 | M1        | todo        | 04, 06; 14a                       |
+| 13  | [Editor features](13-editor-features.md) (overview)                                                 | M1        | done        | 04, 06; 14a                       |
 | 13a | [Base setup skill](13a-base-setup-skill.md)                                                         | M1        | done        | 06                                |
 | 13b | [Block types](13b-block-types.md)                                                                   | M1        | done        | 14a                               |
 | 13c | [Hosts](13c-hosts.md)                                                                               | M1        | done        | 13b                               |

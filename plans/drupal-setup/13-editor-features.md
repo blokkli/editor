@@ -1,6 +1,7 @@
 # 13: Editor features
 
-- **Status:** todo (done when 13a–13i are done)
+- **Status:** done (2026-10-06): 13a–13i are done. 13j, the skill tests, has its
+  own status.
 - **Milestone:** M1 Local dev site
 - **Depends on:** 04, 06; [14a](14a-demo-concept.md) for the content model
   (done)

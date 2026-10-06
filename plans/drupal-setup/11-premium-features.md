@@ -113,5 +113,5 @@ Verification:
   `{"expires":…, "idle":null, "premium":true}`.
 - **Not run:** the E2E suite. Its agent specs call `/route` through the
   playground's token route, which uses the new format.
-- **The user, in the browser:** it works: n1 shows no agent; p1 and the dev
-  site do.
+- **The user, in the browser:** it works: n1 shows no agent; p1 and the dev site
+  do.

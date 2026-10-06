@@ -1,6 +1,6 @@
 # 09b: Sandbox banner and sharing
 
-- **Status:** in progress (2026-10-06)
+- **Status:** done (2026-10-06)
 - **Milestone:** M2 Sandboxes (local)
 - **Depends on:** 09; F1 and F2 for "Invite a colleague" (fixed)
 
@@ -23,9 +23,6 @@ bring a colleague.
 - [x] **"Invite a colleague":** links that log the other seeded users into the
       same sandbox. They show off comments, mentions, ownership and
       notifications, since all users really do share each page's edit state.
-- [ ] **The links in the editor and on phones:** the button shows with the local
-      tasks only, from lg and outside the editor (see Notes). In the editor,
-      e.g. an entry in its menu: the page can't be clicked there.
 
 ## Acceptance criteria
 
@@ -48,6 +45,7 @@ The button (2026-10-06):
   - It shows where the toolbar does: from lg, and not in the editor or a
     preview. Visitors land in the editor, so they first see it when they leave
     it.
+  - No links in the editor or on phones: dropped (the user, 2026-10-06).
   - The editor lays a canvas over the page that catches every click
     (`src/runtime/editor/components/AnimationCanvas/index.vue`), so nothing on
     the page could be used there anyway.
