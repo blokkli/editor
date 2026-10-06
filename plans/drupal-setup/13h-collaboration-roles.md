@@ -41,6 +41,10 @@ bundle.
 
 ## Notes
 
+- **Changed in [09c](09c-welcome-page.md) (the user, 2026-10-06):** the four
+  roles have `view any unpublished content` (`view_unpublished`), so they can
+  open each other's unpublished nodes.
+
 From [chunk 03](03-drupal-base-site.md) (2026-09-26):
 
 - **`paragraphs_type_permissions`:** enable it together with the roles. Every

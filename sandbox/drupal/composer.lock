@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f87dc0453554b278d296a18345775a29",
+    "content-hash": "72bffe5787fbc1f8049035f040fdcc29",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2985,6 +2985,61 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/typed_data",
                 "issues": "https://www.drupal.org/project/issues/typed_data"
+            }
+        },
+        {
+            "name": "drupal/view_unpublished",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/view_unpublished.git",
+                "reference": "8.x-1.4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/view_unpublished-8.x-1.4.zip",
+                "reference": "8.x-1.4",
+                "shasum": "135c976cf83241b6f539aac628fb9110caf8d8ba"
+            },
+            "require": {
+                "drupal/core": "^10.3 || ^11"
+            },
+            "require-dev": {
+                "twig/twig": "^3.29.0, !=3.30.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-1.4",
+                    "datestamp": "1790514602",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "entendu",
+                    "homepage": "https://www.drupal.org/user/173461"
+                },
+                {
+                    "name": "fathima.asmat",
+                    "homepage": "https://www.drupal.org/user/3622664"
+                },
+                {
+                    "name": "tobiasb",
+                    "homepage": "https://www.drupal.org/user/183956"
+                }
+            ],
+            "description": "Select which roles should be able to see unpublished nodes.",
+            "homepage": "https://www.drupal.org/project/view_unpublished",
+            "support": {
+                "source": "https://git.drupalcode.org/project/view_unpublished"
             }
         },
         {

@@ -15,7 +15,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export).
 metadata:
   author: blokkli
-  version: '1.0.1'
+  version: '1.0.2'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/configuration#drupal-permissions-reference
 ---
@@ -100,6 +100,10 @@ with blökkli (e.g. `page`, `news`).
   `blokkli-setup-comments` skill
 - `view unpublished paragraphs`, and scheduler's `view scheduled content` and
   `view scheduled paragraph` if scheduling is used
+- `view any unpublished content`, to open a colleague's unpublished node (e.g.
+  to review or translate it). Core only has `view own unpublished content`: the
+  permission comes from Content Moderation or the `view_unpublished` module.
+  Without it, the editor can't load the node.
 - `view the administration theme`: blökkli opens Drupal's forms (add, edit,
   translate)
 - the AI agent, if it's set up: `use paragraphs blokkli agent` (see the

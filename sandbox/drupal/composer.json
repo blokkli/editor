@@ -47,6 +47,7 @@
         "drupal/token": "^1.5",
         "drupal/token_or": "^2.1",
         "drupal/translatable_config_pages": "^1.0",
+        "drupal/view_unpublished": "^1.4",
         "drush/drush": "^13",
         "twig/twig": "~3.29.0"
     },

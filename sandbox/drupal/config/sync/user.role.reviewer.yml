@@ -11,6 +11,7 @@ dependencies:
     - scheduler
     - system
     - toolbar
+    - view_unpublished
 id: reviewer
 label: 'Head of department'
 weight: 4
@@ -23,6 +24,7 @@ permissions:
   - 'review paragraphs blokkli edit state'
   - 'use paragraphs blokkli agent'
   - 'view all revisions'
+  - 'view any unpublished content'
   - 'view blokkli comments'
   - 'view paragraphs blokkli edit state'
   - 'view scheduled content'

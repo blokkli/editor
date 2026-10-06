@@ -30,6 +30,7 @@ dependencies:
     - system
     - toolbar
     - translatable_config_pages
+    - view_unpublished
 id: restricted_editor
 label: 'Restricted editor'
 weight: 6
@@ -160,6 +161,7 @@ permissions:
   - 'update paragraph content video'
   - 'use paragraphs blokkli agent'
   - 'view all revisions'
+  - 'view any unpublished content'
   - 'view blokkli comments'
   - 'view own unpublished content'
   - 'view own unpublished media'

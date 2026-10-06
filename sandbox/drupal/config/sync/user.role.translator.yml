@@ -25,6 +25,7 @@ dependencies:
     - texts
     - toolbar
     - translatable_config_pages
+    - view_unpublished
 id: translator
 label: 'Translator (French)'
 weight: 5
@@ -61,6 +62,7 @@ permissions:
   - 'translate translatable_config_pages'
   - 'update content translations'
   - 'use paragraphs blokkli agent'
+  - 'view any unpublished content'
   - 'view blokkli comments'
   - 'view paragraphs blokkli edit state'
   - 'view scheduled content'

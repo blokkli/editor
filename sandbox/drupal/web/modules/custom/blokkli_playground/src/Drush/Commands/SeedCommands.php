@@ -12,6 +12,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Routing\RouteBuilderInterface;
 use Drupal\graphql\Entity\ServerInterface;
+use Drupal\node\NodeAccessRebuild;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
@@ -33,6 +34,7 @@ final class SeedCommands extends DrushCommands {
     private readonly FileSystemInterface $fileSystem,
     private readonly Connection $database,
     private readonly RouteBuilderInterface $routeBuilder,
+    private readonly NodeAccessRebuild $nodeAccessRebuild,
     #[Autowire(service: 'cache.render')]
     private readonly CacheBackendInterface $renderCache,
     #[Autowire(service: 'cache.page')]
@@ -65,6 +67,9 @@ final class SeedCommands extends DrushCommands {
       }
       throw new \RuntimeException(count($e->messages) . ' problems in the content, nothing was created.');
     }
+    // Installing view_unpublished flags node access for a rebuild. The nodes
+    // wrote their grants when they were saved; the rebuild clears the flag.
+    $this->nodeAccessRebuild->rebuild();
     $counts = array_filter($counts);
     $this->logger()->success('Seeded in ' . $options['source'] . ': ' . implode(', ', array_map(
       fn (string $type, int $count) => "$count $type",

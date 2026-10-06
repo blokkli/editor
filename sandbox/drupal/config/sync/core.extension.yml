@@ -79,6 +79,7 @@ module:
   translatable_config_pages: 0
   typed_data: 0
   user: 0
+  view_unpublished: 0
   views_ui: 0
   pathauto: 1
   content_translation: 10
