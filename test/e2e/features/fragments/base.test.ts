@@ -25,12 +25,12 @@ import {
  * (name + host + preceedingUuid) directly, and the block-count delta for the
  * outcome — never on translated copy.
  *
- * Playground facts (`/page/1`): five fragments are defined, but the `content`
- * field allows only `cta`, `shader_debug` and `top_level_link`, so the dialog
- * lists exactly those three.
+ * Playground facts (`/page/1`): six fragments are defined, but the `content`
+ * field allows only `cta`, `shader_debug`, `top_level_link` and `async_test`,
+ * so the dialog lists exactly those four.
  */
 
-const ALLOWED = ['cta', 'shader_debug', 'top_level_link']
+const ALLOWED = ['cta', 'shader_debug', 'top_level_link', 'async_test']
 
 function fragmentOption(page: Page, name: string): Locator {
   return page.locator(`[data-test-fragment-name="${name}"]`)
