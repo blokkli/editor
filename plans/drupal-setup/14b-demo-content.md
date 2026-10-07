@@ -1,6 +1,6 @@
 # 14b: Demo content
 
-- **Status:** in progress (2026-10-06)
+- **Status:** done (2026-10-07)
 - **Milestone:** M3 Hosted
 - **Depends on:** 05, 13, [14a](14a-demo-concept.md)
 
@@ -53,7 +53,8 @@ adds types.
       openly licensed photos with their sources; 15i's photo brief replaced it.
       The second brief (2026-10-06, below) covers the events and news without a
       photo of their own, and old photos for the history page.
-- [ ] More photos for the lakeside pool's gallery (below).
+- Dropped: more photos for the lakeside pool's gallery. Not needed (the user,
+  2026-10-07).
 - ~~The coat of arms as a media image.~~ Dropped: the frontend always renders
   the `Logo` (the user, 2026-09-29, 15c).
 - [x] Real photos and copy for what the mockups of 15a show as placeholders: the
@@ -220,7 +221,7 @@ its media key.
 - Three of them show a coat of arms like the `Logo`'s: a shield with six blocks.
 - **Left:**
   - **The pool's gallery:** an image AI doesn't show the same place from other
-    angles (the user).
+    angles (the user). Dropped on 2026-10-07: not needed (the user).
   - **The green waste news:** its teaser to the collection days stays without an
     image, since the news's own photo is the works yard.
 - The market and open-air cinema photos lost their events. The cinema and garden

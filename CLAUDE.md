@@ -21,6 +21,8 @@ You have SEVERAL skills available that you MUST use!!
   tests (`test/e2e/`)
 - **agent-e2e-testing** => Use when writing or debugging tests under
   `test/e2e/features/agent/` (mock-provider scripts, tool-bypass tests)
+- **sandbox** => Use when working on `sandbox/` or `.ddev/`: how the Drupal
+  site, its Nuxt app, the control app and the sandboxes are set up
 
 ## NON-NEGOTIABLE RULES (READ THIS EVERY TIME)
 
@@ -348,8 +350,9 @@ adapter methods, and configuration.
 `sandbox/` holds a Drupal 11 site (`sandbox/drupal/`) and a Nuxt app that uses
 the Drupal adapter (`sandbox/frontend/`). They run in ddev at
 https://blokkli.ddev.site. The control app (`sandbox/control/`, another Nuxt
-app) hands out sandboxes at https://blokkli-control.ddev.site. Setup and the
-full workflow: `CONTRIBUTING.md`. Design and status: `plans/drupal-setup/`.
+app) hands out sandboxes at https://blokkli-control.ddev.site. How it all works:
+the `sandbox` skill. Setup and the full workflow: `CONTRIBUTING.md`. Design and
+status: `plans/drupal-setup/`.
 
 - **Commands for this stack run in the web container:**
   `ddev exec -d /var/www/html bun run …` and `ddev drush …`. `bun run verify`

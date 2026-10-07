@@ -133,44 +133,44 @@ Milestones:
 - **M3 Hosted:** public at `*.sandbox.blokk.li` (`main`) and
   `*.dev-sandbox.blokk.li` (`dev`).
 
-| #   | Chunk                                                                                               | Milestone | Status      | Depends on                        |
-| --- | --------------------------------------------------------------------------------------------------- | --------- | ----------- | --------------------------------- |
-| 01  | [SQLite spike](01-sqlite-spike.md)                                                                  | M0        | done        | –                                 |
-| 02  | [ddev and repo layout](02-ddev-and-repo-layout.md)                                                  | M1        | done        | 01                                |
-| 03  | [Drupal base site](03-drupal-base-site.md)                                                          | M1        | done        | 02                                |
-| 04  | [Base content model](04-base-content-model.md)                                                      | M1        | done        | 03                                |
-| 05  | [Seed, bake, reset](05-seed-bake-reset.md)                                                          | M1        | done        | 13a–13i                           |
-| 06  | [playground-drupal app](06-playground-drupal-app.md)                                                | M1        | done        | 03, 04; grows with 13             |
-| 07  | [Dev workflow integration](07-dev-workflow-integration.md)                                          | M1        | done        | 06                                |
-| 08  | [Sandbox routing](08-sandbox-routing.md)                                                            | M2        | done        | 05                                |
-| 09  | [Control app: claim and invitations](09-control-plane.md)                                           | M2        | done        | 08                                |
-| 09b | [Sandbox banner and sharing](09b-sandbox-banner.md)                                                 | M2        | done        | 09; F1, F2 for the colleague      |
-| 09c | [The welcome page](09c-welcome-page.md)                                                             | M2        | done        | 09, 09b, 14b                      |
-| 10  | [Access and guardrails](10-access-and-guardrails.md)                                                | M2        | done        | 08                                |
-| 11  | [Premium features](11-premium-features.md)                                                          | M2        | done        | 09                                |
-| 12  | [Hosted deploy](12-hosted-deploy.md)                                                                | M3        | todo        | 09, 10; 14b for the public launch |
-| 13  | [Editor features](13-editor-features.md) (overview)                                                 | M1        | done        | 04, 06; 14a                       |
-| 13a | [Base setup skill](13a-base-setup-skill.md)                                                         | M1        | done        | 06                                |
-| 13b | [Block types](13b-block-types.md)                                                                   | M1        | done        | 14a                               |
-| 13c | [Hosts](13c-hosts.md)                                                                               | M1        | done        | 13b                               |
-| 13d | [Reusable content](13d-reusable-content.md)                                                         | M1        | done        | 13b, 13c                          |
-| 13e | [Publishing](13e-publishing.md)                                                                     | M1        | done        | 13c                               |
-| 13f | [Translation](13f-translation.md)                                                                   | M1        | done        | 13c                               |
-| 13g | [Search and plugins](13g-search-and-plugins.md)                                                     | M1        | done        | 13c, 13d                          |
-| 13h | [Collaboration and roles](13h-collaboration-roles.md)                                               | M1        | done        | 13b–13g, 13i                      |
-| 13i | [Agent and modules](13i-agent-and-modules.md)                                                       | M1        | done        | 13b                               |
-| 13j | [Skill tests](13j-skill-tests.md)                                                                   | M1        | todo        | 13a–13i                           |
-| 14a | [Demo concept](14a-demo-concept.md)                                                                 | M1        | done        | 04                                |
-| 14b | [Demo content](14b-demo-content.md)                                                                 | M3        | in progress | 05, 13, 14a                       |
-| 15a | [Design system](15a-design-system.md)                                                               | M1        | done        | 06, 14a                           |
-| 15b | [Apply the design](15b-apply-design.md)                                                             | M1        | done        | 15a                               |
-| 15c | [Site structure](15c-site-structure.md): menus, breadcrumbs, URLs, the sub-pages of editorial pages | M1        | done        | 15d                               |
-| 15d | [Page types](15d-page-types.md): detail and editorial pages                                         | M1        | done        | 15b                               |
-| 15e | [Events and offices](15e-events-and-offices.md): their own design, without the sidebar              | M1        | done        | 15d                               |
-| 15f | [The home page](15f-home-page.md): its own page component, a mock first                             | M1        | done        | 15c, 15d                          |
-| 15g | [The detail page's missing parts](15g-detail-page-parts.md): info boxes, steps, related topics      | M1        | done        | 15d                               |
-| 15h | [Overview pages and search](15h-overviews-and-search.md): frontend routes, filters, Search API      | M1        | done        | 15f                               |
-| 15i | [Locations and offices](15i-locations-and-offices.md): buildings as terms, the offices in them      | M1        | done        | 15e                               |
+| #   | Chunk                                                                                               | Milestone | Status | Depends on                        |
+| --- | --------------------------------------------------------------------------------------------------- | --------- | ------ | --------------------------------- |
+| 01  | [SQLite spike](01-sqlite-spike.md)                                                                  | M0        | done   | –                                 |
+| 02  | [ddev and repo layout](02-ddev-and-repo-layout.md)                                                  | M1        | done   | 01                                |
+| 03  | [Drupal base site](03-drupal-base-site.md)                                                          | M1        | done   | 02                                |
+| 04  | [Base content model](04-base-content-model.md)                                                      | M1        | done   | 03                                |
+| 05  | [Seed, bake, reset](05-seed-bake-reset.md)                                                          | M1        | done   | 13a–13i                           |
+| 06  | [playground-drupal app](06-playground-drupal-app.md)                                                | M1        | done   | 03, 04; grows with 13             |
+| 07  | [Dev workflow integration](07-dev-workflow-integration.md)                                          | M1        | done   | 06                                |
+| 08  | [Sandbox routing](08-sandbox-routing.md)                                                            | M2        | done   | 05                                |
+| 09  | [Control app: claim and invitations](09-control-plane.md)                                           | M2        | done   | 08                                |
+| 09b | [Sandbox banner and sharing](09b-sandbox-banner.md)                                                 | M2        | done   | 09; F1, F2 for the colleague      |
+| 09c | [The welcome page](09c-welcome-page.md)                                                             | M2        | done   | 09, 09b, 14b                      |
+| 10  | [Access and guardrails](10-access-and-guardrails.md)                                                | M2        | done   | 08                                |
+| 11  | [Premium features](11-premium-features.md)                                                          | M2        | done   | 09                                |
+| 12  | [Hosted deploy](12-hosted-deploy.md)                                                                | M3        | todo   | 09, 10; 14b for the public launch |
+| 13  | [Editor features](13-editor-features.md) (overview)                                                 | M1        | done   | 04, 06; 14a                       |
+| 13a | [Base setup skill](13a-base-setup-skill.md)                                                         | M1        | done   | 06                                |
+| 13b | [Block types](13b-block-types.md)                                                                   | M1        | done   | 14a                               |
+| 13c | [Hosts](13c-hosts.md)                                                                               | M1        | done   | 13b                               |
+| 13d | [Reusable content](13d-reusable-content.md)                                                         | M1        | done   | 13b, 13c                          |
+| 13e | [Publishing](13e-publishing.md)                                                                     | M1        | done   | 13c                               |
+| 13f | [Translation](13f-translation.md)                                                                   | M1        | done   | 13c                               |
+| 13g | [Search and plugins](13g-search-and-plugins.md)                                                     | M1        | done   | 13c, 13d                          |
+| 13h | [Collaboration and roles](13h-collaboration-roles.md)                                               | M1        | done   | 13b–13g, 13i                      |
+| 13i | [Agent and modules](13i-agent-and-modules.md)                                                       | M1        | done   | 13b                               |
+| 13j | [Skill tests](13j-skill-tests.md)                                                                   | M1        | todo   | 13a–13i                           |
+| 14a | [Demo concept](14a-demo-concept.md)                                                                 | M1        | done   | 04                                |
+| 14b | [Demo content](14b-demo-content.md)                                                                 | M3        | done   | 05, 13, 14a                       |
+| 15a | [Design system](15a-design-system.md)                                                               | M1        | done   | 06, 14a                           |
+| 15b | [Apply the design](15b-apply-design.md)                                                             | M1        | done   | 15a                               |
+| 15c | [Site structure](15c-site-structure.md): menus, breadcrumbs, URLs, the sub-pages of editorial pages | M1        | done   | 15d                               |
+| 15d | [Page types](15d-page-types.md): detail and editorial pages                                         | M1        | done   | 15b                               |
+| 15e | [Events and offices](15e-events-and-offices.md): their own design, without the sidebar              | M1        | done   | 15d                               |
+| 15f | [The home page](15f-home-page.md): its own page component, a mock first                             | M1        | done   | 15c, 15d                          |
+| 15g | [The detail page's missing parts](15g-detail-page-parts.md): info boxes, steps, related topics      | M1        | done   | 15d                               |
+| 15h | [Overview pages and search](15h-overviews-and-search.md): frontend routes, filters, Search API      | M1        | done   | 15f                               |
+| 15i | [Locations and offices](15i-locations-and-offices.md): buildings as terms, the offices in them      | M1        | done   | 15e                               |
 
 Statuses: `todo`, `in progress`, `done`, `dropped`.
 
