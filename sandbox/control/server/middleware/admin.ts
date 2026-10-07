@@ -1,12 +1,4 @@
 import { createHash, timingSafeEqual } from 'node:crypto'
-import {
-  createError,
-  defineEventHandler,
-  getRequestHeader,
-  getRequestURL,
-  setResponseHeader,
-} from 'h3'
-import { useRuntimeConfig } from '#imports'
 
 function digest(value: string): Buffer {
   return createHash('sha256').update(value).digest()

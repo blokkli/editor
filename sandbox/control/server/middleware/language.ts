@@ -1,11 +1,4 @@
-import {
-  defineEventHandler,
-  getRequestHeader,
-  getRequestURL,
-  sendRedirect,
-} from 'h3'
 import { isLanguage } from '../../../frontend/shared/utils/languages'
-import { DEFAULT_LANGUAGE } from '../../shared/claim'
 
 /**
  * The claim page has a path per language (/de, /fr, /en): / redirects by the

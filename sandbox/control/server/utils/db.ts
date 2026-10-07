@@ -1,6 +1,5 @@
 import { mkdirSync } from 'node:fs'
 import { DatabaseSync } from 'node:sqlite'
-import { useRuntimeConfig } from '#imports'
 
 export type SandboxRow = {
   id: string

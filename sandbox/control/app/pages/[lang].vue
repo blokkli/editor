@@ -98,17 +98,6 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  definePageMeta,
-  navigateTo,
-  ref,
-  useFetch,
-  useHead,
-  useRoute,
-  useRuntimeConfig,
-  useTemplateRef,
-} from '#imports'
 import Logo from '../../../frontend/app/components/Logo/index.vue'
 import {
   isLanguage,
@@ -116,12 +105,7 @@ import {
   LANGUAGES,
   type Language,
 } from '../../../frontend/shared/utils/languages'
-import {
-  DEFAULT_LANGUAGE,
-  isClaimError,
-  type ClaimError,
-} from '../../shared/claim'
-import { TEXTS } from '../texts'
+import type { ClaimError } from '../../shared/utils/claim'
 
 // The claim page, in each language: /de, /fr, /en (server/middleware/language.ts
 // redirects / here). The page's language is also the content's: the language
@@ -134,7 +118,7 @@ const route = useRoute()
 const language = computed<Language>(() =>
   isLanguage(route.params.lang) ? route.params.lang : DEFAULT_LANGUAGE,
 )
-const texts = computed(() => TEXTS[language.value])
+const texts = computed(() => CLAIM_TEXTS[language.value])
 const invitation = computed(() =>
   typeof route.query.invitation === 'string' ? route.query.invitation : '',
 )

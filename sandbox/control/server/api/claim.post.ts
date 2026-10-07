@@ -1,21 +1,7 @@
 import { createHmac } from 'node:crypto'
-import { createError, defineEventHandler, getRequestHeader, readBody } from 'h3'
-import { useRuntimeConfig } from '#imports'
 import { isLanguage } from '../../../frontend/shared/utils/languages'
 import { WELCOME_PATHS } from '../../../frontend/shared/utils/welcome'
-import type { ClaimError } from '../../shared/claim'
-import { clientIp } from '../utils/clientIp'
-import { getDatabase, now } from '../utils/db'
-import { drush } from '../utils/drush'
-import { createLoginToken } from '../utils/loginToken'
-import {
-  availableSources,
-  createSandboxId,
-  LIFETIME,
-  SANDBOX_USER,
-  sandboxUrl,
-} from '../utils/sandboxes'
-import { verifyTurnstile } from '../utils/turnstile'
+import type { ClaimError } from '../../shared/utils/claim'
 
 function claimError(statusCode: number, code: ClaimError) {
   return createError({ statusCode, data: { code } })

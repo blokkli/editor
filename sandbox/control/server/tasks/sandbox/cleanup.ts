@@ -1,7 +1,4 @@
-import { defineTask } from '#imports'
-import { getDatabase, now, type SandboxRow } from '../../utils/db'
-import { drush } from '../../utils/drush'
-import { expires, sandboxExists } from '../../utils/sandboxes'
+import type { SandboxRow } from '../../utils/db'
 
 /**
  * Deletes the expired sandboxes, every 5 minutes (nuxt.config.ts). Only those

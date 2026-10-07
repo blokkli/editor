@@ -1,6 +1,6 @@
 # 09c: The welcome page
 
-- **Status:** in progress (2026-10-06)
+- **Status:** done (2026-10-07)
 - **Milestone:** M2 Sandboxes (local)
 - **Depends on:** 09, 09b; 14b's content
 
@@ -75,7 +75,7 @@ link into the editor of the page where it works.
   - Installing the module flags node access for a rebuild. The seed rebuilds it
     at its end, which clears the flag.
   - The `blokkli-setup-permissions` skill (1.0.2) names the permission.
-- [ ] The browser checks (below).
+- [x] The browser checks (below): passed (the user, 2026-10-07).
 
 ## Decisions (the user, 2026-10-06)
 
@@ -110,7 +110,7 @@ link into the editor of the page where it works.
   - anonymous visitors still get nothing for its path.
 - **`bun run verify`:** every gate.
 
-**For the user in the browser:**
+**In the browser (the user, 2026-10-07), all passed:**
 
 - A claim from each claim page lands on its welcome page.
 - Each task opens the right page's editor, in the original language. The French

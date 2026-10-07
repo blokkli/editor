@@ -6,10 +6,6 @@ import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
-  imports: {
-    autoImport: false,
-  },
-
   // Blockingen's design system and fonts, from the sandbox frontend.
   css: [
     '@fontsource-variable/source-sans-3/wght.css',

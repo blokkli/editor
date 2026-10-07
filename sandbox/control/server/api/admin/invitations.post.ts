@@ -1,6 +1,4 @@
 import { randomBytes } from 'node:crypto'
-import { defineEventHandler, readBody } from 'h3'
-import { getDatabase, now } from '../../utils/db'
 
 /**
  * A new invitation: its link creates one premium sandbox.

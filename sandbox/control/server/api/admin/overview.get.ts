@@ -1,10 +1,4 @@
-import { defineEventHandler } from 'h3'
-import {
-  getDatabase,
-  type InvitationRow,
-  type SandboxRow,
-} from '../../utils/db'
-import { expires, lastUse, sandboxUrl } from '../../utils/sandboxes'
+import type { InvitationRow, SandboxRow } from '../../utils/db'
 
 /**
  * The admin page's tables: the sandboxes, newest first, and the invitations.

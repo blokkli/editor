@@ -1,5 +1,5 @@
-import type { Language } from '../../frontend/shared/utils/languages'
-import type { ClaimError } from '../shared/claim'
+import type { Language } from '../../../frontend/shared/utils/languages'
+import type { ClaimError } from '../../shared/utils/claim'
 
 type Texts = {
   site: string
@@ -15,7 +15,7 @@ type Texts = {
 }
 
 // The claim page's strings. German: formal, Swiss spelling. English: British.
-export const TEXTS: Record<Language, Texts> = {
+export const CLAIM_TEXTS: Record<Language, Texts> = {
   en: {
     site: 'Blockingen',
     title: 'Try blökkli',

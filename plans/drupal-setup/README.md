@@ -145,7 +145,7 @@ Milestones:
 | 08  | [Sandbox routing](08-sandbox-routing.md)                                                            | M2        | done        | 05                                |
 | 09  | [Control app: claim and invitations](09-control-plane.md)                                           | M2        | done        | 08                                |
 | 09b | [Sandbox banner and sharing](09b-sandbox-banner.md)                                                 | M2        | done        | 09; F1, F2 for the colleague      |
-| 09c | [The welcome page](09c-welcome-page.md)                                                             | M2        | in progress | 09, 09b, 14b                      |
+| 09c | [The welcome page](09c-welcome-page.md)                                                             | M2        | done        | 09, 09b, 14b                      |
 | 10  | [Access and guardrails](10-access-and-guardrails.md)                                                | M2        | done        | 08                                |
 | 11  | [Premium features](11-premium-features.md)                                                          | M2        | done        | 09                                |
 | 12  | [Hosted deploy](12-hosted-deploy.md)                                                                | M3        | todo        | 09, 10; 14b for the public launch |

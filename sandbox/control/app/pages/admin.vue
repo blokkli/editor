@@ -88,8 +88,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useFetch, useHead, useRequestURL } from '#imports'
-
 // The admin page: invitations and sandboxes. server/middleware/admin.ts asks
 // for the password. Fetched in the browser, so that times are in its zone.
 useHead({ title: 'Sandboxes', htmlAttrs: { lang: 'en' } })
