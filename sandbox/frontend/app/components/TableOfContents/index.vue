@@ -8,7 +8,7 @@
     <nav
       v-if="withContact(links).length > 1"
       :aria-label="label"
-      class="container-content flex flex-col"
+      class="flex flex-col"
     >
       <h2 class="border-b border-ink pb-2.5 text-label text-muted uppercase">
         {{ label }}
@@ -28,11 +28,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useEasyTexts } from '#imports'
-import { BlokkliTableOfContents } from '#components'
 import type { BlokkliTableOfContentsLink } from '#blokkli/table-of-contents'
 import type { NodePageFragment } from '#graphql-operations'
-import { anchorId } from '~/helpers/anchor'
 
 // The detail page's table of contents, in its sidebar: links to the headings
 // of the title paragraphs in its main field, nested ones included, and to the

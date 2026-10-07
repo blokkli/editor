@@ -1,4 +1,4 @@
-import type { Language } from '../../frontend/shared/languages'
+import type { Language } from '../../frontend/shared/utils/languages'
 import type { ClaimError } from '../shared/claim'
 
 type Texts = {

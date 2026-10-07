@@ -9,7 +9,6 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
 import type { ParagraphImageFragment } from '#graphql-operations'
 
 const props = defineProps<ParagraphImageFragment>()

@@ -4,7 +4,7 @@ import {
   getRequestURL,
   sendRedirect,
 } from 'h3'
-import { isLanguage } from '../../../frontend/shared/languages'
+import { isLanguage } from '../../../frontend/shared/utils/languages'
 import { DEFAULT_LANGUAGE } from '../../shared/claim'
 
 /**

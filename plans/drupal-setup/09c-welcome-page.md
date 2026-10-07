@@ -14,7 +14,7 @@ link into the editor of the page where it works.
 - [x] **The page** (`pages/welcome.vue`): `/en/welcome`, `/de/willkommen`,
       `/fr/bienvenue`.
   - Nuxt only. Its texts are in the code, in all three languages
-    (`components/Welcome/texts.ts`), not in Drupal's texts.
+    (`utils/welcomeTexts.ts`), not in Drupal's texts.
   - In the site's layout (`drupal`): the toolbar with the Sandbox button, the
     header and the footer. Drupal doesn't know its paths, so the header has no
     language switch there.
@@ -51,7 +51,7 @@ link into the editor of the page where it works.
     original.
   - The thread opens with `blokkliComment` (its UUID, also derived).
 - [x] **The claim:** the login URL gets `?destination=` with the welcome page's
-      path in the content's language (`shared/welcome.ts`), which core's
+      path in the content's language (`shared/utils/welcome.ts`), which core's
       RedirectResponseSubscriber follows. The sandbox's own link and the
       colleagues' still open the editor.
 - [x] **The popup** stays closed until it's clicked. It links to the welcome

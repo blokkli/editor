@@ -20,15 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  useAsyncGraphqlQuery,
-  useEasyTexts,
-  useRoute,
-} from '#imports'
 import type { NodeTeaserFragment } from '#graphql-operations'
-import NodeTeaser from '~/components/NodeTeaser/index.vue'
-import Pagination from '~/components/Pagination/index.vue'
 
 // The search page's results (pages/search.vue): the number of them, a page of
 // rows and the pages. The text and the page are the URL's query

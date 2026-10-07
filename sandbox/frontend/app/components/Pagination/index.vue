@@ -55,8 +55,6 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
-import { NuxtLink, SpriteSymbol } from '#components'
 import type { RouteLocationRaw } from 'vue-router'
 
 // The pages of a list, as links (the parent builds them, e.g. with ?page=).

@@ -1,5 +1,5 @@
 <template>
-  <div :class="[spacing, { 'container-wide': !parentType }]">
+  <div :class="[spacing, { 'container-wide': hasContainer }]">
     <div
       class="grid gap-x-grid gap-y-6 bg-surface p-6 md:p-10 lg:grid-cols-12 lg:items-center"
     >
@@ -46,10 +46,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineBlokkli, useBlokkliHelper } from '#imports'
-import { BlokkliField } from '#components'
 import type { ParagraphCallToActionFragment } from '#graphql-operations'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 // A box with a tagline, a title, a text and up to four links. One link is a
 // button next to the text, several are a list (Link/InList.vue).
@@ -71,8 +68,9 @@ const block = defineBlokkli({
     editTitle: (el) => el.querySelector('h2')?.textContent,
   },
 })
-const { uuid, parentType, siblings } = block
+const { uuid, siblings } = block
 const spacing = useBlockSpacing(block)
+const hasContainer = useHasContainer(block)
 
 const isEditing = import.meta.blokkliEditing
 

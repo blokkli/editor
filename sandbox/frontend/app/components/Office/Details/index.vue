@@ -39,7 +39,6 @@
 
 <script lang="ts" setup>
 import type { OfficeDetailsFragment } from '#graphql-operations'
-import OfficeHours from '~/components/Office/Hours/index.vue'
 
 // Callers spread an office into it: its other fields (e.g. title) aren't
 // attributes of the list.

@@ -1,6 +1,3 @@
-import { defineNuxtPlugin, useGraphqlState, useRequestHeaders } from '#imports'
-import { FORWARDED_HEADERS, pickForwardedHeaders } from '#shared/request'
-
 /**
  * During SSR, queries go from the app to the GraphQL proxy without the
  * browser's headers. Pass them on, so that Drupal sees the right host.

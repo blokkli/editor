@@ -3,7 +3,7 @@
     :class="[
       spacing,
       {
-        'container-content': !parentType && fieldListType === 'default',
+        'container-content': hasContainer,
         hidden: !items.length && !isEditing,
       },
     ]"
@@ -21,11 +21,6 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineBlokkliFragment, useAsyncGraphqlQuery } from '#imports'
-import LinkList from '~/components/LinkList/index.vue'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
-import { useLanguage } from '~/composables/useLanguage'
-
 // The detail pages the office is responsible for (their field_office), by
 // title. Only on an office, usually after a title block.
 // Before the await: the editor needs the definition during setup.
@@ -38,8 +33,9 @@ const block = defineBlokkliFragment({
     previewWidth: 800,
   },
 })
-const { parentType, fieldListType, provider } = block
+const { provider } = block
 const spacing = useBlockSpacing(block)
+const hasContainer = useHasContainer(block)
 
 const language = useLanguage()
 

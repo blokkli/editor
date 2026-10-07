@@ -45,10 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useTemplateRef } from '#imports'
-import { SpriteSymbol } from '#components'
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
-import MediaImage from '~/components/Media/Image/index.vue'
 
 // The slides are rendered directly, not as blocks: in proxy mode, the editor
 // shows the image blocks in its own list (Image/proxy.vue).

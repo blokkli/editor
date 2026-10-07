@@ -1,6 +1,4 @@
 import { defineEasyTextsLoader } from 'nuxt-easy-texts/loader'
-import { useGraphqlQuery } from '#imports'
-import { useLanguage } from '~/composables/useLanguage'
 
 /**
  * Loads the UI strings from Drupal's texts module, in the page's language.

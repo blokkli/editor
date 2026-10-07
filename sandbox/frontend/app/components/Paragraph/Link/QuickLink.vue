@@ -5,10 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineBlokkli } from '#imports'
 import type { ParagraphLinkFragment } from '#graphql-operations'
-import QuickLinksItem from '~/components/QuickLinks/Item.vue'
-import { linkTarget } from './target'
 
 // A frequently searched link (the site config page's quick links), edited on
 // the config page. The home page renders them without blökkli.

@@ -59,21 +59,13 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  definePageMeta,
-  useAsyncGraphqlQuery,
-  useHead,
-} from '#imports'
-import { ArrowLink, SiteLink, WelcomeSandbox, WelcomeTask } from '#components'
 import type { WelcomeQuery } from '#graphql-operations'
-import { TEXTS, type WelcomeTask as Task } from '~/components/Welcome/texts'
-import { useLanguage } from '~/composables/useLanguage'
+import type { WelcomeTask as Task } from '~/utils/welcomeTexts'
 
 // Where the control app sends a new sandbox's visitor: what to try, each with
 // a link into the editor of the page where it works. About blökkli, not the
 // town, so the texts are in the code. Drupal doesn't know the path, so the
-// header has no language switch here. The paths are shared/welcome.ts's.
+// header has no language switch here. The paths are shared/utils/welcome.ts's.
 definePageMeta({
   name: 'welcome',
   path: '/welcome',
@@ -82,7 +74,7 @@ definePageMeta({
 })
 
 const language = useLanguage()
-const texts = computed(() => TEXTS[language.value])
+const texts = computed(() => WELCOME_TEXTS[language.value])
 
 useHead(() => ({
   title: texts.value.title,

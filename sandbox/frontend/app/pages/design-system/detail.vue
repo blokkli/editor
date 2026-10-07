@@ -208,16 +208,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useHead } from '#imports'
-import {
-  Breadcrumb,
-  Callout,
-  DesignSystemMockup,
-  LinkList,
-  SpriteSymbol,
-  Tile,
-} from '#components'
-
 // A mockup of a service page, to iterate on the design (see index.vue).
 useHead({ title: 'Baugesuch einreichen – Mockup' })
 

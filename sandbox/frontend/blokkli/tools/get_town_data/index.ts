@@ -4,7 +4,7 @@ import type {
   ChartDataSource,
   ChartDataSourcePayload,
 } from '#blokkli/charts/types'
-import { RATES, WATER_PER_PERSON } from '~/components/FeeCalculator/rates'
+import { RATES, WATER_PER_PERSON } from '~/utils/feeRates'
 
 export const paramsSchema = z.object({
   topic: z

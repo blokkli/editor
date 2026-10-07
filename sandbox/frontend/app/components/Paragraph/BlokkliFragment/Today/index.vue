@@ -29,17 +29,6 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  defineBlokkliFragment,
-  useAsyncGraphqlQuery,
-  useEasyTexts,
-} from '#imports'
-import { SiteLink } from '#components'
-import { LOCALES } from '#shared/languages'
-import { useLanguage } from '~/composables/useLanguage'
-import { hoursOfDay, weekdayName } from '~/helpers/officeHours'
-
 // What's on today, for the home page only: whether the site config page's
 // office is open today, the next household waste collection, and the config
 // page's event (e.g. the next assembly).

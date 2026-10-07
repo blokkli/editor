@@ -1,5 +1,3 @@
-import { defineEventHandler, getRequestHeader } from 'h3'
-
 /**
  * Render on the server only for anonymous users, and only locally.
  *

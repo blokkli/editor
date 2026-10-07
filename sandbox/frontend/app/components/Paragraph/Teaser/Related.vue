@@ -13,10 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineBlokkli } from '#imports'
 import type { ParagraphTeaserFragment } from '#graphql-operations'
-import NodeTeaser from '~/components/NodeTeaser/index.vue'
-import { teaserTarget } from './target'
 
 // A related topic at the end of a detail page: the title as a link and the
 // lead below it, without the image.

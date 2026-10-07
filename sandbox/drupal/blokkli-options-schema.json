@@ -42,7 +42,7 @@
       },
       "options": {
         "error": {
-          "hex": "#f3e4ec",
+          "class": "bg-error-mid",
           "label": {
             "de": "Rot",
             "en": "Red",
@@ -50,7 +50,7 @@
           }
         },
         "info": {
-          "hex": "#e6eef6",
+          "class": "bg-info-mid",
           "label": {
             "de": "Blau",
             "en": "Blue",
@@ -58,7 +58,7 @@
           }
         },
         "success": {
-          "hex": "#e5f0e8",
+          "class": "bg-success-mid",
           "label": {
             "de": "Grün",
             "en": "Green",
@@ -66,7 +66,7 @@
           }
         },
         "warning": {
-          "hex": "#fbf1dc",
+          "class": "bg-warning-mid",
           "label": {
             "de": "Gelb",
             "en": "Yellow",
@@ -524,7 +524,7 @@
       },
       "options": {
         "lake": {
-          "hex": "#e6eef6",
+          "class": "bg-info-mid",
           "label": {
             "de": "See",
             "en": "Lake",
@@ -532,7 +532,7 @@
           }
         },
         "none": {
-          "hex": "#ffffff",
+          "class": "bg-white",
           "label": {
             "de": "Keiner",
             "en": "None",
@@ -540,7 +540,7 @@
           }
         },
         "stone": {
-          "hex": "#f5f2ee",
+          "class": "bg-surface-mid",
           "label": {
             "de": "Stein",
             "en": "Stone",
@@ -788,7 +788,7 @@
       },
       "options": {
         "error": {
-          "hex": "#f3e4ec",
+          "class": "bg-error-mid",
           "label": {
             "de": "Rot",
             "en": "Red",
@@ -796,7 +796,7 @@
           }
         },
         "info": {
-          "hex": "#e6eef6",
+          "class": "bg-info-mid",
           "label": {
             "de": "Blau",
             "en": "Blue",
@@ -804,7 +804,7 @@
           }
         },
         "none": {
-          "hex": "#ffffff",
+          "class": "bg-white",
           "label": {
             "de": "Keine",
             "en": "None",
@@ -812,7 +812,7 @@
           }
         },
         "success": {
-          "hex": "#e5f0e8",
+          "class": "bg-success-mid",
           "label": {
             "de": "Grün",
             "en": "Green",
@@ -820,7 +820,7 @@
           }
         },
         "warning": {
-          "hex": "#fbf1dc",
+          "class": "bg-warning-mid",
           "label": {
             "de": "Gelb",
             "en": "Yellow",

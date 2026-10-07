@@ -10,10 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useEasyTexts } from '#imports'
 import type { OfficeDetailsFragment } from '#graphql-operations'
-import { useLanguage } from '~/composables/useLanguage'
-import { hoursOfDay, weekdayName } from '~/helpers/officeHours'
 
 // An office's opening hours, one row per day of the week.
 const props = defineProps<{

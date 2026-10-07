@@ -16,7 +16,6 @@
 </template>
 
 <script lang="ts" setup>
-import { BlokkliField, BlokkliProvider, PageFooter } from '#components'
 import type { ConfigPageFooterFragment } from '#graphql-operations'
 
 // The site's footer, with its blocks as the columns. Editing happens on the

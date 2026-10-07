@@ -4,16 +4,14 @@
     class="rich-text overflow-x-auto"
     :class="[
       spacing,
-      { 'container-content': !parentType, 'is-striped': options.striped },
+      { 'container-content': hasContainer, 'is-striped': options.striped },
     ]"
     v-html="table"
   />
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkli } from '#imports'
 import type { ParagraphTableFragment } from '#graphql-operations'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 defineProps<ParagraphTableFragment>()
 
@@ -39,6 +37,7 @@ const block = defineBlokkli({
     editTitle: (el) => el.querySelector('caption, th, td')?.textContent,
   },
 })
-const { options, parentType } = block
+const { options } = block
 const spacing = useBlockSpacing(block)
+const hasContainer = useHasContainer(block)
 </script>

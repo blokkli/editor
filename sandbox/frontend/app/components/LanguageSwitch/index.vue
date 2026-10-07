@@ -27,11 +27,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
-import { SiteLink } from '#components'
 import type { LanguageSwitchLinkFragment } from '#graphql-operations'
-import { useLanguage } from '~/composables/useLanguage'
-import { LANGUAGES } from '#shared/languages'
 
 // The colour is inherited: the switch sits on light and dark grounds.
 //

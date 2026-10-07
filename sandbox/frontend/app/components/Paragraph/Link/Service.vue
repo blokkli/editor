@@ -11,10 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineBlokkli } from '#imports'
-import { SiteLink } from '#components'
 import type { ParagraphLinkFragment } from '#graphql-operations'
-import { linkTarget } from './target'
 
 // One of the header's service links (the site config page's).
 const props = defineProps<ParagraphLinkFragment>()

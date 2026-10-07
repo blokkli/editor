@@ -13,8 +13,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ArrowLink } from '#components'
-
 // A task on the welcome page: what to try, and a link into the editor where
 // it works. With a label and no link, a teaser (the agent outside premium
 // sandboxes).

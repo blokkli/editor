@@ -1,7 +1,11 @@
 <template>
   <div
     class="grid gap-x-grid gap-y-flow"
-    :class="[spacing, RATIOS[options.ratio], { 'container-wide': !parentType }]"
+    :class="[
+      spacing,
+      RATIOS[options.ratio],
+      { 'container-wide': hasContainer },
+    ]"
   >
     <BlokkliField name="field_left" :list="left" edit-class="min-h-16" />
     <BlokkliField name="field_right" :list="right" edit-class="min-h-16" />
@@ -9,9 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkli } from '#imports'
 import type { ParagraphColumnsFragment } from '#graphql-operations'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 defineProps<ParagraphColumnsFragment>()
 
@@ -48,6 +50,7 @@ const block = defineBlokkli({
     fieldLayout: [['field_left', 'field_right']],
   },
 })
-const { options, parentType } = block
+const { options } = block
 const spacing = useBlockSpacing(block)
+const hasContainer = useHasContainer(block)
 </script>

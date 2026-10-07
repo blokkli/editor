@@ -8,7 +8,6 @@
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkli } from '#imports'
 import type { ParagraphTitleFragment } from '#graphql-operations'
 
 // A heading in the sidebar, styled like its other headings. The negative

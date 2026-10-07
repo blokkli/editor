@@ -35,12 +35,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineBlokkli } from '#imports'
-import { SpriteSymbol } from '#components'
 import type { ParagraphVideoFragment } from '#graphql-operations'
-import { WIDTH_CLASSES } from '~/helpers/width'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
-import { useBlockWidth } from '~/composables/useBlockWidth'
 
 const props = defineProps<ParagraphVideoFragment>()
 

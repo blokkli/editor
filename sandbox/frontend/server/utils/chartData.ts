@@ -1,4 +1,4 @@
-import type { Language } from '#shared/languages'
+import type { Language } from '#shared/utils/languages'
 
 type Localized = Record<Language, string>
 

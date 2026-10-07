@@ -48,17 +48,10 @@
 </template>
 
 <script lang="ts" setup>
-import { BlokkliField, BlokkliProvider } from '#components'
 import type {
   BreadcrumbFragment,
   NodeOfficeFragment,
 } from '#graphql-operations'
-import Facts from '~/components/Facts/index.vue'
-import FactsItem from '~/components/Facts/Item/index.vue'
-import HostHeader from '~/components/Host/Header/index.vue'
-import HostLayout from '~/components/Host/Layout/index.vue'
-import OfficeDetails from '~/components/Office/Details/index.vue'
-import OfficeHours from '~/components/Office/Hours/index.vue'
 
 // An office: its address, contact and opening hours are the facts after the
 // header. The address and the header's photo are its location's, a building

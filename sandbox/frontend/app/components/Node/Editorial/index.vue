@@ -34,16 +34,11 @@
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkliProvider } from '#imports'
-import { BlokkliField, BlokkliProvider } from '#components'
 import type {
   BreadcrumbFragment,
   NodeEditorialFragment,
 } from '#graphql-operations'
-import HostHeader from '~/components/Host/Header/index.vue'
-import HostLayout from '~/components/Host/Layout/index.vue'
-import SubPages from '~/components/SubPages/index.vue'
-import type { SubPage } from '~/helpers/menu'
+import type { SubPage } from '~/utils/menu'
 
 // The editorial page: the home page, overview pages and landing pages. A hero
 // image and a free layout, no sidebar. An overview page lists its sub-pages

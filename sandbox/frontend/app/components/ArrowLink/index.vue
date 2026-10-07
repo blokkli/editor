@@ -9,8 +9,6 @@
 </template>
 
 <script lang="ts" setup>
-import { SiteLink, SpriteSymbol } from '#components'
-
 // A link with an arrow after its text, e.g. to all news above a list.
 defineProps<{
   to?: string | null

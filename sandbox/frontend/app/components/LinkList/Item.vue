@@ -21,9 +21,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useTemplateRef } from '#imports'
-import { SiteLink, SpriteSymbol } from '#components'
-
 // A row of a link list: the label, a download's meta text (e.g. "PDF, 240
 // kB"), and an icon at the end: a download's or a link's arrow. The label can
 // be a slot, e.g. to make it editable.

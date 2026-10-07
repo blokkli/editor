@@ -52,16 +52,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useHead } from '#imports'
-import {
-  Breadcrumb,
-  DesignSystemMockup,
-  FilterChips,
-  Pagination,
-  SpriteSymbol,
-  Tile,
-} from '#components'
-
 // A mockup of an overview page: the upcoming events, filtered by category,
 // with pages (15h).
 useHead({ title: 'Veranstaltungen – Mockup' })

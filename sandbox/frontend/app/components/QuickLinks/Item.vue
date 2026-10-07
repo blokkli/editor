@@ -11,8 +11,6 @@
 </template>
 
 <script lang="ts" setup>
-import { SiteLink } from '#components'
-
 // A frequently searched link. The label can be a slot, e.g. to make it
 // editable.
 defineProps<{

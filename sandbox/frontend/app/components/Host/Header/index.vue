@@ -1,8 +1,11 @@
 <template>
   <header>
     <div
-      class="band container-content flex flex-col gap-4 py-8 lg:pt-10"
-      :class="hasImage ? 'lg:pb-10' : 'lg:pb-12'"
+      class="band flex flex-col gap-4 py-8 lg:pt-10"
+      :class="[
+        hasImage ? 'lg:pb-10' : 'lg:pb-12',
+        { 'container-content': !contained },
+      ]"
     >
       <Breadcrumb
         v-if="breadcrumbItems.length > 1"
@@ -38,7 +41,7 @@
       <div
         class="absolute inset-x-[-100vmax] top-0 bottom-1/2 -z-10 bg-surface"
       />
-      <div class="container-wide">
+      <div :class="{ 'container-wide': !contained }">
         <div
           v-blokkli-droppable:[imageField]
           class="aspect-[3/2] overflow-hidden bg-line lg:aspect-[5/2]"
@@ -56,13 +59,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
 import type {
   BreadcrumbFragment,
   MediaImageFragment,
 } from '#graphql-operations'
-import Breadcrumb from '~/components/Breadcrumb/index.vue'
-import MediaImage from '~/components/Media/Image/index.vue'
 
 // A host's title and lead on the beige band, below the breadcrumb. The eyebrow
 // above the title says what the page is (e.g. "News"), the meta below the lead
@@ -86,6 +86,9 @@ const props = defineProps<{
   // Drupal's, from the main menu: it ends with the current page, without a
   // link.
   breadcrumb?: BreadcrumbFragment[]
+  // The host is the container, e.g. the detail page's sidebar layout: none of
+  // its own.
+  contained?: boolean
 }>()
 
 const breadcrumbItems = computed(() =>

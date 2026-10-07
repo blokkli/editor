@@ -3,17 +3,14 @@
     :id="anchorId(title)"
     v-blokkli-editable:field_title
     class="font-serif text-h2"
-    :class="[spacing, { 'container-content': !parentType }]"
+    :class="[spacing, { 'container-content': hasContainer }]"
   >
     {{ title }}
   </h2>
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkli } from '#imports'
 import type { ParagraphTitleFragment } from '#graphql-operations'
-import { anchorId } from '~/helpers/anchor'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 defineProps<ParagraphTitleFragment>()
 
@@ -26,6 +23,6 @@ const block = defineBlokkli({
     editTitle: (el) => el.textContent,
   },
 })
-const { parentType } = block
 const spacing = useBlockSpacing(block)
+const hasContainer = useHasContainer(block)
 </script>

@@ -6,9 +6,6 @@
 </template>
 
 <script lang="ts" setup>
-import { NuxtLink } from '#components'
-import { isDrupalPath } from '~/helpers/drupalPath'
-
 // A link the router follows when it's one of the site's pages. Other sites
 // (NuxtLink detects them), files and Drupal's own pages (e.g. a node's edit
 // form) load the whole page. Modifier keys and middle clicks work as usual.

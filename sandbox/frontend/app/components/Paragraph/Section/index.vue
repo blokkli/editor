@@ -30,10 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkli } from '#imports'
 import type { ParagraphSectionFragment } from '#graphql-operations'
-import { anchorId } from '~/helpers/anchor'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 defineProps<ParagraphSectionFragment>()
 

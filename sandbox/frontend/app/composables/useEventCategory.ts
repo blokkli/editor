@@ -1,5 +1,3 @@
-import { useEasyTexts } from '#imports'
-
 // The allowed values of field_category, e.g. for the overview's filters.
 export const EVENT_CATEGORIES = [
   'culture',

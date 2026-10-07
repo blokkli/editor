@@ -1,4 +1,4 @@
-import type { Language } from '#shared/languages'
+import type { Language } from '#shared/utils/languages'
 
 export type WelcomeTask =
   | 'analyze'
@@ -35,7 +35,7 @@ type Texts = {
 // The welcome page's strings: about blökkli, not the town, so they aren't in
 // Drupal's texts. German: formal, Swiss spelling. English: British. Labels of
 // the editor in quotes are its own.
-export const TEXTS: Record<Language, Texts> = {
+export const WELCOME_TEXTS: Record<Language, Texts> = {
   en: {
     title: 'Your sandbox is ready',
     intro:

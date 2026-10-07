@@ -47,15 +47,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useHead } from '#imports'
-import {
-  Breadcrumb,
-  DesignSystemMockup,
-  Pagination,
-  SearchField,
-  SpriteSymbol,
-} from '#components'
-
 // A mockup of the search page's results: the type above each title, then the
 // date or the lead (15h).
 useHead({ title: 'Suche – Mockup' })

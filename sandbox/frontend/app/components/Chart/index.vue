@@ -43,14 +43,6 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  provide,
-  ref,
-  useTemplateRef,
-} from '#imports'
 import { use } from 'echarts/core'
 import { SVGRenderer } from 'echarts/renderers'
 import { AriaComponent } from 'echarts/components'
@@ -60,8 +52,6 @@ import type {
   BlokkliChartData,
   ChartDataSourcePayload,
 } from '#blokkli/charts/types'
-import { useLanguage } from '~/composables/useLanguage'
-import { createChartTransform } from './transform'
 
 // A chart of the charts module, as a figure in the site's style: the title
 // as its caption, the chart styled by createChartTransform(). Charts render as SVG:

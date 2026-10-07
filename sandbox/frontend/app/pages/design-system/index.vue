@@ -139,7 +139,8 @@
           <div id="chart-colours" class="flex flex-col gap-3">
             <h3 class="text-h3">Charts</h3>
             <p class="max-w-content">
-              Only for charts (<code>shared/chartColors.ts</code>, blökkli's
+              Only for charts (<code>shared/utils/chartColors.ts</code>,
+              blökkli's
               <code>colorOptions</code>): a family per colour above, its 600.
               Editors pick any shade; new charts use the outlined main shades,
               in this order.
@@ -263,17 +264,18 @@
           <p class="max-w-content">
             Two page types. The <strong>detail page</strong>, the last page in
             its branch of the menu, always has the sidebar layout of the detail
-            mockup (<code>Host/Layout</code>) from lg: the header in columns
-            1–8, the sidebar as a white panel cutting into the header in columns
-            9–12, the blocks below the header. Inside, every container means the
-            column. It has no hero image; its responsible office fills the
-            header's meta and the contact fragment in the sidebar. The
-            <strong>editorial page</strong> (the home page, overview pages,
-            landing pages) has a hero image and no sidebar. So do events and
-            offices: their key facts (<code>Facts</code>, the editorial mockup's
-            row under a primary rule) follow the header. An event's date, time
-            and place are large; an office has its address, contact and opening
-            hours.
+            mockup (<code>Node/Page</code>) from lg: the header in columns 1–8,
+            the sidebar as a white panel cutting into the header in columns
+            9–12, the blocks below the header. The page is the container: its
+            blocks have none of their own, as nested blocks
+            (<code>useHasContainer</code>). It has no hero image; its
+            responsible office fills the header's meta and the contact fragment
+            in the sidebar. The <strong>editorial page</strong> (the home page,
+            overview pages, landing pages) has a hero image and no sidebar. So
+            do events and offices: their key facts (<code>Facts</code>, the
+            editorial mockup's row under a primary rule) follow the header. An
+            event's date, time and place are large; an office has its address,
+            contact and opening hours.
           </p>
           <p class="max-w-content">
             Both are in Drupal's main menu. The header shows its first level;
@@ -519,7 +521,7 @@
             <a href="#chart-colours" class="text-primary underline"
               >chart colours</a
             >. Type, axes, legend and tooltip come from
-            <code>components/Chart/transform.ts</code>.
+            <code>utils/chartTransform.ts</code>.
           </p>
           <div class="grid gap-x-grid gap-y-10 md:grid-cols-2">
             <Chart
@@ -553,27 +555,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useHead } from '#imports'
-import {
-  ArrowLink,
-  Breadcrumb,
-  Callout,
-  FilterChips,
-  LanguageSwitch,
-  LinkList,
-  Logo,
-  Pagination,
-  SearchField,
-  SpriteSymbol,
-  Tile,
-} from '#components'
 import { allSymbolNames } from '#nuxt-svg-icon-sprite/runtime'
 import type { LanguageSwitchLinkFragment } from '#graphql-operations'
 import type { BlokkliChartData } from '#blokkli/charts/types'
-import Chart from '~/components/Chart/index.vue'
-import { useLanguage } from '~/composables/useLanguage'
-import { CHART_COLORS } from '#shared/chartColors'
-import { LANGUAGES } from '#shared/languages'
 
 // The design system of the demo: the tokens from main.css and the shared
 // components, next to the two mockups it's iterated on with.

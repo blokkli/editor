@@ -7,14 +7,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineBlokkli } from '#imports'
 import { BlokkliIframe } from '#blokkli/iframes/components'
 import type { ParagraphEmbedFragment } from '#graphql-operations'
-import { useLanguage } from '~/composables/useLanguage'
-import { getLanguageFromPath } from '#shared/languages'
-import { WIDTH_CLASSES } from '~/helpers/width'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
-import { useBlockWidth } from '~/composables/useBlockWidth'
 
 const props = defineProps<ParagraphEmbedFragment>()
 

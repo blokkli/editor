@@ -4,7 +4,7 @@
       ref="blokkliDraggable"
       class="-mt-4 pt-4"
       :class="{
-        'container-content': !parentType && fieldListType === 'default',
+        'container-content': hasContainer,
       }"
     >
       <BlokkliField
@@ -19,10 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkli } from '#imports'
-import { BlokkliField } from '#components'
 import type { ParagraphLinkListFragment } from '#graphql-operations'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 // Links and documents, one per row (Link/InList.vue). A heading is a title
 // block before the list.
@@ -46,6 +43,6 @@ const block = defineBlokkli({
     editTitle: (el) => el.querySelector('li a > span')?.textContent,
   },
 })
-const { parentType, fieldListType } = block
 const spacing = useBlockSpacing(block)
+const hasContainer = useHasContainer(block)
 </script>

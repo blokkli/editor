@@ -1,7 +1,3 @@
-import { createError, defineEventHandler, getQuery, getRouterParam } from 'h3'
-import { DEFAULT_LANGUAGE, isLanguage } from '#shared/languages'
-import { CHART_DATA, localize } from '../../chartData'
-
 /**
  * A chart data source's data in a language: for the editor's preview
  * (getChartDataSourceData) and the chart paragraph.

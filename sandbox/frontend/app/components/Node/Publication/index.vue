@@ -30,14 +30,10 @@
 </template>
 
 <script lang="ts" setup>
-import { BlokkliField, BlokkliProvider } from '#components'
 import type {
   BreadcrumbFragment,
   NodePublicationFragment,
 } from '#graphql-operations'
-import HostHeader from '~/components/Host/Header/index.vue'
-import HostLayout from '~/components/Host/Layout/index.vue'
-import { usePublicationType } from '~/composables/usePublicationType'
 
 // An official publication: its type above the title, its period below. The
 // details (e.g. the documents) are blocks.

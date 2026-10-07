@@ -13,15 +13,6 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  createError,
-  definePageMeta,
-  useAsyncGraphqlQuery,
-  useRoute,
-} from '#imports'
-import { HomeHero, NodeEditorial } from '#components'
-
 // The front page: Drupal's front page (an editorial page) with a header of its
 // own, with the search. Only its blocks can hold the fragments "today" and
 // "quick_links". Every other path is [...slug].vue.

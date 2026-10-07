@@ -6,8 +6,16 @@ description: Rules when creating or editing Vue components
 
 ## General
 
-- There are NO auto-imports, so all composables **MUST** be imported from
-  `#imports`
+- **blökkli itself (`src/`) and the control app (`sandbox/control/`):** there
+  are NO auto-imports, so all composables **MUST** be imported from `#imports`.
+  A module can't rely on them: the apps that use it may turn them off.
+- **The sandbox frontend (`sandbox/frontend/`) uses Nuxt's auto-imports.** Don't
+  import what Nuxt imports: Vue's and Nuxt's APIs, the modules' composables,
+  components, `app/composables/`, `app/utils/`, `shared/utils/` and, on the
+  server, h3 and `server/utils/`. Types, npm packages and blökkli's internal
+  aliases (`#blokkli/...`) are still imported. Helpers go into `app/utils/`, not
+  next to a component: Nuxt registers every file in `app/components/` as a
+  component.
 - **ALWAYS** use `useTemplateRef` when referencing elements or components from
   `<template>`!!
 - Prefer passing primitives as props for components that deal with exactly one
@@ -20,7 +28,7 @@ description: Rules when creating or editing Vue components
 
 - Generally: Components should always be `index.vue` in a folder, e.g.
   `MyComponent/index.vue` instead of `MyComponent.vue`.
-- Component can and should be nested. Because there are no auto-imports, the
+- Component can and should be nested. Without auto-imports (see above), the
   components need to be imported as needed.
 
 ## Using watchers

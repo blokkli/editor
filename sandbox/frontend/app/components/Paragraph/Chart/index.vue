@@ -8,16 +8,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineBlokkli, useLazyAsyncData } from '#imports'
 import type {
   BlokkliChartData,
   ChartDataSourcePayload,
 } from '#blokkli/charts/types'
-import Chart from '~/components/Chart/index.vue'
-import { useLanguage } from '~/composables/useLanguage'
-import { WIDTH_CLASSES } from '~/helpers/width'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
-import { useBlockWidth } from '~/composables/useBlockWidth'
 
 // A chart of the charts module. The paragraph has no fields: the chart,
 // including its title and translations, is a block option.

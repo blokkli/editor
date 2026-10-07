@@ -30,9 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useHead, useRoute } from '#imports'
 import type { NuxtError } from '#app'
-import { useLanguage } from '~/composables/useLanguage'
 
 defineProps<{
   error: NuxtError

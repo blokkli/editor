@@ -55,19 +55,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useRouter } from '#imports'
-import {
-  BlokkliField,
-  BlokkliProvider,
-  PageHeader,
-  QuickLinks,
-} from '#components'
 import type {
   ConfigPageSiteFragment,
   LanguageSwitchLinkFragment,
 } from '#graphql-operations'
-import { plainLinks } from '~/components/Paragraph/Link/target'
-import { useLanguage } from '~/composables/useLanguage'
 
 // The site's header, with the notice's banners at the top. Editing happens on
 // the config page's own route, where Drupal's links (e.g. the language switch)

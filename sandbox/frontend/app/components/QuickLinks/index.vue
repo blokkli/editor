@@ -16,8 +16,6 @@
 </template>
 
 <script lang="ts" setup>
-import QuickLinksItem from './Item.vue'
-
 // The frequently searched links of the site config page, in four columns. The
 // config page puts its paragraphs field in the slot.
 defineProps<{

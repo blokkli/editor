@@ -4,7 +4,7 @@
     :class="[
       spacing,
       {
-        'container-content': !parentType && fieldListType === 'default',
+        'container-content': hasContainer,
         hidden: !office && !isEditing,
       },
     ]"
@@ -49,12 +49,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineBlokkli } from '#imports'
-import { SiteLink } from '#components'
 import type { ParagraphContactFragment } from '#graphql-operations'
-import OfficeContact from '~/components/Office/Contact/index.vue'
-import OfficeDetails from '~/components/Office/Details/index.vue'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 defineProps<ParagraphContactFragment>()
 
@@ -77,8 +72,9 @@ const block = defineBlokkli({
     editTitle: (el) => el.querySelector('a')?.textContent,
   },
 })
-const { options, parentType, fieldListType } = block
+const { options, fieldListType } = block
 const spacing = useBlockSpacing(block)
+const hasContainer = useHasContainer(block)
 
 const compact = computed(() => options.value.display === 'compact')
 

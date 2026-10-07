@@ -115,7 +115,7 @@ import {
   LANGUAGE_NAMES,
   LANGUAGES,
   type Language,
-} from '../../../frontend/shared/languages'
+} from '../../../frontend/shared/utils/languages'
 import {
   DEFAULT_LANGUAGE,
   isClaimError,

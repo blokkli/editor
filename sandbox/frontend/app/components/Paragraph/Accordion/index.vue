@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="[continued ? '' : spacing, { 'container-content': !parentType }]"
+    :class="[continued ? '' : spacing, { 'container-content': hasContainer }]"
   >
     <div
       :class="
@@ -44,10 +44,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineBlokkli, ref } from '#imports'
-import { SpriteSymbol } from '#components'
 import type { ParagraphAccordionFragment } from '#graphql-operations'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 defineProps<ParagraphAccordionFragment>()
 
@@ -68,8 +65,8 @@ const block = defineBlokkli({
     editTitle: (el) => el.querySelector('h3')?.textContent,
   },
 })
-const { parentType } = block
 const spacing = useBlockSpacing(block)
+const hasContainer = useHasContainer(block)
 const continued = computed(
   () => block.siblings.value[block.index.value - 1]?.bundle === 'accordion',
 )

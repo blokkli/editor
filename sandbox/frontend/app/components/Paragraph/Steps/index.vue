@@ -3,7 +3,7 @@
     <div
       ref="blokkliDraggable"
       class="-mt-4 pt-4"
-      :class="{ 'container-content': !parentType }"
+      :class="{ 'container-content': hasContainer }"
     >
       <BlokkliField
         name="field_paragraphs"
@@ -17,10 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkli } from '#imports'
-import { BlokkliField } from '#components'
 import type { ParagraphStepsFragment } from '#graphql-operations'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 // Numbered steps (Step/index.vue), e.g. of a procedure. A heading is a title
 // block before them.
@@ -44,6 +41,6 @@ const block = defineBlokkli({
     editTitle: (el) => el.querySelector('li h3')?.textContent,
   },
 })
-const { parentType } = block
 const spacing = useBlockSpacing(block)
+const hasContainer = useHasContainer(block)
 </script>

@@ -1,6 +1,3 @@
-import { useAsyncData, useGraphqlQuery } from '#imports'
-import { useLanguage } from '~/composables/useLanguage'
-
 /**
  * What's around every page (layouts/drupal.vue): the header's and the
  * footer's config pages and the main menu, loaded once per language. Pages

@@ -36,26 +36,6 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  createError,
-  definePageMeta,
-  navigateTo,
-  useAsyncGraphqlQuery,
-  useRoute,
-} from '#imports'
-import {
-  NodeEditorial,
-  NodeEvent,
-  NodeNews,
-  NodeOffice,
-  NodePage,
-  NodePublication,
-} from '#components'
-import { getLanguageFromPath } from '#shared/languages'
-import { useLayoutQuery } from '~/composables/useLayoutQuery'
-import { findSubPages } from '~/helpers/menu'
-
 definePageMeta({ layout: 'drupal' })
 
 const route = useRoute()

@@ -32,18 +32,6 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useAsyncGraphqlQuery, useRoute } from '#imports'
-import {
-  ClientOnly,
-  ConfigPageFooter,
-  ConfigPageSite,
-  SandboxInfo,
-  VuepalAdminToolbar,
-  VuepalLocalTasks,
-} from '#components'
-import { useLanguage } from '~/composables/useLanguage'
-import { useLayoutQuery } from '~/composables/useLayoutQuery'
-
 // The layout of the site's pages: Drupal's toolbar and the route's local tasks
 // (view, edit, translate…) with the sandbox's button above the page, from lg
 // (both are too wide below), then the header and the footer from their config

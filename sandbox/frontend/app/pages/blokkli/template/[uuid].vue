@@ -3,7 +3,6 @@
 </template>
 
 <script lang="ts" setup>
-import { definePageMeta, useRoute } from '#imports'
 import BlokkliDrupalEditTemplate from '#blokkli/drupal/components/BlokkliDrupalEditTemplate/index.vue'
 
 // The Drupal module opens templates by this route name (templateEditRouteName

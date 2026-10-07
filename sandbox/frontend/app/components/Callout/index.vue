@@ -14,9 +14,6 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useEasyTexts } from '#imports'
-import { SpriteSymbol } from '#components'
-
 const props = defineProps<{
   type: 'info' | 'success' | 'warning' | 'error'
   title?: string

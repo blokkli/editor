@@ -18,8 +18,6 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, createError, useAsyncGraphqlQuery, useRoute } from '#imports'
-import { BlokkliField, BlokkliProvider } from '#components'
 import type { LibraryItemPageFragment } from '#graphql-operations'
 
 // The editor links here with the uuid, e.g. /de/blokkli/library-item/<uuid>.

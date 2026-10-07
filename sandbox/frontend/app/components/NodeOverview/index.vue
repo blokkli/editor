@@ -29,27 +29,9 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  useAsyncGraphqlQuery,
-  useEasyTexts,
-  useRoute,
-} from '#imports'
 import type { NodeTeaserFragment } from '#graphql-operations'
 import type { LocationQueryRaw } from 'vue-router'
-import FilterChips from '~/components/FilterChips/index.vue'
-import NodeTeaser from '~/components/NodeTeaser/index.vue'
-import Pagination from '~/components/Pagination/index.vue'
-import {
-  EVENT_CATEGORIES,
-  useEventCategory,
-} from '~/composables/useEventCategory'
-import { useLanguage } from '~/composables/useLanguage'
-import {
-  PUBLICATION_TYPES,
-  usePublicationType,
-} from '~/composables/usePublicationType'
-import { nodeListVariables, type NodeListSource } from '~/helpers/nodeList'
+import type { NodeListSource } from '~/utils/nodeList'
 
 // All news, events or official publications, with pages: the part of an
 // overview page after its node (pages/news.vue etc.). Events can be filtered
@@ -133,7 +115,7 @@ const chips = computed(() => {
   ]
 })
 
-// Today in UTC, as the date fields store it (see helpers/nodeList.ts).
+// Today in UTC, as the date fields store it (see utils/nodeList.ts).
 const today = new Date().toISOString().slice(0, 10)
 
 const variables = computed(() => ({

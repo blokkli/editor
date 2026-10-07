@@ -1,4 +1,4 @@
-import type { Language } from '../../frontend/shared/languages'
+import type { Language } from '../../frontend/shared/utils/languages'
 
 /**
  * Why a claim failed: the claim API's error codes, which the claim page shows

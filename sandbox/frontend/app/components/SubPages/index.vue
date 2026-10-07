@@ -42,9 +42,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useId } from '#imports'
-import { SiteLink, SpriteSymbol } from '#components'
-import type { SubPage } from '~/helpers/menu'
+import type { SubPage } from '~/utils/menu'
 
 // An editorial page's children in the main menu, with the menu links'
 // descriptions. A child with children of its own, like an area's topic, lists

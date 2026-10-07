@@ -49,14 +49,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useEasyTexts } from '#imports'
-import { BlokkliField, BlokkliProvider, SiteLink } from '#components'
 import type { BreadcrumbFragment, NodeEventFragment } from '#graphql-operations'
-import Facts from '~/components/Facts/index.vue'
-import FactsItem from '~/components/Facts/Item/index.vue'
-import HostHeader from '~/components/Host/Header/index.vue'
-import HostLayout from '~/components/Host/Layout/index.vue'
-import { useEventCategory } from '~/composables/useEventCategory'
 
 // An event: its date, time and place are the facts after the header, large.
 const props = defineProps<

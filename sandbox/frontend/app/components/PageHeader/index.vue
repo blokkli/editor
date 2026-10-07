@@ -160,8 +160,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from '#imports'
-import { LanguageSwitch, Logo, SiteLink, SpriteSymbol } from '#components'
+// A dynamic component (:is) needs its import.
+import { SiteLink } from '#components'
 import type { LanguageSwitchLinkFragment } from '#graphql-operations'
 
 type Link = { label: string; url: string }

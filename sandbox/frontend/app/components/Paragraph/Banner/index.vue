@@ -27,8 +27,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineBlokkli } from '#imports'
-import { SiteLink, SpriteSymbol } from '#components'
+// A dynamic component (:is) needs its import.
+import { SiteLink } from '#components'
 import type { ParagraphBannerFragment } from '#graphql-operations'
 
 // A site-wide message above the header, e.g. a closure. With a link, the text

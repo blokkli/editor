@@ -24,12 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkli } from '#imports'
 import type { ParagraphImageFragment } from '#graphql-operations'
-import MediaImage from '~/components/Media/Image/index.vue'
-import { WIDTH_CLASSES } from '~/helpers/width'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
-import { useBlockWidth } from '~/composables/useBlockWidth'
 
 defineProps<ParagraphImageFragment>()
 

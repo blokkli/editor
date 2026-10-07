@@ -1,6 +1,4 @@
 import { defineVuepalAdapter } from 'vuepal/adapter'
-import { useGraphqlQuery } from '#imports'
-import { useLanguage } from '~/composables/useLanguage'
 
 export default defineVuepalAdapter(() => {
   return {

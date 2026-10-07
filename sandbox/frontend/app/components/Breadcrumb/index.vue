@@ -19,8 +19,6 @@
 </template>
 
 <script lang="ts" setup>
-import { SiteLink } from '#components'
-
 // The last item is the current page, without a link.
 defineProps<{
   items: { label: string; url?: string }[]

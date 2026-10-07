@@ -4,7 +4,7 @@
     :class="[
       spacing,
       { hidden: !items.length && !isEditing },
-      parentType ? '' : isCards ? 'container-wide' : 'container-content',
+      hasContainer && (isCards ? 'container-wide' : 'container-content'),
     ]"
   >
     <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
@@ -37,22 +37,10 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  defineBlokkli,
-  useAsyncGraphqlQuery,
-  useEasyTexts,
-  useRouter,
-} from '#imports'
 import type {
   NodeTeaserFragment,
   ParagraphTeaserListFragment,
 } from '#graphql-operations'
-import ArrowLink from '~/components/ArrowLink/index.vue'
-import NodeTeaser from '~/components/NodeTeaser/index.vue'
-import { useLanguage } from '~/composables/useLanguage'
-import { nodeListVariables } from '~/helpers/nodeList'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 // The three latest news items, the next three events or the three current
 // official publications. The title replaces the source's default. The link to
@@ -91,6 +79,7 @@ const block = defineBlokkli({
 })
 const { options, parentType, provider } = block
 const spacing = useBlockSpacing(block)
+const hasContainer = useHasContainer(block)
 
 const { $texts } = useEasyTexts()
 const language = useLanguage()

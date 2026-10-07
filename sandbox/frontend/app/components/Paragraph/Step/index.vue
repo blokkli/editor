@@ -19,9 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkli } from '#imports'
 import type { ParagraphStepFragment } from '#graphql-operations'
-import Tile from '~/components/Tile/index.vue'
 
 // One step of the steps (Steps/index.vue): its number, a title and a text.
 // The <ol> numbers them for screen readers. In the editor, the step is its

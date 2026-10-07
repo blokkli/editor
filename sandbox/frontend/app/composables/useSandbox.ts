@@ -1,7 +1,3 @@
-import { computed, ref, useAsyncData, useGraphqlQuery } from '#imports'
-import { LOCALES } from '#shared/languages'
-import { useLanguage } from '~/composables/useLanguage'
-
 /**
  * The current sandbox (Query.sandbox), for the sandbox's popup and the
  * welcome page: when it's deleted, and the links that log its users in, with

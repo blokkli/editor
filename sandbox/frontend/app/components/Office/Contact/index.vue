@@ -13,9 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { SiteLink } from '#components'
 import type { OfficeContactFragment } from '#graphql-operations'
-import OfficeDetails from '~/components/Office/Details/index.vue'
 
 // An office's contact in a sidebar, from the contact block: a heading, the
 // office's name, the details.

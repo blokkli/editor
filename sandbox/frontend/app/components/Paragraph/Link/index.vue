@@ -1,10 +1,5 @@
 <template>
-  <div
-    :class="[
-      spacing,
-      { 'container-content': !parentType && fieldListType === 'default' },
-    ]"
-  >
+  <div :class="[spacing, { 'container-content': hasContainer }]">
     <SiteLink
       v-blokkli-droppable:field_link
       :to="target.href"
@@ -21,11 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineBlokkli, useEasyTexts } from '#imports'
-import { SiteLink } from '#components'
 import type { ParagraphLinkFragment } from '#graphql-operations'
-import { linkTarget } from './target'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 // A link as a button. In a link list, InList.vue renders it as a row.
 const props = defineProps<ParagraphLinkFragment>()
@@ -64,6 +55,7 @@ const block = defineBlokkli({
         : ['style'],
   },
 })
-const { options, parentType, fieldListType } = block
+const { options, fieldListType } = block
 const spacing = useBlockSpacing(block)
+const hasContainer = useHasContainer(block)
 </script>

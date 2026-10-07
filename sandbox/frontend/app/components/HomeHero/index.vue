@@ -44,10 +44,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
-import { SearchField } from '#components'
 import type { MediaImageFragment } from '#graphql-operations'
-import MediaImage from '~/components/Media/Image/index.vue'
 
 // The home page's title and lead on the band, with the search below them and
 // the hero image beside them.

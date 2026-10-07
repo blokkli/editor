@@ -23,12 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineBlokkli } from '#imports'
 import type { ParagraphGalleryFragment } from '#graphql-operations'
-import ParagraphGallerySlider from './Slider.vue'
-import { WIDTH_CLASSES } from '~/helpers/width'
-import { useBlockSpacing } from '~/composables/useBlockSpacing'
-import { useBlockWidth } from '~/composables/useBlockWidth'
 
 defineProps<ParagraphGalleryFragment>()
 

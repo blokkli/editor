@@ -26,10 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { BlokkliField, BlokkliProvider } from '#components'
 import type { BreadcrumbFragment, NodeNewsFragment } from '#graphql-operations'
-import HostHeader from '~/components/Host/Header/index.vue'
-import HostLayout from '~/components/Host/Layout/index.vue'
 
 const props = defineProps<
   NodeNewsFragment & { breadcrumb?: BreadcrumbFragment[] }

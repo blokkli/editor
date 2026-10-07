@@ -62,6 +62,10 @@ host components, and the site shell (header, notice, footer) from the `site` and
     whose canvas is narrower than the window.
   - **The containers** inside the sidebar layout reset to the column: a rule
     nested in both container utilities, in the utilities layer.
+    - Replaced on 2026-10-07: the editor's copy of a block while dragging has no
+      ancestors, so it got the containers back. The detail page is now the
+      container (`container-wide`), and its blocks and parts have none of their
+      own (`useHasContainer`, `HostHeader`'s `contained`).
   - **Below lg**, the event's and the office's facts come right after the header
     (`aside-first`); the page's sidebar comes after its blocks.
   - **While editing,** an empty `field_aside` is a drop zone below the blocks.

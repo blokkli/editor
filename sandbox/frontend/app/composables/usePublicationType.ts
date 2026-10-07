@@ -1,5 +1,3 @@
-import { useEasyTexts } from '#imports'
-
 // The allowed values of field_publication_type, e.g. for the overview's
 // filters.
 export const PUBLICATION_TYPES = [

@@ -9,8 +9,6 @@
 </template>
 
 <script lang="ts" setup>
-import LinkListItem from './Item.vue'
-
 // A list of links and downloads, e.g. "Traktandenliste … PDF · 120 KB". The
 // link list block renders its link blocks as the rows instead.
 defineProps<{

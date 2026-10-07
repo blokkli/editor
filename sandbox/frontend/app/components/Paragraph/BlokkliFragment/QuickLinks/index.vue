@@ -12,10 +12,6 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineBlokkliFragment, useAsyncGraphqlQuery } from '#imports'
-import { QuickLinks } from '#components'
-import { plainLinks } from '~/components/Paragraph/Link/target'
-
 // The site config page's frequently searched links, for the home page only.
 // They're edited on the config page.
 // Before the await: the editor needs the definition during setup.

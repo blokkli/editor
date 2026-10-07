@@ -31,8 +31,6 @@
 </template>
 
 <script lang="ts" setup>
-import { Logo } from '#components'
-
 defineProps<{
   name: string
   nameSecondary?: string

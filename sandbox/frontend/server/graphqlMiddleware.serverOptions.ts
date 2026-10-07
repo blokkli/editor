@@ -1,8 +1,4 @@
 import { defineGraphqlServerOptions } from 'nuxt-graphql-middleware/server-options'
-import { appendResponseHeader, createError, getRequestHeaders } from 'h3'
-import { useRuntimeConfig } from '#imports'
-import { DEFAULT_LANGUAGE, isLanguage } from '#shared/languages'
-import { pickForwardedHeaders } from '#shared/request'
 
 export default defineGraphqlServerOptions<{ language?: string }>({
   // Every language has its own endpoint, e.g. /de/graphql.

@@ -32,15 +32,6 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  navigateTo,
-  useId,
-  useRouter,
-  useTemplateRef,
-} from '#imports'
-import { SpriteSymbol } from '#components'
-
 // Searches the website: the search page (pages/search.vue) with ?text=. The
 // form's action and the field's name make it work before hydration too.
 defineProps<{

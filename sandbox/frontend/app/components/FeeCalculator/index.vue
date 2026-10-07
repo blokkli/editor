@@ -171,9 +171,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, useEasyTexts, useId } from '#imports'
-import { useLanguage } from '~/composables/useLanguage'
-import { RATES, WATER_PER_PERSON, type BagSize, type Dwelling } from './rates'
+import type { BagSize, Dwelling } from '~/utils/feeRates'
 
 // The town's fee calculator: an app of its own, embedded in pages with the
 // embed paragraph type (pages/embed/fee-calculator.vue).

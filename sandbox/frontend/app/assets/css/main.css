@@ -101,21 +101,16 @@
 }
 
 /* The wide container: 75rem plus the gutter on both sides. At 1440 px it
-   leaves 120 px of margin. */
+   leaves 120 px of margin.
+
+   Neither container depends on its ancestors: a block looks the same
+   anywhere, also as the editor's copy while dragging. Inside another
+   container, an element has none (useHasContainer). */
 @utility container-wide {
   width: 100%;
   max-width: calc(var(--container-wide) + var(--spacing-gutter) * 2);
   margin-inline: auto;
   padding-inline: var(--spacing-gutter);
-
-  /* In the detail page's sidebar layout (Node/Page), the page is the
-     container: blocks fill their column. */
-  @variant lg {
-    .sidebar-layout & {
-      max-width: none;
-      padding-inline: 0;
-    }
-  }
 }
 
 /* The content column: from lg, it leaves room for the detail page's sidebar,
@@ -130,11 +125,6 @@
     padding-right: calc(
       var(--spacing-gutter) + var(--container-sidebar) + var(--spacing-sidebar)
     );
-
-    .sidebar-layout & {
-      max-width: none;
-      padding-inline: 0;
-    }
   }
 }
 

@@ -161,17 +161,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useHead } from '#imports'
-import {
-  ArrowLink,
-  DesignSystemMockup,
-  DesignSystemPlaceholder,
-  LinkList,
-  SearchField,
-  SpriteSymbol,
-  Tile,
-} from '#components'
-
 // A mockup of the home page, to iterate on the design (see index.vue).
 useHead({ title: 'Startseite – Mockup' })
 

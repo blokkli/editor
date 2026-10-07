@@ -46,16 +46,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from '#imports'
-import { TEXTS } from '~/components/Welcome/texts'
-import { useLanguage } from '~/composables/useLanguage'
-import { useSandbox } from '~/composables/useSandbox'
-
 // The welcome page's part about the sandbox, like the sandbox's popup: when
 // it's deleted, the link to come back, and the colleagues' links. Only in
 // sandboxes the control app made.
 const language = useLanguage()
-const texts = computed(() => TEXTS[language.value])
+const texts = computed(() => WELCOME_TEXTS[language.value])
 const { sandbox, expiresDate, idleHours, ownLogin, colleagues, copied, copy } =
   useSandbox()
 

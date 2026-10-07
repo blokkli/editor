@@ -17,12 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineBlokkli } from '#imports'
-import { SiteLink } from '#components'
 import type { ParagraphLinkFragment } from '#graphql-operations'
-import LinkListItem from '~/components/LinkList/Item.vue'
-import { useLanguage } from '~/composables/useLanguage'
-import { linkTarget } from './target'
 
 // A link in a link list or a call to action, as a row. A document gets its
 // type and size, e.g. "PDF, 240 kB". The only link of a call to action is a

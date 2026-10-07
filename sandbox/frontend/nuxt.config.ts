@@ -11,8 +11,8 @@ import charts from './../../src/modules/charts'
 import iframes from './../../src/modules/iframes'
 import readability from './../../src/modules/readability'
 import tableOfContents from './../../src/modules/table-of-contents'
-import { CHART_COLORS } from './shared/chartColors'
-import { LANGUAGES } from './shared/languages'
+import { CHART_COLORS } from './shared/utils/chartColors'
+import { LANGUAGES } from './shared/utils/languages'
 
 // Dumped from the local site by `bun run drupal:schema`. The root config types
 // the Drupal module against the same file.
@@ -37,10 +37,6 @@ export default defineNuxtConfig({
     'nuxt-svg-icon-sprite',
     '../../src/module',
   ],
-
-  imports: {
-    autoImport: false,
-  },
 
   // Self-hosted fonts: Source Serif 4 with its optical size axis.
   css: [

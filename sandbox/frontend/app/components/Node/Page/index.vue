@@ -4,13 +4,14 @@
     v-bind="blokkliProps"
     :entity="props"
   >
-    <article class="sidebar-layout">
+    <article class="sidebar-layout container-wide">
       <HostHeader
         :title="entity.title"
         :lead="entity.lead"
         variant="plain"
         :is-editing
         :breadcrumb
+        contained
       >
         <template v-if="parent" #eyebrow>{{ parent }}</template>
         <template v-if="office || changedDate?.first?.day" #meta>
@@ -36,7 +37,7 @@
         <BlokkliField name="field_paragraphs" :list="paragraphs" />
         <section
           v-if="office && contact"
-          class="container-content mt-heading flex flex-col gap-4"
+          class="mt-heading flex flex-col gap-4"
         >
           <h2 :id="contact.id" class="font-serif text-h2">
             {{ contact.label }}
@@ -79,7 +80,7 @@
         </section>
         <section
           v-if="related?.length || isEditing"
-          class="container-content mt-flow flex flex-col gap-4 border-t-2 border-ink pt-6"
+          class="mt-flow flex flex-col gap-4 border-t-2 border-ink pt-6"
         >
           <h2 class="text-label text-muted uppercase">
             {{ $texts('related.title', 'Related topics') }}
@@ -101,7 +102,7 @@
           :list="aside"
           field-list-type="sidebar"
           edit-class="min-h-24"
-          class="container-content flex flex-col gap-10"
+          class="flex flex-col gap-10"
         />
       </aside>
     </article>
@@ -109,11 +110,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useEasyTexts } from '#imports'
-import { ArrowLink, BlokkliField, BlokkliProvider, SiteLink } from '#components'
 import type { BreadcrumbFragment, NodePageFragment } from '#graphql-operations'
-import HostHeader from '~/components/Host/Header/index.vue'
-import TableOfContents from '~/components/TableOfContents/index.vue'
 
 // The detail page: an information page, the last in its branch of the menu.
 // Always the sidebar layout, no hero image. The responsible office is set in
@@ -153,10 +150,12 @@ const parent = computed(() => {
 <style>
 @reference '../../../assets/css/main.css';
 
-/* From lg, the sidebar is a white panel to the right, cutting into the
-   header's band. Below, its parts join the column: the table of contents after
-   the header, the rest after the blocks. Its width and the gap are tokens
-   (main.css), because container-content leaves the same room. */
+/* The page is the container (container-wide): its parts and blocks have
+   none of their own (useHasContainer). From lg, the sidebar is a white panel
+   to the right, cutting into the header's band. Below, its parts join the
+   column: the table of contents after the header, the rest after the blocks.
+   Its width and the gap are tokens (main.css), because container-content
+   leaves the same room. */
 @layer components {
   .sidebar-layout {
     @apply flex flex-col gap-10 pb-section;
@@ -177,9 +176,6 @@ const parent = computed(() => {
       grid-template-columns: minmax(0, 1fr) var(--container-sidebar);
       grid-template-rows: auto 1fr;
       column-gap: var(--spacing-sidebar);
-      max-width: calc(var(--container-wide) + var(--spacing-gutter) * 2);
-      margin-inline: auto;
-      padding-inline: var(--spacing-gutter);
 
       /* Positioned, so that it's painted over the header's band. */
       > aside {

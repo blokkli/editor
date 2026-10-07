@@ -58,11 +58,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useRoute } from '#imports'
-import { PageFooter, PageHeader } from '#components'
 import type { LanguageSwitchLinkFragment } from '#graphql-operations'
-import { useLanguage } from '~/composables/useLanguage'
-import { LANGUAGE_NAMES, LANGUAGES } from '#shared/languages'
 
 // The site's shell around a mockup, with German copy as in the canvas.
 const props = defineProps<{

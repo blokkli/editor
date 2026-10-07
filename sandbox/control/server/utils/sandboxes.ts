@@ -1,7 +1,10 @@
 import { randomInt } from 'node:crypto'
 import { existsSync, statSync } from 'node:fs'
 import { useRuntimeConfig } from '#imports'
-import { LANGUAGES, type Language } from '../../../frontend/shared/languages'
+import {
+  LANGUAGES,
+  type Language,
+} from '../../../frontend/shared/utils/languages'
 import type { SandboxRow } from './db'
 
 const HOUR = 3600

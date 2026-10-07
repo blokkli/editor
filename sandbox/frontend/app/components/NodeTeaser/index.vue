@@ -78,16 +78,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useEasyTexts } from '#imports'
-import { SiteLink, SpriteSymbol } from '#components'
 import type {
   MediaImageFragment,
   NodeTeaserFragment,
 } from '#graphql-operations'
-import MediaImage from '~/components/Media/Image/index.vue'
-import Tile from '~/components/Tile/index.vue'
-import { usePublicationType } from '~/composables/usePublicationType'
-import { formatDateRange } from '~/helpers/date'
 
 // A page, news item, event or publication as a card, a list item, a link with
 // its lead (a related topic) or a search result: the teaser block, the

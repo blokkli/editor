@@ -1,7 +1,3 @@
-import { defineEventHandler, getQuery } from 'h3'
-import { DEFAULT_LANGUAGE, isLanguage } from '#shared/languages'
-import { CHART_DATA, localize } from '../../chartData'
-
 /**
  * The chart data sources, for the editor (getChartDataSources).
  */

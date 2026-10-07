@@ -23,10 +23,6 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, definePageMeta, useRoute } from '#imports'
-import { FrontendRoute, SearchField, SearchResults } from '#components'
-import HostHeader from '~/components/Host/Header/index.vue'
-
 // The search: the node's header with the search field, then the results. The
 // node is assigned in Drupal's frontend_routing settings.
 definePageMeta({

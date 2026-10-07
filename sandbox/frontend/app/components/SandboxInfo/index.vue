@@ -88,12 +88,6 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, useEasyTexts } from '#imports'
-import { NuxtLink, SpriteSymbol } from '#components'
-import { WELCOME_PATHS } from '#shared/welcome'
-import { useLanguage } from '~/composables/useLanguage'
-import { useSandbox } from '~/composables/useSandbox'
-
 // The sandbox's button next to the local tasks, in Drupal's admin style (Gin),
 // with a popup: when the sandbox is deleted, the welcome page, and links that
 // log its users in, to come back later and for colleagues. Drupal only has a

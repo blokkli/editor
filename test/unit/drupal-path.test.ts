@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, test } from 'vitest'
-import { isDrupalPath } from '../../sandbox/frontend/app/helpers/drupalPath'
+import { isDrupalPath } from '../../sandbox/frontend/app/utils/drupalPath'
 
 // The sandbox frontend's links follow nginx: `ddev check-routes` lists which
 // upstream serves each path, and isDrupalPath() has to agree.

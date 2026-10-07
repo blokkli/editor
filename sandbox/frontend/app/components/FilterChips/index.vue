@@ -20,7 +20,6 @@
 </template>
 
 <script lang="ts" setup>
-import { NuxtLink } from '#components'
 import type { RouteLocationRaw } from 'vue-router'
 
 // Filters as links, e.g. the categories above a list of events. Each sets its
