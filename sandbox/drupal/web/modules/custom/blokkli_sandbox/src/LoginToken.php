@@ -15,8 +15,6 @@ use Drupal\Core\Site\Settings;
  * the signature its HMAC-SHA256 with the login secret, base64url-encoded too.
  * The control app makes them as well (sandbox/control/server/utils/
  * loginToken.ts). Only in a sandbox: settings.php sets its id.
- *
- * @see plans/drupal-setup/09-control-plane.md
  */
 final class LoginToken {
 

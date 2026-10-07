@@ -121,9 +121,65 @@ Pages and editorial pages get their URL from their place in the menu.
 
 `@{marc}` mentions a user; the comment module notifies them, as in the editor.
 
-## Photos and placeholders
+## The town and its texts
 
-The photos in `files/images/` are AI-generated from one brief for the whole town
-(in `plans/drupal-setup/15i-locations-and-offices.md`), so new ones look like
-the same place. The content is the minimum that uses every paragraph type and
-host; the demo content (chunk 14b) replaces it, in the same format.
+Blockingen (Bloquens in French) is a fictional bilingual town of about 15,000
+people by a lake, on the German–French language border. Its lake is the
+Blockingersee, Lac de Bloquens or Lake Blockingen. The town is Bloquens in
+French, also as the site name. Streets have French names in French (rue du
+Village) and keep the German ones in English.
+
+- **Swiss spelling** (ss, no ß), formal Sie, "Fr. 45.–", "8.00 Uhr".
+- **No current years in running text** (history is fine); dates belong in date
+  fields, relative to the bake.
+- **Everything is invented:** people, addresses, phone numbers (032 555 01 xx),
+  email addresses (`@blockingen.example`). No canton by name, no real parties,
+  no real places in photos.
+- **Detail pages** carry about 300–600 words of real content, and generally no
+  image.
+- **Some mistakes are on purpose,** for the analyzers and the welcome page's
+  tasks: on the lakeside pool (`nodes/lakeside-pool.yml`, see its comment), the
+  pool opening's outdated French (`outdated: [fr]`, with other hours than the
+  German), and `jetty-view` without alt text. Don't fix them.
+- Themen is "Thématiques" in French: "Thèmes" would give `/fr/themes`, which
+  pathauto turns into `/fr/themes-0` (a folder in the docroot).
+
+## Photos
+
+The photos in `files/images/` are AI-generated from one brief for the whole town,
+so new ones look like the same place. Each file is named after its media key and
+saved as JPEG at quality 82; the credit is "AI-generated". The brief's shared
+part:
+
+> Photos for the website of Blockingen (in French: Bloquens), a fictional Swiss
+> municipality of about 15,000 people. The town is bilingual, German and French,
+> and lies on the shore of a lake at the foot of wooded hills, with vineyards on
+> the slopes above it. It has a small historic old town, a railway station,
+> residential quarters, and some light industry at its edge.
+>
+> The place: an ordinary, well-kept Swiss small town, lived in, not a postcard.
+> Its buildings are what you'd find there: stone and plastered houses with steep
+> tiled roofs in the old town, and buildings from every decade since, including
+> plain post-war and contemporary ones.
+>
+> The photos: documentary photographs, as a municipality would commission from a
+> local photographer for its website. Eye level, natural daylight, true-to-life
+> colours, a calm and friendly mood. The same season and light across the whole
+> set: late summer, soft sun or light cloud. They should look like one town.
+>
+> People: few and incidental, going about their day. Nobody posing or looking at
+> the camera.
+>
+> Avoid: legible text of any kind (signs, lettering on buildings or vehicles,
+> number plates); keep signs blank or out of focus. No logos, no coats of arms,
+> no real or recognisable places or landmarks. No drone or fisheye shots, no
+> HDR, no dramatic skies, no heavy filters, nothing that looks illustrated or
+> rendered.
+>
+> Format: landscape 3:2, at least 2400 × 1600 px. The website also crops them to
+> a wide 5:2 strip, so keep the subject within the middle three fifths of the
+> height: the top and bottom fifth may be cut.
+
+Then one line per image, only what it shows, e.g. `town-hall`: "the town hall, a
+historic building in the old town near the lake", or `building-profiles`:
+"profile poles (Bauprofile) marking a planned building on a plot".

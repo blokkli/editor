@@ -1,5 +1,5 @@
-# The control app's logins (plans/drupal-setup/09-control-plane.md). The token
-# expires, so the response mustn't be cached.
+# The control app's logins. The token expires, so the response mustn't be
+# cached.
 blokkli_sandbox.login:
   path: '/blokkli-sandbox/login/{token}'
   defaults:

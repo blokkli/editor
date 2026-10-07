@@ -1,210 +1,65 @@
 # Findings: upstream bugs
 
-Bugs found while working on this plan that belong in other projects, mostly
-`paragraphs_blokkli`. They're tracked here and fixed separately, not as part of
-a chunk. Update the status when one is fixed, and name the commit or issue.
+Bugs found while building the sandbox that belong in other projects, mostly
+`paragraphs_blokkli`. They're tracked here and fixed separately. A fixed one is
+removed; its commit names it.
 
 Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 (2.0.x), unless noted otherwise.
 
-| #   | Finding                                                                                                                 | Project              | Severity | Status     | Blocks   |
-| --- | ----------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- | -------- |
-| F1  | [Duplicate edit states](#f1-duplicate-edit-states)                                                                      | `paragraphs_blokkli` | high     | fixed      | –        |
-| F2  | [Lost mutations on concurrent writes](#f2-lost-mutations-on-concurrent-writes)                                          | `paragraphs_blokkli` | high     | fixed      | –        |
-| F3  | [Edit state in the persistent entity cache](#f3-edit-state-in-the-persistent-entity-cache)                              | `paragraphs_blokkli` | low      | fixed      | –        |
-| F4  | [`clearOutdated` type mismatch](#f4-clearoutdated-type-mismatch)                                                        | `paragraphs_blokkli` | low      | open       | –        |
-| F5  | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                               | Drupal core          | high     | workaround | –        |
-| F6  | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                | `blokkli_starterkit` | low      | open       | –        |
-| F7  | [Undeclared dependencies and config gaps](#f7-undeclared-dependencies-and-config-gaps)                                  | `paragraphs_blokkli` | low      | open       | –        |
-| F8  | [Upload mutations ignore tokens in the file directory](#f8-upload-mutations-ignore-tokens-in-the-file-directory)        | `paragraphs_blokkli` | low      | fixed      | –        |
-| F9  | [Link titles from entity mappings](#f9-link-titles-from-entity-mappings)                                                | `paragraphs_blokkli` | medium   | workaround | –        |
-| F10 | [Paragraphs below level 5 are lost on publish](#f10-paragraphs-below-level-5-are-lost-on-publish)                       | `paragraphs_blokkli` | medium   | workaround | –        |
-| F11 | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                   | `paragraphs_blokkli` | low      | open       | –        |
-| F12 | ["Make reusable" on a container with unpublished children](#f12-make-reusable-on-a-container-with-unpublished-children) | `paragraphs_blokkli` | medium   | open       | –        |
-| F13 | [`bkVisibleLanguages` on library blocks](#f13-bkvisiblelanguages-on-library-blocks)                                     | `@blokkli/editor`    | low      | open       | –        |
-| F14 | [The comment filter leaks into new text formats](#f14-the-comment-filter-leaks-into-new-text-formats)                   | `paragraphs_blokkli` | low      | open       | –        |
-| F15 | [Config pages have no label in entity lists](#f15-config-pages-have-no-label-in-entity-lists)                           | `paragraphs_blokkli` | low      | open       | –        |
-| F16 | [Mutations ignore a field's allowed types](#f16-mutations-ignore-a-fields-allowed-types)                                | `paragraphs_blokkli` | medium   | open       | –        |
-| F17 | [`detach_reusable` bugs](#f17-detach_reusable-bugs)                                                                     | `paragraphs_blokkli` | medium   | open       | –        |
-| F18 | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                       | both                 | low      | workaround | –        |
-| F19 | [Template and library search](#f19-template-and-library-search)                                                         | both                 | low      | open       | –        |
-| F20 | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                       | `paragraphs_blokkli` | low      | open       | –        |
-| F21 | ["Add to library" needs two clicks](#f21-add-to-library-needs-two-clicks)                                               | `@blokkli/editor`    | low      | open       | –        |
-| F22 | [Preview grants only work for some viewers](#f22-preview-grants-only-work-for-some-viewers)                             | `paragraphs_blokkli` | medium   | fixed      | –        |
-| F23 | [A past unpublish date blocks publishing](#f23-a-past-unpublish-date-blocks-publishing)                                 | both                 | low      | open       | –        |
-| F24 | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                       | `paragraphs_blokkli` | medium   | open       | –        |
-| F25 | [An empty change description keeps the old log](#f25-an-empty-change-description-keeps-the-old-log)                     | `paragraphs_blokkli` | low      | open       | –        |
-| F26 | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation) | `paragraphs_blokkli` | medium   | open       | –        |
-| F27 | [Machine translation fails silently](#f27-machine-translation-fails-silently)                                           | `@blokkli/editor`    | low      | open       | –        |
-| F28 | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                  | `@blokkli/editor`    | low      | workaround | –        |
-| F29 | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                            | `paragraphs_blokkli` | low      | workaround | –        |
-| F30 | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                           | `paragraphs_blokkli` | low      | open       | –        |
-| F31 | [The "add translation" dialog has no language](#f31-the-add-translation-dialog-has-no-language)                         | `@blokkli/editor`    | low      | open       | –        |
-| F32 | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                     | `paragraphs_blokkli` | medium   | open       | –        |
-| F33 | [Transform plugins don't get the language](#f33-transform-plugins-dont-get-the-language)                                | both                 | low      | workaround | –        |
-| F34 | [The table of contents links to hidden nested headings](#f34-the-table-of-contents-links-to-hidden-nested-headings)     | `@blokkli/editor`    | low      | to verify  | –        |
-| F35 | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)    | `@blokkli/editor`    | low      | open       | –        |
-| F36 | [The `translations` option ignores English](#f36-the-translations-option-ignores-english)                               | `@blokkli/editor`    | low      | workaround | –        |
-| F37 | [The iframe height editor isn't translated](#f37-the-iframe-height-editor-isnt-translated)                              | `@blokkli/editor`    | low      | open       | –        |
-| F38 | [Editors can't view paragraph types](#f38-editors-cant-view-paragraph-types)                                            | `paragraphs_blokkli` | high     | workaround | –        |
-| F39 | [The editor ignores `create_comments`](#f39-the-editor-ignores-create_comments)                                         | `@blokkli/editor`    | low      | to verify  | –        |
-| F40 | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                 | `paragraphs_blokkli` | low      | open       | –        |
-| F41 | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                             | `paragraphs_blokkli` | low      | open       | –        |
-| F42 | [Uploads skip media create access](#f42-uploads-skip-media-create-access)                                               | `paragraphs_blokkli` | medium   | open       | –        |
-| F43 | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                          | both                 | low      | open       | –        |
-| F44 | [No approval step](#f44-no-approval-step)                                                                               | both                 | low      | open       | –        |
-| F45 | ["Replace" fails on link fields](#f45-replace-fails-on-link-fields)                                                     | `paragraphs_blokkli` | medium   | open       | –        |
-| F46 | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                | both                 | low      | open       | –        |
-| F47 | [Clipboard uploads skip core's upload handling](#f47-clipboard-uploads-skip-cores-upload-handling)                      | `paragraphs_blokkli` | high     | fixed      | –        |
-| F48 | [A preview grant opens more than the preview](#f48-a-preview-grant-opens-more-than-the-preview)                         | `paragraphs_blokkli` | low      | open       | –        |
-| F49 | [Agent endpoints without authentication](#f49-agent-endpoints-without-authentication)                                   | `@blokkli/editor`    | medium   | fixed      | chunk 11 |
-| F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                     | `texts`              | low      | open       | –        |
-| F51 | [Agent tokens of the same second collide](#f51-agent-tokens-of-the-same-second-collide)                                 | both                 | low      | fixed      | chunk 11 |
-| F52 | [A comment's label throws](#f52-a-comments-label-throws)                                                                | `paragraphs_blokkli` | low      | open       | –        |
+| #   | Finding                                                                                                                 | Project              | Severity | Status     |
+| --- | ----------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- |
+| F4  | [`clearOutdated` type mismatch](#f4-clearoutdated-type-mismatch)                                                        | `paragraphs_blokkli` | low      | open       |
+| F5  | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                               | Drupal core          | high     | workaround |
+| F6  | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                | `blokkli_starterkit` | low      | open       |
+| F7  | [Undeclared dependencies and config gaps](#f7-undeclared-dependencies-and-config-gaps)                                  | `paragraphs_blokkli` | low      | open       |
+| F9  | [Link titles from entity mappings](#f9-link-titles-from-entity-mappings)                                                | `paragraphs_blokkli` | medium   | workaround |
+| F10 | [Paragraphs below level 5 are lost on publish](#f10-paragraphs-below-level-5-are-lost-on-publish)                       | `paragraphs_blokkli` | medium   | workaround |
+| F11 | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                   | `paragraphs_blokkli` | low      | open       |
+| F12 | ["Make reusable" on a container with unpublished children](#f12-make-reusable-on-a-container-with-unpublished-children) | `paragraphs_blokkli` | medium   | open       |
+| F13 | [`bkVisibleLanguages` on library blocks](#f13-bkvisiblelanguages-on-library-blocks)                                     | `@blokkli/editor`    | low      | open       |
+| F14 | [The comment filter leaks into new text formats](#f14-the-comment-filter-leaks-into-new-text-formats)                   | `paragraphs_blokkli` | low      | open       |
+| F15 | [Config pages have no label in entity lists](#f15-config-pages-have-no-label-in-entity-lists)                           | `paragraphs_blokkli` | low      | open       |
+| F16 | [Mutations ignore a field's allowed types](#f16-mutations-ignore-a-fields-allowed-types)                                | `paragraphs_blokkli` | medium   | open       |
+| F17 | [`detach_reusable` bugs](#f17-detach_reusable-bugs)                                                                     | `paragraphs_blokkli` | medium   | open       |
+| F18 | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                       | both                 | low      | workaround |
+| F19 | [Template and library search](#f19-template-and-library-search)                                                         | both                 | low      | open       |
+| F20 | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                       | `paragraphs_blokkli` | low      | open       |
+| F21 | ["Add to library" needs two clicks](#f21-add-to-library-needs-two-clicks)                                               | `@blokkli/editor`    | low      | open       |
+| F23 | [A past unpublish date blocks publishing](#f23-a-past-unpublish-date-blocks-publishing)                                 | both                 | low      | open       |
+| F24 | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                       | `paragraphs_blokkli` | medium   | open       |
+| F25 | [An empty change description keeps the old log](#f25-an-empty-change-description-keeps-the-old-log)                     | `paragraphs_blokkli` | low      | open       |
+| F26 | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation) | `paragraphs_blokkli` | medium   | open       |
+| F27 | [Machine translation fails silently](#f27-machine-translation-fails-silently)                                           | `@blokkli/editor`    | low      | open       |
+| F28 | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                  | `@blokkli/editor`    | low      | workaround |
+| F29 | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                            | `paragraphs_blokkli` | low      | workaround |
+| F30 | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                           | `paragraphs_blokkli` | low      | open       |
+| F31 | [The "add translation" dialog has no language](#f31-the-add-translation-dialog-has-no-language)                         | `@blokkli/editor`    | low      | open       |
+| F32 | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                     | `paragraphs_blokkli` | medium   | open       |
+| F33 | [Transform plugins don't get the language](#f33-transform-plugins-dont-get-the-language)                                | both                 | low      | workaround |
+| F34 | [The table of contents links to hidden nested headings](#f34-the-table-of-contents-links-to-hidden-nested-headings)     | `@blokkli/editor`    | low      | to verify  |
+| F35 | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)    | `@blokkli/editor`    | low      | open       |
+| F36 | [The `translations` option ignores English](#f36-the-translations-option-ignores-english)                               | `@blokkli/editor`    | low      | workaround |
+| F37 | [The iframe height editor isn't translated](#f37-the-iframe-height-editor-isnt-translated)                              | `@blokkli/editor`    | low      | open       |
+| F38 | [Editors can't view paragraph types](#f38-editors-cant-view-paragraph-types)                                            | `paragraphs_blokkli` | high     | workaround |
+| F39 | [The editor ignores `create_comments`](#f39-the-editor-ignores-create_comments)                                         | `@blokkli/editor`    | low      | to verify  |
+| F40 | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                 | `paragraphs_blokkli` | low      | open       |
+| F41 | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                             | `paragraphs_blokkli` | low      | open       |
+| F42 | [Uploads skip media create access](#f42-uploads-skip-media-create-access)                                               | `paragraphs_blokkli` | medium   | open       |
+| F43 | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                          | both                 | low      | open       |
+| F44 | [No approval step](#f44-no-approval-step)                                                                               | both                 | low      | open       |
+| F45 | ["Replace" fails on link fields](#f45-replace-fails-on-link-fields)                                                     | `paragraphs_blokkli` | medium   | open       |
+| F46 | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                | both                 | low      | open       |
+| F48 | [A preview grant opens more than the preview](#f48-a-preview-grant-opens-more-than-the-preview)                         | `paragraphs_blokkli` | low      | open       |
+| F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                     | `texts`              | low      | open       |
+| F52 | [A comment's label throws](#f52-a-comments-label-throws)                                                                | `paragraphs_blokkli` | low      | open       |
 
-Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
-`fixed`.
-
-## F1: Duplicate edit states
-
-- **Found:** 2026-09-26, [SQLite spike](01-sqlite-spike.md). Happens on SQLite
-  and MariaDB.
-- **Symptom:** a page ends up with two `paragraphs_blokkli_edit_state` entities.
-  Mutations then fail with "Missing Entity" or land in the other state, and the
-  editor shows changes appearing and disappearing. In the spike this happened in
-  4 of 6 SQLite runs and 3 of 3 MariaDB runs.
-- **When:** the first request that loads the edit state for a page runs at the
-  same time as another one. In the editor: the frontend reads the state (SSR, a
-  second tab, a second user) while the first mutation runs.
-- **Cause:**
-  - `ParagraphsBlokkliManager::getParagraphsEditState()`
-    (`src/ParagraphsBlokkliManager.php:49`) loads the state and, if there is
-    none, creates and saves one. There is no lock between the load and the save.
-  - Both the read path (`LoadEditState::resolve()`,
-    `modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/LoadEditState.php:84`)
-    and the mutation path (`LoadEditStateForMutation::resolve()`, same folder,
-    line 75) create a state when none exists.
-  - The table has no unique key on (`host_entity_type`, `host_entity_uuid`).
-  - `ParagraphsBlokkliEditStateStorage::loadForEntityTypeAndUuid()`
-    (`src/ParagraphsBlokkliEditStateStorage.php:28`) takes the first id of an
-    unsorted query, so with two states the one it returns isn't fixed.
-- **How to reproduce:** take a page without an edit state. Send mutations to it
-  from one client while another polls `getParagraphsEditState` for it. Then:
-  `SELECT host_entity_uuid, COUNT(*) FROM paragraphs_blokkli_edit_state GROUP BY host_entity_uuid HAVING COUNT(*) > 1`.
-- **Fix ideas:**
-  - Acquire a lock per host entity (Drupal's `lock` service) around "load or
-    create" in `getParagraphsEditState()`, and load again after acquiring it.
-  - Add a unique key on (`host_entity_type`, `host_entity_uuid`). The update
-    hook has to merge or delete existing duplicates first.
-  - Sort by id in `loadForEntityTypeAndUuid()`, so existing duplicates resolve
-    the same way every time.
-  - Consider not creating a state on read at all. A read could return an
-    unsaved, empty state.
-- **Fixed (2026-10-02, `paragraphs_blokkli` `94e7253`):**
-  - `getParagraphsEditState()` creates a state only while it holds a lock per
-    host entity (`paragraphs_blokkli_edit_state:<type>:<uuid>`), after loading
-    again. F2 can reuse the lock (`acquireHostLock()`).
-  - `loadForEntityTypeAndUuid()` sorts by id, so of existing duplicates the
-    oldest wins. No unique key and no update hook; states are still created on
-    read.
-  - Tested by `EditStateCreationTest`, and by a race on the dev site: 10
-    processes asking at the same instant made 10 states before the fix, 1 after.
-
-## F2: Lost mutations on concurrent writes
-
-- **Found:** 2026-09-26, [SQLite spike](01-sqlite-spike.md). Happens on SQLite
-  and MariaDB, and more often on MariaDB.
-- **Symptom:** two users edit the same page at the same time. Both get success
-  responses, but some mutations are never stored. In the spike on MariaDB, 79
-  mutations from two clients reported success and 53 were stored.
-- **Why it matters:** the edit state is shared by everyone editing a page. Two
-  editors on one page is a normal situation, and "Invite a colleague" (09b)
-  creates it on purpose.
-- **Cause:** a classic read-modify-write race with no lock or transaction.
-  - The state is loaded in `LoadEditStateForMutation::resolve()` (the resolver
-    of `paragraphsEditMutationState`).
-  - The mutation is appended with `ParagraphsBlokkliEditState::addMutation()`
-    (`src/Entity/ParagraphsBlokkliEditState.php:614`) and saved in
-    `ParagraphsBlokkliMutation::resolve()`
-    (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/ParagraphsBlokkliMutation.php:87`).
-  - The other operations that write the state have the same pattern: undo, redo,
-    `setHistoryIndex`, `revertAllChanges`, `takeOwnership`, publish, and so on.
-  - Whichever request saves last overwrites the other's `mutations` list.
-- **How to reproduce:**
-  - Deterministic, as a kernel test: load the same edit state twice as separate
-    objects. Add a mutation to the first and save it, then add one to the second
-    and save it. The first mutation is gone.
-  - Under load: two clients sending mutations to the same page.
-- **Fix ideas:**
-  - For every operation that writes the edit state: acquire a lock per host
-    entity, reload the state (`loadUnchanged()`), apply the operation, save, and
-    release the lock. Drupal's `lock` service works on every database. A
-    mutation takes well under 100 ms, so waiting for the lock is cheap.
-  - With the reload, the second user's mutation is applied on top of the first
-    one's, and their editor gets the merged state back in the response. A
-    mutation that refers to a paragraph the other user removed fails with a
-    normal error.
-- **Fixed (2026-10-02, `paragraphs_blokkli` `5c771cf`..`074a60c`):**
-  - Every write changes the state as stored, while holding F1's lock per host
-    entity. After taking the lock, it loads the state again (`loadUnchanged()`).
-    The writes:
-    - `ParagraphsBlokkliManager::updateState()`: mutations, undo, redo, history
-      index, mutation status, take ownership, schedule, unschedule, and the add,
-      edit and translate forms
-    - `publish()`, cron included
-    - `revertAllChanges()`
-  - The resolvers return the reloaded state, so the editor gets the merged
-    state.
-  - `saveState()` is removed.
-  - `publish()` throws `MutationViolationException` on validation errors instead
-    of returning FALSE.
-  - Tested by `EditStateUpdateTest`, `EditStateWriteDataProducerTest` and two
-    races:
-    - On the dev site, 10 processes adding a paragraph at the same instant
-      stored 1 mutation before the fix and 10 after.
-    - Over HTTP on a sandbox, 10 parallel adds got the indexes 0–9.
-  - Known limits:
-    - The edit state's admin forms (add, edit, delete) don't take the lock.
-    - A write that holds the lock for more than 30 s (the lock's expiry) makes
-      waiting writes fail with `LockAcquiringException`. That can be a big page,
-      a remote video lookup or a publish.
-    - A write to a state that was published or reverted while it waited fails,
-      and the editor shows its generic error.
-    - A mutation that refers to a paragraph another user removed: `edit` fails
-      with an error, and `add` after it appends at the end.
-
-## F3: Edit state in the persistent entity cache
-
-- **Found:** 2026-09-26, [SQLite spike](01-sqlite-spike.md). Only happens on
-  SQLite in practice.
-- **Symptom:** on SQLite, a page that is read while being edited loses stored
-  mutations. That was 1, 14 and 1 of 50 in three runs.
-- **Cause:** core's persistent entity cache. A read writes the old edit state to
-  `cache_entity` after the writer's commit, and the stale entry stays valid. The
-  full explanation is in chunk 01, under "Lost updates through the persistent
-  entity cache".
-- **Workaround in this plan:**
-  `$settings['cache']['bins']['entity'] = 'cache.backend.memory'`. It covers all
-  entities, not just the edit state, so the sandbox keeps it either way.
-- **Fix idea:** set `persistent_cache: FALSE` in the `#[ContentEntityType]`
-  attribute of `ParagraphsBlokkliEditState`
-  (`src/Entity/ParagraphsBlokkliEditState.php:40`). The state changes with every
-  mutation and is loaded about once per request, so the cache gains little. This
-  makes the module safe on SQLite sites that don't change the cache bin.
-- **Fixed (2026-10-02, `paragraphs_blokkli` `3ca469f`, with F2):**
-  - `persistent_cache: FALSE` on the edit state.
-  - `paragraphs_blokkli_update_9007()` sets it on the installed definition. The
-    storage uses the installed definition, so a cache rebuild isn't enough.
-- **Why F2 needs it:** F2's reload (`loadUnchanged()`) reads the persistent
-  cache first.
-  - With the memory bin (the workaround above), that cache lives per process.
-  - The reload then returned the copy the request had loaded before taking the
-    lock.
-  - The dev site's race stored 1 of 10 until the update ran.
+Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
+(the sandbox works around it).
 
 ## F4: `clearOutdated` type mismatch
 
-- **Found:** 2026-09-26, [SQLite spike](01-sqlite-spike.md).
+- **Found:** 2026-09-26, SQLite spike.
 - **Symptom:** calling `bulk_translate_field_values` without `clearOutdated`
   fails with "Argument #3 ($clearOutdated) must be of type bool, null given".
 - **Cause:** the argument is an optional `Boolean` in the GraphQL schema, but
@@ -217,7 +72,7 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
 
 ## F5: Twig 3.30 breaks escaping
 
-- **Found:** 2026-09-26, [SQLite spike](01-sqlite-spike.md), with Drupal 11.4.7.
+- **Found:** 2026-09-26, SQLite spike, with Drupal 11.4.7.
 - **Symptom:** every template that escapes output throws
   "EscaperRuntime::escape(): Argument #4 ($autoescape) must be of type bool,
   null given". Pages return 500.
@@ -225,16 +80,15 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
   doesn't pin Twig, so a fresh install gets 3.30.0. Twig 3.30 compiles `|escape`
   to `$this->escaper->escape(...)`, but with the argument list of Drupal's own
   escape filter.
-- **Workaround in this plan:** pin `twig/twig` to `~3.29.0` (chunk 03).
+- **Workaround in the sandbox:** pin `twig/twig` to `~3.29.0` (chunk 03).
 - **To do:** check whether core has an issue for it, and remove the pin once a
   core release fixes it.
 
 ## F6: Starterkit nginx routing
 
 - **Found:** 2026-09-26, while porting the starterkit's nginx config for
-  [chunk 02](02-ddev-and-repo-layout.md). Code references are relative to the
-  `blokkli_starterkit` repository (2.0.x, `.ddev/nginx_full/`, generated from
-  `scripts/nginx-conf-generator/`).
+  chunk 02. Code references are relative to the `blokkli_starterkit` repository
+  (2.0.x, `.ddev/nginx_full/`, generated from `scripts/nginx-conf-generator/`).
 - **Symptoms and causes:**
   - **Frontend paths go to Drupal.** The Drupal path prefixes are not anchored
     at a path segment, so `/blockchain` matches `block`, `/users` matches
@@ -267,8 +121,7 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
 
 ## F7: Undeclared dependencies and config gaps
 
-- **Found:** 2026-09-26, while building the base site in
-  [chunk 03](03-drupal-base-site.md).
+- **Found:** 2026-09-26, while building the base site in chunk 03.
 - **Undeclared dependencies:**
   - `paragraphs_blokkli_scheduler` uses contrib `scheduler` (`scheduler.manager`
     in `BundleSupportsScheduleProcess.php`, `ParagraphScheduleDateValue.php` and
@@ -302,7 +155,7 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`,
     `admin_permission: 'administer pb_entity_mapping'`, which isn't defined
     anywhere (its routes use `administer blokkli settings`).
 
-From [chunk 04](04-base-content-model.md) (2026-09-26):
+From chunk 04 (2026-09-26):
 
 - **More config schema gaps:** `blokkli_search_provider`
   (`modules/paragraphs_blokkli_search/config/schema/paragraphs_blokkli_search.schema.yml`)
@@ -325,29 +178,10 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   So `addBehaviour: 'no-form'` or `'editable:…'` fails for such a block. If
   that's intended, document it with `addBehaviour`.
 
-## F8: Upload mutations ignore tokens in the file directory
-
-- **Found:** 2026-09-26, while building the content model in
-  [chunk 04](04-base-content-model.md).
-- **Symptom:** `add_image` and `add_file` store files in a directory literally
-  named like the field's `file_directory` setting. Core's media recipes use
-  `[date:custom:Y]-[date:custom:m]`, so pasted files would end up in
-  `public://[date:custom:Y]-[date:custom:m]/`.
-- **Cause:** `FileUploadMutationBase`
-  (`src/Plugin/ParagraphsBlokkli/FileUploadMutationBase.php:259`) uses the
-  setting as it is. Core's file fields replace tokens
-  (`FileItem::getUploadLocation()`).
-- **Fix:** use `FileItem::getUploadLocation()`, or replace tokens the same way.
-- **Workaround:** plain directories (`media/images`, `media/documents`), as in
-  the starterkit.
-- **Fixed** (2026-10-06, `paragraphs_blokkli` `c4be24b`, with F47): the
-  mutations take the directory from `FileUploadLocationTrait`, as JSON:API's
-  file uploads do. `FileUploadMutationTest` covers a token.
-
 ## F9: Link titles from entity mappings
 
-- **Found:** 2026-09-26, while building the content model in
-  [chunk 04](04-base-content-model.md), by reading the code.
+- **Found:** 2026-09-26, while building the content model in chunk 04, by
+  reading the code.
 - **Wrong title.** When a mapping targets a link field with a title,
   `LinkOrReferenceFieldTrait::setLinkOrEntityReferenceFieldValue()`
   (`src/Traits/LinkOrReferenceFieldTrait.php:62`) sets the title to
@@ -368,8 +202,7 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
 
 ## F10: Paragraphs below level 5 are lost on publish
 
-- **Found:** 2026-09-26, planning [chunk 13b](13b-block-types.md), by reading
-  the code.
+- **Found:** 2026-09-26, planning chunk 13b, by reading the code.
 - **Symptom:** blocks nested more than 5 levels deep disappear when the page is
   published.
 - **Cause:**
@@ -381,13 +214,13 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
     paragraphs field it visits and refills it from the proxies, with no depth
     limit. A level-5 paragraph's children have no proxies, so its fields are
     saved empty.
-- **Workaround in this plan:** the model goes 4 deep (13b).
+- **Workaround in the sandbox:** the model goes 4 deep (13b).
 - **Fix ideas:** the same limit in both places (or none), or leave fields
   untouched when their children weren't loaded. A kernel test with 6 levels.
 
 ## F11: Options schema: no validation, lossy form saves
 
-- **Found:** 2026-09-26, planning [chunk 13b](13b-block-types.md).
+- **Found:** 2026-09-26, planning chunk 13b.
 - **No validation.** The docs said Drupal validates options against
   `schema_file`. It doesn't: mutations (`update_behavior_setting`,
   `bulk_update_behavior_settings`, `add_multiple`, `add_fragment`) store any
@@ -439,8 +272,8 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
 - **Fix idea:** in `rebuildFields()`, when a `from_library` paragraph references
   a new library item, rebuild the item's `paragraphs` and mark them for saving.
   Only for new items: `rebuildFields` empties a field before refilling it.
-- **In this plan:** containers have no library conversion (13d, the user). Once
-  fixed, enable it, and add the containers to
+- **In the sandbox:** containers have no library conversion (13d, the user).
+  Once fixed, enable it, and add the containers to
   `Paragraph/FromLibrary/fragment.graphql` without letting them spread
   `paragraphFromLibrary` (a cycle).
 
@@ -614,55 +447,6 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   click that blurs the field lands on the disabled button.
 - **Fix idea:** drop `lazy` there, or enable the button from the field's current
   value.
-
-## F22: Preview grants only work for some viewers
-
-- **Found:** 2026-09-27, 13e. Reproduced with a second, plain logged-in user.
-- **Anonymous visitors can't use a grant** where they lack `access content` and
-  GraphQL access, as in the sandbox (chunk 10):
-  - the grant route and `last_changed` require `access content`
-    (`paragraphs_blokkli.routing.yml:62-69, 86-91`)
-  - the grant adds no permissions: `PreviewGrantChecker::isEntityPreviewable()`
-    has no callers outside tests
-- **An unpublished host** can't be previewed by anyone who can't view it
-  (`LoadHostEntity`'s view access check).
-- **The link opens the default translation.** The redirect uses the host as
-  loaded by the edit state (`ParagraphsBlokkliEditState.php:303`,
-  `PreviewGrantController.php:95-100`), whatever language the editor was in.
-- **A stale `null` for earlier visitors.** A user who loaded the edit state
-  before opening the link (e.g. the preview URL without a grant) keeps getting
-  `null` from `getParagraphsEditState` until the caches are cleared.
-  `CanUseBlokkli` adds only `user.permissions` and `session.exists` as cache
-  contexts, not the module's `paragraphs_blokkli_session` context, so its
-  `FALSE` is reused after the grant. Users without a grant don't get another
-  user's result.
-- **Not reproduced (read in the code):** the standalone preview ignores changed
-  host options (e.g. a page's header), which only the edit mode applies.
-- **Fix ideas:** a route access check that accepts a valid grant, and an access
-  policy that adds view permissions while a grant is valid; the session context
-  on `CanUseBlokkli`'s result; the current language in `previewUrl`.
-- **Fixed** (2026-10-06, chunk 10, `paragraphs_blokkli` `19b0396`, `bcdecbd`,
-  `ec2e657`):
-  - The grant route needs no permission (`_access: 'TRUE'`): the hash is the
-    credential. A wrong hash still gets 403, a missing state 404, so state ids
-    can be told apart.
-  - The redirect goes to the host's translation in the link's language. Not
-    `getTranslationFromContext()`: content_translation drops unpublished
-    translations from its fallback for visitors who can't translate.
-  - `CanUseBlokkli` counts only valid grants (the new
-    `PreviewGrantChecker::hasValidGrant()`) and varies by
-    `paragraphs_blokkli_session`.
-  - Tests: `PreviewGrantTest` (the route's access, the language) and the new
-    `CanUseBlokkliTest`.
-  - **The site** gives the permissions, as the checker's docblock intends:
-    `blokkli_playground`'s `AnonymousViewerAccessPolicy` adds `access content`,
-    GraphQL and `bypass paragraphs type content access` to anonymous visitors
-    while their session has a valid grant. `PreviewHooks` lets the grant view an
-    unpublished host.
-  - **Checked over HTTP** on a sandbox: a published page and an unpublished news
-    item, in German. After publishing, the visitor gets 403 again. Mutations are
-    refused.
-  - **Still open:** the standalone preview and host options (not reproduced).
 
 ## F23: A past unpublish date blocks publishing
 
@@ -1017,27 +801,6 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   types with a link field, like the file mapping), a mutation that sets the link
   field, and the mapping in the Drupal adapter.
 
-## F47: Clipboard uploads skip core's upload handling
-
-- **Found:** 2026-10-06, chunk 10, by reading the code.
-- **Symptom:** files pasted or dropped into the editor (`add_image`, `add_file`)
-  skip what a form upload checks: the file name is neither sanitised nor checked
-  against the field's extensions, and the field's validators don't run.
-- **Cause:** `FileUploadMutationBase`
-  (`src/Plugin/ParagraphsBlokkli/FileUploadMutationBase.php:328` before the fix)
-  writes the data with `writeData()` under the given name, after checking only
-  the content's MIME type. 1.x has the same code (1.3.6).
-- **Fixed** (2026-10-06, chunk 10, `paragraphs_blokkli` `c4be24b`, 2.0.x):
-  - The mutations upload through core's `file.upload_handler`, as JSON:API's
-    file uploads do. Core sanitises the name and checks it, and the field's
-    validators run, including `FileValidationEvent`'s subscribers. The content
-    check stays.
-  - A refused upload leaves no temporary file.
-  - The messages are plain text.
-  - New test: `tests/src/Kernel/FileUploadMutationTest.php`.
-- **In this repo:** the image and document fields allow 10 MB, and
-  `blokkli_sandbox` limits a sandbox's uploads to 100 MB together (chunk 10).
-
 ## F48: A preview grant opens more than the preview
 
 - **Found:** 2026-10-06, chunk 10, by reading the code.
@@ -1052,35 +815,6 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
 - **Fix idea:** gate DeepL, and anything else that writes or costs, with the
   edit permission.
 
-## F49: Agent endpoints without authentication
-
-- **Found:** 2026-10-06, chunk 10, by reading the code.
-- **Symptom:** `/api/blokkli/agent/fetch` and `/api/blokkli/agent/route` accept
-  any request (`src/modules/agent/runtime/server/fetch.ts` and `route.ts`, in
-  this repository). `/route` calls the routing model with the server's API key,
-  and `/fetch` fetches pages from the allowed origins. Only `/stream` and the
-  WebSocket check the agent's auth token.
-- **Also in `/fetch`:**
-  - It throws without `allowedFetchOrigins`: `allowedFetchOrigins.length` on
-    `undefined` (`fetch.ts:126`).
-  - It follows redirects without checking their origin.
-- **Fix idea:** check the auth token as `stream.ts` does, and send it from
-  `agentProvider.ts` and the `web_fetch` tool. Before chunk 11 gives the agent
-  an API key.
-- **Fixed** (2026-10-06, chunk 11, in this repository):
-  - `/route` and `/fetch` return 401 without a valid token. The client fetches a
-    fresh one from the adapter for each request (`fetchRouting()` in
-    `agentProvider.ts`, the `web_fetch` tool), as for the stream. Without a
-    token there's no routing, and the prompt goes on without it.
-  - `allowedFetchOrigins` defaults to `[]` in the server template: `/fetch`
-    answers 403 ("No allowed origins configured") instead of throwing.
-  - `/fetch` follows redirects itself (`redirect: 'manual'`, at most 5), each
-    one checked like the requested URL.
-  - Found on the way: with `enableMock`, `/route` never called the model, also
-    for conversations without a script, so the sandbox had no routing. Now a
-    client with a script always sends `mockRouting` (empty without a routing
-    entry), and only those conversations skip the model.
-
 ## F50: Any GraphQL user can create text keys
 
 - **Found:** 2026-09-27, 13f.
@@ -1091,29 +825,6 @@ From [chunk 04](04-base-content-model.md) (2026-09-26):
   - since chunk 10, anonymous visitors with a preview grant;
   - on the dev site, everyone, with `blokkli_playground_public`.
 - **Fix idea:** create keys only with a permission, or only in development.
-
-## F51: Agent tokens of the same second collide
-
-- **Found:** 2026-10-06, 13i, with two tokens fetched in a row.
-- **Symptom:** an agent token is `timestamp:HMAC(timestamp)`, with nothing that
-  differs between requests (`GenerateAgentToken.php:88` in
-  `paragraphs_blokkli_agent`). Two tokens made in the same second are the same
-  string. The agent server allows each token once
-  (`SessionManager::authenticate()`,
-  `src/modules/agent/runtime/server/classes/SessionManager/index.ts:50` in this
-  repository). So the second connection of that second is rejected as
-  unauthorized: two tabs, two users, or, with one secret for all premium
-  sandboxes, two sandboxes.
-- **Fix idea:** a random nonce in the token
-  (`timestamp:nonce:HMAC(timestamp:nonce)`), in both repositories.
-- **Fixed** (2026-10-06, chunk 11, both repositories):
-  - `GenerateAgentToken` adds a random nonce (`Crypt::randomBytesBase64(12)`):
-    `<timestamp>:<nonce>:<hmac>`, the HMAC of `<timestamp>:<nonce>`. Its kernel
-    test checks the three parts and that two tokens differ.
-  - `validateToken()` (`src/modules/agent/runtime/server/helpers/security.ts`)
-    splits at the last colon, so tokens without a nonce still validate. Tests in
-    `security.spec.ts`.
-  - The playground's token route and the adapter docs use the new format.
 
 ## F52: A comment's label throws
 

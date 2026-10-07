@@ -53,7 +53,7 @@
 
 <script lang="ts" setup>
 // A mockup of an overview page: the upcoming events, filtered by category,
-// with pages (15h).
+// with pages.
 useHead({ title: 'Veranstaltungen – Mockup' })
 
 const chips = ['Alle', 'Kultur', 'Sport', 'Familie', 'Markt', 'Politik'].map(

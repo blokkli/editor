@@ -1,5 +1,4 @@
 # ddev project for the blökkli sandbox: the Drupal site and its Nuxt app.
-# See plans/drupal-setup/ for the design.
 name: blokkli
 type: drupal11
 docroot: sandbox/drupal/web
@@ -10,8 +9,8 @@ webserver_type: nginx-fpm
 nodejs_version: auto
 xdebug_enabled: false
 
-# The sandboxes: <id>.blokkli.ddev.site (plans/drupal-setup/08-sandbox-routing.md).
-# The control app: blokkli-control.ddev.site (09), not a subdomain of
+# The sandboxes: <id>.blokkli.ddev.site.
+# The control app: blokkli-control.ddev.site, not a subdomain of
 # blokkli.ddev.site, which would make it a sandbox id.
 additional_hostnames: ["*.blokkli", "blokkli-control"]
 

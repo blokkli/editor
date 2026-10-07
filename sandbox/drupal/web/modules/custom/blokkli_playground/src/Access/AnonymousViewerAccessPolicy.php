@@ -19,8 +19,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * Anonymous visitors can't view content: a sandbox is private. "Preview on
  * smartphone" shares a page's pending changes through a link, which stores a
  * grant in the visitor's session. While the grant is valid, the visitor may
- * view the site through GraphQL
- * (plans/drupal-setup/10-access-and-guardrails.md).
+ * view the site through GraphQL.
  *
  * $settings['blokkli_playground_public'] in settings.local.php lets every
  * anonymous visitor of the dev site view it, so that Nuxt renders its pages

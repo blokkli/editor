@@ -1,7 +1,7 @@
 // The control app: the claim page, the premium invitations, the admin pages,
 // and the cleanup of expired sandboxes. It runs inside ddev as the "control"
 // daemon (`ddev nuxt control`), behind nginx at
-// https://blokkli-control.ddev.site. See plans/drupal-setup/09-control-plane.md.
+// https://blokkli-control.ddev.site.
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 

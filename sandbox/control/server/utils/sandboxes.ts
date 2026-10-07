@@ -8,7 +8,8 @@ import type { SandboxRow } from './db'
 
 const HOUR = 3600
 
-// plans/drupal-setup/README.md, "Sandbox lifetime".
+// A sandbox lives 24 hours at most and expires after 2 hours unused. A premium
+// one lives 7 days.
 export const LIFETIME = {
   normal: 24 * HOUR,
   idle: 2 * HOUR,

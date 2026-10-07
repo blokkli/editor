@@ -2,7 +2,6 @@
 
 - **Status:** todo
 - **Milestone:** M3 Hosted
-- **Depends on:** 09, 10; 14b for the public launch
 
 ## Goal
 
@@ -10,8 +9,6 @@ The sandbox runs publicly on the existing Hetzner server using hosted ddev, in
 two instances: `main` (public) at `sandbox.blokk.li` and `dev` (invite only) at
 `dev-sandbox.blokk.li`. Sandboxes are subdomains of these, e.g.
 `k3f9.sandbox.blokk.li`.
-
-This chunk starts only once M0–M2 work locally.
 
 ## Tasks
 
@@ -70,7 +67,7 @@ This chunk starts only once M0–M2 work locally.
 
 ## Notes
 
-From [chunk 02](02-ddev-and-repo-layout.md) (2026-09-26):
+From chunk 02 (2026-09-26):
 
 - **Never run `nuxi dev` on a hosted instance.** Vite's `/@fs/` serves any file
   in the repo (databases, `.env`). Hosted runs the production build only.
@@ -87,7 +84,7 @@ From [chunk 02](02-ddev-and-repo-layout.md) (2026-09-26):
 - **The `post-start` hook runs `composer install` on every restart.** Harmless,
   but the deploy script runs it anyway.
 
-From [chunk 03](03-drupal-base-site.md) (2026-09-26):
+From chunk 03 (2026-09-26):
 
 - **Required:** `IS_DDEV_HOSTED=true` in `.ddev/config.local.yaml`, and
   `DRUPAL_HASH_SALT` (plus the agent secret and keys) in `.ddev/.env.web`.
@@ -98,13 +95,13 @@ From [chunk 03](03-drupal-base-site.md) (2026-09-26):
   includes `::ffff:0:0/96`, so IPv4-mapped IPv6 addresses would all count as
   trusted proxies.
 
-From [chunk 06](06-playground-drupal-app.md) (2026-09-26):
+From chunk 06 (2026-09-26):
 
 - **Check that the hosted instance serves the SPA only:**
   `sandbox/frontend/server/middleware/spa.ts` turns SSR off when
   `IS_DDEV_HOSTED=true`, which the Nuxt daemon must see in its environment.
 
-From [13f](13f-translation.md) (2026-09-27):
+From 13f (2026-09-27):
 
 - **A production build strips the texts' defaults:** a key that isn't loaded
   shows as the key. Anonymous visitors get no texts (chunk 10).
@@ -112,12 +109,12 @@ From [13f](13f-translation.md) (2026-09-27):
   nuxt-graphql-middleware reads the documents before nuxt-easy-texts writes it,
   so a fresh build uses the file on disk.
 
-From [15a](15a-design-system.md) (2026-09-27):
+From 15a (2026-09-27):
 
 - **The theme's nested CSS** (`main.css`) ships as native CSS nesting in dev;
   check that the production build flattens or keeps it as intended.
 
-From [chunk 08](08-sandbox-routing.md) (2026-10-02):
+From chunk 08 (2026-10-02):
 
 - **The hosted domains:** `DDEV_HOSTNAME` needs the wildcard entries
   (`*.sandbox.blokk.li`), which settings.php reads, and nginx's
@@ -128,7 +125,7 @@ From [chunk 08](08-sandbox-routing.md) (2026-10-02):
   blocks on its own (it uses `copy_file_range`, which clones first). Check it on
   the server.
 
-From [chunk 09](09-control-plane.md) (2026-10-02):
+From chunk 09 (2026-10-02):
 
 - **The control app** (`sandbox/control/`):
   - It needs its own production build and daemon, with the same `IS_DDEV_HOSTED`

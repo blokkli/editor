@@ -15,8 +15,6 @@ use Drupal\Core\Site\Settings;
  * its public files in sites/default/files/sandboxes/<id>/. settings.php picks
  * it by the request's subdomain, and nginx shows a page for a sandbox without
  * a database.
- *
- * @see plans/drupal-setup/08-sandbox-routing.md
  */
 final class SandboxManager {
 

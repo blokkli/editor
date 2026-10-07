@@ -21,8 +21,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  *
  * The control app makes them for its claims, Query.sandbox for the frontend's
  * banner: to come back, and for colleagues.
- *
- * @see plans/drupal-setup/09-control-plane.md
  */
 final class SandboxLoginController implements ContainerInjectionInterface {
 

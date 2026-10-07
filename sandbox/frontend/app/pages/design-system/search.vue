@@ -48,7 +48,7 @@
 
 <script lang="ts" setup>
 // A mockup of the search page's results: the type above each title, then the
-// date or the lead (15h).
+// date or the lead.
 useHead({ title: 'Suche – Mockup' })
 
 const RESULTS = [

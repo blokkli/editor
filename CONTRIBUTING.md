@@ -174,7 +174,7 @@ Their DE and FR strings are in `translations` in `nuxt.config.ts`.
 | `sandbox/control/`                   | The control app: the claim page, invitations, the cleanup.      |
 | `build/drupal-schema.graphql`        | The site's GraphQL schema. Generated, never edited by hand.     |
 | `.ddev/`                             | nginx routing, the Nuxt daemons, `ddev nuxt`, `bake`, `reset`.  |
-| `plans/drupal-setup/`                | The plan for this setup and the public sandbox.                 |
+| `plans/drupal-setup/`                | What's still open: the hosted deploy, upstream findings.        |
 
 ### A feature across both repositories
 

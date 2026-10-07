@@ -351,8 +351,8 @@ adapter methods, and configuration.
 the Drupal adapter (`sandbox/frontend/`). They run in ddev at
 https://blokkli.ddev.site. The control app (`sandbox/control/`, another Nuxt
 app) hands out sandboxes at https://blokkli-control.ddev.site. How it all works:
-the `sandbox` skill. Setup and the full workflow: `CONTRIBUTING.md`. Design and
-status: `plans/drupal-setup/`.
+the `sandbox` skill. Setup and the full workflow: `CONTRIBUTING.md`. What's
+still open: `plans/drupal-setup/`.
 
 - **Commands for this stack run in the web container:**
   `ddev exec -d /var/www/html bun run …` and `ddev drush …`. `bun run verify`
@@ -386,7 +386,8 @@ status: `plans/drupal-setup/`.
   Content changed in the editor isn't exported; change the files and bake.
 - After nginx changes (`.ddev/nginx_full/`), run `ddev check-routes`.
 - Log in with a one-time link: `ddev drush uli /en/node/1` (the admin), or
-  `ddev drush uli --name="Anna Keller"` for a test user (13h's roles).
+  `ddev drush uli --name="Anna Keller"` for a test user (one per role, in
+  `sandbox/drupal/content/users.yml`).
 - Sandboxes are copies of a template at their own subdomain:
   `ddev drush blokkli-sandbox:create a1 [--source=de]`, then
   https://a1.blokkli.ddev.site. drush targets one with

@@ -1,5 +1,5 @@
 # Photos of the fictional town, generated with an image AI from the brief in
-# plans/drupal-setup/15i-locations-and-offices.md.
+# README.md ("Photos").
 - key: town-from-lake
   type: image
   name: { en: The town from the lake, de: Die Gemeinde vom See aus, fr: La commune vue du lac }
@@ -141,7 +141,7 @@
       fr: Un jardin avec un cabanon en bois, une pelouse et des plates-bandes surélevées
   field_credit: AI-generated
 
-# The second brief (14b): events and news that had none, or shared one.
+# Events and news that had none, or shared one with another page.
 - key: band-concert
   type: image
   name: { en: 'The town band''s concert', de: Das Konzert der Musikgesellschaft, fr: Le concert de la fanfare }

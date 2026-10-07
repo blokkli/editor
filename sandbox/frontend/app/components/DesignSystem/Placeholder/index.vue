@@ -14,8 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-// An image in a mockup, until the demo has photos (14b). The size comes from
-// the class, e.g. aspect-3/2.
+// An image in a mockup. The size comes from the class, e.g. aspect-3/2.
 defineProps<{
   label: string
 }>()

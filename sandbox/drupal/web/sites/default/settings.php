@@ -2,18 +2,18 @@
 
 /**
  * @file
- * Settings for the blökkli playground site. See plans/drupal-setup/.
+ * Settings for the blökkli playground site.
  *
  * Secrets come from the environment: .ddev/.env.web, see .ddev/config.yaml.
  */
 
 use Symfony\Component\HttpFoundation\Request;
 
-// Sandboxes (plans/drupal-setup/08-sandbox-routing.md): a subdomain of a
-// wildcard hostname in DDEV_HOSTNAME (*.blokkli.ddev.site) names a sandbox, a
-// copy of a template made by the blokkli_sandbox module. It has its own
-// database, files and hash salt. Without a subdomain, this is the default site:
-// the dev site locally, only the bake target when hosted.
+// Sandboxes: a subdomain of a wildcard hostname in DDEV_HOSTNAME
+// (*.blokkli.ddev.site) names a sandbox, a copy of a template made by the
+// blokkli_sandbox module. It has its own database, files and hash salt. Without
+// a subdomain, this is the default site: the dev site locally, only the bake
+// target when hosted.
 $settings['blokkli_sandbox'] = [
   // Their databases, private and temporary files, and the templates.
   'directory' => dirname($app_root) . '/sandboxes',
@@ -24,8 +24,7 @@ $settings['blokkli_sandbox'] = [
   // Signs the logins that the control app (sandbox/control) hands out. Public,
   // so the hosted site must set its own (see the guard at the end).
   'login_secret' => getenv('NUXT_SANDBOX_LOGIN_SECRET') ?: 'blokkli-local-development',
-  // What a sandbox's users can upload together, in bytes
-  // (plans/drupal-setup/10-access-and-guardrails.md).
+  // What a sandbox's users can upload together, in bytes.
   'upload_quota' => 100 * 1024 * 1024,
 ];
 $hostnames = explode(',', (string) getenv('DDEV_HOSTNAME'));
@@ -104,7 +103,7 @@ $databases['default']['default'] = [
 ];
 
 // With the persistent entity cache, concurrent reads and writes on SQLite lose
-// edits (plans/drupal-setup/01-sqlite-spike.md).
+// edits.
 $settings['cache']['bins']['entity'] = 'cache.backend.memory';
 
 $settings['config_sync_directory'] = dirname($app_root) . '/config/sync';

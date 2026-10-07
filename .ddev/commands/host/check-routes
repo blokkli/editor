@@ -60,8 +60,7 @@ routes=(
   "/blokkli-sandbox/login/x drupal"
 )
 
-# A sandbox that doesn't exist (chunk 08): nginx's static page, whatever the
-# path.
+# A sandbox that doesn't exist: nginx's static page, whatever the path.
 unknown_sandbox="${base/:\/\//://zz99.}"
 sandbox_routes=(
   "/ sandbox-unknown"
@@ -69,14 +68,14 @@ sandbox_routes=(
   "/_nuxt/x.js sandbox-unknown"
 )
 
-# Files (chunk 10), with the expected status: a sandbox's files only on its own
-# host (none on the default site), and PHP never runs from them.
+# Files, with the expected status: a sandbox's files only on its own host (none
+# on the default site), and PHP never runs from them.
 file_routes=(
   "/sites/default/files/sandboxes/zz98/x.jpg nginx 404"
   "/sites/default/files/x.php drupal 403"
 )
 
-# The control app (chunk 09): every path, Drupal's included.
+# The control app: every path, Drupal's included.
 control="${base/:\/\/blokkli./://blokkli-control.}"
 control_routes=(
   "/ control"

@@ -671,12 +671,12 @@ const MOCKUPS = [
   {
     path: 'overview',
     label: 'Overview',
-    description: 'The upcoming events, filtered by category, with pages (15h).',
+    description: 'The upcoming events, filtered by category, with pages.',
   },
   {
     path: 'search',
     label: 'Search',
-    description: 'The search page with its results (15h).',
+    description: 'The search page with its results.',
   },
 ]
 

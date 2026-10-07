@@ -1,6 +1,5 @@
 // The sandbox's Nuxt app. It runs inside ddev as the "nuxt" daemon
 // (`ddev nuxt`), behind nginx at https://blokkli.ddev.site.
-// See plans/drupal-setup/06-playground-drupal-app.md.
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import { pathPrefix } from 'nuxt-language-negotiation/negotiators'
@@ -223,7 +222,7 @@ export default defineNuxtConfig({
       agent({
         provider: 'anthropic',
         // Lets a client replay a scripted conversation instead of the model
-        // (E2E tests). Local only: the hosted build turns it off (chunk 12).
+        // (E2E tests). Local only: the hosted build must turn it off.
         enableMock: true,
         // Prices in USD per million tokens, from Anthropic's pricing page.
         models: [

@@ -1,4 +1,4 @@
-# One test user per role (13h). The admin (uid 1) comes from the installation.
+# One test user per role. The admin (uid 1) comes from the installation.
 # No passwords: log in with `drush uli --name="Anna Keller"`.
 - key: anna
   name: Anna Keller

@@ -1,9 +1,6 @@
 # 13j: Skill tests
 
-- **Status:** todo
-- **Milestone:** M1 Local dev site
-- **Depends on:** 13a–13i
-- **Part of:** [chunk 13](13-editor-features.md)
+- **Status:** todo, deferred (the user, 2026-10-07)
 
 ## Goal
 
@@ -30,7 +27,7 @@ this chunk tests them (the user, 2026-09-26).
 
 ## Notes
 
-From [chunk 05](05-seed-bake-reset.md) (2026-09-28):
+From chunk 05 (2026-09-28):
 
 - **The baseline site is a bake:** `ddev bake` installs from config and seeds
   `sandbox/drupal/content`; a worktree bakes its own. `ddev reset` restores the
