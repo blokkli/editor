@@ -130,17 +130,11 @@
 
   .bk-loading-enter-active,
   .bk-loading-leave-active {
-    @apply transition duration-700 delay-300;
-    .bk-icon {
-      @apply transition duration-[400ms] ease-swing delay-300;
-    }
+    @apply transition duration-100;
   }
   .bk-loading-enter-from,
   .bk-loading-leave-to {
     @apply opacity-0;
-    .bk-icon {
-      @apply scale-0;
-    }
   }
 
   /* Messages. */
