@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+## Description: Bake the E2E template from config and the E2E fixtures, without touching the dev site
+## Usage: bake-e2e
+## Example: "ddev bake-e2e"
+
+# Installs into a scratch sandbox instead of the dev site's database, seeds
+# test/e2e-drupal/content and writes the template to
+# sandbox/drupal/sandboxes/_template/e2e. The E2E specs copy it into their
+# sandboxes (test/e2e-drupal/support/sandbox.ts).
+
+set -euo pipefail
+
+cd /var/www/html/sandbox/drupal
+id=e2ebake
+uri="https://$id.blokkli.ddev.site"
+directory="$PWD/sandboxes/$id"
+files="$PWD/web/sites/default/files/sandboxes/$id"
+template="$PWD/sandboxes/_template/e2e"
+start=$(date +%s)
+
+rm -rf "$directory" "$files"
+mkdir -p "$directory/private" "$directory/tmp"
+# settings.php only accepts a sandbox with a database. SQLite takes an empty
+# file as an empty database. The marker makes it an E2E sandbox, which may
+# enable test modules.
+touch "$directory/db.sqlite" "$directory/e2e"
+
+drush --uri="$uri" site:install --existing-config --yes
+# Translations come from a fake, never from DeepL.
+drush --uri="$uri" pm:install --yes paragraphs_blokkli_deepl_test
+drush --uri="$uri" cache:rebuild
+drush --uri="$uri" blokkli-playground:seed --content=/var/www/html/test/e2e-drupal/content
+drush --uri="$uri" search-api:index
+drush --uri="$uri" cache:rebuild
+drush --uri="$uri" blokkli-playground:template "$template"
+
+rm -rf "$template/files"
+mkdir -p "$template/files"
+cp -a "$files/." "$template/files/"
+rm -rf "$directory" "$files"
+
+echo "Baked $template in $(($(date +%s) - start)) s ($(du -sh "$template" | cut -f1))."

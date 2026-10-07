@@ -50,6 +50,7 @@ if ($sandbox === NULL) {
     array_filter($hostnames, fn (string $hostname): bool => !str_starts_with($hostname, '*.')),
   );
   $agent = TRUE;
+  $e2e = FALSE;
 }
 else {
   $directory = $settings['blokkli_sandbox']['directory'] . '/' . $sandbox;
@@ -86,6 +87,11 @@ else {
   // below. blokkli-sandbox:create writes the file (SandboxManager::create()).
   $lifetime = file_exists("$directory/lifetime.json") ? json_decode((string) file_get_contents("$directory/lifetime.json"), TRUE) : NULL;
   $agent = ($lifetime['premium'] ?? FALSE) === TRUE;
+  // The E2E tests' sandboxes (test/e2e-drupal): their reset writes the marker.
+  // They may enable test modules, and translate with
+  // paragraphs_blokkli_deepl_test's fake.
+  $e2e = file_exists("$directory/e2e");
+  $settings['extension_discovery_scan_tests'] = $e2e;
 }
 // APCu's prefixes without the hash salt: the class loader and the file cache
 // depend only on the code, so every site shares one copy. Only the default
@@ -128,7 +134,9 @@ $settings['file_scan_ignore_directories'] = ['node_modules', 'bower_components',
 // secret, Drupal makes no tokens, so the agent server lets nobody in from a
 // sandbox that isn't premium.
 $config['paragraphs_blokkli_agent.settings']['auth_secret'] = $agent ? (getenv('NUXT_BLOKKLI_AGENT_AUTH_SECRET') ?: '') : '';
-$config['paragraphs_blokkli_deepl.settings']['api_key'] = getenv('DEEPL_AUTH_KEY') ?: '';
+// Never in an E2E sandbox: without its fake, a translation fails there instead
+// of reaching DeepL.
+$config['paragraphs_blokkli_deepl.settings']['api_key'] = $e2e ? '' : (getenv('DEEPL_AUTH_KEY') ?: '');
 
 if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
   include $app_root . '/' . $site_path . '/settings.local.php';

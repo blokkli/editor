@@ -61,6 +61,19 @@ export default defineConfig({
           maxWorkers: 4,
         },
       },
+      {
+        test: {
+          name: 'e2e-drupal',
+          // Against a sandbox of the ddev site, one per worker
+          // (test/e2e-drupal/support/sandbox.ts).
+          include: ['test/e2e-drupal/**/*.{test,spec}.ts'],
+          environment: 'node',
+          globalSetup: ['test/e2e-drupal/globalSetup.ts'],
+          testTimeout: 15000,
+          hookTimeout: 30000,
+          maxWorkers: 4,
+        },
+      },
       await defineVitestProject({
         test: {
           name: 'nuxt',

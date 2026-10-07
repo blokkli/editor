@@ -1,0 +1,12 @@
+# A page with a few plain blocks, at /en/blocks.
+key: blocks
+type: page
+title: Blocks
+field_paragraphs:
+  - type: title
+    field_title: First title
+  - type: text
+    key: first-text
+    field_text: '<p>First text.</p>'
+  - type: text
+    field_text: '<p>Second text.</p>'

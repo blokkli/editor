@@ -1,0 +1,8 @@
+# The users the specs log in as. The admin (uid 1) comes from the installation.
+- key: anna
+  name: Anna Keller
+  mail: anna.keller@example.com
+  roles: [content_editor]
+  preferred_langcode: en
+  preferred_admin_langcode: en
+  status: true

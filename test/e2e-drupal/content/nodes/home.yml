@@ -1,0 +1,8 @@
+# The front page: system.site.page.front is /node/1.
+key: home
+id: 1
+type: editorial
+title: Home
+field_paragraphs:
+  - type: text
+    field_text: '<p>The front page.</p>'

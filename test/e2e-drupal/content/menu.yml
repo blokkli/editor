@@ -1,0 +1,5 @@
+# Pages get their URL from their place in the menu (pathauto).
+main:
+  - key: blocks
+    title: Blocks
+    link: { node: blocks }
