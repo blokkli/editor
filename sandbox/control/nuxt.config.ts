@@ -14,9 +14,7 @@ export default defineNuxtConfig({
   css: [
     '@fontsource-variable/source-sans-3/wght.css',
     '@fontsource-variable/source-serif-4/opsz.css',
-    fileURLToPath(
-      new URL('../frontend/app/assets/css/main.css', import.meta.url),
-    ),
+    '~/assets/css/main.css',
   ],
 
   // Secrets and keys come from the environment (.ddev/.env.web), e.g.

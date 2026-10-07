@@ -50,12 +50,20 @@ link into the editor of the page where it works.
   - Only the French task opens a translation. It's left out when French is the
     original.
   - The thread opens with `blokkliComment` (its UUID, also derived).
-- [x] **The claim** sends the claim page's language. The login URL gets
-      `?destination=` with the welcome page's path (`shared/welcome.ts`), which
-      core's RedirectResponseSubscriber follows. The sandbox's own link and the
+- [x] **The claim:** the login URL gets `?destination=` with the welcome page's
+      path in the content's language (`shared/welcome.ts`), which core's
+      RedirectResponseSubscriber follows. The sandbox's own link and the
       colleagues' still open the editor.
 - [x] **The popup** stays closed until it's clicked. It links to the welcome
       page (`sandbox.welcome`).
+- [x] **The claim page, simplified** (the user, 2026-10-07):
+  - One choice of language, in boxes with a check: it switches the page's
+    language and is the content's. It replaces the header's language links and
+    the content language's radios. A language without a template is greyed out.
+  - No header: a white box with the logo and the content on a grey page.
+  - The control app's own stylesheet (`app/assets/css/main.css`) imports the
+    frontend's and adds the Logo as a source. Tailwind only scanned the control
+    app's files, so the Logo's colours were missing (a black shield).
 - [x] **The test roles see unpublished nodes** (the user, 2026-10-06):
   - The nodes belong to the admin, and core only has
     `view own unpublished content`. So no test user could open the pool opening,
@@ -79,8 +87,8 @@ link into the editor of the page where it works.
 - **No contact on the agent's teaser for now.** Asking for a premium sandbox
   becomes an automated process in a follow-up, e.g. a form with a name and an
   email address.
-- The page is in the claim page's language. Its tasks open the content's
-  original language.
+- The page is in the claim page's language, which is the content's (since
+  2026-10-07). Its tasks open the content's original language.
 
 ## Verification (2026-10-06)
 

@@ -3,13 +3,12 @@ import type { ClaimError } from '../shared/claim'
 
 type Texts = {
   site: string
-  languages: string
   title: string
   intro: string
   lifetime: string
   premium: string
-  sourceLegend: string
-  sourceDescription: string
+  languageTitle: string
+  languageDescription: string
   submit: string
   pending: string
   errors: Record<ClaimError, string>
@@ -19,16 +18,15 @@ type Texts = {
 export const TEXTS: Record<Language, Texts> = {
   en: {
     site: 'Blockingen',
-    languages: 'Language',
     title: 'Try blökkli',
     intro:
       'Get your own copy of the website of Blockingen, a fictional Swiss municipality, and edit it with blökkli. You work as Anna Keller, an editor.',
     lifetime:
       'Your sandbox is deleted after 24 hours, or after 2 hours without use. Nobody else has access to it.',
     premium: 'Premium invitation: your sandbox lasts 7 days.',
-    sourceLegend: 'Language of the content',
-    sourceDescription:
-      'The language the content was written in. The other two are translations.',
+    languageTitle: 'Language',
+    languageDescription:
+      'Your sandbox’s content is written in this language. The other two are its translations.',
     submit: 'Create my sandbox',
     pending: 'Creating your sandbox…',
     errors: {
@@ -43,16 +41,15 @@ export const TEXTS: Record<Language, Texts> = {
   },
   de: {
     site: 'Blockingen',
-    languages: 'Sprache',
     title: 'blökkli ausprobieren',
     intro:
       'Sie erhalten eine eigene Kopie der Website von Blockingen, einer fiktiven Schweizer Gemeinde, und bearbeiten sie mit blökkli. Sie arbeiten als Anna Keller, Redaktorin.',
     lifetime:
       'Ihre Sandbox wird nach 24 Stunden gelöscht, oder nach 2 Stunden ohne Nutzung. Niemand sonst hat Zugriff darauf.',
     premium: 'Premium-Einladung: Ihre Sandbox bleibt 7 Tage bestehen.',
-    sourceLegend: 'Sprache der Inhalte',
-    sourceDescription:
-      'Die Sprache, in der die Inhalte verfasst sind. Die anderen beiden sind Übersetzungen.',
+    languageTitle: 'Sprache',
+    languageDescription:
+      'Die Inhalte Ihrer Sandbox sind in dieser Sprache verfasst. Die anderen beiden sind Übersetzungen.',
     submit: 'Meine Sandbox erstellen',
     pending: 'Ihre Sandbox wird erstellt …',
     errors: {
@@ -70,16 +67,15 @@ export const TEXTS: Record<Language, Texts> = {
   },
   fr: {
     site: 'Bloquens',
-    languages: 'Langue',
     title: 'Essayer blökkli',
     intro:
       'Vous recevez votre propre copie du site web de Bloquens, une commune suisse fictive, et vous la modifiez avec blökkli. Vous travaillez en tant qu’Anna Keller, rédactrice.',
     lifetime:
       'Votre sandbox est supprimée après 24 heures, ou après 2 heures sans utilisation. Personne d’autre n’y a accès.',
     premium: 'Invitation premium : votre sandbox reste disponible 7 jours.',
-    sourceLegend: 'Langue des contenus',
-    sourceDescription:
-      'La langue dans laquelle les contenus ont été rédigés. Les deux autres sont des traductions.',
+    languageTitle: 'Langue',
+    languageDescription:
+      'Les contenus de votre sandbox sont rédigés dans cette langue. Les deux autres en sont les traductions.',
     submit: 'Créer ma sandbox',
     pending: 'Création de votre sandbox…',
     errors: {

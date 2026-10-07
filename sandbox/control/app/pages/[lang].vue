@@ -1,83 +1,98 @@
 <template>
-  <div class="min-h-screen">
-    <header class="border-b border-line bg-white">
-      <div class="container-wide flex items-center gap-3 py-3 lg:py-4">
-        <div class="mr-auto flex items-center gap-3">
-          <Logo class="h-11 w-auto shrink-0 lg:h-12" />
-          <span class="flex flex-col">
-            <span class="font-serif text-body font-semibold lg:text-h3">
-              {{ texts.site }}
-            </span>
-            <span class="text-small text-muted">blökkli sandbox</span>
-          </span>
-        </div>
-        <nav class="flex gap-1 text-small" :aria-label="texts.languages">
-          <a
-            v-for="code in LANGUAGES"
-            :key="code"
-            :href="`/${code}${invitationQuery}`"
-            :lang="code"
-            :aria-current="code === language ? 'page' : undefined"
-            class="px-1.5 py-1 font-semibold text-muted uppercase hover:underline aria-[current=page]:text-ink"
-          >
-            {{ code }}
-          </a>
-        </nav>
+  <div class="min-h-screen bg-surface px-gutter py-section">
+    <main
+      class="mx-auto flex max-w-content flex-col gap-6 border border-line bg-white p-6 sm:p-10"
+    >
+      <div class="flex items-center gap-3">
+        <Logo class="h-12 w-auto shrink-0" />
+        <span class="flex flex-col">
+          <span class="font-serif text-h3 font-semibold">{{ texts.site }}</span>
+          <span class="text-small text-muted">blökkli sandbox</span>
+        </span>
       </div>
-    </header>
 
-    <main class="container-wide py-section">
-      <div class="flex max-w-content flex-col gap-6">
-        <h1 class="font-serif text-h1">{{ texts.title }}</h1>
-        <p class="text-lead">{{ texts.intro }}</p>
-        <p
-          v-if="invitation"
-          class="border-l-4 border-primary bg-primary-light px-4 py-3"
-        >
-          {{ texts.premium }}
-        </p>
-        <p v-else>{{ texts.lifetime }}</p>
+      <h1 class="font-serif text-h1">{{ texts.title }}</h1>
+      <p class="text-lead">{{ texts.intro }}</p>
+      <p
+        v-if="invitation"
+        class="border-l-4 border-primary bg-primary-light px-4 py-3"
+      >
+        {{ texts.premium }}
+      </p>
+      <p v-else>{{ texts.lifetime }}</p>
 
-        <form
-          ref="form"
-          class="mt-4 flex flex-col items-start gap-6"
-          @submit.prevent="submit"
-        >
-          <fieldset class="flex flex-col gap-3">
-            <legend class="mb-1 text-h3">{{ texts.sourceLegend }}</legend>
-            <p class="text-small text-muted">{{ texts.sourceDescription }}</p>
-            <label
-              v-for="code in LANGUAGES"
-              :key="code"
-              class="flex items-center gap-3 has-disabled:opacity-50"
+      <nav aria-labelledby="language" class="mt-2 flex flex-col gap-3">
+        <h2 id="language" class="text-h3">{{ texts.languageTitle }}</h2>
+        <p class="text-small text-muted">{{ texts.languageDescription }}</p>
+        <ul class="grid gap-3 sm:grid-cols-3">
+          <li v-for="code in LANGUAGES" :key="code">
+            <a
+              v-if="sources.includes(code)"
+              :href="`/${code}${invitationQuery}`"
+              :lang="code"
+              :aria-current="code === language ? 'page' : undefined"
+              class="flex items-center gap-3 border-2 border-line px-4 py-3 font-semibold hover:border-primary aria-[current=page]:border-primary aria-[current=page]:bg-primary-light"
             >
-              <input
-                v-model="source"
-                type="radio"
-                name="source"
-                :value="code"
-                :disabled="!sources.includes(code)"
-                class="size-5 accent-primary"
-              />
-              <span :lang="code">{{ LANGUAGE_NAMES[code] }}</span>
-            </label>
-          </fieldset>
+              <span
+                class="flex size-6 shrink-0 items-center justify-center border-2"
+                :class="
+                  code === language
+                    ? 'border-primary bg-primary text-white'
+                    : 'border-line bg-white'
+                "
+              >
+                <svg
+                  v-if="code === language"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  class="size-4"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12l5 5L19 7" />
+                </svg>
+              </span>
+              {{ LANGUAGE_NAMES[code] }}
+            </a>
+            <span
+              v-else
+              :lang="code"
+              class="flex cursor-not-allowed items-center gap-3 border-2 border-line px-4 py-3 font-semibold opacity-50"
+            >
+              <span class="size-6 shrink-0 border-2 border-line" />
+              {{ LANGUAGE_NAMES[code] }}
+            </span>
+          </li>
+        </ul>
+      </nav>
 
-          <div
-            v-if="hasTurnstile"
-            class="cf-turnstile"
-            :data-sitekey="turnstileSiteKey"
-            :data-language="language"
-          />
+      <form
+        ref="form"
+        class="flex flex-col items-start gap-6"
+        @submit.prevent="submit"
+      >
+        <div
+          v-if="hasTurnstile"
+          class="cf-turnstile"
+          :data-sitekey="turnstileSiteKey"
+          :data-language="language"
+        />
 
-          <button type="submit" class="button" :disabled="pending">
-            {{ pending ? texts.pending : texts.submit }}
-          </button>
-          <p v-if="error" role="alert" class="text-error">
-            {{ texts.errors[error] }}
-          </p>
-        </form>
-      </div>
+        <button
+          type="submit"
+          class="button"
+          :disabled="pending || !hasTemplate"
+        >
+          {{ pending ? texts.pending : texts.submit }}
+        </button>
+        <p v-if="error" role="alert" class="text-error">
+          {{ texts.errors[error] }}
+        </p>
+        <p v-else-if="!hasTemplate" class="text-error">
+          {{ texts.errors.template }}
+        </p>
+      </form>
     </main>
   </div>
 </template>
@@ -109,7 +124,8 @@ import {
 import { TEXTS } from '../texts'
 
 // The claim page, in each language: /de, /fr, /en (server/middleware/language.ts
-// redirects / here). With ?invitation=…, it creates a premium sandbox.
+// redirects / here). The page's language is also the content's: the language
+// boxes switch both. With ?invitation=…, it creates a premium sandbox.
 definePageMeta({
   validate: (route) => isLanguage(route.params.lang),
 })
@@ -146,14 +162,11 @@ useHead(() => ({
     : [],
 }))
 
+// The languages with a template: the others can't be the content's.
 const { data: sources } = await useFetch('/api/templates', {
   default: (): Language[] => [],
 })
-const source = ref<Language | undefined>(
-  sources.value.includes(DEFAULT_LANGUAGE)
-    ? DEFAULT_LANGUAGE
-    : sources.value[0],
-)
+const hasTemplate = computed(() => sources.value.includes(language.value))
 
 const form = useTemplateRef('form')
 const pending = ref(false)
@@ -166,8 +179,7 @@ async function submit() {
     const { url } = await $fetch('/api/claim', {
       method: 'POST',
       body: {
-        source: source.value,
-        language: language.value,
+        source: language.value,
         invitation: invitation.value,
         turnstile: form.value
           ? new FormData(form.value).get('cf-turnstile-response')?.toString()

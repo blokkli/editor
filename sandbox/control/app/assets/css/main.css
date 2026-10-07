@@ -1,0 +1,7 @@
+/*
+ * Blockingen's design system, from the sandbox frontend. Tailwind only finds
+ * classes in the control app's own files, so the frontend's components that
+ * the control app uses are sources too.
+ */
+@import '../../../../frontend/app/assets/css/main.css';
+@source '../../../../frontend/app/components/Logo';

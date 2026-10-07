@@ -105,9 +105,10 @@ ddev drush blokkli-sandbox:delete a1
 https://blokkli-control.ddev.site is how visitors get a sandbox:
 
 - **The claim page** (`/de`, `/fr`, `/en`) creates one and logs the visitor in
-  as Anna Keller. They land on the welcome page in the claim page's language
-  (`/en/welcome`, `/de/willkommen`, `/fr/bienvenue`): tasks to try, each a link
-  into an editor.
+  as Anna Keller. The page's language is the content's. They land on the welcome
+  page in that language (`/en/welcome`, `/de/willkommen`, `/fr/bienvenue`):
+  tasks to try, each a link into an editor. A language needs its template
+  (`ddev bake --source=…`).
 - **`/admin`** lists the sandboxes and makes invitation links. Each link creates
   one premium sandbox (7 days, with the agent), without the captcha and the
   limits.

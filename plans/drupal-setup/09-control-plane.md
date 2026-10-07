@@ -84,7 +84,9 @@ premium sandboxes by invitation. Expired sandboxes disappear.
 ## Notes
 
 **Changed in [09c](09c-welcome-page.md) (the user, 2026-10-06):** a claim opens
-the welcome page instead of the home page's editor.
+the welcome page instead of the home page's editor. Since 2026-10-07, the claim
+page's language is the content's: one choice switches both, and there's no
+header.
 
 Decided with the user (2026-10-02):
 
