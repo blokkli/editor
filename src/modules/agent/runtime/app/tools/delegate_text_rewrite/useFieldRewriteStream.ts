@@ -2,7 +2,8 @@ import { useBlokkli, ref, reactive } from '#imports'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { ComponentParams } from './index'
 import type { UsageTurn } from '#blokkli/agent/shared/types'
-import { routeStream } from '#blokkli-build/agent-client'
+import { enableMock, routeStream } from '#blokkli-build/agent-client'
+import { readMockStream } from '#blokkli/agent/app/helpers/mockScript'
 import type { EntityContext } from '#blokkli/types'
 import { useEditableFieldOverride } from '#blokkli/editor/composables'
 import { applyOperations, resolveHost as resolveBlockHost } from '../helpers'
@@ -507,6 +508,8 @@ export function useFieldRewriteStream(options: {
           templateParams,
           fields: requestFields,
           pageContext: context.pageContext,
+          // With a mock script, the server replays its `stream` entry.
+          mockStream: enableMock ? readMockStream() : undefined,
         }),
         signal: abortController.signal,
       })

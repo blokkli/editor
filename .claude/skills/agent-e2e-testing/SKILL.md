@@ -147,6 +147,28 @@ The `routing` entry is additive — transcripts don't contain it, so a pasted
 conversation snapshot still works unchanged (no routing entry → routing returns
 empty, nothing is preloaded).
 
+### Optional `stream` entry — field edit streams
+
+`delegate_text_rewrite` streams its edits from a separate route
+(`/api/blokkli/agent/stream`), not over the WebSocket. Add
+`{ type: 'stream', content: string }` to script them: the client sends the
+content as `mockStream`, and the server feeds it through the mock provider
+instead of the configured LLM. `content` is the stream's raw output, in
+`FieldStreamParser`'s format; field indexes are the order of the tool's
+`fields`:
+
+```ts
+{
+  type: 'stream',
+  content: '[[[FIELD:0]]]\n[[[FULL]]]\nThe new text.',
+}
+// or a patch:
+// '[[[FIELD:0]]]\n[[[SEARCH]]]\nold words\n[[[REPLACE]]]\nnew words'
+```
+
+Every stream of the conversation replays the same entry. Without one, a mocked
+stream returns no edits.
+
 ### Multi-turn example (with a real tool call)
 
 ```ts
@@ -198,6 +220,9 @@ After the real tool relay lands, the mock plays the second `agent` turn.
   handler honours `body.mockRouting` (extracted by the client from the script's
   `routing` entry) and never calls `preprocessPrompt` — defense in depth, so a
   populated `.env` doesn't cause real LLM calls on the routing path either.
+- **Field edit streams (`/api/blokkli/agent/stream`)**: likewise, in mock mode
+  the handler honours `body.mockStream` (the script's `stream` entry, or empty)
+  and replays it through `createMockProvider`, without the API key.
 - **Auto-restore is skipped in mock mode.** `agentProvider.startInit()` only
   calls `loadLatestFromAdapter` when no mock script is present. This both
   guarantees a clean turn-0 history for the mock provider AND lets parallel mock

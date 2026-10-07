@@ -1,4 +1,8 @@
-import type { MockRoutingEntry, MockScript } from '#blokkli/agent/shared/types'
+import type {
+  MockRoutingEntry,
+  MockScript,
+  MockStreamEntry,
+} from '#blokkli/agent/shared/types'
 
 /**
  * Dedicated window global where E2E tests stash a mock script before opening
@@ -33,4 +37,16 @@ export function readMockRouting():
   if (!script) return undefined
   const entry = script.find((e): e is MockRoutingEntry => e.type === 'routing')
   return { skills: entry?.skills ?? [], tools: entry?.tools ?? [] }
+}
+
+/**
+ * Extract the script's optional `stream` entry — what the stream endpoint
+ * replays for every field edit stream (`delegate_text_rewrite`) instead of
+ * calling the configured LLM. A script without the entry streams no edits.
+ */
+export function readMockStream(): string | undefined {
+  const script = readMockScript()
+  if (!script) return undefined
+  const entry = script.find((e): e is MockStreamEntry => e.type === 'stream')
+  return entry?.content ?? ''
 }

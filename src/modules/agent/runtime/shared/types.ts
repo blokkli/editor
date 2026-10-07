@@ -560,12 +560,26 @@ const mockRoutingEntrySchema = z.object({
 export type MockRoutingEntry = z.infer<typeof mockRoutingEntrySchema>
 
 /**
+ * Optional `stream` entry — additive to the transcript shape, like `routing`.
+ * When the client streams field edits (`delegate_text_rewrite`) and
+ * `enableMock` is on, the server replays `content` instead of calling the
+ * configured LLM. It's the stream's raw output (`[[[FIELD:0]]]`, see
+ * `FieldStreamParser`), and every stream of the conversation replays it.
+ */
+const mockStreamEntrySchema = z.object({
+  type: z.literal('stream'),
+  content: z.string(),
+})
+
+export type MockStreamEntry = z.infer<typeof mockStreamEntrySchema>
+
+/**
  * Wire schema for a mock-provider script — the same shape as the transcript
  * export produced by the "Copy conversation JSON" action. Pasting an exported
  * transcript verbatim is a valid script; the mock replays only the `agent`
- * entries for the conversation loop. A leading `routing` entry is optional
- * (additive to the transcript shape) and drives the first-message routing
- * preprocess.
+ * entries for the conversation loop. The `routing` and `stream` entries are
+ * optional (additive to the transcript shape) and drive the first-message
+ * routing preprocess and the field edit streams.
  */
 const mockScriptSchema = z.array(
   z.union([
@@ -574,6 +588,7 @@ const mockScriptSchema = z.array(
       content: z.union([z.string(), z.array(genericContentBlockSchema)]),
     }),
     mockRoutingEntrySchema,
+    mockStreamEntrySchema,
   ]),
 )
 

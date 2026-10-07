@@ -4,7 +4,13 @@ import {
   readBody,
   useRuntimeConfig,
 } from '#imports'
-import { provider, models, skills } from '#blokkli-build/agent-server'
+import {
+  createMockProvider,
+  enableMock,
+  provider,
+  models,
+  skills,
+} from '#blokkli-build/agent-server'
 import {
   FieldStreamParser,
   type ParserEvent,
@@ -31,20 +37,28 @@ function writeSSE(
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { authToken, template, templateParams, model, fields, pageContext } =
-    body as {
-      authToken?: string
-      template?: string
-      templateParams?: Record<string, unknown>
-      model?: string
-      fields?: Array<{
-        uuid: string
-        fieldName: string
-        currentValue: string
-        fieldType: 'plain' | 'markup'
-      }>
-      pageContext?: Record<string, unknown>
-    }
+  const {
+    authToken,
+    template,
+    templateParams,
+    model,
+    fields,
+    pageContext,
+    mockStream,
+  } = body as {
+    authToken?: string
+    template?: string
+    templateParams?: Record<string, unknown>
+    model?: string
+    fields?: Array<{
+      uuid: string
+      fieldName: string
+      currentValue: string
+      fieldType: 'plain' | 'markup'
+    }>
+    pageContext?: Record<string, unknown>
+    mockStream?: string
+  }
 
   // Validate required fields.
   if (!authToken || !template || !fields?.length) {
@@ -61,7 +75,16 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  if (!apiKey) {
+  // Mock mode: a client with a mock script always sends `mockStream` (empty
+  // when the script has no stream entry), and the stream replays it instead of
+  // calling the configured LLM. So the E2E suites are safe to run alongside a
+  // populated `.env`.
+  const mockProvider =
+    enableMock && createMockProvider && typeof mockStream === 'string'
+      ? createMockProvider([{ type: 'agent', content: mockStream }])
+      : null
+
+  if (!mockProvider && !apiKey) {
     throw createError({
       statusCode: 500,
       message: 'API key not configured',
@@ -123,7 +146,7 @@ export default defineEventHandler(async (event) => {
   )
 
   try {
-    const stream = provider.createStream(
+    const stream = (mockProvider ?? provider).createStream(
       { apiKey, model: resolvedModel },
       {
         systemPrompt: [{ text: systemPrompt }],

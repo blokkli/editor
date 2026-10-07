@@ -134,8 +134,7 @@ describe('agent: text field values are always unprocessed', async () => {
 
   test('readRawValue returns the stored field value', async () => {
     // The provider-level contract underneath every tool below — and the read
-    // basis `delegate_text_rewrite` turns into its `baseValue`, which has no
-    // reachable E2E seam of its own (its rewrite streams from a real LLM route).
+    // basis `delegate_text_rewrite` turns into its `baseValue`.
     const values = await page.evaluate(
       ({ uuid, bundle }) => {
         const fieldValue = window.__BLOKKLI__!.app!.fieldValue
