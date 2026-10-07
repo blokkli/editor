@@ -1,5 +1,11 @@
 <template>
-  <div :class="[spacing, widthClass, { hidden: !hasChart && !isEditing }]">
+  <div
+    :class="[
+      spacing,
+      width && WIDTH_CLASSES[width],
+      { hidden: !hasChart && !isEditing },
+    ]"
+  >
     <Chart v-if="hasChart" :data="chartData!" :dynamic-data />
     <p v-else class="bg-surface p-4 text-muted">
       {{ $texts('chart.empty', 'No data yet: edit the chart to add some.') }}
@@ -18,8 +24,26 @@ import type {
 const block = defineBlokkli({
   bundle: 'chart',
   chunkName: 'chart',
-  globalOptions: ['width', 'bkVisibleLanguages'],
+  globalOptions: ['bkVisibleLanguages'],
   options: {
+    // The global width option without "Full", which is no wider than "Wide"
+    // here.
+    width: {
+      type: 'radios',
+      label: { en: 'Width', de: 'Breite', fr: 'Largeur' },
+      default: 'content',
+      displayAs: 'icons',
+      options: {
+        content: {
+          label: { en: 'Content', de: 'Inhalt', fr: 'Contenu' },
+          icon: 'bk_mdi_width_normal',
+        },
+        wide: {
+          label: { en: 'Wide', de: 'Breit', fr: 'Large' },
+          icon: 'bk_mdi_width_wide',
+        },
+      },
+    },
     data: {
       type: 'json',
       label: { en: 'Chart', de: 'Diagramm', fr: 'Graphique' },
@@ -41,6 +65,7 @@ const block = defineBlokkli({
 })
 const { options } = block
 const spacing = useBlockSpacing(block)
+const width = useBlockWidth(block)
 
 const chartData = computed<BlokkliChartData | null>(() => options.value.data)
 
@@ -69,14 +94,6 @@ const hasChart = computed(() => {
   }
   return !!data.dataSource || (data.series?.length ?? 0) > 0
 })
-
-// Full width makes no sense for a chart: it's as wide as "wide".
-const width = useBlockWidth(block)
-const widthClass = computed(() =>
-  width.value
-    ? WIDTH_CLASSES[width.value === 'content' ? 'content' : 'wide']
-    : '',
-)
 
 const isEditing = import.meta.blokkliEditing
 </script>

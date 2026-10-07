@@ -17,7 +17,7 @@ typechecks is slow and usually unnecessary.
 | `bun run typecheck:runtime`          | Runtime/client code      | Changed `src/runtime/`, `src/modules/*/runtime/` (excluding server), `src/global/`                                       |
 | `bun run typecheck:server`           | Server/Nitro code        | Changed `src/modules/*/runtime/server/`                                                                                  |
 | `bun run typecheck:playground`       | Playground/mock code     | Changed `playground/`                                                                                                    |
-| `bun run typecheck:sandbox-frontend` | The sandbox's Nuxt app   | Changed `sandbox/frontend/` (its `.nuxt` comes from the ddev Nuxt daemon)                                                |
+| `bun run typecheck:sandbox-frontend` | The sandbox's Nuxt app   | Changed `sandbox/frontend/`, app and server code (its `.nuxt` comes from the ddev Nuxt daemon)                           |
 | `bun run typecheck:sandbox-control`  | The control app          | Changed `sandbox/control/`, app and server code (its `.nuxt` comes from the ddev daemon "control")                       |
 
 ## Which command to run

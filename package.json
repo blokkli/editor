@@ -112,7 +112,7 @@
     "typecheck:runtime": "vue-tsc --noEmit -p .nuxt/tsconfig.app.json",
     "typecheck:server": "vue-tsc --noEmit -p .nuxt/tsconfig.server.json",
     "typecheck:playground": "vue-tsc --noEmit -p ./playground/.nuxt/tsconfig.app.json",
-    "typecheck:sandbox-frontend": "vue-tsc --noEmit -p ./sandbox/frontend/.nuxt/tsconfig.app.json",
+    "typecheck:sandbox-frontend": "vue-tsc --noEmit -p ./sandbox/frontend/.nuxt/tsconfig.app.json && vue-tsc --noEmit -p ./sandbox/frontend/.nuxt/tsconfig.server.json",
     "typecheck:sandbox-control": "vue-tsc --noEmit -p ./sandbox/control/.nuxt/tsconfig.app.json && vue-tsc --noEmit -p ./sandbox/control/.nuxt/tsconfig.server.json",
     "dev:minimal": "nuxi dev playground-minimal --host",
     "drupal:schema": "sandbox/drupal/vendor/bin/drush cr && sandbox/drupal/vendor/bin/drush graphql:dump graphql \"$PWD/build/drupal-schema.graphql\"",

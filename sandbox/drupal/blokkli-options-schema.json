@@ -138,14 +138,6 @@
             "fr": "Contenu"
           }
         },
-        "full": {
-          "icon": "bk_mdi_width_full",
-          "label": {
-            "de": "Volle Breite",
-            "en": "Full",
-            "fr": "Pleine largeur"
-          }
-        },
         "wide": {
           "icon": "bk_mdi_width_wide",
           "label": {
@@ -297,14 +289,6 @@
             "de": "Inhalt",
             "en": "Content",
             "fr": "Contenu"
-          }
-        },
-        "full": {
-          "icon": "bk_mdi_width_full",
-          "label": {
-            "de": "Volle Breite",
-            "en": "Full",
-            "fr": "Pleine largeur"
           }
         },
         "wide": {
