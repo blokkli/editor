@@ -1,17 +1,20 @@
 <template>
-  <div
-    :class="[
-      spacing,
-      { 'container-content': !parentType && fieldListType === 'default' },
-    ]"
-  >
-    <BlokkliField
-      name="field_paragraphs"
-      :list="paragraphs"
-      tag="ul"
-      class="border-t border-ink"
-      edit-class="min-h-12"
-    />
+  <div :class="spacing">
+    <div
+      ref="blokkliDraggable"
+      class="-mt-4 pt-4"
+      :class="{
+        'container-content': !parentType && fieldListType === 'default',
+      }"
+    >
+      <BlokkliField
+        name="field_paragraphs"
+        :list="paragraphs"
+        tag="ul"
+        class="border-t border-ink"
+        edit-class="min-h-12"
+      />
+    </div>
   </div>
 </template>
 
@@ -23,6 +26,11 @@ import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 // Links and documents, one per row (Link/InList.vue). A heading is a title
 // block before the list.
+//
+// In the editor, the list is the inner element (blokkliDraggable): 16px above
+// the list, which its negative margin takes back, and the rows' padding, which
+// isn't part of a link, are where a click selects the list. The spacing is the
+// outer element's margin.
 defineProps<ParagraphLinkListFragment>()
 
 const block = defineBlokkli({

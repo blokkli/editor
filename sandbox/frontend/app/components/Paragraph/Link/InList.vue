@@ -6,6 +6,7 @@
   </li>
   <LinkListItem
     v-else
+    ref="blokkliDraggable"
     v-blokkli-droppable:field_link
     :url="target.href"
     :meta

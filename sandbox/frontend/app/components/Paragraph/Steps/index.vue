@@ -1,12 +1,18 @@
 <template>
-  <div :class="[spacing, { 'container-content': !parentType }]">
-    <BlokkliField
-      name="field_paragraphs"
-      :list="paragraphs"
-      tag="ol"
-      class="border-t border-line"
-      edit-class="min-h-16"
-    />
+  <div :class="spacing">
+    <div
+      ref="blokkliDraggable"
+      class="-mt-4 pt-4"
+      :class="{ 'container-content': !parentType }"
+    >
+      <BlokkliField
+        name="field_paragraphs"
+        :list="paragraphs"
+        tag="ol"
+        class="border-t border-line"
+        edit-class="min-h-16"
+      />
+    </div>
   </div>
 </template>
 
@@ -18,6 +24,11 @@ import { useBlockSpacing } from '~/composables/useBlockSpacing'
 
 // Numbered steps (Step/index.vue), e.g. of a procedure. A heading is a title
 // block before them.
+//
+// In the editor, the steps are the inner element (blokkliDraggable): 16px
+// above the list, which its negative margin takes back, and the rows' padding,
+// which isn't part of a step, are where a click selects the steps. The
+// spacing is the outer element's margin.
 defineProps<ParagraphStepsFragment>()
 
 const block = defineBlokkli({

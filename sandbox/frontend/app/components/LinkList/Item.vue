@@ -2,23 +2,26 @@
   <li>
     <SiteLink
       :to="url"
-      class="flex items-center gap-4 border-b border-line py-3.5 font-semibold text-ink hover:text-primary"
+      class="block border-b border-line py-3.5 font-semibold text-ink hover:text-primary"
     >
-      <span class="grow">
-        <slot>{{ label }}</slot>
+      <span ref="content" class="flex items-center gap-4">
+        <span class="grow">
+          <slot>{{ label }}</slot>
+        </span>
+        <span v-if="meta" class="shrink-0 text-small font-normal text-muted">
+          {{ meta }}
+        </span>
+        <SpriteSymbol
+          :name="download ? 'download' : 'arrow-right'"
+          class="size-5 shrink-0 text-primary"
+        />
       </span>
-      <span v-if="meta" class="shrink-0 text-small font-normal text-muted">
-        {{ meta }}
-      </span>
-      <SpriteSymbol
-        :name="download ? 'download' : 'arrow-right'"
-        class="size-5 shrink-0 text-primary"
-      />
     </SiteLink>
   </li>
 </template>
 
 <script lang="ts" setup>
+import { useTemplateRef } from '#imports'
 import { SiteLink, SpriteSymbol } from '#components'
 
 // A row of a link list: the label, a download's meta text (e.g. "PDF, 240
@@ -30,4 +33,9 @@ defineProps<{
   meta?: string
   download?: boolean
 }>()
+
+// In the editor, a link in a link list is the row's content, without its
+// padding (Link/InList.vue): a click on the padding selects the list.
+const content = useTemplateRef('content')
+defineExpose({ blokkliDraggable: content })
 </script>
