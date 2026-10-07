@@ -48,7 +48,7 @@ const { options } = defineBlokkli({
   bundle: 'banner',
   globalOptions: ['bkVisibleLanguages'],
   options: {
-    // The swatches are the bands' colours (the -light tokens in main.css).
+    // The swatches are the -mid colours of the bands' light ones (main.css).
     color: {
       type: 'radios',
       label: { en: 'Color', de: 'Farbe', fr: 'Couleur' },
@@ -56,15 +56,21 @@ const { options } = defineBlokkli({
       displayAs: 'colors',
       options: {
         warning: {
-          hex: '#fbf1dc',
+          class: 'bg-warning-mid',
           label: { en: 'Yellow', de: 'Gelb', fr: 'Jaune' },
         },
-        info: { hex: '#e6eef6', label: { en: 'Blue', de: 'Blau', fr: 'Bleu' } },
+        info: {
+          class: 'bg-info-mid',
+          label: { en: 'Blue', de: 'Blau', fr: 'Bleu' },
+        },
         success: {
-          hex: '#e5f0e8',
+          class: 'bg-success-mid',
           label: { en: 'Green', de: 'Grün', fr: 'Vert' },
         },
-        error: { hex: '#f3e4ec', label: { en: 'Red', de: 'Rot', fr: 'Rouge' } },
+        error: {
+          class: 'bg-error-mid',
+          label: { en: 'Red', de: 'Rot', fr: 'Rouge' },
+        },
       },
     },
   },

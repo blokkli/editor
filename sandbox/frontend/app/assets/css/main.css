@@ -39,6 +39,14 @@
   --color-warning-light: #fbf1dc;
   --color-error: #8e2a5b;
   --color-error-light: #f3e4ec;
+  /* Halfway between a colour and its light one, and between the surface and
+     muted. The editor's swatches for options that pick a light ground: the
+     light colours are too pale to tell apart, the others too dark. */
+  --color-surface-mid: #a9a4a0;
+  --color-info-mid: #83a4c1;
+  --color-success-mid: #89ae94;
+  --color-warning-mid: #c3a66e;
+  --color-error-mid: #c187a4;
   /* Text and rules on the ink ground. */
   --color-on-dark: #e8e4e0;
   --color-on-dark-muted: #cfc9c4;

@@ -805,6 +805,41 @@ const COLOURS = [
     ],
   },
   {
+    label: 'Swatches in the editor',
+    colours: [
+      {
+        token: 'surface-mid',
+        swatch: 'bg-surface-mid',
+        hex: '#A9A4A0',
+        use: 'The "Stone" section',
+      },
+      {
+        token: 'info-mid',
+        swatch: 'bg-info-mid',
+        hex: '#83A4C1',
+        use: 'Blue boxes and banners, the "Lake" section',
+      },
+      {
+        token: 'success-mid',
+        swatch: 'bg-success-mid',
+        hex: '#89AE94',
+        use: 'Green boxes and banners',
+      },
+      {
+        token: 'warning-mid',
+        swatch: 'bg-warning-mid',
+        hex: '#C3A66E',
+        use: 'Yellow boxes and banners',
+      },
+      {
+        token: 'error-mid',
+        swatch: 'bg-error-mid',
+        hex: '#C187A4',
+        use: 'Red boxes and banners',
+      },
+    ],
+  },
+  {
     label: 'On the ink ground',
     colours: [
       { token: 'on-dark', swatch: 'bg-on-dark', hex: '#E8E4E0', use: 'Text' },

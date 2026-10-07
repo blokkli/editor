@@ -60,18 +60,19 @@ const block = defineBlokkli({
       label: { en: 'Background', de: 'Hintergrund', fr: 'Arrière-plan' },
       default: 'none',
       displayAs: 'colors',
+      // The swatches are the -mid colours of the backgrounds (main.css).
       options: {
         none: {
           label: { en: 'None', de: 'Keiner', fr: 'Aucun' },
-          hex: '#ffffff',
+          class: 'bg-white',
         },
         stone: {
           label: { en: 'Stone', de: 'Stein', fr: 'Pierre' },
-          hex: '#f5f2ee',
+          class: 'bg-surface-mid',
         },
         lake: {
           label: { en: 'Lake', de: 'See', fr: 'Lac' },
-          hex: '#e6eef6',
+          class: 'bg-info-mid',
         },
       },
     },

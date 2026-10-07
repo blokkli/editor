@@ -25,8 +25,7 @@ const block = defineBlokkli({
   bundle: 'text',
   globalOptions: ['bkVisibleLanguages'],
   options: {
-    // The swatches are the boxes' colours (the -light tokens in main.css), as
-    // on the banner.
+    // The swatches are the -mid colours of the boxes' light ones (main.css).
     box: {
       type: 'radios',
       label: { en: 'Info box', de: 'Infobox', fr: 'Encadré' },
@@ -34,19 +33,25 @@ const block = defineBlokkli({
       displayAs: 'colors',
       options: {
         none: {
-          hex: '#ffffff',
+          class: 'bg-white',
           label: { en: 'None', de: 'Keine', fr: 'Aucun' },
         },
-        info: { hex: '#e6eef6', label: { en: 'Blue', de: 'Blau', fr: 'Bleu' } },
+        info: {
+          class: 'bg-info-mid',
+          label: { en: 'Blue', de: 'Blau', fr: 'Bleu' },
+        },
         success: {
-          hex: '#e5f0e8',
+          class: 'bg-success-mid',
           label: { en: 'Green', de: 'Grün', fr: 'Vert' },
         },
         warning: {
-          hex: '#fbf1dc',
+          class: 'bg-warning-mid',
           label: { en: 'Yellow', de: 'Gelb', fr: 'Jaune' },
         },
-        error: { hex: '#f3e4ec', label: { en: 'Red', de: 'Rot', fr: 'Rouge' } },
+        error: {
+          class: 'bg-error-mid',
+          label: { en: 'Red', de: 'Rot', fr: 'Rouge' },
+        },
       },
     },
   },
