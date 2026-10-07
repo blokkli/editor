@@ -14,6 +14,7 @@ import { useLanguage } from '~/composables/useLanguage'
 import { getLanguageFromPath } from '#shared/languages'
 import { WIDTH_CLASSES } from '~/helpers/width'
 import { useBlockSpacing } from '~/composables/useBlockSpacing'
+import { useBlockWidth } from '~/composables/useBlockWidth'
 
 const props = defineProps<ParagraphEmbedFragment>()
 
@@ -34,11 +35,15 @@ const block = defineBlokkli({
     icon: 'bk_mdi_fit_screen',
     previewWidth: 800,
     editTitle: (el) => el.querySelector('iframe')?.title,
+    // Not in nested blocks and on detail pages, where it has no effect
+    // (useBlockWidth).
     determineVisibleOptions: (ctx) =>
-      ctx.parentType ? ['heights'] : ['width', 'heights'],
+      ctx.parentType || ctx.entity.entityBundle === 'page'
+        ? ['heights']
+        : ['width', 'heights'],
   },
 })
-const { options, parentType } = block
+const { options } = block
 const spacing = useBlockSpacing(block)
 
 // The link is the same in every language: the page is shown in the language
@@ -55,9 +60,10 @@ const src = computed(() => {
 })
 
 // Full width makes no sense for an embed: it's as wide as "wide".
+const width = useBlockWidth(block)
 const widthClass = computed(() =>
-  parentType.value
-    ? ''
-    : WIDTH_CLASSES[options.value.width === 'content' ? 'content' : 'wide'],
+  width.value
+    ? WIDTH_CLASSES[width.value === 'content' ? 'content' : 'wide']
+    : '',
 )
 </script>

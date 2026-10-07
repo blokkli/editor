@@ -1,5 +1,5 @@
 <template>
-  <div :class="[spacing, parentType ? '' : WIDTH_CLASSES[options.width]]">
+  <div :class="[spacing, width && WIDTH_CLASSES[width]]">
     <a
       :href="video?.url ?? undefined"
       target="_blank"
@@ -26,9 +26,7 @@
       </span>
       <span
         class="mt-2 block text-small text-muted group-hover:underline"
-        :class="{
-          'container-content': options.width === 'full' && !parentType,
-        }"
+        :class="{ 'container-content': width === 'full' }"
       >
         {{ video?.name }}
       </span>
@@ -42,6 +40,7 @@ import { SpriteSymbol } from '#components'
 import type { ParagraphVideoFragment } from '#graphql-operations'
 import { WIDTH_CLASSES } from '~/helpers/width'
 import { useBlockSpacing } from '~/composables/useBlockSpacing'
+import { useBlockWidth } from '~/composables/useBlockWidth'
 
 const props = defineProps<ParagraphVideoFragment>()
 
@@ -54,9 +53,12 @@ const block = defineBlokkli({
   editor: {
     icon: 'bk_mdi_smart_display',
     editTitle: (el) => el.textContent?.trim(),
-    determineVisibleOptions: (ctx) => (ctx.parentType ? [] : ['width']),
+    // Not in nested blocks and on detail pages, where it has no effect
+    // (useBlockWidth).
+    determineVisibleOptions: (ctx) =>
+      ctx.parentType || ctx.entity.entityBundle === 'page' ? [] : ['width'],
   },
 })
-const { options, parentType } = block
 const spacing = useBlockSpacing(block)
+const width = useBlockWidth(block)
 </script>

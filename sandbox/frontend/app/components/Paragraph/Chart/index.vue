@@ -17,6 +17,7 @@ import Chart from '~/components/Chart/index.vue'
 import { useLanguage } from '~/composables/useLanguage'
 import { WIDTH_CLASSES } from '~/helpers/width'
 import { useBlockSpacing } from '~/composables/useBlockSpacing'
+import { useBlockWidth } from '~/composables/useBlockWidth'
 
 // A chart of the charts module. The paragraph has no fields: the chart,
 // including its title and translations, is a block option.
@@ -38,10 +39,13 @@ const block = defineBlokkli({
     // Adding one opens the chart editor; there's nothing to edit inline.
     addBehaviour: 'complex-option:data',
     disableEdit: true,
-    determineVisibleOptions: (ctx) => (ctx.parentType ? [] : ['width']),
+    // Not in nested blocks and on detail pages, where it has no effect
+    // (useBlockWidth).
+    determineVisibleOptions: (ctx) =>
+      ctx.parentType || ctx.entity.entityBundle === 'page' ? [] : ['width'],
   },
 })
-const { options, parentType } = block
+const { options } = block
 const spacing = useBlockSpacing(block)
 
 const chartData = computed<BlokkliChartData | null>(() => options.value.data)
@@ -73,10 +77,11 @@ const hasChart = computed(() => {
 })
 
 // Full width makes no sense for a chart: it's as wide as "wide".
+const width = useBlockWidth(block)
 const widthClass = computed(() =>
-  parentType.value
-    ? ''
-    : WIDTH_CLASSES[options.value.width === 'content' ? 'content' : 'wide'],
+  width.value
+    ? WIDTH_CLASSES[width.value === 'content' ? 'content' : 'wide']
+    : '',
 )
 
 const isEditing = import.meta.blokkliEditing

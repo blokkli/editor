@@ -1,5 +1,5 @@
 <template>
-  <div :class="[spacing, parentType ? '' : WIDTH_CLASSES[options.width]]">
+  <div :class="[spacing, width && WIDTH_CLASSES[width]]">
     <BlokkliField
       v-if="options.display === 'grid'"
       name="field_paragraphs"
@@ -28,6 +28,7 @@ import type { ParagraphGalleryFragment } from '#graphql-operations'
 import ParagraphGallerySlider from './Slider.vue'
 import { WIDTH_CLASSES } from '~/helpers/width'
 import { useBlockSpacing } from '~/composables/useBlockSpacing'
+import { useBlockWidth } from '~/composables/useBlockWidth'
 
 defineProps<ParagraphGalleryFragment>()
 
@@ -60,12 +61,17 @@ const block = defineBlokkli({
     icon: 'bk_mdi_photo_library',
     // The gallery has no fields of its own to edit in a form.
     disableEdit: true,
+    // Not in nested blocks and on detail pages, where it has no effect
+    // (useBlockWidth).
     determineVisibleOptions: (ctx) =>
-      ctx.parentType ? ['display'] : ['display', 'width'],
+      ctx.parentType || ctx.entity.entityBundle === 'page'
+        ? ['display']
+        : ['display', 'width'],
   },
 })
-const { options, parentType } = block
+const { options } = block
 const spacing = useBlockSpacing(block)
+const width = useBlockWidth(block)
 
 const isEditing = import.meta.blokkliEditing
 </script>

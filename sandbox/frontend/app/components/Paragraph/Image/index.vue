@@ -1,5 +1,5 @@
 <template>
-  <figure :class="[spacing, parentType ? '' : WIDTH_CLASSES[options.width]]">
+  <figure :class="[spacing, width && WIDTH_CLASSES[width]]">
     <div v-blokkli-droppable:field_media>
       <MediaImage
         v-if="media"
@@ -16,7 +16,7 @@
       v-blokkli-editable:field_caption
       :data-placeholder="$texts('placeholder.caption', 'Caption')"
       class="editable-placeholder mt-2 text-small text-muted"
-      :class="{ 'container-content': options.width === 'full' && !parentType }"
+      :class="{ 'container-content': width === 'full' }"
     >
       {{ caption }}
     </figcaption>
@@ -29,6 +29,7 @@ import type { ParagraphImageFragment } from '#graphql-operations'
 import MediaImage from '~/components/Media/Image/index.vue'
 import { WIDTH_CLASSES } from '~/helpers/width'
 import { useBlockSpacing } from '~/composables/useBlockSpacing'
+import { useBlockWidth } from '~/composables/useBlockWidth'
 
 defineProps<ParagraphImageFragment>()
 
@@ -38,11 +39,15 @@ const block = defineBlokkli({
   editor: {
     icon: 'bk_mdi_image',
     editTitle: (el) => el.querySelector('img')?.alt,
-    determineVisibleOptions: (ctx) => (ctx.parentType ? [] : ['width']),
+    // Not in nested blocks and on detail pages, where it has no effect
+    // (useBlockWidth).
+    determineVisibleOptions: (ctx) =>
+      ctx.parentType || ctx.entity.entityBundle === 'page' ? [] : ['width'],
   },
 })
-const { options, parentType } = block
+const { parentType } = block
 const spacing = useBlockSpacing(block)
+const width = useBlockWidth(block)
 
 const isEditing = import.meta.blokkliEditing
 </script>

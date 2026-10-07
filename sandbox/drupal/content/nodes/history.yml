@@ -20,7 +20,6 @@ field_paragraphs:
       de: '<p>Pfähle im Uferschlamm zeigen, dass schon vor über 5000 Jahren Menschen am See wohnten. Aus römischer Zeit stammen die Mauern eines Gutshofs oberhalb der Rebberge. Als «Bloquingen» erscheint der Ort erstmals 1228 in einer Urkunde, als Fischerdorf mit einer Kapelle und einer Fähre über den See.</p>'
       fr: '<p>Des pieux plantés dans la vase de la rive montrent que des gens vivaient déjà au bord du lac il y a plus de 5000 ans. Au-dessus des vignes, les murs d''un domaine agricole remontent à l''époque romaine. La localité apparaît pour la première fois en 1228 dans une charte, sous le nom de « Bloquingen » : un village de pêcheurs avec une chapelle et un bac pour traverser le lac.</p>'
   - type: image
-    options: { width: wide }
     field_media: { media: lakeshore-1900 }
     field_caption:
       en: The lakeshore around 1900, when many families still lived from fishing.
@@ -34,7 +33,6 @@ field_paragraphs:
       de: '<p>1476 erhielt Blockingen das Marktrecht. Weinbauern aus den Dörfern am Hang und Fischer vom See verkauften ihre Waren auf dem Dorfplatz, Händler aus beiden Sprachgebieten kamen dazu. Aus dieser Zeit stammen die Häuser der Altstadt mit ihren steilen Ziegeldächern. Das Rathaus am See erhielt seine heutige Gestalt 1652.</p>'
       fr: '<p>En 1476, Bloquens a obtenu le droit de marché. Les vignerons des villages du coteau et les pêcheurs du lac vendaient leurs marchandises sur la place du village, rejoints par des marchands des deux régions linguistiques. Les maisons de la vieille ville, avec leurs toits de tuiles pentus, datent de cette époque. L''hôtel de ville au bord du lac a pris son aspect actuel en 1652.</p>'
   - type: image
-    options: { width: wide }
     field_media: { media: old-town-lane-1930 }
     field_caption:
       en: 'A lane in the old town around 1930: many of its houses date back to the 15th and 16th centuries.'
@@ -48,7 +46,6 @@ field_paragraphs:
       de: '<p>Mit der Eisenbahn kam 1864 die Industrie. Zuerst fertigten Heimarbeiterinnen und Heimarbeiter in ihren Stuben Uhrenteile, bald entstanden zwei Fabriken beim Bahnhof. In wenigen Jahrzehnten wuchs Blockingen von 2000 auf über 5000 Einwohnerinnen und Einwohner. Viele kamen aus den französischsprachigen Tälern im Westen, und im Ort wurde nun ebenso viel Französisch wie Deutsch gesprochen.</p>'
       fr: '<p>L''industrie est arrivée avec le chemin de fer en 1864. D''abord, des ouvrières et des ouvriers fabriquaient chez eux des pièces d''horlogerie, puis deux fabriques ont vu le jour près de la gare. En quelques décennies, la population de Bloquens est passée de 2000 à plus de 5000 habitantes et habitants. Beaucoup venaient des vallées francophones de l''ouest, et l''on parlait désormais autant le français que l''allemand dans la localité.</p>'
   - type: image
-    options: { width: wide }
     field_media: { media: station-opening }
     field_caption:
       en: 'The opening of the station in 1864: the whole town came to see the first train.'
