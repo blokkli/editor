@@ -276,22 +276,25 @@ function onPointerMove(e: PointerEvent) {
     return
   }
 
-  // Only start dragging if at least 6px in both direction were moved.
+  // Only start dragging once the pointer moved at least 6px in either
+  // direction.
   if (diffX < 6 && diffY < 6) {
     return
   }
 
-  const interacted = getInteractedElement(e)
-  if (interacted && interacted.uuid) {
-    // The interacted block is part of the current selection.
-    if (selection.uuids.value.includes(interacted.uuid)) {
+  // Drag the block where the pointer went down. By now, the pointer may be
+  // over another one, e.g. the block above when moving up from a top edge.
+  const uuid = pointerDownElement.uuid
+  if (uuid) {
+    // The block is part of the current selection.
+    if (selection.uuids.value.includes(uuid)) {
       eventBus.emit('dragging:start', {
         items: toDraggableExisting(selection.items.value),
         coords: { x: e.clientX, y: e.clientY },
         mode: 'mouse',
       })
     } else {
-      const block = blocks.getBlock(interacted.uuid)
+      const block = blocks.getBlock(uuid)
       if (block) {
         eventBus.emit('dragging:start', {
           items: toDraggableExisting(block),
