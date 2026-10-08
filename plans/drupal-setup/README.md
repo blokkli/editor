@@ -9,6 +9,7 @@ is removed.
 | --- | ------------------------------------ | --------------- |
 | 12  | [Hosted deploy](12-hosted-deploy.md) | todo            |
 | 13j | [Skill tests](13j-skill-tests.md)    | todo (deferred) |
+| 16  | [E2E migration](16-e2e-migration.md) | todo            |
 
 Statuses: `todo`, `in progress`.
 
