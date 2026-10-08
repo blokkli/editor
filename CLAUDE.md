@@ -18,7 +18,7 @@ You have SEVERAL skills available that you MUST use!!
 - **typecheck** => Use when you need to check Typescript types!
 - **changelog** => Use when creating changelog entries for a new release
 - **e2e-testing** => Use when writing, debugging, or running the Playwright E2E
-  tests (`test/e2e/`)
+  tests (`test/e2e/`, and `test/e2e-drupal/` against Drupal sandboxes)
 - **agent-e2e-testing** => Use when writing or debugging tests under
   `test/e2e/features/agent/` (mock-provider scripts, tool-bypass tests)
 - **sandbox** => Use when working on `sandbox/` or `.ddev/`: how the Drupal
@@ -116,6 +116,7 @@ bun run verify                 # format:fix, lint:fix, all 5 typechecks,
                                # phpcs and phpstan (Drupal's custom modules),
                                # unit tests. Does NOT run e2e (and says so).
 bun run verify -- e2e          # E2E suite (needs the mock playground running)
+bun run verify -- e2e-drupal   # E2E against Drupal sandboxes (host, ddev running)
 bun run verify -- <gate>       # One gate only: format, lint, typecheck,
                                # typecheck:runtime (etc.), php, unit, e2e
 bun run test:watch             # Watch mode during development
@@ -385,6 +386,9 @@ still open: `plans/drupal-setup/`.
   restores the last bake in a moment: use it after testing in the editor.
   Content changed in the editor isn't exported; change the files and bake.
 - After nginx changes (`.ddev/nginx_full/`), run `ddev check-routes`.
+- E2E tests against sandboxes of this site: `test/e2e-drupal/`, on the host with
+  `bun run test:e2e-drupal`. They bake their own template (`ddev bake-e2e`) and
+  never reach DeepL or the model (the `sandbox` skill, "E2E tests").
 - Log in with a one-time link: `ddev drush uli /en/node/1` (the admin), or
   `ddev drush uli --name="Anna Keller"` for a test user (one per role, in
   `sandbox/drupal/content/users.yml`).

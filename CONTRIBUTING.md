@@ -230,3 +230,8 @@ Their DE and FR strings are in `translations` in `nuxt.config.ts`.
   skipped without them.
 - `bun run verify -- e2e` runs the E2E suite against the mock playground on
   `localhost:3000`, on the host.
+- `bun run verify -- e2e-drupal` runs the E2E tests in `test/e2e-drupal/`
+  against sandboxes of the ddev site, on the host. They bake their own template
+  from `test/e2e-drupal/content` the first time and whenever it changes. Neither
+  DeepL nor the agent's model is called: DeepL is a fake there, and the agent
+  replays a script.

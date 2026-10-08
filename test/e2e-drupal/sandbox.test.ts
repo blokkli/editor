@@ -10,14 +10,14 @@ function blockCount(page: Page): Promise<number> {
   return withApp(page, (app) => app.state.getAllUuids().length)
 }
 
-describe('Spike: a sandbox per worker, reset per spec file', async () => {
+describe('The E2E sandbox', async () => {
   const sandbox = workerSandbox()
   await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    console.log(`[${sandbox}] Reset: ${resetSandbox(sandbox).toFixed(1)} ms`)
+    resetSandbox(sandbox)
     page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH)
   })
 
@@ -29,7 +29,7 @@ describe('Spike: a sandbox per worker, reset per spec file', async () => {
     expect(await blockCount(page)).toBe(3)
   })
 
-  it('adds a block, which Drupal stores', async () => {
+  it('stores a new block in Drupal', async () => {
     const response = page.waitForResponse((response) =>
       response.url().includes('/api/graphql_middleware/mutation/'),
     )
@@ -44,7 +44,7 @@ describe('Spike: a sandbox per worker, reset per spec file', async () => {
 
   it('is the fixture again after a reset', async () => {
     await page.close()
-    console.log(`[${sandbox}] Reset: ${resetSandbox(sandbox).toFixed(1)} ms`)
+    resetSandbox(sandbox)
     // The reset also ended the session: it lives in the database.
     page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH)
     expect(await blockCount(page)).toBe(3)

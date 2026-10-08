@@ -1,9 +1,10 @@
 ---
 description:
   How the sandbox stack (sandbox/, .ddev/) is set up and how to work in it — the
-  Drupal site, its Nuxt app, the control app, sandboxes, bakes, routing, logins
-  and secrets. Use when working on anything under sandbox/ or .ddev/, or when a
-  sandbox, a claim, a bake, a daemon or the routing misbehaves.
+  Drupal site, its Nuxt app, the control app, sandboxes, bakes, routing, logins,
+  secrets and the E2E sandboxes. Use when working on anything under sandbox/ or
+  .ddev/, or when a sandbox, a claim, a bake, a daemon or the routing
+  misbehaves.
 ---
 
 # The sandbox
@@ -50,20 +51,21 @@ language.
 
 ## Map
 
-| Path                                   | What                                                                                                         |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `.ddev/config.yaml`                    | Hostnames, the two daemons, SQLite (no db container), `composer install` on start                            |
-| `.ddev/nginx_full/`                    | `nginx-site.conf` (all routing), `proxy.inc`, `headers.inc` (CSP), the 502 and "unknown sandbox" pages       |
-| `.ddev/commands/web/{bake,reset,nuxt}` | Container commands                                                                                           |
-| `.ddev/commands/host/check-routes`     | The routing test table (also read by a unit test)                                                            |
-| `.ddev/nuxt-daemon.sh`                 | Runs `nuxi dev sandbox/<app>` on 127.0.0.1:3000 (frontend) or :3001 (control), logs to `/tmp/nuxt-<app>.log` |
-| `sandbox/drupal/`                      | Composer root; `web/` docroot, `config/sync`, `content/`, `patches/`                                         |
-| `sandbox/drupal/web/modules/custom/`   | `blokkli_sandbox`, `blokkli_playground`                                                                      |
-| `sandbox/drupal/db/site.sqlite`        | The dev site's database (gitignored)                                                                         |
-| `sandbox/drupal/sandboxes/`            | Gitignored: `_template/<lang>/` and one directory per sandbox                                                |
-| `sandbox/frontend/`                    | The Nuxt app; `blokkli/` holds the agent's skills, tool and prompts                                          |
-| `sandbox/control/`                     | The control app; its database is `sandbox/control/.data/control.sqlite`                                      |
-| `build/drupal-schema.graphql`          | The site's GraphQL schema, shared by the root config and the frontend                                        |
+| Path                                            | What                                                                                                         |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `.ddev/config.yaml`                             | Hostnames, the two daemons, SQLite (no db container), `composer install` on start                            |
+| `.ddev/nginx_full/`                             | `nginx-site.conf` (all routing), `proxy.inc`, `headers.inc` (CSP), the 502 and "unknown sandbox" pages       |
+| `.ddev/commands/web/{bake,bake-e2e,reset,nuxt}` | Container commands                                                                                           |
+| `.ddev/commands/host/check-routes`              | The routing test table (also read by a unit test)                                                            |
+| `.ddev/nuxt-daemon.sh`                          | Runs `nuxi dev sandbox/<app>` on 127.0.0.1:3000 (frontend) or :3001 (control), logs to `/tmp/nuxt-<app>.log` |
+| `sandbox/drupal/`                               | Composer root; `web/` docroot, `config/sync`, `content/`, `patches/`                                         |
+| `sandbox/drupal/web/modules/custom/`            | `blokkli_sandbox`, `blokkli_playground`                                                                      |
+| `sandbox/drupal/db/site.sqlite`                 | The dev site's database (gitignored)                                                                         |
+| `sandbox/drupal/sandboxes/`                     | Gitignored: `_template/<lang>/`, `_template/e2e/` and one directory per sandbox                              |
+| `test/e2e-drupal/`                              | The E2E tests against sandboxes: specs, `support/`, fixtures in `content/`                                   |
+| `sandbox/frontend/`                             | The Nuxt app; `blokkli/` holds the agent's skills, tool and prompts                                          |
+| `sandbox/control/`                              | The control app; its database is `sandbox/control/.data/control.sqlite`                                      |
+| `build/drupal-schema.graphql`                   | The site's GraphQL schema, shared by the root config and the frontend                                        |
 
 Neither Nuxt app has a `package.json`: both use the repo root's `node_modules`.
 
@@ -185,7 +187,7 @@ On disk:
 
 ```
 sandbox/drupal/sandboxes/_template/<lang>/   db.sqlite, files/{media,media-icons,styles}
-sandbox/drupal/sandboxes/<id>/               db.sqlite, private/, tmp/, lifetime.json, last-use
+sandbox/drupal/sandboxes/<id>/               db.sqlite, private/, tmp/, lifetime.json, last-use, e2e
 sandbox/drupal/web/sites/default/files/sandboxes/<id>/   its public files
 ```
 
@@ -254,6 +256,40 @@ threads, `texts.csv` (the frontend's UI strings).
 - **UUIDs are UUIDv5 of the keys** (`node:<key>`, `paragraph:<key>`, …), stable
   across bakes. The welcome page's query uses them: renaming a key breaks it.
 - `nodes/home.yml` is node 1, the front page.
+
+## E2E tests
+
+`test/e2e-drupal/` drives the editor against sandboxes of this site, on the
+host, with ddev running: `bun run test:e2e-drupal` or
+`bun run verify -- e2e-drupal`. Writing specs: the `e2e-testing` skill.
+
+- **The template `_template/e2e`** comes from config and the fixtures in
+  `test/e2e-drupal/content` (the seed format), not from
+  `sandbox/drupal/content`. `ddev bake-e2e` installs into a scratch sandbox
+  (`e2ebake`), so the dev site stays as it is. vitest's global setup bakes when
+  its fingerprint changes: config, the seed code, the fixtures, the fakes,
+  `bake-e2e`, and the date (seeded dates are relative to the bake). About 16 s.
+- **One sandbox per vitest worker:** `e2e1`, `e2e2`, … (`VITEST_POOL_ID`).
+  `resetSandbox()` makes it a fresh copy of the template in about 20 ms: plain
+  file copies on the host, the database last. Each spec file resets in
+  `beforeAll`. The sandboxes stay after a run, to look at a failure:
+  `ddev drush --uri=https://e2e1.blokkli.ddev.site uli`.
+- **A reset ends the sessions** (they're in the database). Specs log in with a
+  token signed like the control app's (`loginPath()`).
+- **The marker file `e2e`**, written by the reset, makes an E2E sandbox for
+  settings.php: it discovers test modules (`extension_discovery_scan_tests`) and
+  never gets DeepL's key. The reset also writes `lifetime.json` with
+  `"premium": true`, for the agent.
+- **No real requests:**
+  - DeepL: the template has `paragraphs_blokkli_deepl_test` (in the submodule)
+    enabled. Its client never reaches DeepL: a text comes back as `[FR] <text>`,
+    and one containing `[deepl-error]` fails the request.
+  - The agent: `openEditor()` always gives it a mock script, an empty one by
+    default. Then neither the conversation, the routing nor the field edit
+    stream calls the model (the `agent-e2e-testing` skill).
+- **The fixtures are the tests' own:** users, config pages, menus and nodes. A
+  paragraph a spec refers to gets a `key`; its UUID is
+  `seedUuid('paragraph', key)`.
 
 ## The control app (`sandbox/control/`)
 
@@ -375,7 +411,7 @@ threads, `texts.csv` (the frontend's UI strings).
 | `DRUPAL_HASH_SALT`                                            | settings.php                                             | a public fallback (hosted: throws)              |
 | `NUXT_BLOKKLI_AGENT_AUTH_SECRET`                              | settings.php (dev site, premium sandboxes), the frontend | no agent                                        |
 | `NUXT_BLOKKLI_AGENT_API_KEY`                                  | the frontend                                             | the agent only replays mock scripts             |
-| `DEEPL_AUTH_KEY`                                              | settings.php                                             | no DeepL translation                            |
+| `DEEPL_AUTH_KEY`                                              | settings.php (not in E2E sandboxes)                      | no DeepL translation                            |
 | `NUXT_ADMIN_PASSWORD`                                         | the control app                                          | `/admin` open locally, 503 when hosted          |
 | `NUXT_TURNSTILE_SECRET_KEY`, `NUXT_PUBLIC_TURNSTILE_SITE_KEY` | the control app                                          | no captcha                                      |
 | `IS_DDEV_HOSTED`                                              | settings.php, the control app, the frontend's SSR rule   | local behaviour                                 |
@@ -393,7 +429,8 @@ that with settings management, which is off).
   and need the `.nuxt` folders the daemons generate.
 - `typecheck:playground` fails in the container when the host's `bun run dev`
   rebuilt `dist/` (its symlinks point to host paths); run it on the host.
-- E2E runs on the host, against the mock playground: `bun run test:e2e`.
+- E2E runs on the host: against the mock playground, `bun run test:e2e`; against
+  sandboxes of this site, `bun run test:e2e-drupal` (see E2E tests).
 - The module's own tests and checks run in the submodule's own ddev project: in
   `sandbox/drupal/paragraphs_blokkli`, `ddev phpunit-parallel`, `ddev phpcs`,
   `ddev phpstan`.

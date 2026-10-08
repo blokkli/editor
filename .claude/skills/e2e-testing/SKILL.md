@@ -2,7 +2,8 @@
 description:
   blökkli Playwright E2E tests — shared-page pattern, `data-test` contract,
   helpers, canvas drag, cleanup checklist. Use when writing, debugging, or
-  running E2E tests.
+  running E2E tests: `test/e2e/` against the mock playground, `test/e2e-drupal/`
+  against Drupal sandboxes.
 ---
 
 # E2E Testing Skill
@@ -17,6 +18,9 @@ frame-timed drop logic, DOM lifecycle.
   `sidebar`, `overlays`, `options`, `preview`, `recorder`, `schedule`,
   `selection`, `clipboard`, `bundleSelector`, `history`, `itemActions`,
   `keyboard`, `translations`, `setup`, `agent`.
+
+Most of this skill is about the mock playground suite. The Drupal suite
+(`test/e2e-drupal/`) shares its helpers: see "The Drupal suite" below.
 
 For tests under `test/e2e/features/agent/` see `/agent-e2e-testing` — covers the
 `tools/` (call one tool, no LLM) vs `mock-scripts/` (drive the full loop via the
@@ -280,10 +284,58 @@ on mount, delete on unmount). One component per scenario under
 `cases/<Name>/index.vue` + extend `BlokkliTestApi` in `types.ts`. Don't grow
 `index.vue`.
 
+## The Drupal suite (`test/e2e-drupal/`)
+
+The same tools against a sandbox of the ddev site: the Drupal adapter, and
+Drupal stores every mutation. How the sandboxes, their template and the fakes
+for DeepL and the agent work: the `sandbox` skill, "E2E tests". Run on the host,
+with ddev running: `bun run test:e2e-drupal`.
+
+```ts
+describe('Something', async () => {
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
+
+  let page: Page
+
+  beforeAll(async () => {
+    resetSandbox(sandbox)
+    page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH)
+  })
+
+  afterAll(async () => {
+    await page.close()
+  })
+})
+```
+
+- **`openEditor(sandbox, user, path, { mockScript })`** comes from
+  `test/e2e-drupal/support/session.ts`, not from the mock suite: it logs the
+  user in (users are in `test/e2e-drupal/content/users.yml`) and always gives
+  the agent a mock script. `support/sandbox.ts` has the reset, the login path
+  and `seedUuid()`.
+- **Each spec file resets its sandbox in `beforeAll`.** Between the tests of a
+  file, state carries over, as in the mock suite. A reset ends the session:
+  close the page before it and open a new one after it.
+- **From `test/e2e/support/`:** `withApp`, `waitForEditorReady`, `addBlock`, the
+  agent and diff helpers, and anything else that drives the editor's UI or
+  `window.__BLOKKLI__.app`.
+- **Playground-only, not available here:** `window.__BLOKKLI__.test` (the
+  `test-cases` feature), the adapter recorder (`?testing=true`), the mock
+  adapter's localStorage state, its translation mock and the permission
+  overrides. Instead, wait for the mutation's response (`page.waitForResponse`
+  on `/api/graphql_middleware/mutation/`), reload to see what Drupal stored, and
+  test permissions with users of other roles.
+- **Drupal's names:** fields are `field_paragraphs`, `field_text`, …; bundles
+  are the paragraph types.
+- **Fixtures:** add what a spec needs to `test/e2e-drupal/content`, in the seed
+  format (`sandbox/drupal/content/README.md`); the next run rebakes. Give a
+  paragraph a `key` to find it: `seedUuid('paragraph', key)`.
+
 ## Typechecking
 
 E2E specs span `src/runtime` AND playground scaffolding (the `.test`
-augmentation). `test/e2e/tsconfig.json` references
-`playground/.nuxt/tsconfig.app.json`; `playground/nuxt.config.ts` includes
-`../../test/e2e/**/*` and `../blokkli/features/**/*`. Covered by
-`bun run typecheck:playground`.
+augmentation). `test/e2e/tsconfig.json` and `test/e2e-drupal/tsconfig.json`
+reference `playground/.nuxt/tsconfig.app.json`; `playground/nuxt.config.ts`
+includes `../../test/e2e/**/*`, `../../test/e2e-drupal/**/*` and
+`../blokkli/features/**/*`. Covered by `bun run typecheck:playground`.
