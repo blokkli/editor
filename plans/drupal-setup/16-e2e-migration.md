@@ -12,17 +12,26 @@ what it tests; what only the mock can do stays in the mock suite for now.
 The assessment below (2026-10-08) read every spec and checked its claims in the
 code; nothing was run. "Unverified" marks what it couldn't confirm.
 
-## Open decisions
+## Decisions
 
-- **What replaces `window.__BLOKKLI__.test`** (the playground's `test-cases`
-  feature: `runAgentTool`, `runComponentTool`, `runDiffApproval`,
-  `applyFieldDiff`, …). Either an agent mock script that calls the tool (no
-  extra code in the sandbox, but one script per page, and applying saves), or a
-  small test-only feature in the sandbox frontend. Recommended: mock scripts.
-- **The tests that stay behind** (see "Staying behind"): add test-only pieces to
-  the E2E template, or let the tests go. Recommended: the cheap ones (a role
-  with `transfer blokkli paragraphs`, the other roles, a YouTube fake); the
-  option types only if the options specs should be kept whole.
+- **`window.__BLOKKLI__.test` comes to the sandbox frontend** (the user,
+  2026-10-08): the playground's `test-cases` feature (`runAgentTool`,
+  `runComponentTool`, `runDiffApproval`, `applyFieldDiff`, …), not mock scripts.
+  Its sidebar also lets a person run cases that are otherwise hard to reproduce.
+  Like the agent's `enableMock`, it must stay out of the hosted build.
+- **What the tests need goes into the sandbox** (the user, 2026-10-08), see
+  "Additions to the sandbox": demo changes that make sense for the site, and a
+  test-only paragraph type, the widget, for every option type and the field
+  combinations the demo has no use for (like the playground's `widget`). The
+  option types matter for Drupal too: its behaviour plugin renders them.
+- **The widget can't exist only in E2E sandboxes:** the sandbox frontend is one
+  build, and its GraphQL documents are checked against the schema dumped from
+  the dev site. So its paragraph type, fields and component are regular parts of
+  the site, but no field of the demo allows it, so nobody can add it there
+  (`content_editor` and `translator` bypass the per-type permissions, so a
+  missing create permission wouldn't stop them). A test module, enabled only in
+  E2E sandboxes, allows it in a field, and only the E2E fixtures contain
+  widgets.
 
 ## How a spec moves
 
@@ -40,12 +49,8 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
   and reopen.
 - **Permission overrides:** a user with the right role. `restricted_editor`
   (Jonas) can't create or delete `chart` and `section`.
-- **`.test`, with mock scripts:** a scripted `tool_use` runs the tool in the
-  client for real; read its result from `getAgentTranscript()` (the
-  `tool_result` block's `full ?? seen`; `agentMessage` is called `label` there).
-  Component tools show their approval in the agent panel (`applyDiff`). Lazy
-  tools: add a `routing` entry with the tool (whether a lazy tool needs loading
-  is unverified).
+- **`.test`:** the same API, from the sandbox frontend's copy of the
+  `test-cases` feature, so these specs keep their calls.
 - **Ownership:** `canEdit` needs `currentUserIsOwner`. A second user on the same
   node gets a read-only editor: give each user their own node, or use that for
   the read-only tests. Edit states can't be seeded; the owner is whoever opens
@@ -65,8 +70,10 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 ### Shared
 
 - [ ] Helpers in `test/e2e-drupal/support/`: wait for a mutation and return its
-      request body; revert all changes; run a tool through a mock script and
-      return its result (if mock scripts are chosen).
+      request body; revert all changes.
+- [ ] The `test-cases` feature in the sandbox frontend, kept out of the hosted
+      build. Decide whether both apps share one copy while the playground
+      exists.
 - [ ] `openEditor` options: localStorage entries, `timezoneId`, and opening
       without a mock script (conversation restore: an empty script disables
       auto-restore; this conflicts with "always mocked", decide how).
@@ -86,6 +93,53 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
     user), `templates.yml`, library items
 - [ ] Verify: whether opening the editor makes a user the edit state's owner;
       whether seeded media get stable IDs.
+
+### Additions to the sandbox
+
+- [ ] **The widget** (test-only paragraph type, see "Decisions"):
+  - options of every type: checkbox, checkboxes, radios (default with choice
+    descriptions, icons, grid, colours), text, colour, range, number,
+    datetime-local, an option group; new types are added here first
+  - its component renders every option's value in a cell with a `data-test`
+    (like the playground's widget), so the option specs keep their assertions
+  - fields: a link with an editable title (cardinality 1, not droppable, not an
+    entity mapping target, untranslatable), and a field bound to an element next
+    to one without an element but with a `propsFieldMapping`; more as specs need
+    them
+  - in the GraphQL server config and the frontend's `paragraph` union; a test
+    module allows it in `page.field_paragraphs` in E2E sandboxes
+- [ ] Demo options:
+  - Title: "Anchor" (text: one ID in every language, also used by the table of
+    contents) and "In the table of contents" (checkbox), grouped as "Navigation"
+  - Chart: "Height" (range), grouped with its width as "Format"
+  - Teaser list: "Number of items" (number, replaces the hard-coded 3), and
+    descriptions on its source choices
+  - Call to action: a date (datetime-local), e.g. for the next municipal
+    assembly; the seed needs dates relative to the bake in options
+  - Group labels can't be translated (F56): "Navigation" and "Format" are the
+    same in all three languages.
+- [ ] `transfer blokkli paragraphs` for `content_editor` and `restricted_editor`
+      (pasting a chart as Jonas then shows what was skipped).
+- [ ] `call_to_action`: unpublish scheduling only (it promotes something with a
+      deadline).
+- [ ] Jonas (`restricted_editor`) loses `update paragraph content chart` ("may
+      not add, change or delete charts"), after F55 is fixed. Update the welcome
+      texts (EN/DE/FR), the sandbox skill and `CONTRIBUTING.md`.
+- [ ] Élodie (`translator`) loses "take ownership": an edit state covers every
+      language, so taking one over would hand her the editors' unfinished
+      changes. A line in the welcome texts: she can't take over a page someone
+      else is editing.
+- [ ] The teaser maps its `field_title` and `field_lead` with
+      `propsFieldMapping`, so changes to them preview live.
+- [ ] A text filter for `basic_html` that marks external links
+      (`target="_blank"` and a visually hidden "(opens in a new tab)"), after
+      `filter_html`. It's what the mock's processing imitates.
+- [ ] The seed: `deleted: true` on users and nodes, deleted after seeding (a
+      comment by a deleted author, a notification whose page is gone).
+- [ ] A fake for YouTube and Vimeo: a test module
+      (`blokkli_playground/tests/modules/`) with an HTTP client middleware for
+      the oEmbed providers list, the video data and the thumbnail. Installed by
+      `bake-e2e`, and in the global setup's fingerprint.
 
 ### Agent (`features/agent/`)
 
@@ -122,11 +176,9 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       (unverified: that `textFieldValues` has them).
 - [ ] `tools/get_page_text`: `.test`. A node with a title, `field_lead` and
       title/text/teaser paragraphs; a new snapshot.
-- [ ] `tools/processed-text`: splits. Drupal only runs `filter_html`, which is
-      idempotent and strips attributes, so the marker flips: seed `field_text`
-      with what it strips (`<p class="x">`, `<a target="_blank">`) and assert
-      the agent sees and keeps it. About 11 tests move; about 7 stay (see
-      "Staying behind").
+- [ ] `tools/processed-text`: splits. With the external-link filter, the 14
+      markup tests move (seed external links in `field_text`). The 6 on plain
+      strings stay: Drupal never processes those.
 - [ ] `tools/update_text_fields`: `.test`. A title's `field_title` (plain, so
       the plaintext editor opens); assert after a reload.
 
@@ -135,7 +187,7 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [ ] `translations/auto-translate`: with changes. A node with a translated
       title, opened at `/de`; seeded EN-only titles (adding while translating is
       unverified); the DeepL fake; `pbBulkTranslateFieldValues` and a reload.
-      Tests 1–2 move, 3–4 stay.
+      Tests 3–4 on the widget (a bound field and a props-mapped one).
 - [ ] `translations/banner-and-switcher`: with changes. A DE translation, and a
       node with `outdated: [de]`; `pbClearOutdatedTranslation`; no banner after
       a reload.
@@ -146,28 +198,32 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [ ] `translations/csv-export`: as is. EN-only titles, the editor in `/de`.
 - [ ] `translations/csv-import`: with changes. As csv-export;
       `pbBulkTranslateFieldValues` and a reload.
-- [ ] `translations/link-title`, `translations/link-title-translate`: stay.
+- [ ] `translations/link-title`: on the widget's link with a title.
+- [ ] `translations/link-title-translate`: stays (links are never translatable);
+      a test for F58's fix replaces it.
 - [ ] `comments/base`: with changes. Seeded threads, a second user. 10 of 11
-      move; the deleted author stays.
+      move; the deleted author with `deleted: true` on a user.
 - [ ] `comments/deep-link`: as is. Seeded threads (an unresolved root without
       replies, a root with two replies, a resolved root);
       `blokkliComment=${seedUuid('blokkli_comment', key)}`.
 - [ ] `notifications/base`: with changes. Mentions of Anna in seeded comments
       make the notifications. Drupal shows 16 per page, not 3: 33 mentions, or a
-      new paging assertion. Tests 1–3 and 5 move, test 4 partly.
+      new paging assertion. Test 4: a hostless notification from a node with
+      `deleted: true`; its `edit-state:approved` part stays (mock only).
 - [ ] `ownership/base`: with changes. Anna opens first, a second editor sees the
-      banner; `pbTakeOwnership`, then no banner after a reload. Tests 1–2 move,
-      test 3 stays.
+      banner; `pbTakeOwnership`, then no banner after a reload. Test 3 as
+      Élodie, who can't take over.
 - [ ] `publish/base`: with changes. An unpublished node, texts for the scheduled
       notice; the bodies of `pbPublish`/`pbSchedule` and a reload; a future
       pinned date; `timezoneId`; reopen after each publish (it deletes the edit
       state).
 - [ ] `publish/violations`: splits. Clicking a violation moves (with
       `broken.yml`); two violations from an empty paragraph maybe with an empty
-      `embed` (two required fields, unverified); the plain error stays.
+      `embed` (two required fields, unverified); the plain error by faking the
+      `pbPublish` response (`page.route`).
 - [ ] `block-scheduler/base`: with changes. Banner, link, section, step and text
-      have scheduling; `pbSetParagraphSchedule`; a future pinned clock. 5 of 6
-      move; unpublish-only stays.
+      have scheduling; `pbSetParagraphSchedule`; a future pinned clock.
+      Unpublish-only on a `call_to_action`.
 - [ ] `changelog/base`: as is.
 - [ ] `exit/base`: as is; the expected path is the fixture's.
 - [ ] `entity-title/base`: with changes. A published and an unpublished node;
@@ -185,7 +241,7 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       `field_lead`; the chunk test with a text.
 - [ ] `diff-approval-grouping`: `.test`, splits. Tests 3 and 5 with a teaser
       (title and lead, neither bound to an element), test 4 with
-      `<p>Alpha</p><p>Beta</p>`; tests 1–2 stay.
+      `<p>Alpha</p><p>Beta</p>`; tests 1–2 on the widget.
 - [ ] `diff-approval-keyboard`: `.test`. Updates in reverse order: a title's
       `field_title`, the node's `field_lead`, its title.
 - [ ] `diff-approval-restore`: `.test`. Applying now saves; test 3 through
@@ -221,14 +277,11 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       node with two stored violations (not `broken.yml`, which has one).
 - [ ] `analyze/highlight-click`: with changes. The two-violation node; the cold
       load is a second `openEditor`.
-- [ ] `options/mutations`: splits. Stand-ins: `table.striped` (checkbox),
-      `link.style` or `contact.display` (radios), `gallery.display` (icons),
-      `columns.ratio` (grid), `text.box` (colours), `bkVisibleLanguages`
-      (checkboxes). 10 tests move, 6 stay.
-- [ ] `options/rendering`: splits. The same stand-ins; colours only as class
-      swatches; `bkVisibleLanguages` needs a seeded value. 7 move, 6 stay.
-- [ ] `options/tooltips`: splits. 4 move (hover, description through
-      `bkVisibleLanguages`, `table.striped` without one, the clip path), 3 stay.
+- [ ] `options/mutations`, `options/rendering`, `options/tooltips`: on the
+      widget, close to the mock specs (its cells show each option's value).
+      `resolveOptionText` and `setupWidget` take the bundle and a seeded widget;
+      the stored values from the mutations' request bodies
+      (`pbUpdateParagraphOption`, `pbBulkUpdateParagraphBehaviorSettings`).
 - [ ] `editable-field/frame`: with changes. `text.field_text`; the frame URL is
       the Drupal adapter's `buildEditableFrameUrl`; `pbUpdateFieldValue`.
 - [ ] `editable-field/plaintext`: with changes. `title.field_title`; required:
@@ -242,9 +295,9 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [ ] `clipboard/copy-paste`: as is, with `fieldName: 'field_paragraphs'`.
 - [ ] `clipboard/paste`: splits. Drupal turns plain text into a `text` only (no
       bundle selector): test 2 becomes "adds a text", test 5 skips the selector.
-      Tests 1 and 3 stay, test 4 (YouTube) is blocked.
-- [ ] `clipboard/native-drop`: splits. Test 1 moves, test 2 (YouTube) is
-      blocked.
+      Tests 1 and 3 stay, test 4 with the YouTube fake.
+- [ ] `clipboard/native-drop`: test 1 (its bundles become `['text']`), test 2
+      with the YouTube fake.
 - [ ] `add-list/actions`: with changes. On the front page (fragments).
 - [ ] `add-list/base`: with changes. On the front page; grid becomes `section`
       or `columns`; inside a container the fragment action is disabled.
@@ -257,8 +310,8 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       `today`; `pbAddFragmentParagraph`. Unverified: that both fragments render
       with the fixtures' config pages.
 - [ ] `edit/base`: splits. Tests 1–4 on `blocks.yml`; `columns` instead of
-      `two_columns`; a seeded fragment for the fragment test. The test without
-      edit permission stays.
+      `two_columns`; a seeded fragment for the fragment test. Without edit
+      permission: Jonas and a seeded chart.
 - [ ] `duplicate/base`: with changes. Jonas on his own node with a seeded chart
       (he can't add one); a full field. Unverified: that the Drupal adapter
       enables duplicating.
@@ -267,27 +320,21 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [ ] `conversions/base`: with changes. title → text, text → title, link → text
       (`blokkli_playground`'s plugins), none for images; find the converted
       paragraph by its new UUID; `pbConvertParagraph`/`pbConvertMultiple`.
-- [ ] `block-transfer/base`: with changes, blocked: no role has
-      `transfer     blokkli paragraphs`. Export: capture the clipboard; import:
-      `pbImport`; Drupal's envelope (version 1, `bundle`,
-      `non_translatable_values`, `translations`, `nested_paragraphs`).
+- [ ] `block-transfer/base`: with changes, after the transfer permission.
+      Export: capture the clipboard; import: `pbImport`; Drupal's envelope
+      (version 1, `bundle`, `non_translatable_values`, `translations`,
+      `nested_paragraphs`). Test 4 on a `page` (several paragraph fields).
 
 ## Staying behind
 
-What the Drupal setup can't do yet, and what would change that:
+What the mock suite keeps until it goes:
 
-| Tests                                                   | Missing                                                    | Unless                                   |
-| ------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------- |
-| options: text, colour, range, number, date, groups (15) | no paragraph has these option types or radios descriptions | a test-only paragraph type and component |
-| `link-title`, `link-title-translate` (2 files)          | every link field has its title off                         | a link field with a title                |
-| auto-translate 3–4, diff-approval-grouping 1–2          | no field without an element but with a props mapping       | e.g. a `propsFieldMapping` on the teaser |
-| block-transfer (5)                                      | no role has `transfer blokkli paragraphs`                  | the permission for a role                |
-| ownership 3, edit "without edit permission"             | no role edits without taking ownership or per-type update  | a test role                              |
-| paste 4, native-drop 2                                  | YouTube's oEmbed                                           | a fake, like the DeepL one               |
-| block-scheduler unpublish-only                          | no type has only unpublish scheduling                      | a config change                          |
-| comments' deleted author, notifications without a host  | the seed needs a known user and a host                     | seed support                             |
-| processed-text (about 7)                                | Drupal's processing is idempotent                          | a test-only text filter                  |
-| paste 1 and 3, the plain publish error, anchors 8       | the mock's own behaviour                                   | —                                        |
+- `translations/link-title-translate`: links are never translatable.
+- `clipboard/paste` tests 1 and 3: Drupal turns plain text into one paragraph
+  type; offering several would be a module change for little gain.
+- `tools/processed-text`: the 6 tests on plain strings.
+- `anchors/base` test 8: the Drupal adapter always has `buildAnchorLink`.
+- `notifications/base` test 4: the `edit-state:approved` part.
 
 ## Acceptance criteria
 

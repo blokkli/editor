@@ -54,6 +54,11 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                     | `texts`              | low      | open       |
 | F52 | [A comment's label throws](#f52-a-comments-label-throws)                                                                | `paragraphs_blokkli` | low      | open       |
 | F53 | [Violations while editing come from the stored structure](#f53-violations-while-editing-come-from-the-stored-structure) | `paragraphs_blokkli` | medium   | open       |
+| F54 | [`datetime-local` options render as text fields](#f54-datetime-local-options-render-as-text-fields)                     | `paragraphs_blokkli` | low      | to verify  |
+| F55 | [The options form ignores a type's edit permission](#f55-the-options-form-ignores-a-types-edit-permission)              | `@blokkli/editor`    | medium   | to verify  |
+| F56 | [Option group labels can't be translated](#f56-option-group-labels-cant-be-translated)                                  | `@blokkli/editor`    | low      | to verify  |
+| F57 | [A failed publish shows no message](#f57-a-failed-publish-shows-no-message)                                             | both                 | medium   | to verify  |
+| F58 | [Translation rows include untranslatable fields](#f58-translation-rows-include-untranslatable-fields)                   | both                 | medium   | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -863,3 +868,81 @@ From chunk 04 (2026-09-26):
   that a mutation removes leaves no violation in the mutated state.
 - **E2E:** `test/e2e-drupal/invalid-content.test.ts`, "drops the violation once
   the misplaced paragraph is gone", is marked `it.fails` until it's fixed.
+
+## F54: `datetime-local` options render as text fields
+
+- **Found:** 2026-10-08, reading the code for chunk 16 (not reproduced).
+- **Symptom:** in Drupal's paragraph form (the Behavior tab), a `datetime-local`
+  option is a plain text field: no picker, its min and max are ignored, and its
+  format isn't validated.
+- **Cause:** `ParagraphsBlokkliData::buildOptionElement()` builds a `textfield`
+  with `#attributes['type'] = 'datetime-local'`
+  (`src/Plugin/paragraphs/Behavior/ParagraphsBlokkliData.php:206` at `3f07f6e`),
+  and core's `Textfield::preRenderTextfield()` sets the type back to `text`
+  (`core/lib/Drupal/Core/Render/Element/Textfield.php:92`). The kernel test
+  (`OptionsSchemaFormTest.php:157`) checks the render array, not the rendered
+  element.
+- **Fix idea:** a `#pre_render` after the textfield's that restores the type, or
+  core's `datetime` element with a value conversion; a test on the rendered
+  output.
+
+## F55: The options form ignores a type's edit permission
+
+- **Found:** 2026-10-08, reading the code for chunk 16 (not reproduced).
+- **Symptom:** a user without update access to a paragraph type (e.g. a chart)
+  still sees working option controls and the chart editor for it. Drupal rejects
+  the change (`UpdateBehaviorSetting.php:67` in `paragraphs_blokkli`), so the
+  controls fail when used.
+- **Cause:** the options form's `isDisabled` only checks `state.canEdit`
+  (`src/runtime/editor/features/options/Form/index.vue:302`), and so does the
+  complex option's button (`Form/ComplexType/index.vue:34`). The edit feature
+  checks the block's `edit` permission (`features/edit/index.vue:96`).
+- **Fix idea:** disable the options of a block without the `edit` permission.
+  Needed before the demo's `restricted_editor` loses update on charts (16).
+
+## F56: Option group labels can't be translated
+
+- **Found:** 2026-10-08, reading the code for chunk 16.
+- **Symptom:** an option's `group` is shown as written, in every language.
+- **Cause:** `group` is a plain string, used as the group's key and its label
+  (`src/runtime/editor/features/options/Form/index.vue` `optionGroups`,
+  `Group.vue`). Option and choice labels accept a `DefinitionString` per
+  language; groups don't (like F28).
+- **Workaround in the sandbox:** group labels that are the same in English,
+  German and French ("Navigation", "Format").
+- **Fix idea:** accept a `DefinitionString` for `group`, keyed by its English
+  label or a separate key.
+
+## F57: A failed publish shows no message
+
+- **Found:** 2026-10-08, reading the code for chunk 16 (not reproduced).
+- **Symptom:** when publishing fails for any reason other than validation (e.g.
+  the entity can't be saved, or the lock can't be acquired), the publish dialog
+  shows "Cannot publish: validation errors" without an item.
+- **Cause:**
+  - `paragraphs_blokkli`'s `Publish` data producer only catches
+    `MutationViolationException`
+    (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/Publish.php`
+    at `3f07f6e`); every other exception becomes a GraphQL error.
+  - nuxt-graphql-middleware returns `{ data, errors }` without rejecting, and
+    the Drupal adapter's `mapMutation` ignores `errors`
+    (`src/modules/drupal/runtime/adapter/index.ts:476-488`). Only a failed
+    request reaches the dialog's catch ("An unexpected error happened.").
+- **Fix idea:** the producer returns other exceptions' messages in `errors`, and
+  the adapter turns GraphQL errors into a failed result.
+
+## F58: Translation rows include untranslatable fields
+
+- **Found:** 2026-10-08, reading the code for chunk 16 (not reproduced).
+- **Symptom:** the translation dialog can list fields that aren't translatable.
+  Applying a "translation" to one writes the shared value, which changes it in
+  every language.
+- **Cause:** `paragraphs_blokkli`'s `TextFieldValues` doesn't check whether a
+  field is translatable
+  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/TextFieldValues.php`
+  at `3f07f6e`, no `isTranslatable()` check), and neither the editor's
+  translation dialog nor the Drupal adapter filters them. Possibly affected in
+  the sandbox: `blokkli_fragment.field_blokkli_fragment_name` (unverified).
+- **Fix idea:** skip untranslatable fields in the module's translation values,
+  with a kernel test; an E2E test in the Drupal suite (16) replaces the mock's
+  `link-title-translate`.
