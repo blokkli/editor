@@ -286,12 +286,16 @@ host, with ddev running: `bun run test:e2e-drupal` or
     and one containing `[deepl-error]` fails the request.
   - The agent: `openEditor()` always gives it a mock script, an empty one by
     default. Then neither the conversation, the routing nor the field edit
-    stream calls the model (the `agent-e2e-testing` skill).
-- **The fixtures are the tests' own:** users, config pages, menus and nodes. A
-  paragraph a spec refers to gets a `key`; its UUID is
-  `seedUuid('paragraph', key)`. Content the site doesn't allow is marked
-  `invalid: true` (see the content README): `nodes/broken.yml` has a title in a
-  gallery.
+    stream calls the model (the `agent-e2e-testing` skill). A spec of the
+    conversation restore uses a script too, with a `restore` entry.
+- **The fixtures are the tests' own:** users (one per role, and a second content
+  editor, all with an English UI), config pages, menus and nodes. A paragraph a
+  spec refers to gets a `key`; its UUID is `seedUuid('paragraph', key)`. Content
+  the site doesn't allow is marked `invalid: true` (see the content README):
+  `nodes/broken.yml` has a title in a gallery.
+- **They run against the dev server** (`ddev nuxt`), which has the Test Cases
+  sidebar, and typecheck with the frontend: `typecheck:sandbox-frontend` covers
+  `test/e2e-drupal/`.
 
 ## The control app (`sandbox/control/`)
 
@@ -399,6 +403,10 @@ host, with ddev running: `bun run test:e2e-drupal` or
   Their DE/FR strings are in `blokkli.translations` in `nuxt.config.ts`.
   `enableMock: true` lets a client replay a scripted conversation instead of the
   model; it must be off when hosted.
+- **The Test Cases sidebar** (`blokkli/features/test-cases/`): triggers for
+  flows that are hard to reach otherwise, also `window.__BLOKKLI__.test` for the
+  E2E specs (the `e2e-testing` skill). `devOnly`: the dev server has it, a
+  production build doesn't.
 - **Server:** `/api/chart-data[/id]` (the charts' data sources, also used by the
   agent's tool); `server/graphqlMiddleware.serverOptions.ts` picks the endpoint
   by the client context's language. `app/graphqlMiddleware.clientOptions.ts` has

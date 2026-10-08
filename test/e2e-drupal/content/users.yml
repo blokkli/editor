@@ -1,8 +1,44 @@
-# The users the specs log in as. The admin (uid 1) comes from the installation.
+# The users the specs log in as, one per role, and a second content editor
+# (test/e2e-drupal/support/session.ts: TestUser). All English, so that what a
+# spec sees doesn't depend on who it logs in as. The admin (uid 1) comes from
+# the installation.
 - key: anna
   name: Anna Keller
   mail: anna.keller@example.com
   roles: [content_editor]
+  preferred_langcode: en
+  preferred_admin_langcode: en
+  status: true
+
+# Another editor on Anna's pages: ownership, comments, notifications.
+- key: lea
+  name: Lea Steiner
+  mail: lea.steiner@example.com
+  roles: [content_editor]
+  preferred_langcode: en
+  preferred_admin_langcode: en
+  status: true
+
+- key: marc
+  name: Marc Brunner
+  mail: marc.brunner@example.com
+  roles: [reviewer]
+  preferred_langcode: en
+  preferred_admin_langcode: en
+  status: true
+
+- key: elodie
+  name: Élodie Favre
+  mail: elodie.favre@example.com
+  roles: [translator]
+  preferred_langcode: en
+  preferred_admin_langcode: en
+  status: true
+
+- key: jonas
+  name: Jonas Weber
+  mail: jonas.weber@example.com
+  roles: [restricted_editor]
   preferred_langcode: en
   preferred_admin_langcode: en
   status: true

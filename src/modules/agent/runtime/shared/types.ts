@@ -574,12 +574,26 @@ const mockStreamEntrySchema = z.object({
 export type MockStreamEntry = z.infer<typeof mockStreamEntrySchema>
 
 /**
+ * Optional `restore` entry — additive to the transcript shape, like `routing`.
+ * A session with a script doesn't restore the entity's latest conversation
+ * when it connects, so that tests start from an empty history; with this
+ * entry it does, as a session without a script. Lets a test of the restore
+ * keep a script, so that nothing it does can reach the configured LLM.
+ */
+const mockRestoreEntrySchema = z.object({
+  type: z.literal('restore'),
+})
+
+export type MockRestoreEntry = z.infer<typeof mockRestoreEntrySchema>
+
+/**
  * Wire schema for a mock-provider script — the same shape as the transcript
  * export produced by the "Copy conversation JSON" action. Pasting an exported
  * transcript verbatim is a valid script; the mock replays only the `agent`
- * entries for the conversation loop. The `routing` and `stream` entries are
- * optional (additive to the transcript shape) and drive the first-message
- * routing preprocess and the field edit streams.
+ * entries for the conversation loop. The `routing`, `stream` and `restore`
+ * entries are optional (additive to the transcript shape) and drive the
+ * first-message routing preprocess, the field edit streams and the restore
+ * of the latest conversation.
  */
 const mockScriptSchema = z.array(
   z.union([
@@ -589,6 +603,7 @@ const mockScriptSchema = z.array(
     }),
     mockRoutingEntrySchema,
     mockStreamEntrySchema,
+    mockRestoreEntrySchema,
   ]),
 )
 

@@ -1,6 +1,6 @@
 # 16: Migrate the mock E2E specs to Drupal
 
-- **Status:** todo
+- **Status:** in progress (the shared groundwork is done)
 
 ## Goal
 
@@ -32,21 +32,37 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
   missing create permission wouldn't stop them). A test module, enabled only in
   E2E sandboxes, allows it in a field, and only the E2E fixtures contain
   widgets.
+- **The sandbox frontend has its own copy of `test-cases`; the playground keeps
+  its own until the mock suite goes** (2026-10-08). The scenarios name each
+  app's fields, and `devOnly` can't differ per app: the playground's static
+  build needs the feature, the hosted sandbox build must not have it. The
+  sandbox's copy is `devOnly` (the E2E tests run against `nuxi dev`). The
+  playground's stays for the processed-text tests that stay behind. New cases go
+  into the sandbox's copy only.
+- **Every E2E page has a mock script, also to test the restore of a
+  conversation** (2026-10-08): a `{ type: 'restore' }` entry turns the
+  auto-restore back on, instead of opening a page without a script. So no page
+  can reach the model, even by mistake.
+- **The Drupal suite typechecks with the sandbox frontend**
+  (`typecheck:sandbox-frontend`, 2026-10-08): bundles, tools, `.test` and the
+  GraphQL operations are those of the app it runs against.
+- **Fixtures come with the specs that use them** (2026-10-08): each spec's entry
+  below says what it needs, and a fixture's exact shape only becomes clear in
+  its spec.
 
 ## How a spec moves
 
 - **Where:** `test/e2e-drupal/features/<feature>/<name>.test.ts`, as in the mock
   suite. The mock spec (or the tests that moved out of it) is deleted once the
   Drupal version passes.
-- **The adapter recorder** (`waitForAdapterCall`, `?testing=true`): a mutation's
-  variables are its request body (nuxt-graphql-middleware posts them as JSON),
-  so wait for the request to `/api/graphql_middleware/mutation/<name>` and read
-  `postDataJSON()`. Then reload or reopen to see what Drupal stored. The items
-  are shaped as in the schema (e.g. `{uuid, name, value, langcode}`).
-- **Resetting the mock's localStorage between tests:**
-  `app.adapter.revertAllChanges()` (`pbRevertAllChanges`, deletes the edit
-  state), then `reloadState`, then wait for no mutations. Or reset the sandbox
-  and reopen.
+- **The adapter recorder** (`waitForAdapterCall`, `?testing=true`):
+  `nextMutation(page, '<name>')` (`support/mutations.ts`) returns the next
+  request's variables, typed; started before the action, awaited after. Then
+  reload or reopen to see what Drupal stored. The items are shaped as in the
+  schema (e.g. `{uuid, name, value, langcode}`).
+- **Resetting the mock's localStorage between tests:** `revertAllChanges(page)`
+  (`pbRevertAllChanges`, deletes the edit state; the new one belongs to whoever
+  reverted). Or reset the sandbox and reopen.
 - **Permission overrides:** a user with the right role. `restricted_editor`
   (Jonas) can't create or delete `chart` and `section`.
 - **`.test`:** the same API, from the sandbox frontend's copy of the
@@ -54,7 +70,13 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - **Ownership:** `canEdit` needs `currentUserIsOwner`. A second user on the same
   node gets a read-only editor: give each user their own node, or use that for
   the read-only tests. Edit states can't be seeded; the owner is whoever opens
-  the editor first (unverified).
+  the editor first (in the code: loading the edit state creates it, and its
+  `uid` defaults to the current user).
+- **Media:** a seeded media's UUID is `seedUuid('media', key)`; numeric IDs
+  follow the order of creation, don't rely on them. Files go in
+  `test/e2e-drupal/content/files/`.
+- **The agent's conversation restore:** the reading pages get
+  `mockScript: [{ type: 'restore' }]`.
 - **Pinned dates** must be in the future: Drupal rejects a schedule less than 2
   minutes after its time, and only unpublishes a paragraph whose date is after
   `time()`.
@@ -69,19 +91,20 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 
 ### Shared
 
-- [ ] Helpers in `test/e2e-drupal/support/`: wait for a mutation and return its
-      request body; revert all changes.
-- [ ] The `test-cases` feature in the sandbox frontend, kept out of the hosted
-      build. Decide whether both apps share one copy while the playground
-      exists.
-- [ ] `openEditor` options: localStorage entries, `timezoneId`, and opening
-      without a mock script (conversation restore: an empty script disables
-      auto-restore; this conflicts with "always mocked", decide how).
-- [ ] Fixtures:
-  - users: Marc Brunner (reviewer), Élodie Favre (translator), Jonas Weber
-    (restricted_editor), a second content_editor
-  - a node with DE and FR translations, one with `outdated: [de]`, an
-    unpublished one (`status: false`)
+- [x] Helpers in `test/e2e-drupal/support/`: `nextMutation`, `revertAllChanges`,
+      `editorPath`, the `TestUser` type.
+- [x] The `test-cases` feature in the sandbox frontend, `devOnly` (see
+      "Decisions").
+- [x] `openEditor` options: `localStorage` entries, `timezoneId`; the restore of
+      a conversation through a `restore` script entry.
+- [x] Users: Lea Steiner (a second content_editor), Marc Brunner (reviewer),
+      Élodie Favre (translator), Jonas Weber (restricted_editor), all English.
+- [x] Verify: whether opening the editor makes a user the edit state's owner
+      (yes, see "How a spec moves"); whether seeded media get stable IDs (UUIDs
+      from their keys).
+- [ ] Fixtures, with the specs that use them (see "Decisions"):
+  - a node with DE and FR translations (there: `nodes/translated.yml`), one with
+    `outdated: [de]`, an unpublished one (`status: false`)
   - the editorial front page with fragments, an empty page, a long page
   - nestings: `columns` (`field_left`/`field_right`), `accordion`, `section`; a
     teaser with `field_title`/`field_lead` and a `field_link` to a node; a
@@ -91,8 +114,6 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
     `test/e2e-drupal/content/files/`
   - comment threads (resolved and unresolved, with mentions of Anna by another
     user), `templates.yml`, library items
-- [ ] Verify: whether opening the editor makes a user the edit state's owner;
-      whether seeded media get stable IDs.
 
 ### Additions to the sandbox
 
@@ -143,10 +164,9 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 
 ### Agent (`features/agent/`)
 
-- [ ] `mock-scripts/conversation-restore`: with changes. Wait for
-      `pbAgentConversationUpsert` instead of polling the playground route; the
-      reading pages open without a mock script; a translated node for the
-      cross-language test.
+- [x] `mock-scripts/conversation-restore`: done
+      (`features/agent/conversation-restore.test.ts`, on
+      `nodes/translated.yml`).
 - [ ] `mock-scripts/full-flow`: done (`test/e2e-drupal/agent.test.ts`, "answers
       from its script"); delete it.
 - [ ] `mock-scripts/grid-with-cards`: as is. grid/card become `columns`

@@ -7,17 +7,18 @@ import { clickItemAction } from '../e2e/support/itemActions'
 import { appMenuButton, openAppMenu } from '../e2e/support/menu'
 import { dialog, dialogSubmit } from '../e2e/support/overlays'
 import { withApp } from '../e2e/support/session'
+import { nextMutation } from './support/mutations'
 import {
   resetSandbox,
   sandboxHost,
   seedUuid,
   workerSandbox,
 } from './support/sandbox'
-import { openEditor } from './support/session'
+import { editorPath, openEditor } from './support/session'
 
 // The page "Broken" (content/nodes/broken.yml): a title in a gallery, which
 // only allows images.
-const EDITOR_PATH = `/en/broken?blokkliEditing=${seedUuid('node', 'broken')}`
+const EDITOR_PATH = editorPath('/en/broken', 'broken')
 const GALLERY = seedUuid('paragraph', 'gallery')
 const MISPLACED_TITLE = seedUuid('paragraph', 'misplaced-title')
 
@@ -89,9 +90,7 @@ describe("Content the site doesn't allow", async () => {
 
   it('is published once the misplaced paragraph is gone', async () => {
     await openPublishDialog(page)
-    const published = page.waitForResponse((response) =>
-      response.url().includes('/api/graphql_middleware/mutation/pbPublish'),
-    )
+    const published = nextMutation(page, 'pbPublish')
     await dialogSubmit(page).click()
     await published
 

@@ -54,7 +54,7 @@ bun run typecheck:build       # build/module code  (.nuxt/tsconfig.node.json)
 bun run typecheck:runtime     # runtime client code (.nuxt/tsconfig.app.json)
 bun run typecheck:server      # server code (.nuxt/tsconfig.server.json)
 bun run typecheck:playground  # playground app (playground/.nuxt/tsconfig.app.json)
-bun run typecheck:sandbox-frontend  # sandbox/frontend (its .nuxt comes from ddev)
+bun run typecheck:sandbox-frontend  # sandbox/frontend, test/e2e-drupal (.nuxt from ddev)
 bun run typecheck:sandbox-control   # sandbox/control (its .nuxt comes from ddev)
 bun run typecheck             # runs all six
 ```

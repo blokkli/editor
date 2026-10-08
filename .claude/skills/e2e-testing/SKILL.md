@@ -113,9 +113,9 @@ so reorder-by-mistake doesn't break it.
 ## Test seams: `window.__BLOKKLI__`
 
 - **`.app`** — full `BlokkliApp` from `useBlokkli()`. Drive and assert.
-- **`.test`** — playground-only API from the `test-cases` feature. Each case is
-  a component inside the feature's `PluginSidebar`, so its API only registers
-  once you `openSidebar(page, 'test-cases')`. `.test` is `{}` before that.
+- **`.test`** — the API of the `test-cases` feature (below). Each case is a
+  component inside the feature's `PluginSidebar`, so its API only registers once
+  you `openSidebar(page, 'test-cases')`. `.test` is `{}` before that.
 
 **Use `withApp(page, fn)`** for awaited reads/actions — `fn` gets a typed
 `BlokkliApp` via JSHandle. No `window.__BLOKKLI__!.app!` casts; no local
@@ -274,15 +274,22 @@ matches either; assert exact: `getAttribute === 'true'`.
   `node node_modules/playwright-core/cli.js install chromium chromium-headless-shell`.
   **Do NOT** `bunx playwright install chrome` (purges + needs sudo).
 
-## The `test-cases` playground feature
+## The `test-cases` feature
 
-`playground/blokkli/features/test-cases/` backs `.test`. `index.vue` registers
-the feature + `PluginSidebar` + the `window.__BLOKKLI__.test` lifecycle (assign
-on mount, delete on unmount). One component per scenario under
-`cases/<Name>/index.vue`; each emits `register({ ...api })` on mount. Specs must
-`openSidebar(page, 'test-cases')` before `.test` is populated. Add a case = new
-`cases/<Name>/index.vue` + extend `BlokkliTestApi` in `types.ts`. Don't grow
-`index.vue`.
+Backs `.test`, in two copies with the same API:
+`playground/blokkli/features/test-cases/` for the mock suite, and
+`sandbox/frontend/blokkli/features/test-cases/` for the Drupal suite. The
+sandbox's is `devOnly`: the dev server has it, the hosted production build
+doesn't. Its scenarios name the sandbox's fields (`field_lead`,
+`title.field_title`, `text.field_text`). The playground's copy goes with the
+mock suite; **new cases go into the sandbox's copy only.**
+
+`index.vue` registers the feature + `PluginSidebar` + the
+`window.__BLOKKLI__.test` lifecycle (assign on mount, delete on unmount). One
+component per scenario under `cases/<Name>/index.vue`; each emits
+`register({ ...api })` on mount. Specs must `openSidebar(page, 'test-cases')`
+before `.test` is populated. Add a case = new `cases/<Name>/index.vue` + extend
+`BlokkliTestApi` in `types.ts`. Don't grow `index.vue`.
 
 ## The Drupal suite (`test/e2e-drupal/`)
 
@@ -309,35 +316,56 @@ describe('Something', async () => {
 })
 ```
 
-- **`openEditor(sandbox, user, path, { mockScript })`** comes from
+- **`openEditor(sandbox, user, path, opts)`** comes from
   `test/e2e-drupal/support/session.ts`, not from the mock suite: it logs the
-  user in (users are in `test/e2e-drupal/content/users.yml`) and always gives
-  the agent a mock script. `support/sandbox.ts` has the reset, the login path
-  and `seedUuid()`.
+  user in and always gives the agent a mock script (`mockScript`, default `[]`;
+  `[{ type: 'restore' }]` to test the restore of a conversation). Also
+  `timezoneId` and `localStorage` entries, as in the mock suite.
+  `editorPath('/en/blocks', 'blocks')` is a seeded node's path in the editor.
+  `support/sandbox.ts` has the reset, the login path and `seedUuid()`.
+- **Users** (`content/users.yml`, typed as `TestUser`): Anna Keller and Lea
+  Steiner (`content_editor`), Marc Brunner (`reviewer`), Élodie Favre
+  (`translator`), Jonas Weber (`restricted_editor`), all with an English UI.
+  Whoever opens a node's editor first owns its edit state; another user gets a
+  read-only editor.
 - **Each spec file resets its sandbox in `beforeAll`.** Between the tests of a
   file, state carries over, as in the mock suite. A reset ends the session:
   close the page before it and open a new one after it.
 - **From `test/e2e/support/`:** `withApp`, `waitForEditorReady`, `addBlock`, the
   agent and diff helpers, and anything else that drives the editor's UI or
   `window.__BLOKKLI__.app`.
-- **Playground-only, not available here:** `window.__BLOKKLI__.test` (the
-  `test-cases` feature), the adapter recorder (`?testing=true`), the mock
-  adapter's localStorage state, its translation mock and the permission
-  overrides. Instead, wait for the mutation's response (`page.waitForResponse`
-  on `/api/graphql_middleware/mutation/`), reload to see what Drupal stored, and
-  test permissions with users of other roles.
+- **What Drupal stored:** `nextMutation(page, 'pbUpdateParagraphOption')`
+  (`support/mutations.ts`) waits for the next request of that mutation and
+  returns its variables, typed by the GraphQL operations; an optional filter
+  waits for a matching one. Start it before the action, await it after; then
+  reload to see what Drupal stored. It replaces the mock suite's recorder.
+- **Resetting between tests:** `revertAllChanges(page)` discards the edit state
+  (the editor's "Discard"), a round trip instead of a reset and a new login.
+- **Playground-only, not available here:** the adapter recorder
+  (`?testing=true`), the mock adapter's localStorage state, its translation mock
+  and the permission overrides. Test permissions with users of other roles.
 - **Drupal's names:** fields are `field_paragraphs`, `field_text`, …; bundles
   are the paragraph types.
-- **Fixtures:** add what a spec needs to `test/e2e-drupal/content`, in the seed
-  format (`sandbox/drupal/content/README.md`); the next run rebakes. Give a
-  paragraph a `key` to find it: `seedUuid('paragraph', key)`. For content the
-  site doesn't allow, mark the entity `invalid: true` (e.g. `nodes/broken.yml`,
-  a title in a gallery): the seed then skips its checks.
+- **Fixtures:** add what a spec needs to `test/e2e-drupal/content` when the spec
+  comes, in the seed format (`sandbox/drupal/content/README.md`); the next run
+  rebakes. Reuse a node whose content fits; changing one means running the specs
+  that use its key. Give a paragraph a `key` to find it:
+  `seedUuid('paragraph', key)` (media: `seedUuid('media', key)`, files in
+  `content/files/`). For content the site doesn't allow, mark the entity
+  `invalid: true` (e.g. `nodes/broken.yml`, a title in a gallery): the seed then
+  skips its checks.
 
 ## Typechecking
 
-E2E specs span `src/runtime` AND playground scaffolding (the `.test`
-augmentation). `test/e2e/tsconfig.json` and `test/e2e-drupal/tsconfig.json`
-reference `playground/.nuxt/tsconfig.app.json`; `playground/nuxt.config.ts`
-includes `../../test/e2e/**/*`, `../../test/e2e-drupal/**/*` and
-`../blokkli/features/**/*`. Covered by `bun run typecheck:playground`.
+E2E specs span `src/runtime` AND an app's scaffolding (the `.test` augmentation,
+the generated types), so each suite typechecks with the app it runs against:
+
+- **`test/e2e/`:** `test/e2e/tsconfig.json` references
+  `playground/.nuxt/tsconfig.app.json`; `playground/nuxt.config.ts` includes
+  `../../test/e2e/**/*` and `../blokkli/features/**/*`. Covered by
+  `bun run typecheck:playground`.
+- **`test/e2e-drupal/`:** references `sandbox/frontend/.nuxt/tsconfig.app.json`;
+  `sandbox/frontend/nuxt.config.ts` includes `../blokkli/features/**/*` and
+  `../../../test/e2e-drupal/**/*`. Covered by
+  `bun run typecheck:sandbox-frontend`. The helpers it imports from
+  `test/e2e/support/` compile in both apps, so they may only use what both have.

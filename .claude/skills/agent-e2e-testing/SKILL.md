@@ -169,6 +169,14 @@ instead of the configured LLM. `content` is the stream's raw output, in
 Every stream of the conversation replays the same entry. Without one, a mocked
 stream returns no edits.
 
+### Optional `restore` entry — restore the latest conversation
+
+A session with a script skips the auto-restore (see below). Add
+`{ type: 'restore' }` to test the restore itself: the agent then loads the
+entity's latest conversation when it connects, as a session without a script
+does. The page keeps a script, so nothing on it can reach the configured LLM
+(the Drupal suite's pages always have one).
+
 ### Multi-turn example (with a real tool call)
 
 ```ts
@@ -223,11 +231,12 @@ After the real tool relay lands, the mock plays the second `agent` turn.
 - **Field edit streams (`/api/blokkli/agent/stream`)**: likewise, in mock mode
   the handler honours `body.mockStream` (the script's `stream` entry, or empty)
   and replays it through `createMockProvider`, without the API key.
-- **Auto-restore is skipped in mock mode.** `agentProvider.startInit()` only
-  calls `loadLatestFromAdapter` when no mock script is present. This both
-  guarantees a clean turn-0 history for the mock provider AND lets parallel mock
-  tests against the same entity run without trampling each other's conversation
-  (the playground keys conversations by entity UUID).
+- **Auto-restore is skipped in mock mode.** `agentProvider.sendInit()` only
+  calls `loadLatestFromAdapter` when no mock script is present, or when the
+  script has a `restore` entry. This both guarantees a clean turn-0 history for
+  the mock provider AND lets parallel mock tests against the same entity run
+  without trampling each other's conversation (the playground keys conversations
+  by entity UUID).
 
 `?testing=true` is unrelated to the mock — it gates the adapter recorder.
 Mock-script tests don't depend on it.

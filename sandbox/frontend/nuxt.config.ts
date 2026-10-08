@@ -276,6 +276,11 @@ export default defineNuxtConfig({
 
   typescript: {
     strict: true,
+    tsConfig: {
+      // The E2E tests against the sandboxes run against this app, and use the
+      // test-cases feature's `window.__BLOKKLI__.test`.
+      include: ['../blokkli/features/**/*', '../../../test/e2e-drupal/**/*'],
+    },
   },
 
   compatibilityDate: '2026-09-26',

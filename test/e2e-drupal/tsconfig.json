@@ -1,4 +1,4 @@
 {
   "files": [],
-  "references": [{ "path": "../../playground/.nuxt/tsconfig.app.json" }]
+  "references": [{ "path": "../../sandbox/frontend/.nuxt/tsconfig.app.json" }]
 }

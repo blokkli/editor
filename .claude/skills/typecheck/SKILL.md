@@ -16,8 +16,8 @@ typechecks is slow and usually unnecessary.
 | `bun run typecheck:build`            | Build-time code          | Changed `src/build/`, `src/module.ts`, `src/module/`, `src/modules/*/index.ts`, `src/modules/*/build/`, `nuxt.config.ts` |
 | `bun run typecheck:runtime`          | Runtime/client code      | Changed `src/runtime/`, `src/modules/*/runtime/` (excluding server), `src/global/`                                       |
 | `bun run typecheck:server`           | Server/Nitro code        | Changed `src/modules/*/runtime/server/`                                                                                  |
-| `bun run typecheck:playground`       | Playground/mock code     | Changed `playground/`                                                                                                    |
-| `bun run typecheck:sandbox-frontend` | The sandbox's Nuxt app   | Changed `sandbox/frontend/`, app and server code (its `.nuxt` comes from the ddev Nuxt daemon)                           |
+| `bun run typecheck:playground`       | Playground/mock code     | Changed `playground/`, `test/e2e/`                                                                                       |
+| `bun run typecheck:sandbox-frontend` | The sandbox's Nuxt app   | Changed `sandbox/frontend/`, app and server code, `test/e2e-drupal/` (its `.nuxt` comes from the ddev Nuxt daemon)       |
 | `bun run typecheck:sandbox-control`  | The control app          | Changed `sandbox/control/`, app and server code (its `.nuxt` comes from the ddev daemon "control")                       |
 
 ## Which command to run
@@ -31,8 +31,10 @@ Pick based on the files you modified:
 - **`src/modules/\*/runtime/**`** (non-server) → `bun run typecheck:runtime`
 - **`src/modules/*/index.ts`**, **`src/modules/\*/build/**`** → `bun run
   typecheck:build`
-- **`playground/**`** → `bun run typecheck:playground`
-- **`sandbox/frontend/**`** → `bun run typecheck:sandbox-frontend`
+- **`playground/**`**, **`test/e2e/**`** → `bun run typecheck:playground`
+- **`sandbox/frontend/**`**, **`test/e2e-drupal/**`** →
+  `bun run typecheck:sandbox-frontend` (`test/e2e/support/` helpers it imports:
+  both)
 - **`sandbox/control/**`** → `bun run typecheck:sandbox-control`
 - **Multiple areas** → `bun run typecheck`
 

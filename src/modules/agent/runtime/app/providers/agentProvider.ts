@@ -20,6 +20,7 @@ import { filterToolNamesByEditMode } from '#blokkli/agent/app/helpers'
 import {
   readMockRouting,
   readMockScript,
+  restoresConversation,
 } from '#blokkli/agent/app/helpers/mockScript'
 import {
   computeHistorySignature,
@@ -284,13 +285,14 @@ export default function agentProvider({
 
     // Skip auto-restore if a prompt is already queued — the panel was just
     // opened from a dropdown action and should start fresh. Also skip when
-    // the session is mock-driven: tests want a deterministic empty history
-    // (the mock provider derives its turn index from the assistant-message
-    // count), and the adapter's `loadLatest` keys conversations by entity
-    // UUID, so multiple parallel mock tests against the same page would
-    // otherwise restore each other's state.
-    const isMockedSession = enableMock && !!readMockScript()
-    if (adapter.agentConversations && !pendingPrompt && !isMockedSession) {
+    // the session is mock-driven, unless its script asks for the restore:
+    // tests want a deterministic empty history (the mock provider derives its
+    // turn index from the assistant-message count), and the adapter's
+    // `loadLatest` keys conversations by entity UUID, so multiple parallel
+    // mock tests against the same page would otherwise restore each other's
+    // state.
+    const restores = !enableMock || restoresConversation()
+    if (adapter.agentConversations && !pendingPrompt && restores) {
       const latest = await conversation.loadLatestFromAdapter()
       if (latest) {
         conversation.activeConversationId.value = latest.uuid

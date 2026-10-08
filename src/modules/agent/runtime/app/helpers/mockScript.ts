@@ -50,3 +50,15 @@ export function readMockStream(): string | undefined {
   const entry = script.find((e): e is MockStreamEntry => e.type === 'stream')
   return entry?.content ?? ''
 }
+
+/**
+ * Whether the agent restores the entity's latest conversation when it
+ * connects: always without a script, and with one only when it has a
+ * `restore` entry. Tests otherwise start from an empty history: the mock
+ * provider derives its turn from the assistant-message count, and parallel
+ * tests on the same page would restore each other's conversations.
+ */
+export function restoresConversation(): boolean {
+  const script = readMockScript()
+  return !script || script.some((e) => e.type === 'restore')
+}

@@ -1,0 +1,11 @@
+# A page in every language: /en/library, /de/bibliothek, /fr/bibliotheque.
+key: translated
+type: page
+title: { en: Library, de: Bibliothek, fr: Bibliothèque }
+field_paragraphs:
+  - type: text
+    key: translated-text
+    field_text:
+      en: '<p>The library is in the old school house.</p>'
+      de: '<p>Die Bibliothek ist im alten Schulhaus.</p>'
+      fr: '<p>La bibliothèque se trouve dans l’ancienne école.</p>'

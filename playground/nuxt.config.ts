@@ -92,13 +92,7 @@ export default defineNuxtConfig({
     shim: true,
     strict: true,
     tsConfig: {
-      // test/e2e-drupal reuses test/e2e's helpers, which need the
-      // playground's types.
-      include: [
-        '../../test/e2e/**/*',
-        '../../test/e2e-drupal/**/*',
-        '../blokkli/features/**/*',
-      ],
+      include: ['../../test/e2e/**/*', '../blokkli/features/**/*'],
       compilerOptions: {
         noUncheckedIndexedAccess: true,
       },
