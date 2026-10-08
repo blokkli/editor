@@ -1,11 +1,13 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { openEditor, withApp } from './../../support/session'
-import { setupEditorE2E } from './../../support/setup'
-import { selectBlock } from './../../support/blocks'
-import { topLevelBlockUuids } from './../../support/selection'
-import { toolbarButton } from './../../support/toolbar'
-import { emitEvent } from './../../support/events'
+import { withApp } from '../../../e2e/support/session'
+import { selectBlock } from '../../../e2e/support/blocks'
+import { topLevelBlockUuids } from '../../../e2e/support/selection'
+import { toolbarButton } from '../../../e2e/support/toolbar'
+import { emitEvent } from '../../../e2e/support/events'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 
 /**
  * The command palette (`features/command-palette`) is a keyboard-driven launcher
@@ -25,6 +27,10 @@ import { emitEvent } from './../../support/events'
  * Keyboard handling lives in `SearchOverlay` (`Tab`/`ArrowDown` → next,
  * `Shift+Tab`/`ArrowUp` → prev, both wrapping; `Enter` selects; `Escape` closes)
  * and the input auto-focuses on mount, so the key presses below go to it.
+ *
+ * The tests that run a command pick a harmless one by its ID, opening a
+ * sidebar: whatever comes first could publish, discard the changes or leave
+ * the editor, and Drupal would do it.
  */
 
 const FREQUENCY_KEY = 'blokkli:commandPaletteFrequency'
@@ -58,6 +64,13 @@ function itemIds(page: Page): Promise<string[]> {
   )
 }
 
+/** The item of a command, by its ID. */
+function paletteItem(page: Page, id: string): Locator {
+  return page.locator(
+    `[data-test="command-palette-item"][data-test-command-id="${id}"]`,
+  )
+}
+
 /** The index of the currently-focused item (the one with
  * `data-test-focused="true"`), or -1 if none. */
 function focusedIndex(page: Page): Promise<number> {
@@ -85,12 +98,14 @@ function commandFrequency(page: Page): Promise<Record<string, number>> {
  * when closed, so input text and focused index reset naturally on each open.
  */
 describe('The command palette', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH)
   })
 
   afterAll(async () => {
@@ -228,27 +243,40 @@ describe('The command palette', async () => {
   })
 
   test('Enter runs the focused command and closes the palette', async () => {
+    const id = 'plugin:sidebar:structure'
+    const label = await withApp(
+      page,
+      (app) =>
+        app.commands
+          .getCommands()
+          .find((c) => c.id === 'plugin:sidebar:structure')?.label,
+    )
+    if (!label) {
+      throw new Error(`No command ${id}`)
+    }
     await openPalette(page)
 
-    const focusedId = (await itemIds(page))[await focusedIndex(page)]!
+    // Searching for its label focuses it first.
+    await paletteInput(page).fill(label)
+    await expect
+      .poll(async () => (await itemIds(page))[await focusedIndex(page)])
+      .toBe(id)
     await page.keyboard.press('Enter')
 
     await palette(page).waitFor({ state: 'detached' })
     expect(await palette(page).count()).toBe(0)
     // Selecting records the command's use — proving it ran, and which one.
-    expect((await commandFrequency(page))[focusedId]).toBe(1)
+    expect((await commandFrequency(page))[id]).toBe(1)
   })
 
   test('clicking an item runs its command and closes the palette', async () => {
+    const id = 'plugin:sidebar:history'
     await openPalette(page)
 
-    // Click a specific (non-first) item and assert exactly that one ran.
-    const target = paletteItems(page).nth(1)
-    const targetId = (await target.getAttribute('data-test-command-id'))!
-    await target.click()
+    await paletteItem(page, id).click()
 
     await palette(page).waitFor({ state: 'detached' })
     expect(await palette(page).count()).toBe(0)
-    expect((await commandFrequency(page))[targetId]).toBe(1)
+    expect((await commandFrequency(page))[id]).toBe(1)
   })
 })

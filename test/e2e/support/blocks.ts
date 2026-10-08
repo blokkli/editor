@@ -409,7 +409,9 @@ export type DropTarget = {
  * drop silently misses. Instead we let the editor place the target for us:
  *  1. Press the add-list rail item. The list is a ~50px rail but the item's
  *     rect reports its full expanded width, so clamp x to the rail width or the
- *     press lands on the canvas behind it.
+ *     press lands on the canvas behind it. With more bundles than fit, the
+ *     rail scrolls and its actions (e.g. templates) cover its bottom, so
+ *     scroll the item to the middle first.
  *  2. Arm the drag (`pointermove` > 7px while held) so the dragging overlay
  *     mounts and its `dragging:moveToDropTarget` listener registers.
  *  3. Emit `dragging:moveToDropTarget` — the overlay resolves the exact slot
@@ -428,11 +430,11 @@ export async function dragNewBlockIntoPage(
     const al = document
       .querySelector('[data-test="add-list"]')!
       .getBoundingClientRect()
-    const item = document
-      .querySelector(
-        `[data-test="add-list-blocks"] [data-test="add-list-item-${b}"]`,
-      )!
-      .getBoundingClientRect()
+    const element = document.querySelector(
+      `[data-test="add-list-blocks"] [data-test="add-list-item-${b}"]`,
+    )!
+    element.scrollIntoView({ block: 'center', behavior: 'instant' })
+    const item = element.getBoundingClientRect()
     return {
       x: Math.round(al.x + Math.min(al.width, item.width) / 2),
       y: Math.round(item.y + item.height / 2),

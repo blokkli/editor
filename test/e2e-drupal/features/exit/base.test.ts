@@ -1,13 +1,15 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, withApp, getHostContext } from './../../support/session'
-import { setupEditorE2E } from './../../support/setup'
+import { withApp, getHostContext } from '../../../e2e/support/session'
 import {
   appMenu,
   appMenuButton,
   closeAppMenu,
   openAppMenu,
-} from './../../support/menu'
+} from '../../../e2e/support/menu'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 
 /**
  * The exit feature (`features/exit/index.vue`) adds a single app-menu button that
@@ -31,12 +33,14 @@ import {
  * isn't present anyway, so the visibility check skips cleanup naturally.
  */
 describe('The exit feature', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH)
   })
 
   afterAll(async () => {
@@ -75,7 +79,7 @@ describe('The exit feature', async () => {
     await page.waitForFunction(
       () => !new URL(window.location.href).searchParams.has('blokkliEditing'),
     )
-    expect(new URL(page.url()).pathname).toBe('/page/1')
+    expect(new URL(page.url()).pathname).toBe('/en/blocks')
 
     // The broadcast carried the host entity's uuid.
     const recorded = await page.evaluate(() =>

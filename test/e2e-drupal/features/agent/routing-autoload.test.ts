@@ -1,15 +1,14 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { EDITOR_PATH_EMPTY, openEditor } from '../../../support/session'
-import { setupEditorE2E } from '../../../support/setup'
 import {
   getAgentTranscript,
   openAgentPanel,
-  setAgentMockScript,
   submitAgentPrompt,
   waitForAgentReply,
-} from '../../../support/agent'
-import type { MockScript } from '#blokkli/agent/shared/types'
+} from '../../../e2e/support/agent'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 
 /**
  * Verifies the routing preprocess endpoint flows through end-to-end in mock
@@ -30,12 +29,27 @@ import type { MockScript } from '#blokkli/agent/shared/types'
  *   tool the skill declares, so they too land in the LLM's tools list.
  */
 describe('agent: routing auto-loads skills + lazy tools', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor(EDITOR_PATH_EMPTY)
+    resetSandbox(sandbox)
+    page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH, {
+      mockScript: [
+        {
+          type: 'routing',
+          tools: ['search_text'],
+          skills: ['assess-and-fix-readability'],
+        },
+        { type: 'user', content: 'help me clean up the page' },
+        {
+          type: 'agent',
+          content: [{ type: 'text', text: 'Ready to help.' }],
+        },
+      ],
+    })
   })
 
   afterAll(async () => {
@@ -43,20 +57,6 @@ describe('agent: routing auto-loads skills + lazy tools', async () => {
   })
 
   test('preloaded tool + skill (with declared tools) both land in the LLM context', async () => {
-    const script: MockScript = [
-      {
-        type: 'routing',
-        tools: ['search_text'],
-        skills: ['assess-and-fix-readability'],
-      },
-      { type: 'user', content: 'help me clean up the page' },
-      {
-        type: 'agent',
-        content: [{ type: 'text', text: 'Ready to help.' }],
-      },
-    ]
-
-    await setAgentMockScript(page, script)
     await openAgentPanel(page)
     await submitAgentPrompt(page, 'help me clean up the page')
     await waitForAgentReply(page, 'Ready to help.')

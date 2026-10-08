@@ -1,34 +1,35 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor } from './../../support/session'
 import {
   openEditableField,
   plaintextEditor,
   editableOverlay,
   readabilityState,
   saveByClickAway,
-} from './../../support/editable'
-import { setupEditorE2E } from './../../support/setup'
+} from '../../../e2e/support/editable'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 
 /**
  * The readability indicator shown inside the editable overlay (the `readability`
- * module is enabled in the playground, so `readability.isAvailable` is true).
+ * module is enabled in the sandbox, so `readability.isAvailable` is true).
  * Analysis is debounced (~500ms), so assertions poll. Bands depend on the
  * analyzer's thresholds, so we assert set-membership / the too-short state /
  * reactivity rather than an exact band value.
  *
- * Driven on the host `lead` field (plaintext, no max length) so we can feed
+ * Driven on the node's `field_lead` (plaintext, no max length) so we can feed
  * passages of any length.
  */
 /**
- * Page lifecycle: one editor page shared. All tests edit the host `lead`
- * field — each `textarea.fill(...)` replaces the prior test's content, so
- * persisted lead state across tests doesn't affect readability assertions.
- * `afterEach` closes any open editable via `saveByClickAway`; the persisted
- * value (or its absence) is irrelevant because no test reads the recorder.
+ * Page lifecycle: one editor page shared. All tests edit the node's
+ * `field_lead` — each `textarea.fill(...)` replaces the prior test's content,
+ * so the lead Drupal stored doesn't affect readability assertions.
+ * `afterEach` closes any open editable via `saveByClickAway`.
  */
 describe('Editable field — readability', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
@@ -39,7 +40,8 @@ describe('Editable field — readability', async () => {
     'This is a clear and simple sentence that anyone can read with ease.'
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH)
   })
 
   afterAll(async () => {
@@ -54,7 +56,7 @@ describe('Editable field — readability', async () => {
   })
 
   test('shows a readability band for a long enough passage', async () => {
-    await openEditableField(page, 'lead')
+    await openEditableField(page, 'field_lead')
     const textarea = plaintextEditor(page)
     await textarea.waitFor({ state: 'visible' })
 
@@ -69,7 +71,7 @@ describe('Editable field — readability', async () => {
   })
 
   test('shows the "too short" state for very little text', async () => {
-    await openEditableField(page, 'lead')
+    await openEditableField(page, 'field_lead')
     const textarea = plaintextEditor(page)
     await textarea.waitFor({ state: 'visible' })
 
@@ -83,7 +85,7 @@ describe('Editable field — readability', async () => {
   })
 
   test('recomputes as the text changes', async () => {
-    await openEditableField(page, 'lead')
+    await openEditableField(page, 'field_lead')
     const textarea = plaintextEditor(page)
     await textarea.waitFor({ state: 'visible' })
 

@@ -1,9 +1,13 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, withApp, getHostContext } from './../../support/session'
-import { setupEditorE2E } from './../../support/setup'
-import { blockCount, blockState, selectBlock } from './../../support/blocks'
-import { topLevelBlockUuids } from './../../support/selection'
+import { withApp, getHostContext } from '../../../e2e/support/session'
+import {
+  blockCount,
+  blockState,
+  selectBlock,
+} from '../../../e2e/support/blocks'
+import { topLevelBlockUuids } from '../../../e2e/support/selection'
 import {
   copySelection,
   captureClipboard,
@@ -11,7 +15,9 @@ import {
   pasteText,
   dispatchPaste,
   dropDragInto,
-} from './../../support/clipboard'
+} from '../../../e2e/support/clipboard'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 
 /**
  * Copy/paste of existing blocks. `Cmd/Ctrl+C` serialises the selection into a
@@ -19,7 +25,8 @@ import {
  * Pasting that envelope is detected by `onPaste` (JSON starting with `{`),
  * unwrapped (`parseClipboardEnvelope`) and dispatched as `clipboard:paste`; the
  * `selection` listener starts an `existing` *copy* drag, whose drop calls
- * `adapter.pasteExistingBlocks` (a duplicate in the mock).
+ * `adapter.pasteExistingBlocks` (Drupal duplicates the paragraphs,
+ * `pbDuplicateMultipleParagraphs`).
  *
  * The envelope carries the source host's uuid, and the listener ignores a
  * payload whose `hostUuid` differs from the current host — the copied block
@@ -36,17 +43,18 @@ import {
  * `navigator.clipboard.writeText` on the page). Tests are ordered so the
  * foreign-paste rejection test runs BEFORE the real paste: the clipboard
  * `onPaste` handler is gated by `isLoading || isDragging` ("one paste per
- * page" — see comment in `support/clipboard.ts`), and while the mock adapter
- * usually clears `isLoading` synchronously, putting the rejection test first
- * removes that risk entirely.
+ * page" — see comment in `support/clipboard.ts`), and a paste waits for Drupal,
+ * so the rejection test runs first.
  */
 describe('Copying and pasting a selection', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH)
     await captureClipboard(page)
   })
 
@@ -77,7 +85,7 @@ describe('Copying and pasting a selection', async () => {
       blokkli_clipboard_data: true,
       meta: {
         hostUuid: 'some-other-host',
-        hostEntityType: 'content',
+        hostEntityType: 'node',
         hostBundle: 'page',
       },
       data: { type: 'selection', uuids: [first] },
@@ -107,7 +115,7 @@ describe('Copying and pasting a selection', async () => {
     const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
     // Pasting the very string copy produced — a real round-trip.
     await pasteText(page, envelope)
-    await dropDragInto(page)
+    await dropDragInto(page, { fieldName: 'field_paragraphs' })
 
     await expect.poll(() => blockCount(page)).toBe(uuidsBefore.length + 1)
     const added = (await withApp(page, (app) => app.state.getAllUuids())).find(

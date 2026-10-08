@@ -1,14 +1,16 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, withApp } from './support/session'
+import { withApp } from '../e2e/support/session'
 import {
   openAppMenu,
   closeAppMenu,
   appMenu,
   appMenuButton,
-} from './support/menu'
-import { addBlock } from './support/blocks'
-import { setupEditorE2E } from './support/setup'
+} from '../e2e/support/menu'
+import { addBlock } from '../e2e/support/blocks'
+import { resetSandbox, sandboxHost, workerSandbox } from './support/sandbox'
+import { BLOCKS_EDITOR_PATH, editorPath, openEditor } from './support/session'
 
 /**
  * Assert an app-menu button's enabled/disabled state. `toBeDisabled` /
@@ -37,15 +39,18 @@ async function expectMenuButton(
  * "enables publish/discard" test introduces a pending mutation that would
  * pollute the clean-state assertion. `afterEach` closes the menu so each
  * test re-opens it from a known closed state. The translating test needs a
- * different URL (`/de/...`) and opens its own page.
+ * different URL (the German translation of `nodes/translated.yml`) and opens
+ * its own page.
  */
 describe('The AppMenu', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH)
   })
 
   afterAll(async () => {
@@ -77,7 +82,7 @@ describe('The AppMenu', async () => {
   test('enables publish and discard once there are pending mutations', async () => {
     // Use the adapter-mutation helper instead of a real drag — we just need
     // *a* pending mutation; the gesture isn't under test.
-    await addBlock(page, { bundle: 'text' })
+    await addBlock(page, { bundle: 'text', fieldName: 'field_paragraphs' })
     await expect
       .poll(() => withApp(page, (app) => app.state.mutations.value.length))
       .toBeGreaterThan(0)
@@ -93,9 +98,13 @@ describe('The AppMenu', async () => {
   })
 
   test('swaps importing for translating when viewing a translation', async () => {
-    // The playground derives the language from a `/de` path prefix; this loads
-    // the editor in `translating` mode. Own page — the shared one is `editing`.
-    const dePage = await openEditor('/de/page/1?blokkliEditing=1')
+    // The German translation loads the editor in `translating` mode. Own
+    // page — the shared one is `editing`.
+    const dePage = await openEditor(
+      sandbox,
+      'Anna Keller',
+      editorPath('/de/bibliothek', 'translated'),
+    )
     try {
       await expect
         .poll(() => withApp(dePage, (app) => app.state.editMode.value))

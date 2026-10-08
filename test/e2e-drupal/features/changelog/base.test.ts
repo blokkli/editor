@@ -1,10 +1,12 @@
 import { readFileSync } from 'node:fs'
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, waitForEditorReady } from './../../support/session'
-import { setupEditorE2E } from './../../support/setup'
-import { openAppMenu, appMenuButton } from './../../support/menu'
-import { dialog } from './../../support/overlays'
+import { waitForEditorReady } from '../../../e2e/support/session'
+import { openAppMenu, appMenuButton } from '../../../e2e/support/menu'
+import { dialog } from '../../../e2e/support/overlays'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 
 /**
  * The changelog feature adds a "What's New" app-menu button and remembers, in
@@ -76,12 +78,14 @@ async function openWithLastSeen(
  * is needed.
  */
 describe('The changelog feature', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH)
   })
 
   afterAll(async () => {

@@ -53,8 +53,15 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 ## How a spec moves
 
 - **Where:** `test/e2e-drupal/features/<feature>/<name>.test.ts`, as in the mock
-  suite. The mock spec (or the tests that moved out of it) is deleted once the
+  suite; the mock suite's top-level specs stay top-level, and
+  `features/agent/mock-scripts/` becomes `features/agent/`. `git mv` the mock
+  spec, so its history follows; one that only partly moves is deleted once the
   Drupal version passes.
+- **A spec that ran whatever came first** (e.g. the first command of the
+  palette) picks a harmless one by its ID: Drupal would publish or discard as
+  readily as anything else.
+- **Waiting:** a change goes through Drupal, so `expect.poll`'s default second
+  can be too short. Wait for its mutation (`nextMutation`) before asserting.
 - **The adapter recorder** (`waitForAdapterCall`, `?testing=true`):
   `nextMutation(page, '<name>')` (`support/mutations.ts`) returns the next
   request's variables, typed; started before the action, awaited after. Then
@@ -167,8 +174,8 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [x] `mock-scripts/conversation-restore`: done
       (`features/agent/conversation-restore.test.ts`, on
       `nodes/translated.yml`).
-- [ ] `mock-scripts/full-flow`: done (`test/e2e-drupal/agent.test.ts`, "answers
-      from its script"); delete it.
+- [x] `mock-scripts/full-flow`: deleted; `test/e2e-drupal/agent.test.ts`
+      ("answers from its script") covers it.
 - [ ] `mock-scripts/grid-with-cards`: as is. grid/card become `columns`
       (`field_left` a title, `field_right` three texts); an empty page; the
       parent is the node's `field_paragraphs`; `pageStructure` with
@@ -179,7 +186,7 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       page.
 - [ ] `mock-scripts/ownership-flow`: with changes. Read-only as above;
       `pbTakeOwnership`.
-- [ ] `mock-scripts/routing-autoload`: as is.
+- [x] `mock-scripts/routing-autoload`: done.
 - [ ] `mock-scripts/selection-context`: as is, with three keyed texts in a
       fixture (`field_text` is required).
 - [ ] `tools/add_paragraphs`: `.test`. `two_columns` > text becomes
@@ -244,16 +251,18 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [ ] `block-scheduler/base`: with changes. Banner, link, section, step and text
       have scheduling; `pbSetParagraphSchedule`; a future pinned clock.
       Unpublish-only on a `call_to_action`.
-- [ ] `changelog/base`: as is.
-- [ ] `exit/base`: as is; the expected path is the fixture's.
+- [x] `changelog/base`: done.
+- [x] `exit/base`: done.
 - [ ] `entity-title/base`: with changes. A published and an unpublished node;
       the scheduled badge through `adapter.scheduleEditState` with a future
       date, then a reload.
 
 ### Editor UI
 
-- [ ] `add-block-drag`: as is. `field_paragraphs`; a title opens `field_title`.
-- [ ] `AppMenu`: as is. Test 3 needs a DE translation.
+- [x] `add-block-drag`: done. `dragNewBlockIntoPage` now scrolls the add-list
+      item to the middle: the sandbox's rail scrolls, and its actions cover its
+      bottom.
+- [x] `AppMenu`: done, test 3 on `nodes/translated.yml`.
 - [ ] `diff-approval-chunks`: `.test`. Two keyed texts with the `before` markup,
       `update_text_fields` with `after`. Unverified: the segment rectangles and
       the exact stored value with Drupal's markup.
@@ -276,7 +285,8 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       search for "teaser" and "Today".
 - [ ] `selection/shortcuts`: as is. `columns` (a title in `field_left`, three
       texts in `field_right`), then a text.
-- [ ] `command-palette/base`: as is; run a harmless command by its ID.
+- [x] `command-palette/base`: done; Enter and click open the structure and
+      history sidebars.
 - [ ] `responsive-preview/base`: as is. A long page, a keyed target paragraph;
       the card's `box` becomes `table.striped` (`is-striped`), the grid's header
       `columns.field_left`.
@@ -307,12 +317,12 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [ ] `editable-field/plaintext`: with changes. `title.field_title`; required:
       `call_to_action.field_title` or `step.field_title` (maximum 255); the
       fallback: a link without a title; `pbUpdateFieldValue`.
-- [ ] `editable-field/readability`: as is, on the node's `field_lead`.
+- [x] `editable-field/readability`: done, on the node's `field_lead`.
 - [ ] `charts/colors`: with changes. Wait for `pbUpdateParagraphOption`.
 
 ### Clipboard, add list, history and the block actions
 
-- [ ] `clipboard/copy-paste`: as is, with `fieldName: 'field_paragraphs'`.
+- [x] `clipboard/copy-paste`: done.
 - [ ] `clipboard/paste`: splits. Drupal turns plain text into a `text` only (no
       bundle selector): test 2 becomes "adds a text", test 5 skips the selector.
       Tests 1 and 3 stay, test 4 with the YouTube fake.
