@@ -38,8 +38,13 @@ field_paragraphs:
         field_text: { en: <p>…</p>, de: <p>…</p>, fr: <p>…</p> }
 ```
 
-- **Everything but `key`, `type`, `id`, `source`, `options`, `outdated` and
-  `frontend_route` is a field.** A field the bundle doesn't have is an error.
+- **Everything but `key`, `type`, `id`, `source`, `options`, `outdated`,
+  `frontend_route` and `invalid` is a field.** A field the bundle doesn't have
+  is an error.
+- **`invalid: true`:** broken on purpose, only for the E2E tests' fixtures
+  (`test/e2e-drupal/content`). The seed doesn't check whether the field allows
+  the paragraph, nor the entity's constraints. Its own paragraphs are still
+  checked.
 - **`id`:** nodes only. The front page (`system.site.page.front`) is `/node/1`,
   so the home page has `id: 1`. The other nodes get the next free IDs, in the
   order of their file names.

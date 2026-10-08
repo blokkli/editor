@@ -1,0 +1,16 @@
+# Content the site doesn't allow, on purpose (`invalid: true`), at /en/broken.
+key: broken
+type: page
+title: Broken
+field_paragraphs:
+  - type: gallery
+    key: gallery
+    field_paragraphs:
+      # A gallery only allows images.
+      - type: title
+        key: misplaced-title
+        invalid: true
+        field_title: A title in a gallery
+  - type: text
+    key: broken-page-text
+    field_text: '<p>A valid text.</p>'

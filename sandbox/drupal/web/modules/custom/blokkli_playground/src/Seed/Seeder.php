@@ -56,7 +56,7 @@ final class Seeder {
   /**
    * The keys of an entity in the files that aren't fields.
    */
-  private const RESERVED = ['key', 'type', 'id', 'source', 'options', 'outdated', 'frontend_route'];
+  private const RESERVED = ['key', 'type', 'id', 'source', 'options', 'outdated', 'frontend_route', 'invalid'];
 
   /**
    * How the files refer to other entities, e.g. `{ node: town-hall }`.
@@ -402,7 +402,8 @@ final class Seeder {
         $paragraphs[$name] = [];
         foreach ($value as $delta => $paragraph) {
           $type = $paragraph['type'] ?? NULL;
-          if ($allowed && is_string($type) && in_array($type, $allowed, TRUE) === !empty($settings['negate'])) {
+          $invalid = is_array($paragraph) && ($paragraph['invalid'] ?? FALSE) === TRUE;
+          if (!$invalid && $allowed && is_string($type) && in_array($type, $allowed, TRUE) === !empty($settings['negate'])) {
             $this->error("$at.$delta: the field doesn't allow paragraphs of type '$type'");
             continue;
           }
@@ -434,6 +435,10 @@ final class Seeder {
       }
     }
 
+    if (isset($data['invalid']) && $data['invalid'] !== TRUE) {
+      $this->error("$path: invalid: true, or nothing");
+    }
+
     $options = [];
     if (isset($data['options'])) {
       if ($entityType !== 'paragraph' || !is_array($data['options'])) {
@@ -456,6 +461,7 @@ final class Seeder {
       options: $options,
       outdated: array_values(array_intersect($outdated, $translations)),
       path: $path,
+      invalid: ($data['invalid'] ?? FALSE) === TRUE,
     );
   }
 
@@ -833,7 +839,7 @@ final class Seeder {
     }
 
     $problems = [];
-    foreach ([$item->source, ...$item->translations] as $langcode) {
+    foreach ($item->invalid ? [] : [$item->source, ...$item->translations] as $langcode) {
       foreach ($entity->getTranslation($langcode)->validate() as $violation) {
         $problems[] = "$item->path ($langcode): " . $violation->getPropertyPath() . ': ' . strip_tags((string) $violation->getMessage());
       }

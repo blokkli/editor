@@ -53,6 +53,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F48 | [A preview grant opens more than the preview](#f48-a-preview-grant-opens-more-than-the-preview)                         | `paragraphs_blokkli` | low      | open       |
 | F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                     | `texts`              | low      | open       |
 | F52 | [A comment's label throws](#f52-a-comments-label-throws)                                                                | `paragraphs_blokkli` | low      | open       |
+| F53 | [Violations while editing come from the stored structure](#f53-violations-while-editing-come-from-the-stored-structure) | `paragraphs_blokkli` | medium   | open       |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -838,3 +839,27 @@ From chunk 04 (2026-09-26):
   or a log message with the label.
 - **Fix idea:** `use StringTranslationTrait;` in the entity, or
   `new TranslatableMarkup()`.
+
+## F53: Violations while editing come from the stored structure
+
+- **Found:** 2026-10-08, with the E2E fixture
+  `test/e2e-drupal/content/nodes/broken.yml` (a title in a gallery, which only
+  allows images).
+- **Symptom:** deleting the misplaced title doesn't clear the gallery's
+  violation ("This entity (paragraph: 4) cannot be referenced.",
+  `field_paragraphs.0.target_id`): the editor keeps the red frame and the
+  analyze entry. Publishing then succeeds. The other way round, a structural
+  problem that a mutation creates should only show when publishing (not
+  reproduced).
+- **Cause:** `ParagraphsBlokkliEditState::getMutatedState()` calls
+  `$this->validate()` (`src/Entity/ParagraphsBlokkliEditState.php:437` at
+  `3f07f6e`) before `rebuildFields()` (`:495`) puts the mutated paragraphs into
+  the fields, and that only happens when saving. So validation sees the
+  paragraph fields as stored. `ParagraphsBlokkliManager::doPublish()` validates
+  again after the rebuild (`src/ParagraphsBlokkliManager.php:303`), which is why
+  publishing gets it right.
+- **Fix idea:** rebuild the fields before validating in both cases; the editing
+  path empties them afterwards anyway. A kernel test: a disallowed paragraph
+  that a mutation removes leaves no violation in the mutated state.
+- **E2E:** `test/e2e-drupal/invalid-content.test.ts`, "drops the violation once
+  the misplaced paragraph is gone", is marked `it.fails` until it's fixed.

@@ -25,6 +25,9 @@ final class Item {
     public readonly array $outdated,
     // Where it is in the content files, for messages.
     public readonly string $path,
+    // Broken on purpose (E2E fixtures): neither its constraints nor whether
+    // its field allows it are checked.
+    public readonly bool $invalid = FALSE,
   ) {}
 
 }

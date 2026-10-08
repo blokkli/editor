@@ -1,14 +1,10 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import type { Page } from 'playwright-core'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { addBlock } from '../e2e/support/blocks'
-import { waitForEditorReady, withApp } from '../e2e/support/session'
+import { addBlock, blockCount } from '../e2e/support/blocks'
+import { waitForEditorReady } from '../e2e/support/session'
 import { resetSandbox, sandboxHost, workerSandbox } from './support/sandbox'
 import { BLOCKS_EDITOR_PATH, openEditor } from './support/session'
-
-function blockCount(page: Page): Promise<number> {
-  return withApp(page, (app) => app.state.getAllUuids().length)
-}
 
 describe('The E2E sandbox', async () => {
   const sandbox = workerSandbox()

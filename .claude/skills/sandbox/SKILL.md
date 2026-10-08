@@ -289,7 +289,9 @@ host, with ddev running: `bun run test:e2e-drupal` or
     stream calls the model (the `agent-e2e-testing` skill).
 - **The fixtures are the tests' own:** users, config pages, menus and nodes. A
   paragraph a spec refers to gets a `key`; its UUID is
-  `seedUuid('paragraph', key)`.
+  `seedUuid('paragraph', key)`. Content the site doesn't allow is marked
+  `invalid: true` (see the content README): `nodes/broken.yml` has a title in a
+  gallery.
 
 ## The control app (`sandbox/control/`)
 

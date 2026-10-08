@@ -330,7 +330,9 @@ describe('Something', async () => {
   are the paragraph types.
 - **Fixtures:** add what a spec needs to `test/e2e-drupal/content`, in the seed
   format (`sandbox/drupal/content/README.md`); the next run rebakes. Give a
-  paragraph a `key` to find it: `seedUuid('paragraph', key)`.
+  paragraph a `key` to find it: `seedUuid('paragraph', key)`. For content the
+  site doesn't allow, mark the entity `invalid: true` (e.g. `nodes/broken.yml`,
+  a title in a gallery): the seed then skips its checks.
 
 ## Typechecking
 
