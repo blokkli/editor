@@ -39,12 +39,16 @@ field_paragraphs:
 ```
 
 - **Everything but `key`, `type`, `id`, `source`, `options`, `outdated`,
-  `frontend_route` and `invalid` is a field.** A field the bundle doesn't have
-  is an error.
+  `frontend_route`, `invalid` and `deleted` is a field.** A field the bundle
+  doesn't have is an error.
 - **`invalid: true`:** broken on purpose, only for the E2E tests' fixtures
   (`test/e2e-drupal/content`). The seed doesn't check whether the field allows
   the paragraph, nor the entity's constraints. Its own paragraphs are still
   checked.
+- **`deleted: true`:** users and nodes, only for the E2E tests' fixtures. The
+  seed creates the entity, then everything else, then deletes it. A user's
+  comments stay, without an author; the notifications about a node stay,
+  without a page to link to.
 - **`id`:** nodes only. The front page (`system.site.page.front`) is `/node/1`,
   so the home page has `id: 1`. The other nodes get the next free IDs, in the
   order of their file names.

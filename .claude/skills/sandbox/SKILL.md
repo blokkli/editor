@@ -304,7 +304,9 @@ host, with ddev running: `bun run test:e2e-drupal` or
   editor, all with an English UI), config pages, menus and nodes. A paragraph a
   spec refers to gets a `key`; its UUID is `seedUuid('paragraph', key)`. Content
   the site doesn't allow is marked `invalid: true` (see the content README):
-  `nodes/broken.yml` has a title in a gallery.
+  `nodes/broken.yml` has a title in a gallery. Users and nodes marked
+  `deleted: true` are deleted after seeding: Nora Huber's comment has no author,
+  the notification about `nodes/removed.yml` no page.
 - **They run against the dev server** (`ddev nuxt`), which has the Test Cases
   sidebar, and typecheck with the frontend: `typecheck:sandbox-frontend` covers
   `test/e2e-drupal/`.

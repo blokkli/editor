@@ -28,6 +28,8 @@ final class Item {
     // Broken on purpose (E2E fixtures): neither its constraints nor whether
     // its field allows it are checked.
     public readonly bool $invalid = FALSE,
+    // Deleted once everything is created (E2E fixtures, users and nodes).
+    public readonly bool $deleted = FALSE,
   ) {}
 
 }

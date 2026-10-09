@@ -56,7 +56,17 @@ final class Seeder {
   /**
    * The keys of an entity in the files that aren't fields.
    */
-  private const RESERVED = ['key', 'type', 'id', 'source', 'options', 'outdated', 'frontend_route', 'invalid'];
+  private const RESERVED = [
+    'key',
+    'type',
+    'id',
+    'source',
+    'options',
+    'outdated',
+    'frontend_route',
+    'invalid',
+    'deleted',
+  ];
 
   /**
    * How the files refer to other entities, e.g. `{ node: town-hall }`.
@@ -208,6 +218,7 @@ final class Seeder {
       $this->assignFrontendRoutes();
       $this->createComments($comments);
       $this->createTexts($texts);
+      $this->deleteRemoved($items);
     }
     catch (\Throwable $e) {
       $transaction->rollBack();
@@ -438,6 +449,9 @@ final class Seeder {
     if (isset($data['invalid']) && $data['invalid'] !== TRUE) {
       $this->error("$path: invalid: true, or nothing");
     }
+    if (isset($data['deleted']) && ($data['deleted'] !== TRUE || !in_array($keyType, ['user', 'node'], TRUE))) {
+      $this->error("$path: deleted: true, or nothing, and only on users and nodes");
+    }
 
     $options = [];
     if (isset($data['options'])) {
@@ -462,6 +476,7 @@ final class Seeder {
       outdated: array_values(array_intersect($outdated, $translations)),
       path: $path,
       invalid: ($data['invalid'] ?? FALSE) === TRUE,
+      deleted: ($data['deleted'] ?? FALSE) === TRUE,
     );
   }
 
@@ -943,6 +958,24 @@ final class Seeder {
         ]);
         $entity->save();
         $parent ??= $entity->id();
+      }
+    }
+  }
+
+  /**
+   * Deletes the users and nodes marked `deleted: true`.
+   *
+   * Last, once everything that refers to them exists: what's left behind is
+   * what the E2E tests need (a comment by a deleted author, a notification
+   * whose page is gone).
+   */
+  private function deleteRemoved(array $items): void {
+    foreach (['node', 'user'] as $entityType) {
+      $storage = $this->entityTypeManager->getStorage($entityType);
+      foreach ($items[$entityType] as $item) {
+        if ($item->deleted) {
+          $storage->load($this->ids[$entityType][$item->key])?->delete();
+        }
       }
     }
   }
