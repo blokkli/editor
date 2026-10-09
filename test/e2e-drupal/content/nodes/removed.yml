@@ -1,0 +1,6 @@
+# A page that's deleted after seeding: the notification about its comment
+# (comments.yml) has no page to link to.
+key: removed
+type: page
+title: Removed
+deleted: true

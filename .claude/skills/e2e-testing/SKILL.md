@@ -359,7 +359,9 @@ describe('Something', async () => {
   `invalid: true` (e.g. `nodes/broken.yml`, a title in a gallery): the seed then
   skips its checks. A paragraph with plain values has no translation, even in a
   translated node (`nodes/notices.yml`); `outdated: [de]` flags a translation as
-  outdated (`nodes/waste-collection.yml`).
+  outdated (`nodes/waste-collection.yml`). `deleted: true` on a user or node
+  deletes it after seeding, leaving its comments without an author or its
+  notifications without a page (`users.yml`: Nora Huber, `nodes/removed.yml`).
 - **The widget** (`sandbox/frontend/app/components/Paragraph/Widget`): a
   paragraph type for the tests only, like the playground's widget. It has an
   option of every type, each value in a cell of its own

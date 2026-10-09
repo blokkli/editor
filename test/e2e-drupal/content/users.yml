@@ -42,3 +42,14 @@
   preferred_langcode: en
   preferred_admin_langcode: en
   status: true
+
+# Her account is deleted after seeding: her comment on the page "Feedback"
+# (comments.yml) has no author.
+- key: nora
+  name: Nora Huber
+  mail: nora.huber@example.com
+  roles: [content_editor]
+  preferred_langcode: en
+  preferred_admin_langcode: en
+  status: true
+  deleted: true

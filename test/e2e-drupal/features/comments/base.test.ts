@@ -1,13 +1,15 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { openEditor, withApp } from './../../support/session'
-import { setupEditorE2E } from './../../support/setup'
-import { selectBlock } from './../../support/blocks'
-import { topLevelBlockUuids } from './../../support/selection'
-import { itemAction } from './../../support/itemActions'
-import { openSidebar } from './../../support/sidebar'
-import { dialog, dialogSubmit } from './../../support/overlays'
-import { emitEvent } from './../../support/events'
+import { withApp } from '../../../e2e/support/session'
+import { selectBlock } from '../../../e2e/support/blocks'
+import { topLevelBlockUuids } from '../../../e2e/support/selection'
+import { itemAction } from '../../../e2e/support/itemActions'
+import { openSidebar } from '../../../e2e/support/sidebar'
+import { dialog, dialogSubmit } from '../../../e2e/support/overlays'
+import { emitEvent } from '../../../e2e/support/events'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { editorPath, openEditor } from '../../support/session'
 
 /**
  * The comments feature has three parts; we cover the **item action** (attach a
@@ -15,15 +17,14 @@ import { emitEvent } from './../../support/events'
  * (threads, resolve/unresolve, reply, edit, delete, the "Show resolved" toggle,
  * the unresolved badge). The canvas Overlay is intentionally skipped.
  *
- * The playground mock seeds comments (German bodies, deterministic `seed-*`
- * uuids: 8 roots — 2 resolved, 6 unresolved (one authored by a since-deleted
- * user, `seed-deleted-user`) — + 8 replies) into localStorage,
- * fresh per page. The feature loads them once at editor init and replaces its
- * list after each of its own handlers, so driving the UI keeps the sidebar in
- * sync. The source of truth for assertions is `adapter.loadComments()` (read via
- * `withApp`): we drive the real UI and assert on comment *state* (uuids, parent
- * links, `resolved`, `blockUuids`, body) + DOM structure — never on the seeded,
- * localized text. Comments we create carry a unique ASCII marker so
+ * The page "Feedback" (content/nodes/feedback.yml) has seeded threads
+ * (content/comments.yml): 4 roots — 1 resolved, 3 unresolved (one by Nora
+ * Huber, whose account is deleted after seeding) — + 2 replies. The feature
+ * loads them once at editor init and replaces its list after each of its own
+ * handlers, so driving the UI keeps the sidebar in sync. The source of truth
+ * for assertions is `adapter.loadComments()` (read via `withApp`): we drive the
+ * real UI and assert on comment *state* (uuids, parent links, `resolved`,
+ * `blockUuids`, body) + DOM structure — never on the seeded text. Comments we create carry a unique ASCII marker so
  * `body.includes(marker)` is locale-independent.
  *
  * Comment bodies are rich text: the input is a Tiptap contenteditable
@@ -148,12 +149,18 @@ async function setShowResolved(page: Page, on: boolean): Promise<void> {
  * add form / dialog and deselects.
  */
 describe('The comments feature', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(
+      sandbox,
+      'Anna Keller',
+      editorPath('/en/feedback', 'feedback'),
+    )
   })
 
   afterAll(async () => {

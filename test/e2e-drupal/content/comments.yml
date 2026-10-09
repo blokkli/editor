@@ -1,5 +1,5 @@
 # Comment threads on the page "Feedback" (nodes/feedback.yml): Lea asks, Anna
-# answers.
+# answers. Further down, the threads behind Anna's notifications.
 - key: question
   host: { node: feedback }
   paragraphs: [feedback-text-1]
@@ -25,3 +25,57 @@
   uid: { user: lea }
   resolved: true
   body: '<p>Is the date right?</p>'
+
+# By a user whose account is gone (users.yml: nora).
+- key: former-question
+  host: { node: feedback }
+  paragraphs: [feedback-text-1]
+  uid: { user: nora }
+  body: '<p>Who wrote this text?</p>'
+
+# Mentions of Anna on the page "Mentions": each one notifies her, which makes
+# more than two pages of notifications (16 each).
+- key: mentions
+  host: { node: mentions }
+  uid: { user: lea }
+  body: '<p>@{anna}, a few points on this page.</p>'
+  replies:
+    - { key: mention-1, uid: { user: lea }, body: '<p>@{anna}, point 1.</p>' }
+    - { key: mention-2, uid: { user: lea }, body: '<p>@{anna}, point 2.</p>' }
+    - { key: mention-3, uid: { user: lea }, body: '<p>@{anna}, point 3.</p>' }
+    - { key: mention-4, uid: { user: lea }, body: '<p>@{anna}, point 4.</p>' }
+    - { key: mention-5, uid: { user: lea }, body: '<p>@{anna}, point 5.</p>' }
+    - { key: mention-6, uid: { user: lea }, body: '<p>@{anna}, point 6.</p>' }
+    - { key: mention-7, uid: { user: lea }, body: '<p>@{anna}, point 7.</p>' }
+    - { key: mention-8, uid: { user: lea }, body: '<p>@{anna}, point 8.</p>' }
+    - { key: mention-9, uid: { user: lea }, body: '<p>@{anna}, point 9.</p>' }
+    - { key: mention-10, uid: { user: lea }, body: '<p>@{anna}, point 10.</p>' }
+    - { key: mention-11, uid: { user: lea }, body: '<p>@{anna}, point 11.</p>' }
+    - { key: mention-12, uid: { user: lea }, body: '<p>@{anna}, point 12.</p>' }
+    - { key: mention-13, uid: { user: lea }, body: '<p>@{anna}, point 13.</p>' }
+    - { key: mention-14, uid: { user: lea }, body: '<p>@{anna}, point 14.</p>' }
+    - { key: mention-15, uid: { user: lea }, body: '<p>@{anna}, point 15.</p>' }
+    - { key: mention-16, uid: { user: lea }, body: '<p>@{anna}, point 16.</p>' }
+    - { key: mention-17, uid: { user: lea }, body: '<p>@{anna}, point 17.</p>' }
+    - { key: mention-18, uid: { user: lea }, body: '<p>@{anna}, point 18.</p>' }
+    - { key: mention-19, uid: { user: lea }, body: '<p>@{anna}, point 19.</p>' }
+    - { key: mention-20, uid: { user: lea }, body: '<p>@{anna}, point 20.</p>' }
+    - { key: mention-21, uid: { user: lea }, body: '<p>@{anna}, point 21.</p>' }
+    - { key: mention-22, uid: { user: lea }, body: '<p>@{anna}, point 22.</p>' }
+    - { key: mention-23, uid: { user: lea }, body: '<p>@{anna}, point 23.</p>' }
+    - { key: mention-24, uid: { user: lea }, body: '<p>@{anna}, point 24.</p>' }
+    - { key: mention-25, uid: { user: lea }, body: '<p>@{anna}, point 25.</p>' }
+    - { key: mention-26, uid: { user: lea }, body: '<p>@{anna}, point 26.</p>' }
+    - { key: mention-27, uid: { user: lea }, body: '<p>@{anna}, point 27.</p>' }
+    - { key: mention-28, uid: { user: lea }, body: '<p>@{anna}, point 28.</p>' }
+    - { key: mention-29, uid: { user: lea }, body: '<p>@{anna}, point 29.</p>' }
+    - { key: mention-30, uid: { user: lea }, body: '<p>@{anna}, point 30.</p>' }
+    - { key: mention-31, uid: { user: lea }, body: '<p>@{anna}, point 31.</p>' }
+    - { key: mention-32, uid: { user: lea }, body: '<p>@{anna}, point 32.</p>' }
+
+# Created last, so its notification is Anna's newest: its page is deleted
+# after seeding (nodes/removed.yml).
+- key: removed-question
+  host: { node: removed }
+  uid: { user: lea }
+  body: '<p>@{anna}, is this page still needed?</p>'

@@ -134,8 +134,9 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
   - image media with and without alt, with files in
     `test/e2e-drupal/content/files/` (there: `media.yml`)
   - comment threads (resolved and unresolved, with mentions of Anna by another
-    user; there: `comments.yml` on `nodes/feedback.yml`, no mentions yet),
-    `templates.yml` (there: columns with two texts), library items
+    user; there: `comments.yml` on `nodes/feedback.yml`, the mentions on
+    `nodes/mentions.yml` and `nodes/removed.yml`), `templates.yml` (there:
+    columns with two texts), library items
 
 ### Additions to the sandbox
 
@@ -172,8 +173,8 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [ ] A text filter for `basic_html` that marks external links
       (`target="_blank"` and a visually hidden "(opens in a new tab)"), after
       `filter_html`. It's what the mock's processing imitates.
-- [ ] The seed: `deleted: true` on users and nodes, deleted after seeding (a
-      comment by a deleted author, a notification whose page is gone).
+- [x] The seed: `deleted: true` on users and nodes, deleted after seeding (a
+      comment by a deleted author, a notification whose page is gone): done.
 - [ ] A fake for YouTube and Vimeo: a test module
       (`blokkli_playground/tests/modules/`) with an HTTP client middleware for
       the oEmbed providers list, the video data and the thumbnail. Installed by
@@ -247,15 +248,16 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       field of its own); `props.link.uri` is `{ path }`.
 - [ ] `translations/link-title-translate`: stays (links are never translatable);
       a test for F58's fix replaces it.
-- [ ] `comments/base`: with changes. Seeded threads, a second user. 10 of 11
-      move; the deleted author with `deleted: true` on a user.
+- [x] `comments/base`: done, all 11, on `nodes/feedback.yml`; the deleted author
+      is Nora Huber (`users.yml`, `deleted: true`).
 - [x] `comments/deep-link`: done, on `nodes/feedback.yml` (`comments.yml`: an
       unresolved root without replies, a root with two replies, a resolved
       root). Not "Comments": nginx sends `/en/comments` to Drupal.
-- [ ] `notifications/base`: with changes. Mentions of Anna in seeded comments
-      make the notifications. Drupal shows 16 per page, not 3: 33 mentions, or a
-      new paging assertion. Test 4: a hostless notification from a node with
-      `deleted: true`; its `edit-state:approved` part stays (mock only).
+- [x] `notifications/base`: done. Lea's replies on `nodes/mentions.yml` mention
+      Anna 33 times, so more than two pages of 16; test 4 on `mention-32` and on
+      `removed-question`, whose page (`nodes/removed.yml`, `deleted: true`) is
+      gone. Its `edit-state:approved` part stays in the mock suite
+      (`test/e2e/features/notifications/base.test.ts`).
 - [x] `ownership/base`: done, on `nodes/translated.yml`: Anna claims the edit
       state, Lea sees the banner and takes over (`pbTakeOwnership`, still hers
       after a reload); Élodie, on `/fr/bibliotheque`, gets no button.

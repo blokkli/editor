@@ -1,0 +1,8 @@
+# A page whose comments mention Anna again and again (comments.yml), at
+# /en/mentions: her notifications fill more than two pages.
+key: mentions
+type: page
+title: Mentions
+field_paragraphs:
+  - type: text
+    field_text: '<p>A text to talk about.</p>'
