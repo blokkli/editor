@@ -1,8 +1,30 @@
-# The front page: system.site.page.front is /node/1.
+# The front page: system.site.page.front is /node/1, at /en. Its paragraphs
+# field is the only one that allows fragments ("today" and "quick_links").
 key: home
 id: 1
 type: editorial
 title: Home
 field_paragraphs:
   - type: text
+    key: home-text
     field_text: '<p>The front page.</p>'
+  # A full field: a call to action holds four links at most.
+  - type: call_to_action
+    key: home-call-to-action
+    field_title: Four links
+    field_links:
+      - type: link
+        key: home-link
+        field_link: { node: blocks }
+      - type: link
+        field_link: { node: nested }
+      - type: link
+        field_link: { node: translated }
+      - type: link
+        field_link: { node: empty }
+  # An empty field: nothing on the left.
+  - type: columns
+    key: home-columns
+    field_right:
+      - type: text
+        field_text: '<p>A text on the right.</p>'

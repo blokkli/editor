@@ -1,0 +1,26 @@
+# A page longer than the responsive preview, at /en/long: a title, ten times
+# the same text, and a last text far below the fold.
+key: long
+type: page
+title: Long
+field_paragraphs:
+  - type: title
+    key: long-title
+    field_title: A long page
+  - &text
+    type: text
+    field_text:
+      '<p>A text that makes the page longer. It has two sentences, so that it
+      takes a few lines on a phone.</p>'
+  - *text
+  - *text
+  - *text
+  - *text
+  - *text
+  - *text
+  - *text
+  - *text
+  - *text
+  - type: text
+    key: long-last-text
+    field_text: '<p>The last text.</p>'

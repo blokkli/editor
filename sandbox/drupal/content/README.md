@@ -109,7 +109,10 @@ main:
         …
 ```
 
-Pages and editorial pages get their URL from their place in the menu.
+Pages and editorial pages get their URL from their place in the menu. A URL
+whose first segment is one of the paths nginx sends to Drupal (`comments`,
+`media`, `user`, …, see the sandbox skill) shows Drupal's page, not the
+frontend's: give the node another title.
 
 ```yaml
 # comments.yml
@@ -125,6 +128,7 @@ Pages and editorial pages get their URL from their place in the menu.
 ```
 
 `@{marc}` mentions a user; the comment module notifies them, as in the editor.
+`resolved: true` on the first comment resolves the thread.
 
 ## The town and its texts
 

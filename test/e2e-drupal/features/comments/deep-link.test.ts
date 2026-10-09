@@ -1,7 +1,13 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { EDITOR_PATH, openEditor } from './../../support/session'
-import { setupEditorE2E } from './../../support/setup'
+import {
+  resetSandbox,
+  sandboxHost,
+  seedUuid,
+  workerSandbox,
+} from '../../support/sandbox'
+import { editorPath, openEditor } from '../../support/session'
 
 /**
  * Comment deep-linking: opening the editor at `?blokkliComment=<uuid>`
@@ -12,11 +18,11 @@ import { setupEditorE2E } from './../../support/setup'
  * intentionally preserved — the link is a stable representation of the
  * view, and a refresh should land the user back in the same place.
  *
- * The mock seeds deterministic comments (see `commentStorage.ts`); these
- * tests link to specific seeded uuids:
- * - `seed-2-root` — single unresolved root, no replies
- * - `seed-1-r2`  — reply under `seed-1-root` (both unresolved)
- * - `seed-5-root` — resolved root (verifies that deep-linking to a
+ * The threads on the page "Feedback" (content/comments.yml); these tests
+ * link to specific seeded comments:
+ * - `question` — single unresolved root, no replies
+ * - `discussion-reply-2` — reply under `discussion` (both unresolved)
+ * - `resolved-question` — resolved root (verifies that deep-linking to a
  *   resolved thread flips `showResolved` on so the thread is visible)
  * - `does-not-exist` — verifies the feature short-circuits on a missing
  *   target instead of opening an empty sidebar
@@ -33,9 +39,15 @@ import { setupEditorE2E } from './../../support/setup'
  * (see the boolean-attribute trap in the skill).
  */
 
-const ROOT_LINK_PATH = `${EDITOR_PATH}&blokkliComment=seed-2-root`
-const REPLY_LINK_PATH = `${EDITOR_PATH}&blokkliComment=seed-1-r2`
-const RESOLVED_LINK_PATH = `${EDITOR_PATH}&blokkliComment=seed-5-root`
+const EDITOR_PATH = editorPath('/en/feedback', 'feedback')
+const ROOT = seedUuid('blokkli_comment', 'question')
+const REPLY = seedUuid('blokkli_comment', 'discussion-reply-2')
+const REPLY_ROOT = seedUuid('blokkli_comment', 'discussion')
+const RESOLVED = seedUuid('blokkli_comment', 'resolved-question')
+
+const ROOT_LINK_PATH = `${EDITOR_PATH}&blokkliComment=${ROOT}`
+const REPLY_LINK_PATH = `${EDITOR_PATH}&blokkliComment=${REPLY}`
+const RESOLVED_LINK_PATH = `${EDITOR_PATH}&blokkliComment=${RESOLVED}`
 const UNKNOWN_LINK_PATH = `${EDITOR_PATH}&blokkliComment=does-not-exist`
 
 function commentEl(page: Page, uuid: string) {
@@ -53,7 +65,8 @@ function sidebarAddButton(page: Page) {
 }
 
 describe('The comments deep-link feature', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let rootLinkPage: Page
   let replyLinkPage: Page
@@ -61,12 +74,13 @@ describe('The comments deep-link feature', async () => {
   let unknownLinkPage: Page
 
   beforeAll(async () => {
+    resetSandbox(sandbox)
     ;[rootLinkPage, replyLinkPage, resolvedLinkPage, unknownLinkPage] =
       await Promise.all([
-        openEditor(ROOT_LINK_PATH),
-        openEditor(REPLY_LINK_PATH),
-        openEditor(RESOLVED_LINK_PATH),
-        openEditor(UNKNOWN_LINK_PATH),
+        openEditor(sandbox, 'Anna Keller', ROOT_LINK_PATH),
+        openEditor(sandbox, 'Anna Keller', REPLY_LINK_PATH),
+        openEditor(sandbox, 'Anna Keller', RESOLVED_LINK_PATH),
+        openEditor(sandbox, 'Anna Keller', UNKNOWN_LINK_PATH),
       ])
   })
 
@@ -82,19 +96,19 @@ describe('The comments deep-link feature', async () => {
   test('deep-linking to a root auto-opens the sidebar, highlights the comment, and preserves the URL', async () => {
     await sidebarAddButton(rootLinkPage).waitFor({ state: 'visible' })
 
-    const target = commentEl(rootLinkPage, 'seed-2-root')
+    const target = commentEl(rootLinkPage, ROOT)
     await target.waitFor({ state: 'visible' })
     expect(await target.getAttribute('data-test-highlight')).toBe('true')
 
     // The URL is intentionally preserved — never stripped to "clean up".
-    expect(rootLinkPage.url()).toContain('blokkliComment=seed-2-root')
+    expect(rootLinkPage.url()).toContain(`blokkliComment=${ROOT}`)
   })
 
   test('deep-linking to a reply highlights the reply but not its root', async () => {
     await sidebarAddButton(replyLinkPage).waitFor({ state: 'visible' })
 
-    const reply = commentEl(replyLinkPage, 'seed-1-r2')
-    const root = commentEl(replyLinkPage, 'seed-1-root')
+    const reply = commentEl(replyLinkPage, REPLY)
+    const root = commentEl(replyLinkPage, REPLY_ROOT)
     await reply.waitFor({ state: 'visible' })
 
     // The reply is the deep-link target. The root is visible (the thread
@@ -105,14 +119,14 @@ describe('The comments deep-link feature', async () => {
 
   test('deep-linking to a resolved comment flips show-resolved on so the thread is visible', async () => {
     // showResolved defaults to false; the deep-link handler flips it to
-    // true when the target's root is resolved, so `seed-5-root` is
+    // true when the target's root is resolved, so `resolved-question` is
     // included in the sidebar's visible roots.
     await sidebarAddButton(resolvedLinkPage).waitFor({ state: 'visible' })
 
-    await commentThread(resolvedLinkPage, 'seed-5-root').waitFor({
+    await commentThread(resolvedLinkPage, RESOLVED).waitFor({
       state: 'visible',
     })
-    const target = commentEl(resolvedLinkPage, 'seed-5-root')
+    const target = commentEl(resolvedLinkPage, RESOLVED)
     expect(await target.getAttribute('data-test-highlight')).toBe('true')
 
     // The toggle is now on — exposed via the form-toggle input under the
@@ -138,7 +152,7 @@ describe('The comments deep-link feature', async () => {
     // state by hovering and moving the pointer away, so any earlier
     // assertion expecting `data-test-highlight="true"` (the first test on
     // this page) must run before it.
-    const target = commentEl(rootLinkPage, 'seed-2-root')
+    const target = commentEl(rootLinkPage, ROOT)
     expect(await target.getAttribute('data-test-highlight')).toBe('true')
 
     await target.hover()

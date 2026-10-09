@@ -62,6 +62,8 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
   readily as anything else.
 - **Waiting:** a change goes through Drupal, so `expect.poll`'s default second
   can be too short. Wait for its mutation (`nextMutation`) before asserting.
+  Options are an exception: Drupal stores them when the paragraph is deselected
+  (or an action runs), the editor and the preview have them before.
 - **The adapter recorder** (`waitForAdapterCall`, `?testing=true`):
   `nextMutation(page, '<name>')` (`support/mutations.ts`) returns the next
   request's variables, typed; started before the action, awaited after. Then
@@ -112,7 +114,8 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [ ] Fixtures, with the specs that use them (see "Decisions"):
   - a node with DE and FR translations (there: `nodes/translated.yml`), one with
     `outdated: [de]`, an unpublished one (`status: false`)
-  - the editorial front page with fragments, an empty page, a long page
+  - the editorial front page with fragments, an empty page, a long page (there:
+    `nodes/home.yml`, `nodes/empty.yml`, `nodes/long.yml`)
   - nestings: `columns` (`field_left`/`field_right`), `accordion`, `section`; a
     teaser with `field_title`/`field_lead` and a `field_link` to a node; a
     `call_to_action`; a `table`; a `chart`; a full `field_related` (3 teasers)
@@ -120,7 +123,8 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
   - image media with and without alt, with files in
     `test/e2e-drupal/content/files/`
   - comment threads (resolved and unresolved, with mentions of Anna by another
-    user), `templates.yml`, library items
+    user; there: `comments.yml` on `nodes/feedback.yml`, no mentions yet),
+    `templates.yml`, library items
 
 ### Additions to the sandbox
 
@@ -221,7 +225,8 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       titles (about 12) and one EN-only text; row keys `<uuid>:field_title`; a
       paragraph with its own DE value for the preselection. Unverified: the
       rich-text test against Drupal's CKEditor frame.
-- [ ] `translations/csv-export`: as is. EN-only titles, the editor in `/de`.
+- [x] `translations/csv-export`: done, on the title of `nodes/translated.yml` (a
+      plain value: its German value is the English one).
 - [ ] `translations/csv-import`: with changes. As csv-export;
       `pbBulkTranslateFieldValues` and a reload.
 - [ ] `translations/link-title`: on the widget's link with a title.
@@ -229,9 +234,9 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       a test for F58's fix replaces it.
 - [ ] `comments/base`: with changes. Seeded threads, a second user. 10 of 11
       move; the deleted author with `deleted: true` on a user.
-- [ ] `comments/deep-link`: as is. Seeded threads (an unresolved root without
-      replies, a root with two replies, a resolved root);
-      `blokkliComment=${seedUuid('blokkli_comment', key)}`.
+- [x] `comments/deep-link`: done, on `nodes/feedback.yml` (`comments.yml`: an
+      unresolved root without replies, a root with two replies, a resolved
+      root). Not "Comments": nginx sends `/en/comments` to Drupal.
 - [ ] `notifications/base`: with changes. Mentions of Anna in seeded comments
       make the notifications. Drupal shows 16 per page, not 3: 33 mentions, or a
       new paging assertion. Test 4: a hostless notification from a node with
@@ -278,16 +283,18 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [x] `drag-start`: done, on the title and the first text of `nodes/blocks.yml`.
 - [ ] `Sidebar`: with changes. The localStorage option for
       `blokkli:sidebar:active:right`; a DE translation for test 3.
-- [ ] `selection/add-buttons`: as is, but much content. A full field
-      (`call_to_action` with four links, or three teasers in `field_related`),
-      an empty `columns.field_left`, the editorial front page for fragments;
-      search for "teaser" and "Today".
+- [x] `selection/add-buttons`: done, on the front page (a `call_to_action` with
+      four links, `columns` with an empty `field_left`). The full field's test
+      also counts the paragraphs: its field only allows links, which a wrong
+      button would add right away. Enter adds `columns` (a teaser opens its form
+      first). The selector, opened by the event, sits under the toolbar:
+      `afterEach` closes it by deselecting.
 - [x] `selection/shortcuts`: done, on `nodes/nested.yml`.
 - [x] `command-palette/base`: done; Enter and click open the structure and
       history sidebars.
-- [ ] `responsive-preview/base`: as is. A long page, a keyed target paragraph;
-      the card's `box` becomes `table.striped` (`is-striped`), the grid's header
-      `columns.field_left`.
+- [x] `responsive-preview/base`: done, on `nodes/long.yml` with keyed
+      paragraphs; the table's `striped` option (`is-striped`), `columns`'
+      `field_left`.
 - [x] `breadcrumbs/base`: done, on `nodes/nested.yml` (the three texts in
       `field_right`).
 - [ ] `anchors/base`: with changes. The title paragraph's ID (a slug of

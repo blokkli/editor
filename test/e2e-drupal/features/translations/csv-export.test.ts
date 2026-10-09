@@ -1,16 +1,27 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor } from './../../support/session'
-import { setupEditorE2E } from './../../support/setup'
 import {
-  addCardWithSourceTitle,
   captureDownload,
   openCsvExportDialog,
-} from './../../support/translations'
-import { emitEvent } from './../../support/events'
-import { dialog } from './../../support/overlays'
+} from '../../../e2e/support/translations'
+import { emitEvent } from '../../../e2e/support/events'
+import { dialog } from '../../../e2e/support/overlays'
 import { parseCsv } from '../../../../src/runtime/editor/features/translations/CsvDialog/csv'
 import { parsePo } from '../../../../src/runtime/editor/features/translations/CsvDialog/po'
+import {
+  resetSandbox,
+  sandboxHost,
+  seedUuid,
+  workerSandbox,
+} from '../../support/sandbox'
+import { editorPath, openEditor } from '../../support/session'
+
+// The German translation of the page "Library" (content/nodes/translated.yml),
+// and its title, whose German value is the English one.
+const PATH_DE = editorPath('/de/bibliothek', 'translated')
+const TITLE_KEY = `${seedUuid('paragraph', 'translated-title')}:field_title`
+const SOURCE_TITLE = 'Opening hours'
 
 /**
  * Regression tests for CSV / PO export.
@@ -21,18 +32,17 @@ import { parsePo } from '../../../../src/runtime/editor/features/translations/Cs
  * round-trip them through `parseCsv` / `parsePo` — anything that breaks the
  * generation/parse pair (header drift, escaping, key encoding) fails here.
  *
- * Page lifecycle: one editor page shared, opened **directly in /de**.
- * Adding blocks via the adapter works in translating mode (the UI add-list
- * doesn't, but `addBlock` calls `addNewBlock` directly), so we skip the
- * ~2.3s EN→DE goto + hydration the file used to pay per test.
+ * Page lifecycle: one editor page shared, opened directly in /de.
  */
 describe('Translations CSV/PO export', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor('/de/page/1?blokkliEditing=1&testing=true')
+    resetSandbox(sandbox)
+    page = await openEditor(sandbox, 'Anna Keller', PATH_DE)
     await page.waitForFunction(
       () => window.__BLOKKLI__?.app?.state.editMode.value === 'translating',
     )
@@ -51,9 +61,7 @@ describe('Translations CSV/PO export', async () => {
     }
   })
 
-  test("CSV export contains the card's source title and the DE column for it", async () => {
-    const { uuid, sourceTitle } = await addCardWithSourceTitle(page)
-
+  test("CSV export contains the title's source text and the DE column for it", async () => {
     await openCsvExportDialog(page)
 
     const download = await captureDownload(page, () =>
@@ -65,25 +73,23 @@ describe('Translations CSV/PO export', async () => {
     // The current language is DE → Export defaults to that one language only
     // (single-lang format), so we expect either single or multi shape.
     // The DE value either is empty (no translation yet) OR equals the source
-    // (mock falls back to source when no separate translation exists). Both
-    // mean "no DE-specific text yet" — guard against random other text.
+    // (the seed gave the translation the source's value). Both mean "no
+    // DE-specific text yet" — guard against random other text.
     if (parsed.type === 'single') {
-      const row = parsed.rows.find((r) => r.key === `${uuid}:title`)
-      expect(row, 'card title row should be in the export').toBeDefined()
-      expect(row?.source).toBe(sourceTitle)
-      expect([sourceTitle, '']).toContain(row?.translation)
+      const row = parsed.rows.find((r) => r.key === TITLE_KEY)
+      expect(row, 'title row should be in the export').toBeDefined()
+      expect(row?.source).toBe(SOURCE_TITLE)
+      expect([SOURCE_TITLE, '']).toContain(row?.translation)
     } else {
       expect(parsed.languages).toContain('de')
-      const row = parsed.rows.find((r) => r.key === `${uuid}:title`)
-      expect(row, 'card title row should be in the export').toBeDefined()
-      expect(row?.source).toBe(sourceTitle)
-      expect([sourceTitle, '']).toContain(row?.translations.de)
+      const row = parsed.rows.find((r) => r.key === TITLE_KEY)
+      expect(row, 'title row should be in the export').toBeDefined()
+      expect(row?.source).toBe(SOURCE_TITLE)
+      expect([SOURCE_TITLE, '']).toContain(row?.translations.de)
     }
   })
 
   test('PO export is well-formed gettext for the DE language', async () => {
-    const { uuid, sourceTitle } = await addCardWithSourceTitle(page)
-
     await openCsvExportDialog(page)
 
     const download = await captureDownload(page, () =>
@@ -93,10 +99,10 @@ describe('Translations CSV/PO export', async () => {
 
     const parsed = parsePo(download.content)
     expect(parsed.language).toBe('de')
-    const row = parsed.rows.find((r) => r.key === `${uuid}:title`)
+    const row = parsed.rows.find((r) => r.key === TITLE_KEY)
     expect(row).toBeDefined()
-    expect(row?.source).toBe(sourceTitle)
+    expect(row?.source).toBe(SOURCE_TITLE)
     // No DE-specific translation yet: either empty or source-as-fallback.
-    expect([sourceTitle, '']).toContain(row?.translation)
+    expect([SOURCE_TITLE, '']).toContain(row?.translation)
   })
 })

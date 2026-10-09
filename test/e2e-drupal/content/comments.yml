@@ -1,0 +1,27 @@
+# Comment threads on the page "Feedback" (nodes/feedback.yml): Lea asks, Anna
+# answers.
+- key: question
+  host: { node: feedback }
+  paragraphs: [feedback-text-1]
+  uid: { user: lea }
+  body: '<p>Is this text still up to date?</p>'
+
+- key: discussion
+  host: { node: feedback }
+  paragraphs: [feedback-text-2]
+  uid: { user: lea }
+  body: '<p>Should this text be shorter?</p>'
+  replies:
+    - key: discussion-reply-1
+      uid: { user: anna }
+      body: '<p>I think it is short enough.</p>'
+    - key: discussion-reply-2
+      uid: { user: lea }
+      body: '<p>Then we keep it.</p>'
+
+- key: resolved-question
+  host: { node: feedback }
+  paragraphs: [feedback-text-3]
+  uid: { user: lea }
+  resolved: true
+  body: '<p>Is the date right?</p>'

@@ -83,7 +83,9 @@ Traefik sends every hostname to the web container's nginx on port 80.
     `taxonomy/term`); `*.php` and `/.well-known/`.
   - Everything else goes to the frontend on `:3000`: pages, `/_nuxt/` (HMR) and
     `/api/blokkli/agent` (the agent's WebSocket, 1-day timeouts).
-  - Canonical entity pages (`/node/1`) are Nuxt's.
+  - Canonical entity pages (`/node/1`) are Nuxt's. An alias that starts with one
+    of Drupal's segments isn't: a page "Comments" at `/en/comments` shows
+    Drupal's page, without the editor.
 - **The control host** sends every path to `:3001`, Drupal's included.
 - **Sandbox hosts:** a map turns `<id>.blokkli.ddev.site` into the id. Without
   `sandboxes/<id>/db.sqlite`, nginx answers 410 with `sandbox-unknown.html`

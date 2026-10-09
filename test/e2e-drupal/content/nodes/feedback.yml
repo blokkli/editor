@@ -1,0 +1,14 @@
+# A page with comment threads (content/comments.yml), at /en/feedback.
+key: feedback
+type: page
+title: Feedback
+field_paragraphs:
+  - type: text
+    key: feedback-text-1
+    field_text: '<p>The first text, with a question.</p>'
+  - type: text
+    key: feedback-text-2
+    field_text: '<p>The second text, with a discussion.</p>'
+  - type: text
+    key: feedback-text-3
+    field_text: '<p>The third text, with a resolved question.</p>'

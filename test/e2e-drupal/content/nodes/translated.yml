@@ -3,6 +3,10 @@ key: translated
 type: page
 title: { en: Library, de: Bibliothek, fr: Bibliothèque }
 field_paragraphs:
+  # A plain value: every translation has the English title.
+  - type: title
+    key: translated-title
+    field_title: Opening hours
   - type: text
     key: translated-text
     field_text:
