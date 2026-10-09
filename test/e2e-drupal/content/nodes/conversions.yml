@@ -1,0 +1,19 @@
+# Paragraphs to convert, at /en/conversions (features/conversions). A title
+# converts to a text and back (blokkli_playground's conversions); an image has
+# no conversion.
+key: conversions
+type: page
+title: Conversions
+field_paragraphs:
+  - type: title
+    key: conversions-first-title
+    field_title: The first title
+  - type: title
+    key: conversions-second-title
+    field_title: The second title
+  - type: text
+    key: conversions-text
+    field_text: '<p>A text to convert.</p>'
+  - type: image
+    key: conversions-image
+    field_media: { media: lake }

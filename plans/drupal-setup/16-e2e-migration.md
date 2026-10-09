@@ -361,14 +361,15 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [ ] `edit/base`: splits. Tests 1–4 on `blocks.yml`; `columns` instead of
       `two_columns`; a seeded fragment for the fragment test. Without edit
       permission: Jonas and a seeded chart.
-- [ ] `duplicate/base`: with changes. Jonas on his own node with a seeded chart
-      (he can't add one); a full field. Unverified: that the Drupal adapter
-      enables duplicating.
-- [ ] `delete/base`: with changes. Jonas and a seeded chart (he can't delete
-      one).
-- [ ] `conversions/base`: with changes. title → text, text → title, link → text
-      (`blokkli_playground`'s plugins), none for images; find the converted
-      paragraph by its new UUID; `pbConvertParagraph`/`pbConvertMultiple`.
+- [x] `duplicate/base`: done. Anna on the front page (the full field: the call
+      to action's links), Jonas on `nodes/statistics.yml` (a chart he can't
+      add); `pbDuplicateParagraph`.
+- [x] `delete/base`: done. Anna on `/en/empty`, Jonas on `nodes/statistics.yml`
+      (a chart he can't delete); `pbDeleteMultipleParagraphs`.
+- [x] `conversions/base`: done, on `nodes/conversions.yml` (two titles, a text,
+      an image); the converted paragraph by its new UUID, its stored values;
+      `pbConvertParagraph`/`pbConvertMultiple`; `revertAllChanges` between
+      tests.
 - [ ] `block-transfer/base`: with changes, after the transfer permission.
       Export: capture the clipboard; import: `pbImport`; Drupal's envelope
       (version 1, `bundle`, `non_translatable_values`, `translations`,

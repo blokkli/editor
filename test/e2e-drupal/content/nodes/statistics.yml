@@ -1,0 +1,12 @@
+# A page with a chart, at /en/statistics. Jonas (restricted_editor) may not
+# add or delete charts: features/duplicate and features/delete open it as him,
+# on a page of his own, since the edit state belongs to whoever opens it first.
+key: statistics
+type: page
+title: Statistics
+field_paragraphs:
+  - type: chart
+    key: statistics-chart
+  - type: text
+    key: statistics-text
+    field_text: '<p>The figures of the last year.</p>'
