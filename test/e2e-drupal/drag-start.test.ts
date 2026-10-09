@@ -1,10 +1,15 @@
-import { randomUUID } from 'node:crypto'
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, withApp } from './support/session'
-import { addBlocks } from './support/blocks'
-import { emitEvent } from './support/events'
-import { setupEditorE2E } from './support/setup'
+import { withApp } from '../e2e/support/session'
+import { emitEvent } from '../e2e/support/events'
+import {
+  resetSandbox,
+  sandboxHost,
+  seedUuid,
+  workerSandbox,
+} from './support/sandbox'
+import { BLOCKS_EDITOR_PATH, openEditor } from './support/session'
 
 /** A block's rectangle in viewport coordinates, as the canvas hit-tests it. */
 function blockViewportRect(page: Page, uuid: string) {
@@ -43,15 +48,18 @@ function draggedUuids(page: Page): Promise<string[]> {
  * e.g. the one above when moving up from a block's top edge.
  *
  * The canvas hit-tests the blocks' rectangles, so the gesture is real pointer
- * input at their viewport coordinates.
+ * input at their viewport coordinates. The blocks are the first two of the
+ * page "Blocks" (content/nodes/blocks.yml): a title, then a text.
  */
 describe('Starting a drag with the mouse', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH)
   })
 
   afterAll(async () => {
@@ -68,12 +76,8 @@ describe('Starting a drag with the mouse', async () => {
   })
 
   test('drags the block the pointer went down on, not the one it moved onto', async () => {
-    const upper = randomUUID()
-    const lower = randomUUID()
-    await addBlocks(page, [
-      { bundle: 'title', uuid: upper },
-      { bundle: 'title', uuid: lower },
-    ])
+    const upper = seedUuid('paragraph', 'first-title')
+    const lower = seedUuid('paragraph', 'first-text')
     // Pointer input only reaches the canvas inside the viewport.
     await expect.poll(() => blockViewportRect(page, lower)).not.toBeNull()
     await emitEvent(page, 'scrollIntoView', {

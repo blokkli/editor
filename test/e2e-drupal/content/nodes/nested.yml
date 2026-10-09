@@ -1,0 +1,25 @@
+# Paragraphs in paragraphs, at /en/nested. In document order: the columns,
+# their title, their three texts, then a text.
+key: nested
+type: page
+title: Nested
+field_paragraphs:
+  - type: columns
+    key: columns
+    field_left:
+      - type: title
+        key: columns-title
+        field_title: A title on the left
+    field_right:
+      - type: text
+        key: columns-text-1
+        field_text: '<p>The first text on the right.</p>'
+      - type: text
+        key: columns-text-2
+        field_text: '<p>The second text on the right.</p>'
+      - type: text
+        key: columns-text-3
+        field_text: '<p>The third text on the right.</p>'
+  - type: text
+    key: nested-text
+    field_text: '<p>A text after the columns.</p>'

@@ -1,11 +1,20 @@
-import { randomUUID } from 'node:crypto'
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, withApp } from './../../support/session'
-import { addBlocks, selectBlock } from './../../support/blocks'
-import { selectedUuids, topLevelBlockUuids } from './../../support/selection'
-import { setupEditorE2E } from './../../support/setup'
-import { emitEvent } from './../../support/events'
+import { withApp } from '../../../e2e/support/session'
+import { selectBlock } from '../../../e2e/support/blocks'
+import {
+  selectedUuids,
+  topLevelBlockUuids,
+} from '../../../e2e/support/selection'
+import { emitEvent } from '../../../e2e/support/events'
+import {
+  resetSandbox,
+  sandboxHost,
+  seedUuid,
+  workerSandbox,
+} from '../../support/sandbox'
+import { editorPath, openEditor } from '../../support/session'
 
 /**
  * The `selection` feature owns the editor's block-selection keyboard shortcuts
@@ -23,31 +32,19 @@ import { emitEvent } from './../../support/events'
  */
 
 /**
- * Append a known structure to the page and return the uuids. A grid holds a
- * title (in its `header` field) and three cards (in its `blocks` field),
- * followed by a text block, so document order is:
- *   grid → title → card1 → card2 → card3 → text
+ * The page "Nested" (content/nodes/nested.yml): columns hold a title (in their
+ * `field_left`) and three texts (in their `field_right`), followed by a text,
+ * so document order is:
+ *   columns → title → text1 → text2 → text3 → text
  */
-async function addGridStructure(page: Page) {
-  const grid = randomUUID()
-  const title = randomUUID()
-  const cards = [randomUUID(), randomUUID(), randomUUID()] as const
-  const text = randomUUID()
-
-  await addBlocks(page, [
-    {
-      bundle: 'grid',
-      uuid: grid,
-      children: {
-        header: [{ bundle: 'title', uuid: title }],
-        blocks: cards.map((uuid) => ({ bundle: 'card', uuid })),
-      },
-    },
-    { bundle: 'text', uuid: text },
-  ])
-
-  return { grid, title, cards, text }
-}
+const columns = seedUuid('paragraph', 'columns')
+const title = seedUuid('paragraph', 'columns-title')
+const texts = [
+  seedUuid('paragraph', 'columns-text-1'),
+  seedUuid('paragraph', 'columns-text-2'),
+  seedUuid('paragraph', 'columns-text-3'),
+] as const
+const text = seedUuid('paragraph', 'nested-text')
 
 const sorted = (uuids: string[]) => [...uuids].sort()
 
@@ -56,16 +53,21 @@ const sorted = (uuids: string[]) => [...uuids].sort()
  * shortcuts which the editor's keyboard provider relays to `keyPressed` — it
  * gates on the canvas being focused, which the initial editor mount sets and
  * subsequent tests don't disturb. `afterEach` deselects so tests 1, 3, & 5
- * see an empty initial selection. `addGridStructure` uses `randomUUID()` so
- * tests 2 and 4 don't collide.
+ * see an empty initial selection.
  */
 describe('The selection feature keyboard shortcuts', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(
+      sandbox,
+      'Anna Keller',
+      editorPath('/en/nested', 'nested'),
+    )
   })
 
   afterAll(async () => {
@@ -90,32 +92,31 @@ describe('The selection feature keyboard shortcuts', async () => {
   })
 
   test('Tab/Shift+Tab walk through blocks in document order, into nested fields', async () => {
-    const { grid, title, cards, text } = await addGridStructure(page)
-
     const expectSelected = (uuid: string) =>
       expect.poll(() => selectedUuids(page)).toEqual([uuid])
 
     // Start at the text block; Shift+Tab walks backwards through the document,
-    // descending into the grid's nested fields (last card → … → title → grid).
+    // descending into the columns' nested fields (last text → … → title →
+    // columns).
     await selectBlock(page, text)
     await expectSelected(text)
 
     await page.keyboard.press('Shift+Tab')
-    await expectSelected(cards[2])
+    await expectSelected(texts[2])
 
     await page.keyboard.press('Shift+Tab')
-    await expectSelected(cards[1])
+    await expectSelected(texts[1])
 
     await page.keyboard.press('Shift+Tab')
-    await expectSelected(cards[0])
+    await expectSelected(texts[0])
 
     await page.keyboard.press('Shift+Tab')
     await expectSelected(title)
 
     await page.keyboard.press('Shift+Tab')
-    await expectSelected(grid)
+    await expectSelected(columns)
 
-    // Tab steps forward again: grid → title.
+    // Tab steps forward again: columns → title.
     await page.keyboard.press('Tab')
     await expectSelected(title)
   })
@@ -133,16 +134,14 @@ describe('The selection feature keyboard shortcuts', async () => {
   })
 
   test('Ctrl+A widens from a nested block to its field siblings, then to all top-level blocks', async () => {
-    const { cards } = await addGridStructure(page)
-
-    // Selecting one card and pressing Ctrl+A grabs all of that card's siblings
-    // in the grid's `blocks` field — and only those (not the title, which lives
-    // in the grid's `header` field).
-    await selectBlock(page, cards[0])
+    // Selecting one text and pressing Ctrl+A grabs all of its siblings in the
+    // columns' `field_right` — and only those (not the title, which lives in
+    // their `field_left`).
+    await selectBlock(page, texts[0])
     await page.keyboard.press('Control+a')
     await expect
       .poll(async () => sorted(await selectedUuids(page)))
-      .toEqual(sorted([...cards]))
+      .toEqual(sorted([...texts]))
 
     // Pressing Ctrl+A again — now that the whole field is selected — widens to
     // every top-level block on the page.

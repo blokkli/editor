@@ -1,16 +1,25 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { EDITOR_PATH_EMPTY, openEditor } from '../../../support/session'
-import { setupEditorE2E } from '../../../support/setup'
-import { addBlock, selectBlocks } from '../../../support/blocks'
+import { selectBlocks } from '../../../e2e/support/blocks'
 import {
   getAgentTranscript,
   openAgentPanel,
-  setAgentMockScript,
   submitAgentPrompt,
   waitForAgentReply,
-} from '../../../support/agent'
-import type { MockScript } from '#blokkli/agent/shared/types'
+} from '../../../e2e/support/agent'
+import {
+  resetSandbox,
+  sandboxHost,
+  seedUuid,
+  workerSandbox,
+} from '../../support/sandbox'
+import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
+
+// The paragraphs of the page "Blocks" (content/nodes/blocks.yml).
+const uuidA = seedUuid('paragraph', 'first-title')
+const uuidB = seedUuid('paragraph', 'first-text')
+const uuidC = seedUuid('paragraph', 'second-text')
 
 /**
  * The editor selection is reported to the LLM on EVERY message the user
@@ -26,12 +35,20 @@ import type { MockScript } from '#blokkli/agent/shared/types'
  * compressed by the history projection, so `seen` carries the marker verbatim.
  */
 describe('agent: selection context per message', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor(EDITOR_PATH_EMPTY)
+    resetSandbox(sandbox)
+    page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH, {
+      mockScript: [
+        { type: 'agent', content: [{ type: 'text', text: 'Reply one.' }] },
+        { type: 'agent', content: [{ type: 'text', text: 'Reply two.' }] },
+        { type: 'agent', content: [{ type: 'text', text: 'Reply three.' }] },
+      ],
+    })
   })
 
   afterAll(async () => {
@@ -39,29 +56,16 @@ describe('agent: selection context per message', async () => {
   })
 
   test('each user message carries the selection that was live when it was sent', async () => {
-    const uuidA = await addBlock(page, { bundle: 'text' })
-    const uuidB = await addBlock(page, { bundle: 'text' })
-    const uuidC = await addBlock(page, { bundle: 'text' })
-    expect(uuidA).toBeTruthy()
-    expect(uuidB).toBeTruthy()
-    expect(uuidC).toBeTruthy()
-
-    const script: MockScript = [
-      { type: 'agent', content: [{ type: 'text', text: 'Reply one.' }] },
-      { type: 'agent', content: [{ type: 'text', text: 'Reply two.' }] },
-      { type: 'agent', content: [{ type: 'text', text: 'Reply three.' }] },
-    ]
-    await setAgentMockScript(page, script)
     await openAgentPanel(page)
 
     // Turn 1 — two blocks selected.
-    await selectBlocks(page, [uuidA!, uuidB!])
+    await selectBlocks(page, [uuidA, uuidB])
     await submitAgentPrompt(page, 'first prompt')
     await waitForAgentReply(page, 'Reply one.')
 
     // Turn 2 — selection changed. This is the regression: previously only
     // the first message carried a marker.
-    await selectBlocks(page, [uuidC!])
+    await selectBlocks(page, [uuidC])
     await submitAgentPrompt(page, 'second prompt')
     await waitForAgentReply(page, 'Reply two.')
 
@@ -85,13 +89,13 @@ describe('agent: selection context per message', async () => {
 
     const first = find('first prompt')
     expect(first).toContain('[Editor selection when this message was sent:')
-    expect(first).toContain(uuidA!)
-    expect(first).toContain(uuidB!)
+    expect(first).toContain(uuidA)
+    expect(first).toContain(uuidB)
 
     const second = find('second prompt')
     expect(second).toContain('[Editor selection when this message was sent:')
-    expect(second).toContain(uuidC!)
-    expect(second).not.toContain(uuidA!)
+    expect(second).toContain(uuidC)
+    expect(second).not.toContain(uuidA)
 
     const third = find('third prompt')
     expect(third).not.toContain('[Editor selection')

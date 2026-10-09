@@ -176,10 +176,9 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       `nodes/translated.yml`).
 - [x] `mock-scripts/full-flow`: deleted; `test/e2e-drupal/agent.test.ts`
       ("answers from its script") covers it.
-- [ ] `mock-scripts/grid-with-cards`: as is. grid/card become `columns`
-      (`field_left` a title, `field_right` three texts); an empty page; the
-      parent is the node's `field_paragraphs`; `pageStructure` with
-      `rootField: 'field_paragraphs'`; a new snapshot.
+- [x] `mock-scripts/grid-with-cards`: done, as
+      `features/agent/ask-then-add.test.ts` (`columns` with a title and three
+      texts, on `nodes/empty.yml`).
 - [ ] `mock-scripts/mode-context`: with changes. Read-only through another
       user's edit state, translating on the `/de` page.
 - [ ] `mock-scripts/mode-guard`: with changes. Read-only as above; an empty
@@ -187,8 +186,8 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [ ] `mock-scripts/ownership-flow`: with changes. Read-only as above;
       `pbTakeOwnership`.
 - [x] `mock-scripts/routing-autoload`: done.
-- [ ] `mock-scripts/selection-context`: as is, with three keyed texts in a
-      fixture (`field_text` is required).
+- [x] `mock-scripts/selection-context`: done, on the keyed paragraphs of
+      `nodes/blocks.yml`.
 - [ ] `tools/add_paragraphs`: `.test`. `two_columns` > text becomes
       `columns.field_left` > text; three levels `accordion` > `columns` > text;
       child keys are field names.
@@ -276,22 +275,21 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [ ] `diff-approval-restore`: `.test`. Applying now saves; test 3 through
       `pbUpdateHostEntityFieldValue`. The `<BlokkliEditable>` comparison is lost
       (the sandbox only uses the directive).
-- [ ] `drag-start`: as is. Two adjacent titles.
+- [x] `drag-start`: done, on the title and the first text of `nodes/blocks.yml`.
 - [ ] `Sidebar`: with changes. The localStorage option for
       `blokkli:sidebar:active:right`; a DE translation for test 3.
 - [ ] `selection/add-buttons`: as is, but much content. A full field
       (`call_to_action` with four links, or three teasers in `field_related`),
       an empty `columns.field_left`, the editorial front page for fragments;
       search for "teaser" and "Today".
-- [ ] `selection/shortcuts`: as is. `columns` (a title in `field_left`, three
-      texts in `field_right`), then a text.
+- [x] `selection/shortcuts`: done, on `nodes/nested.yml`.
 - [x] `command-palette/base`: done; Enter and click open the structure and
       history sidebars.
 - [ ] `responsive-preview/base`: as is. A long page, a keyed target paragraph;
       the card's `box` becomes `table.striped` (`is-striped`), the grid's header
       `columns.field_left`.
-- [ ] `breadcrumbs/base`: as is. Keyed `columns` with three keyed titles in
-      `field_left`.
+- [x] `breadcrumbs/base`: done, on `nodes/nested.yml` (the three texts in
+      `field_right`).
 - [ ] `anchors/base`: with changes. The title paragraph's ID (a slug of
       `field_title`) instead of the `anchorId` option; test 9 expects
       `<linkPath>#my-section`. Test 8 stays.
