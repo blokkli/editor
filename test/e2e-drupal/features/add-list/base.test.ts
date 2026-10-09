@@ -1,20 +1,30 @@
-import { randomUUID } from 'node:crypto'
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, withApp } from './../../support/session'
-import { addBlocks, selectBlock } from './../../support/blocks'
-import { setupEditorE2E } from './../../support/setup'
+import { withApp } from '../../../e2e/support/session'
+import { selectBlock } from '../../../e2e/support/blocks'
+import {
+  resetSandbox,
+  sandboxHost,
+  seedUuid,
+  workerSandbox,
+} from '../../support/sandbox'
+import { editorPath, openEditor } from '../../support/session'
 
 /**
  * The add list (left toolbar) renders one item per available block bundle plus
  * the add actions. An item that can't be placed in the current context is shown
  * in a transparent ("disabled") state — reflected on the DOM via the boolean
- * `data-test-disabled` attribute (present only when disabled). The three
- * actions — `template`, `library` (from library) and `fragment` — sit in their
- * own group.
+ * `data-test-disabled` attribute. The three actions — `template`, `library`
+ * (from library) and `fragment` — sit in their own group.
+ *
+ * On the front page (content/nodes/home.yml): its field allows every action,
+ * fragments included, and it has a columns paragraph.
  */
 
 const ACTIONS = ['template', 'library', 'fragment'] as const
+
+const COLUMNS = seedUuid('paragraph', 'home-columns')
 
 /**
  * The block items in the add list, mapped to whether each is disabled
@@ -44,16 +54,18 @@ async function actionIsDisabled(page: Page, id: string): Promise<boolean> {
 /**
  * Page lifecycle: one editor page is opened in `beforeAll` and shared by all
  * three tests. Tests 1 & 2 are read-only, and run first while nothing is
- * selected. Test 3 adds a grid block and selects it; it runs LAST because
- * that selection would defeat the "nothing selected" assertions in test 2.
+ * selected. Test 3 selects the columns paragraph; it runs LAST because that
+ * selection would defeat the "nothing selected" assertions in test 2.
  */
 describe('The add list', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(sandbox, 'Anna Keller', editorPath('/en', 'home'))
   })
 
   afterAll(async () => {
@@ -79,46 +91,49 @@ describe('The add list', async () => {
     }
   })
 
-  test('selecting a grid keeps only its allowed bundles (and all actions) active', async () => {
-    const grid = randomUUID()
-    await addBlocks(page, [{ bundle: 'grid', uuid: grid }])
-    await selectBlock(page, grid)
+  test('selecting columns keeps only their allowed bundles active, and no fragments', async () => {
+    await selectBlock(page, COLUMNS)
 
-    // The bundles allowed in any of the grid's nested fields (`header` and
-    // `blocks`), derived from the live field config so the test stays in sync
-    // with the mock. The internal from-library/fragment bundles are left in:
-    // the blocks group filters them out (via `isInternalBundle`), so they never
-    // render as block items and thus never appear in `states` below.
-    const allowedInGrid = await withApp(page, (app) => [
+    // The bundles allowed in any of the columns' nested fields (`field_left`
+    // and `field_right`), derived from the live field config. The internal
+    // `from_library` bundle is left in: the blocks group filters it out (via
+    // `isInternalBundle`), so it never renders as a block item and thus never
+    // appears in `states` below.
+    const allowedInColumns = await withApp(page, (app) => [
       ...new Set(
         app.types.fieldConfig
           .all()
-          .filter((config) => config.entityBundle === 'grid')
+          .filter((config) => config.entityBundle === 'columns')
           .flatMap((config) => config.allowedBundles),
       ),
     ])
 
+    // The add list updates with the selection.
+    await expect
+      .poll(async () => (await blockItemStates(page)).section)
+      .toBe(true)
     const states = await blockItemStates(page)
 
     // Every rendered block is transparent exactly when it is not allowed
-    // anywhere inside the grid.
+    // anywhere inside the columns.
     for (const [bundle, disabled] of Object.entries(states)) {
-      expect(disabled).toBe(!allowedInGrid.includes(bundle))
+      expect(disabled).toBe(!allowedInColumns.includes(bundle))
     }
 
-    // The active blocks are precisely the grid-allowed bundles that the list
+    // The active blocks are precisely the allowed bundles that the list
     // renders — and there is at least one, so the assertion above isn't vacuous.
     const activeBundles = Object.entries(states)
       .filter(([, disabled]) => !disabled)
       .map(([bundle]) => bundle)
     expect(activeBundles.sort()).toEqual(
-      allowedInGrid.filter((bundle) => bundle in states).sort(),
+      allowedInColumns.filter((bundle) => bundle in states).sort(),
     )
     expect(activeBundles.length).toBeGreaterThan(0)
 
-    // The three actions stay active regardless of the selection.
-    for (const id of ACTIONS) {
-      expect(await actionIsDisabled(page, id)).toBe(false)
-    }
+    // Templates and the library stay active; fragments aren't allowed in the
+    // columns' fields.
+    expect(await actionIsDisabled(page, 'template')).toBe(false)
+    expect(await actionIsDisabled(page, 'library')).toBe(false)
+    expect(await actionIsDisabled(page, 'fragment')).toBe(true)
   })
 })

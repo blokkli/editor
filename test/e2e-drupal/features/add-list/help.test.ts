@@ -1,7 +1,8 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { openEditor } from './../../support/session'
-import { setupEditorE2E } from './../../support/setup'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { editorPath, openEditor } from '../../support/session'
 
 /**
  * Interaction behaviour of the add list (left toolbar):
@@ -16,6 +17,9 @@ import { setupEditorE2E } from './../../support/setup'
  * full expanded width, so we hover the icon area (`x: 25`) rather than the
  * element centre. Expected icon/label/description are read from the live
  * definitions so the assertions hold regardless of the editor's locale.
+ *
+ * On the front page, whose field allows fragments: the call to action and the
+ * steps have a description and an icon, the columns have two fields.
  */
 
 const TITLE = '[data-test="add-list-help-title"]'
@@ -82,12 +86,14 @@ function actionInfo(page: Page, id: string) {
  * resolves naturally as the new item takes over.
  */
 describe('The add list interaction', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(sandbox, 'Anna Keller', editorPath('/en', 'home'))
   })
 
   afterAll(async () => {
@@ -104,7 +110,7 @@ describe('The add list interaction', async () => {
       .toBe('true')
   })
 
-  for (const bundle of ['card', 'grid']) {
+  for (const bundle of ['call_to_action', 'steps']) {
     test(`hovering the "${bundle}" block shows its help with the correct icon, label and description`, async () => {
       const expected = await bundleInfo(page, bundle)
 
@@ -128,14 +134,14 @@ describe('The add list interaction', async () => {
     })
   }
 
-  test('the grid help lists its fields and their allowed blocks', async () => {
-    // Expected fields + allowed bundles, from the live grid field config (the
-    // help lists every allowed bundle per field — internal ones included).
+  test('the columns help lists their fields and their allowed blocks', async () => {
+    // Expected fields + allowed bundles, from the live columns field config
+    // (the help lists every allowed bundle per field — internal ones included).
     const expectedFields = await page.evaluate(() => {
       const app = window.__BLOKKLI__!.app!
       return app.types.fieldConfig
         .all()
-        .filter((config) => config.entityBundle === 'grid')
+        .filter((config) => config.entityBundle === 'columns')
         .map((config) => ({
           name: config.name,
           allowed: [...config.allowedBundles],
@@ -145,11 +151,11 @@ describe('The add list interaction', async () => {
     const help = await hoverForHelp(
       page,
       'add-list-blocks',
-      'grid',
-      '[data-test="add-list-help-bundle-grid"]',
+      'columns',
+      '[data-test="add-list-help-bundle-columns"]',
     )
 
-    // The help renders the same set of fields the grid defines.
+    // The help renders the same set of fields the columns define.
     const renderedFields = await help
       .locator('[data-test^="add-list-help-field-"]')
       .evaluateAll((els) =>

@@ -68,7 +68,9 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
   `nextMutation(page, '<name>')` (`support/mutations.ts`) returns the next
   request's variables, typed; started before the action, awaited after. Then
   reload or reopen to see what Drupal stored. The items are shaped as in the
-  schema (e.g. `{uuid, name, value, langcode}`).
+  schema (e.g. `{uuid, name, value, langcode}`). That nothing was sent: count
+  the mutation's requests with `page.on('request')` (`fragments/base`; a helper
+  in `support/mutations.ts` once a second spec needs it).
 - **Resetting the mock's localStorage between tests:** `revertAllChanges(page)`
   (`pbRevertAllChanges`, deletes the edit state; the new one belongs to whoever
   reverted). Or reset the sandbox and reopen.
@@ -338,17 +340,16 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       Tests 1 and 3 stay, test 4 with the YouTube fake.
 - [ ] `clipboard/native-drop`: test 1 (its bundles become `['text']`), test 2
       with the YouTube fake.
-- [ ] `add-list/actions`: with changes. On the front page (fragments).
-- [ ] `add-list/base`: with changes. On the front page; grid becomes `section`
-      or `columns`; inside a container the fragment action is disabled.
-- [ ] `add-list/help`: with changes. Types with a description and an icon:
-      `steps`, `call_to_action`, `teaser_list`, `step`; fragments `today` and
-      `quick_links`.
-- [ ] `history/base`: with changes. Revert all changes between tests;
-      `pbSetHistoryIndex`.
-- [ ] `fragments/base`: with changes. On the front page, `quick_links` and
-      `today`; `pbAddFragmentParagraph`. Unverified: that both fragments render
-      with the fixtures' config pages.
+- [x] `add-list/actions`: done, on the front page.
+- [x] `add-list/base`: done, on the front page; the seeded `home-columns`
+      instead of a new grid. With it selected, the fragment action is disabled.
+- [x] `add-list/help`: done, on the front page; `call_to_action` and `steps` (a
+      description and an icon), `columns` for the fields.
+- [x] `history/base`: done, on `/en/empty`; `revertAllChanges` between tests,
+      `pbSetHistoryIndex` after each move.
+- [x] `fragments/base`: done, on the front page; `pbAddFragmentParagraph`. Both
+      fragments render without config pages ("Frequently searched" shows its
+      placeholder while editing). "Nothing sent" counts the mutation's requests.
 - [ ] `edit/base`: splits. Tests 1–4 on `blocks.yml`; `columns` instead of
       `two_columns`; a seeded fragment for the fragment test. Without edit
       permission: Jonas and a seeded chart.
