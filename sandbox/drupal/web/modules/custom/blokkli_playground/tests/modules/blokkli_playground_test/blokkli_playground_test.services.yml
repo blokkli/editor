@@ -1,0 +1,5 @@
+services:
+  blokkli_playground_test.video_fake:
+    class: Drupal\blokkli_playground_test\VideoFake
+    tags:
+      - { name: http_client_middleware }

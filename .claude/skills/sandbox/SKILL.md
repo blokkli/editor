@@ -187,7 +187,7 @@ Traefik sends every hostname to the web container's nginx on port 80.
   included) and `Query.search(text, offset, limit)`.
 - Moves the config pages' canonical route to `/blokkli/config-page/{id}`.
 - `tests/modules/blokkli_playground_test`, only in E2E sandboxes (`bake-e2e`
-  installs it): allows the widget on pages.
+  installs it): allows the widget on pages, and fakes YouTube and Vimeo.
 
 ## Sandboxes
 
@@ -296,6 +296,9 @@ host, with ddev running: `bun run test:e2e-drupal` or
     default. Then neither the conversation, the routing nor the field edit
     stream calls the model (the `agent-e2e-testing` skill). A spec of the
     conversation restore uses a script too, with a `restore` entry.
+  - YouTube and Vimeo: `blokkli_playground_test`'s `VideoFake`, an `http_client`
+    middleware, answers the requests of a remote video: oEmbed's providers list,
+    the video's data ("A video on YouTube", always) and its thumbnail.
 - **The widget** (`widget`) is a paragraph type for the tests: an option of
   every type and the field combinations the demo has no use for. Its config and
   component are part of the site (the frontend is one build), but no field

@@ -1,6 +1,6 @@
 name: 'blökkli playground test'
 type: module
-description: 'What the E2E sandboxes need beyond the site: the widget on detail pages.'
+description: 'What the E2E sandboxes need beyond the site: the widget on detail pages, and YouTube and Vimeo without the network.'
 package: Testing
 dependencies:
   - blokkli_playground:blokkli_playground
