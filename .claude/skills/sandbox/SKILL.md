@@ -134,11 +134,14 @@ Traefik sends every hostname to the web container's nginx on port 80.
   | ------------ | ------------------------------------ | --------------------------------------------------------------- |
   | Anna Keller  | `content_editor` ("Editor")          | everything editorial, templates, library, scheduling, the agent |
   | Marc Brunner | `reviewer` ("Head of department")    | view, comment, review; no editing                               |
-  | Élodie Favre | `translator` ("Translator (French)") | translate, edit translations                                    |
+  | Élodie Favre | `translator` ("Translator (French)") | translate, edit translations; can't take over an edit state     |
   | Jonas Weber  | `restricted_editor`                  | edit, but can't add or delete charts and sections               |
 
   All four have `view any unpublished content` (contrib `view_unpublished`) and
-  `use paragraphs blokkli agent`.
+  `use paragraphs blokkli agent`. The two editor roles may export and import
+  paragraphs (`transfer blokkli paragraphs`). Élodie can't take over an edit
+  state: it covers every language, so she would take over the editors'
+  unfinished changes.
 
 - **Access:** the anonymous role only has `view media`, so a site is private
   ("This sandbox is private", `app/error.vue`). `blokkli_playground`'s

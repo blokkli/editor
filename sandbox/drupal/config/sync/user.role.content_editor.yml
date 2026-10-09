@@ -94,6 +94,7 @@ permissions:
   - 'schedule publishing of nodes'
   - 'schedule publishing of paragraph'
   - 'take ownership of paragraphs blokkli edit state'
+  - 'transfer blokkli paragraphs'
   - 'translate editorial node'
   - 'translate event node'
   - 'translate location taxonomy_term'

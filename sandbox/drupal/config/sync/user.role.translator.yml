@@ -49,7 +49,6 @@ permissions:
   - 'edit terms in location'
   - 'load id and name of blokkli users'
   - 'post blokkli comments'
-  - 'take ownership of paragraphs blokkli edit state'
   - 'translate editorial node'
   - 'translate event node'
   - 'translate location taxonomy_term'
