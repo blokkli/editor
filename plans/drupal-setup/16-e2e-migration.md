@@ -122,7 +122,7 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
   - a node with DE and FR translations (there: `nodes/translated.yml`), one with
     `outdated: [de]` (there: `nodes/waste-collection.yml`), one with
     English-only paragraphs (there: `nodes/notices.yml`), an unpublished one
-    (`status: false`)
+    (`status: false`; there: `nodes/draft.yml`, `nodes/announcement.yml`)
   - the editorial front page with fragments, an empty page, a long page (there:
     `nodes/home.yml`, `nodes/empty.yml`, `nodes/long.yml`); an empty editorial
     page (there: `nodes/blank.yml`)
@@ -261,10 +261,11 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [ ] `ownership/base`: with changes. Anna opens first, a second editor sees the
       banner; `pbTakeOwnership`, then no banner after a reload. Test 3 as
       Élodie, who can't take over.
-- [ ] `publish/base`: with changes. An unpublished node, texts for the scheduled
-      notice; the bodies of `pbPublish`/`pbSchedule` and a reload; a future
-      pinned date; `timezoneId`; reopen after each publish (it deletes the edit
-      state).
+- [x] `publish/base`: done. `nodes/draft.yml` (save, then publish; the dialog
+      leaves the editor, the spec reopens it and checks the status) and
+      `nodes/announcement.yml` (the scheduler, pinned to 15 June next year in
+      UTC; the scheduled badge after a reload); `pbPublish`, `pbSchedule`,
+      `pbSetParagraphSchedule`.
 - [ ] `publish/violations`: splits. Clicking a violation moves (with
       `broken.yml`); two violations from an empty paragraph maybe with an empty
       `embed` (two required fields, unverified); the plain error by faking the
@@ -274,9 +275,9 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       Unpublish-only on a `call_to_action`.
 - [x] `changelog/base`: done.
 - [x] `exit/base`: done.
-- [ ] `entity-title/base`: with changes. A published and an unpublished node;
-      the scheduled badge through `adapter.scheduleEditState` with a future
-      date, then a reload.
+- [x] `entity-title/base`: done. `nodes/draft.yml` (unpublished), the blocks
+      page (published), `nodes/announcement.yml` scheduled through
+      `adapter.scheduleEditState` 30 days ahead, then a reload.
 
 ### Editor UI
 
@@ -289,9 +290,11 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       and the exact stored value hold with Drupal.
 - [x] `diff-approval-edit`: done, on `nodes/reading.yml`: its `field_lead`
       (`pbUpdateHostEntityFieldValue`), an added text for the chunk test.
-- [ ] `diff-approval-grouping`: `.test`, splits. Tests 3 and 5 with a teaser
-      (title and lead, neither bound to an element), test 4 with
-      `<p>Alpha</p><p>Beta</p>`; tests 1–2 on the widget.
+- [ ] `diff-approval-grouping`: `.test`, splits. Tests 3–5 done
+      (`test/e2e-drupal/diff-approval-grouping.test.ts`: the teaser of
+      `nodes/reading.yml`, its text for the whitespace test). Tests 1–2 stay in
+      the mock suite until the widget (a bound field next to an element-less
+      one).
 - [x] `diff-approval-keyboard`: done, on `nodes/reading.yml`: the node's title
       and `field_lead`, its title paragraph's `field_title` (asserted: three
       items, or the reverse order proves nothing).
@@ -299,8 +302,8 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       for `pbUpdateHostEntityFieldValue`. The `<BlokkliEditable>` comparison is
       lost (the sandbox only uses the directive).
 - [x] `drag-start`: done, on the title and the first text of `nodes/blocks.yml`.
-- [ ] `Sidebar`: with changes. The localStorage option for
-      `blokkli:sidebar:active:right`; a DE translation for test 3.
+- [x] `Sidebar`: done, on `nodes/translated.yml` (its German translation for
+      test 3).
 - [x] `selection/add-buttons`: done, on the front page (a `call_to_action` with
       four links, `columns` with an empty `field_left`). The full field's test
       also counts the paragraphs: its field only allows links, which a wrong

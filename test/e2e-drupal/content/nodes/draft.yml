@@ -1,0 +1,8 @@
+# An unpublished page, at /en/draft (features/publish, features/entity-title).
+key: draft
+type: page
+title: Draft
+status: false
+field_paragraphs:
+  - type: text
+    field_text: '<p>Not published yet.</p>'

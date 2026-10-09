@@ -1,0 +1,9 @@
+# Another unpublished page, at /en/announcement: the specs schedule its
+# publication (features/publish, features/entity-title).
+key: announcement
+type: page
+title: Announcement
+status: false
+field_paragraphs:
+  - type: text
+    field_text: '<p>To be published on a date.</p>'

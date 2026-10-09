@@ -1,3 +1,4 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import {
   afterAll,
   afterEach,
@@ -8,9 +9,13 @@ import {
   test,
 } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, waitForEditorReady, withApp } from './support/session'
-import { setupEditorE2E } from './support/setup'
-import { emitEvent } from './support/events'
+import { waitForEditorReady, withApp } from '../e2e/support/session'
+import { emitEvent } from '../e2e/support/events'
+import { resetSandbox, sandboxHost, workerSandbox } from './support/sandbox'
+import { editorPath, openEditor } from './support/session'
+
+/** The page "Library" (content/nodes/translated.yml): it has a German translation. */
+const LIBRARY_PATH = editorPath('/en/library', 'translated')
 
 /**
  * Sidebar container lifecycle (Toolbar teleport targets + PluginSidebar).
@@ -24,13 +29,15 @@ import { emitEvent } from './support/events'
  * session — and a stale value must never show an empty container.
  */
 describe('Sidebar containers', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
   let enUrl: string
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(sandbox, 'Anna Keller', LIBRARY_PATH)
     enUrl = page.url()
   })
 
@@ -80,7 +87,7 @@ describe('Sidebar containers', async () => {
   test('a persisted sidebar id that no longer exists never shows the container', async () => {
     // "One week later": storage says the debug sidebar was open, but the debug
     // feature is disabled in this session, so no sidebar registers for the id.
-    const stalePage = await openEditor(undefined, {
+    const stalePage = await openEditor(sandbox, 'Anna Keller', LIBRARY_PATH, {
       localStorage: {
         'blokkli:sidebar:active:right': JSON.stringify('debug'),
       },
@@ -119,7 +126,7 @@ describe('Sidebar containers', async () => {
       await toggle.click()
     }
     await page.locator('[data-test="language-switcher-option-de"]').click()
-    await page.waitForURL(/\/de(\?|$)/)
+    await page.waitForURL(/\/de\/bibliothek\?/)
     await waitForEditorReady(page)
     await expect
       .poll(() => withApp(page, (app) => app.state.editMode.value))

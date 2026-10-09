@@ -1,3 +1,4 @@
+import { setup, url } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
 import {
@@ -5,13 +6,19 @@ import {
   appMenuButton,
   closeAppMenu,
   openAppMenu,
-} from './../../support/menu'
-import { dialog, dialogSubmit, dismissMessages } from './../../support/overlays'
-import { addBlock } from './../../support/blocks'
-import { clearAdapterCalls, waitForAdapterCall } from './../../support/recorder'
-import { setupEditorE2E } from './../../support/setup'
-import { openEditor, withApp, setFixedTime } from './../../support/session'
-import { emitEvent } from './../../support/events'
+} from '../../../e2e/support/menu'
+import {
+  dialog,
+  dialogSubmit,
+  dismissMessages,
+} from '../../../e2e/support/overlays'
+import { addBlock } from '../../../e2e/support/blocks'
+import {
+  setFixedTime,
+  waitForEditorReady,
+  withApp,
+} from '../../../e2e/support/session'
+import { emitEvent } from '../../../e2e/support/events'
 import {
   scheduleDate,
   scheduleTime,
@@ -22,26 +29,35 @@ import {
   isScheduleTimeInvalid,
   pickScheduleDay,
   setScheduleTime,
-} from './../../support/schedule'
+} from '../../../e2e/support/schedule'
+import { nextMutation } from '../../support/mutations'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { editorPath, openEditor } from '../../support/session'
+
+// Two unpublished pages (content/nodes/draft.yml, announcement.yml).
+const DRAFT_PATH = editorPath('/en/draft', 'draft')
+const ANNOUNCEMENT_PATH = editorPath('/en/announcement', 'announcement')
 
 /**
- * The publish dialog (the playground adapter implements `getPublishOptions`, so
+ * The publish dialog (the Drupal adapter implements `getPublishOptions`, so
  * the menu's Publish button opens the dialog rather than publishing directly).
- * Covers reaching the dialog, switching between its three modes, and the
- * scheduler's future-date validation.
+ * Covers reaching the dialog, switching between its three modes, the
+ * scheduler's future-date validation, and what Drupal stores.
  *
  * Selectors are `data-test` only (the DOM contract). The scheduler reads the
  * wall clock, so the relevant tests pin both the clock and the timezone: the
- * fixed instant below maps to local **2026-06-15 10:00** under `UTC`.
+ * fixed instant below maps to local 15 June, 10:00, under `UTC`. A year from
+ * now: Drupal only accepts schedules after its own time.
  */
-const NOW = '2026-06-15T10:00:00.000Z'
-const TODAY = '2026-06-15'
+const YEAR = new Date().getUTCFullYear() + 1
+const NOW = new Date(Date.UTC(YEAR, 5, 15, 10)).toISOString()
+const TODAY = NOW.slice(0, 10)
 
 function publishMode(page: Page, mode: 'save' | 'immediate' | 'scheduled') {
   return page.locator(`[data-test="publish-mode-${mode}"]`)
 }
 
-/** Schedule `uuids` to be published on `date` (a real adapter mutation). */
+/** Schedule `uuids` to be published on `date` (`pbSetParagraphSchedule`). */
 function scheduleBlocksPublish(
   page: Page,
   uuids: string[],
@@ -66,27 +82,38 @@ async function isModeChecked(mode: Locator): Promise<boolean> {
 }
 
 /**
- * Page lifecycle: two pages opened in parallel.
+ * Close the editor's page after a publish (it leaves the editor), then open
+ * the editor again: publishing deleted the edit state, so this shows what
+ * Drupal stored.
+ */
+async function reopenAfterPublish(page: Page, path: string): Promise<void> {
+  await page.waitForURL((u) => !u.searchParams.has('blokkliEditing'))
+  await page.goto(url(path))
+  await waitForEditorReady(page)
+}
+
+/**
+ * Page lifecycle: two pages opened in parallel, each on an unpublished page
+ * of its own (the edit state belongs to whoever opens it first).
  *
- * `defaultPage` (no clock pinning) handles tests 1, 2, 4 & 5 — the
+ * `defaultPage` (the page "Draft", no clock pinning) handles the
  * happy-path "opens", "mode toggle" tests plus the two `publish` submits
- * (save + immediate).
+ * (save + immediate), which leave the editor and reopen it.
  *
- * `pinnedPage` is opened with timezone `UTC` and the clock pinned to `NOW`
- * once in `beforeAll`. It serves the scheduler tests (validation, clearing
- * the time, the hour buttons, the scheduled-blocks notice and the scheduled
- * submit) — with the scheduled submit LAST. That test submits
- * `scheduleEditState` which sets the entity's `publishOn`, and the publish
- * dialog defaults to `scheduled` mode whenever `publishOn` is set; running it
- * last avoids polluting the earlier tests that assert `save` is the initial
- * mode.
+ * `pinnedPage` (the page "Announcement") is opened with timezone `UTC` and the
+ * clock pinned to `NOW` once in `beforeAll`. It serves the scheduler tests
+ * (validation, clearing the time, the hour buttons, the scheduled-blocks
+ * notice and the scheduled submit) — with the scheduled submit LAST. That test
+ * submits `scheduleEditState` which sets the entity's `publishOn`, and the
+ * publish dialog defaults to `scheduled` mode whenever `publishOn` is set;
+ * running it last avoids polluting the earlier tests that assert `save` is
+ * the initial mode.
  *
- * `afterEach` closes any open dialog/menu, dismisses success messages, and
- * clears the adapter recorder — so each test's `waitForAdapterCall` only
- * sees its own submit.
+ * `afterEach` closes any open dialog/menu and dismisses success messages.
  */
 describe('The publish dialog', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let defaultPage: Page
   let pinnedPage: Page
@@ -97,7 +124,7 @@ describe('The publish dialog', async () => {
    * then opens the app menu and clicks the Publish button.
    */
   async function openPublishDialog(page: Page): Promise<void> {
-    await addBlock(page)
+    await addBlock(page, { fieldName: 'field_paragraphs' })
     await expect
       .poll(() => withApp(page, (app) => app.state.mutations.value.length))
       .toBeGreaterThan(0)
@@ -108,9 +135,10 @@ describe('The publish dialog', async () => {
   }
 
   beforeAll(async () => {
+    resetSandbox(sandbox)
     ;[defaultPage, pinnedPage] = await Promise.all([
-      openEditor('/page/1?blokkliEditing=1&testing=true'),
-      openEditor('/page/1?blokkliEditing=1&testing=true', {
+      openEditor(sandbox, 'Anna Keller', DRAFT_PATH),
+      openEditor(sandbox, 'Anna Keller', ANNOUNCEMENT_PATH, {
         timezoneId: 'UTC',
       }),
     ])
@@ -130,7 +158,6 @@ describe('The publish dialog', async () => {
       await closeAppMenu(page)
     }
     await dismissMessages(page)
-    await clearAdapterCalls(page)
   }
 
   afterEach(async () => {
@@ -206,7 +233,7 @@ describe('The publish dialog', async () => {
     // Start from a valid schedule: today at 11:00 (now is 10:00).
     await pickScheduleDay(pinnedPage, TODAY)
     await setScheduleTime(pinnedPage, '11:00')
-    await expect.poll(() => preview.textContent()).toContain('2026')
+    await expect.poll(() => preview.textContent()).toContain(String(YEAR))
     await expect.poll(() => dialogSubmit(pinnedPage).isDisabled()).toBe(false)
 
     // Clearing the native time input (what the Delete key does) used to throw
@@ -224,7 +251,7 @@ describe('The publish dialog', async () => {
     // Typing a time again restores everything.
     await setScheduleTime(pinnedPage, '11:30')
     await expect.poll(() => isScheduleTimeInvalid(pinnedPage)).toBe(false)
-    await expect.poll(() => preview.textContent()).toContain('2026')
+    await expect.poll(() => preview.textContent()).toContain(String(YEAR))
     await expect.poll(() => dialogSubmit(pinnedPage).isDisabled()).toBe(false)
     expect(await time.inputValue()).toBe('11:30')
   })
@@ -285,15 +312,19 @@ describe('The publish dialog', async () => {
     await dialog(defaultPage, 'publish')
       .locator('[data-test="textarea"]')
       .fill(message)
+    const published = nextMutation(defaultPage, 'pbPublish')
     await dialogSubmit(defaultPage).click()
 
     // Saving calls `publish` but must not flip the page live.
-    const args = await waitForAdapterCall<{
-      publishIfUnpublished?: boolean
-      revisionLogMessage?: string
-    }>(defaultPage, 'publish')
-    expect(args.publishIfUnpublished).toBe(false)
-    expect(args.revisionLogMessage).toBe(message)
+    const variables = await published
+    expect(variables.publishIfUnpublished).toBe(false)
+    expect(variables.revisionLogMessage).toBe(message)
+
+    // Drupal stored the changes, and the page is still unpublished.
+    await reopenAfterPublish(defaultPage, DRAFT_PATH)
+    expect(
+      await withApp(defaultPage, (app) => app.state.entity.value.status),
+    ).toBe(false)
   })
 
   test('submitting in "publish" mode publishes immediately', async () => {
@@ -303,24 +334,27 @@ describe('The publish dialog', async () => {
     await expect
       .poll(() => isModeChecked(publishMode(defaultPage, 'immediate')))
       .toBe(true)
+    const published = nextMutation(defaultPage, 'pbPublish')
     await dialogSubmit(defaultPage).click()
 
-    const args = await waitForAdapterCall<{ publishIfUnpublished?: boolean }>(
-      defaultPage,
-      'publish',
-    )
-    expect(args.publishIfUnpublished).toBe(true)
+    expect((await published).publishIfUnpublished).toBe(true)
+
+    // Drupal published the page.
+    await reopenAfterPublish(defaultPage, DRAFT_PATH)
+    expect(
+      await withApp(defaultPage, (app) => app.state.entity.value.status),
+    ).toBe(true)
   })
 
   test('warns when blocks are scheduled to be published', async () => {
     // Two blocks scheduled for the same future date (relative to NOW). The
     // scheduling itself is the pending mutation that enables the Publish button.
-    const a = await addBlock(pinnedPage)
-    const b = await addBlock(pinnedPage)
+    const a = await addBlock(pinnedPage, { fieldName: 'field_paragraphs' })
+    const b = await addBlock(pinnedPage, { fieldName: 'field_paragraphs' })
     await scheduleBlocksPublish(
       pinnedPage,
       [a!, b!],
-      '2026-06-20T09:00:00.000Z',
+      new Date(Date.UTC(YEAR, 5, 20, 9)).toISOString(),
     )
 
     await openAppMenu(pinnedPage)
@@ -345,7 +379,7 @@ describe('The publish dialog', async () => {
 
     // The message names the scheduled date (locale-independent: the year).
     const text = (await messages.first().textContent()) ?? ''
-    expect(text).toContain('2026')
+    expect(text).toContain(String(YEAR))
   })
 
   test('submitting in "schedule" mode schedules for the chosen date', async () => {
@@ -360,24 +394,32 @@ describe('The publish dialog', async () => {
       .fill(message)
 
     // Default schedule is tomorrow at noon; submit it as-is.
+    const scheduledMutation = nextMutation(pinnedPage, 'pbSchedule')
     await dialogSubmit(pinnedPage).click()
 
     // Scheduling calls `scheduleEditState` (not `publish`) with that instant —
     // tomorrow noon local under UTC — and the revision log message.
-    const args = await waitForAdapterCall<{
-      date: string
-      revisionLogMessage?: string
-    }>(pinnedPage, 'scheduleEditState')
-    expect(args.date).toBe('2026-06-16T12:00:00.000Z')
-    expect(args.revisionLogMessage).toBe(message)
+    const tomorrowNoon = new Date(Date.UTC(YEAR, 5, 16, 12)).toISOString()
+    const variables = await scheduledMutation
+    expect(variables.date).toBe(tomorrowNoon)
+    expect(variables.revisionLogMessage).toBe(message)
 
     // The editor reflects the schedule: the toolbar shows the scheduled-date
     // button for that instant. (Currently rendered by the `entity-title`
-    // feature; asserted here as part of the publish flow's outcome.)
+    // feature; asserted here as part of the publish flow's outcome.) The
+    // attribute carries it in Drupal's format.
     const scheduled = pinnedPage.locator('[data-test="toolbar-scheduled-date"]')
+    const scheduledDate = async () =>
+      new Date(
+        (await scheduled.getAttribute('data-test-scheduled-date'))!,
+      ).toISOString()
     await scheduled.waitFor({ state: 'visible' })
-    expect(await scheduled.getAttribute('data-test-scheduled-date')).toBe(
-      '2026-06-16T12:00:00.000Z',
-    )
+    expect(await scheduledDate()).toBe(tomorrowNoon)
+
+    // Drupal stored it.
+    await pinnedPage.reload()
+    await waitForEditorReady(pinnedPage)
+    await scheduled.waitFor({ state: 'visible' })
+    expect(await scheduledDate()).toBe(tomorrowNoon)
   })
 })

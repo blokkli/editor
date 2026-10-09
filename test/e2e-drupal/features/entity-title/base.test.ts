@@ -1,11 +1,22 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { openEditor, withApp } from './../../support/session'
-import { setupEditorE2E } from './../../support/setup'
-import { addBlock } from './../../support/blocks'
-import { closeFormOverlay, dialog, formOverlay } from './../../support/overlays'
-import { toolbarButton } from './../../support/toolbar'
-import { emitEvent } from './../../support/events'
+import { waitForEditorReady, withApp } from '../../../e2e/support/session'
+import { addBlock } from '../../../e2e/support/blocks'
+import {
+  closeFormOverlay,
+  dialog,
+  formOverlay,
+} from '../../../e2e/support/overlays'
+import { toolbarButton } from '../../../e2e/support/toolbar'
+import { emitEvent } from '../../../e2e/support/events'
+import { nextMutation } from '../../support/mutations'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import {
+  BLOCKS_EDITOR_PATH,
+  editorPath,
+  openEditor,
+} from '../../support/session'
 
 /**
  * The entity-title feature (`features/entity-title/index.vue`) renders the
@@ -16,20 +27,23 @@ import { emitEvent } from './../../support/events'
  * Selectors are `data-test` only. The status indicator's three states come from
  * the entity's published flag and the pending-mutation count: unpublished →
  * `error`; published, no changes → `success`; published with pending changes →
- * `warning`. The mock entity is unpublished by default, so the published states
- * are reached by seeding `blokkli:test:entityStatus` (read in the mock's
- * `mapState`, gated by `testing=true`). The status is surfaced on the button as
+ * `warning`. The page "Draft" (content/nodes/draft.yml) is unpublished, the
+ * page "Blocks" published. The status is surfaced on the button as
  * `data-test-entity-status`, so we assert the raw state, not translated copy.
  *
- * The scheduled-date badge reads `state.publishOptions.publishOn`, which the mock
- * derives from the `blokkli_schedule_<type>_<uuid>` localStorage key
- * (`content`/`1` for `/page/1`). Seeding it before navigation makes the badge
- * appear on load. Its visible text is locale-formatted, so we assert the raw ISO
- * carried in `data-test-scheduled-date`.
+ * The scheduled-date badge reads `state.publishOptions.publishOn`: the spec
+ * schedules the publication of the page "Announcement"
+ * (content/nodes/announcement.yml) through the adapter, then reloads. Its
+ * visible text is locale-formatted, so we assert the instant carried in
+ * `data-test-scheduled-date`.
  */
 
 const COMMAND_ID = 'feature:entity-title:edit-entity'
-const SCHEDULED_AT = '2026-08-20T09:00:00.000Z'
+
+/** A full hour 30 days from now: Drupal only schedules in the future. */
+const SCHEDULED_AT = new Date(
+  Math.ceil(Date.now() / 3_600_000) * 3_600_000 + 30 * 86_400_000,
+).toISOString()
 
 /** The main title/status button. */
 function entityTitle(page: Page): Locator {
@@ -48,9 +62,10 @@ function entityStatus(page: Page): Promise<string | null> {
 
 /**
  * Page lifecycle: three editor pages opened in parallel:
- * - `defaultPage` (unpublished) — tests 1, 4, 5, 6
- * - `publishedPage` (entityStatus=true) — tests 2 and 3
- * - `scheduledPage` (with a `publishOn` localStorage seed) — test 7
+ * - `defaultPage` (the page "Draft", unpublished) — tests 1, 4, 5, 6
+ * - `publishedPage` (the page "Blocks") — tests 2 and 3
+ * - `scheduledPage` (the page "Announcement", its publication scheduled in
+ *   `beforeAll`) — test 7
  *
  * Per-page test order matters on `publishedPage`: test 2 reads the
  * `success` status before any mutation; test 3 mutates and expects the
@@ -62,27 +77,41 @@ function entityStatus(page: Page): Promise<string | null> {
  * open), and the command palette on `defaultPage` (test 6 opens it).
  */
 describe('The entity-title feature', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let defaultPage: Page
   let publishedPage: Page
   let scheduledPage: Page
 
   beforeAll(async () => {
+    resetSandbox(sandbox)
     ;[defaultPage, publishedPage, scheduledPage] = await Promise.all([
-      openEditor(),
-      openEditor(undefined, {
-        localStorage: { 'blokkli:test:entityStatus': 'true' },
-      }),
-      openEditor(undefined, {
-        localStorage: {
-          blokkli_schedule_content_1: JSON.stringify({
-            date: SCHEDULED_AT,
-            revisionLogMessage: null,
-          }),
-        },
-      }),
+      openEditor(sandbox, 'Anna Keller', editorPath('/en/draft', 'draft')),
+      openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH),
+      openEditor(
+        sandbox,
+        'Anna Keller',
+        editorPath('/en/announcement', 'announcement'),
+      ),
     ])
+
+    // Schedule the publication, then reload: the badge shows what Drupal
+    // stored.
+    const scheduled = nextMutation(scheduledPage, 'pbSchedule')
+    await scheduledPage.evaluate(async (date) => {
+      const app = window.__BLOKKLI__!.app!
+      await app.state.mutateWithLoadingState(() =>
+        app.adapter.scheduleEditState!({
+          hostEntityType: app.context.value.entityType,
+          hostEntityUuid: app.context.value.entityUuid,
+          date,
+        }),
+      )
+    }, SCHEDULED_AT)
+    await scheduled
+    await scheduledPage.reload()
+    await waitForEditorReady(scheduledPage)
   })
 
   afterAll(async () => {
@@ -112,8 +141,8 @@ describe('The entity-title feature', async () => {
   })
 
   test('an unpublished page shows the error status and no scheduled badge', async () => {
-    // The mock entity is unpublished by default → the status indicator is in its
-    // `error` state, and with nothing scheduled the date badge is absent.
+    // The page is unpublished → the status indicator is in its `error` state,
+    // and with nothing scheduled the date badge is absent.
     await expect.poll(() => entityStatus(defaultPage)).toBe('error')
     expect(await scheduledBadge(defaultPage).count()).toBe(0)
   })
@@ -126,7 +155,7 @@ describe('The entity-title feature', async () => {
     await expect.poll(() => entityStatus(publishedPage)).toBe('success')
 
     // A pending mutation on a published page flips success → warning.
-    await addBlock(publishedPage)
+    await addBlock(publishedPage, { fieldName: 'field_paragraphs' })
     await expect.poll(() => entityStatus(publishedPage)).toBe('warning')
   })
 
@@ -135,7 +164,7 @@ describe('The entity-title feature', async () => {
 
     // The `warning` state is gated on the page being published — a pending
     // mutation alone must NOT promote an unpublished page out of `error`.
-    await addBlock(defaultPage)
+    await addBlock(defaultPage, { fieldName: 'field_paragraphs' })
     await expect
       .poll(() =>
         withApp(defaultPage, (app) => app.state.mutations.value.length),
@@ -170,13 +199,13 @@ describe('The entity-title feature', async () => {
     expect(await formOverlay(defaultPage, 'edit-form').count()).toBe(1)
   })
 
-  test('a scheduled publish shows the badge with the raw ISO and opens the publish dialog', async () => {
+  test('a scheduled publish shows the badge with the instant and opens the publish dialog', async () => {
     const badge = scheduledBadge(scheduledPage)
     await badge.waitFor({ state: 'visible' })
-    // The visible text is locale-formatted; the attribute carries the raw instant.
-    expect(await badge.getAttribute('data-test-scheduled-date')).toBe(
-      SCHEDULED_AT,
-    )
+    // The visible text is locale-formatted; the attribute carries the instant,
+    // in Drupal's format.
+    const date = await badge.getAttribute('data-test-scheduled-date')
+    expect(new Date(date!).toISOString()).toBe(SCHEDULED_AT)
 
     // Clicking the badge opens the publish dialog (a different handler than the
     // title button's edit flow).

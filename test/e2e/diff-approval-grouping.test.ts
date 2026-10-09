@@ -2,11 +2,9 @@ import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
 import { openEditor } from './support/session'
 import { addBlock } from './support/blocks'
-import { applyDiff, cancelDiff, runFieldsDiffApproval } from './support/diff'
+import { cancelDiff, runFieldsDiffApproval } from './support/diff'
 import { openSidebar } from './support/sidebar'
-import { runComponentTool } from './support/agent'
 import { setupEditorE2E } from './support/setup'
-import { storedFieldValue } from './support/editable'
 
 /**
  * Highlights for fields that have no editable element of their own.
@@ -19,6 +17,10 @@ import { storedFieldValue } from './support/editable'
  * The playground `card` is the fixture: `title` carries `v-blokkli-editable`,
  * `text` is prop-mapped only. `runFieldsDiffApproval` resolves fields from the
  * editable field CONFIG, so unlike the other scenarios it can target `text`.
+ *
+ * The other cases run against Drupal (`test/e2e-drupal/diff-approval-grouping`);
+ * these two follow once the sandbox has a paragraph type with a bound field
+ * next to an element-less one.
  */
 describe('DiffApproval grouping', async () => {
   await setupEditorE2E()
@@ -119,120 +121,5 @@ describe('DiffApproval grouping', async () => {
 
     await cancelDiff(page)
     expect((await done).applied).toBe(false)
-  })
-
-  test('two element-less fields on one block merge into a single stop', async () => {
-    const uuid = await addBlock(page, {
-      bundle: 'card_plain',
-      fieldName: 'content',
-    })
-    if (!uuid) throw new Error('Failed to add card_plain block')
-    await page.locator(`[data-bk-uuid="${uuid}"]`).waitFor()
-
-    const done = runFieldsDiffApproval(page, {
-      uuid,
-      fields: [
-        { fieldName: 'title', value: 'Merged title' },
-        { fieldName: 'text', value: 'Merged text' },
-      ],
-    })
-    await page.locator('[data-test="diff-approval-toolbar"]').waitFor()
-
-    // Neither field has an element, so there is exactly one thing to decide —
-    // not two rectangles stacked on the same spot.
-    await expect.poll(() => rects().count()).toBe(1)
-    expect(await rects().getAttribute('data-test-kind')).toBe('group')
-    expect(
-      await page
-        .locator('[data-test="diff-approval-toolbar"]')
-        .getAttribute('data-test-unit-kind'),
-    ).toBe('group')
-
-    // And the toolbar counts it once.
-    const toolbarText = await page
-      .locator('[data-test="diff-approval-toolbar"]')
-      .textContent()
-    expect(toolbarText).toContain('1 / 1')
-
-    await applyDiff(page)
-    expect((await done).applied).toBe(true)
-
-    // One decision, both fields written.
-    await expect
-      .poll(() => storedFieldValue(page, uuid, 'title'))
-      .toBe('Merged title')
-    expect(await storedFieldValue(page, uuid, 'text')).toBe('Merged text')
-  })
-
-  // Not about grouping, but about the invariant grouping depends on: a stop
-  // must never be empty, because "every unit accepted" is vacuously true for
-  // no units at all.
-  //
-  // Segmentation parses both values into blocks, which drops the whitespace
-  // between them — so a value differing ONLY there passes the tool's
-  // "unchanged?" check and then yields segments with no changed chunk. Without
-  // the `segmentsHaveChanges` guard that produces an item with zero units: no
-  // rectangle, no toolbar, and a tool call that can never be completed.
-  test('a whitespace-only change still offers something to approve', async () => {
-    const uuid = await addBlock(page, { bundle: 'text', fieldName: 'content' })
-    if (!uuid) throw new Error('Failed to add text block')
-
-    await runComponentTool(page, 'update_text_fields', {
-      updates: [{ uuid, fieldName: 'text', value: '<p>Alpha</p><p>Beta</p>' }],
-      requireApproval: false,
-    })
-
-    const done = runComponentTool(page, 'update_text_fields', {
-      updates: [
-        { uuid, fieldName: 'text', value: '<p>Alpha</p>\n<p>Beta</p>' },
-      ],
-    })
-
-    // The toolbar has to appear at all — that is the regression.
-    await page
-      .locator('[data-test="diff-approval-toolbar"]')
-      .waitFor({ state: 'visible' })
-    await expect.poll(() => rects().count()).toBe(1)
-    // Whole-field, not a chunk: there is no changed chunk to point at.
-    expect(await rects().getAttribute('data-test-kind')).toBe('whole')
-
-    await cancelDiff(page)
-    await done
-  })
-
-  test('rejecting the merged stop writes neither field', async () => {
-    const uuid = await addBlock(page, {
-      bundle: 'card_plain',
-      fieldName: 'content',
-    })
-    if (!uuid) throw new Error('Failed to add card_plain block')
-    await page.locator(`[data-bk-uuid="${uuid}"]`).waitFor()
-
-    const before = {
-      title: await storedFieldValue(page, uuid, 'title'),
-      text: await storedFieldValue(page, uuid, 'text'),
-    }
-
-    const done = runFieldsDiffApproval(page, {
-      uuid,
-      fields: [
-        { fieldName: 'title', value: 'Rejected title' },
-        { fieldName: 'text', value: 'Rejected text' },
-      ],
-    })
-    await page.locator('[data-test="diff-approval-toolbar"]').waitFor()
-    await expect.poll(() => rects().count()).toBe(1)
-
-    // One Space rejects everything behind the stop.
-    await page.keyboard.press('Space')
-    await expect
-      .poll(() => rects().getAttribute('data-test-selected'))
-      .toBe('false')
-
-    await applyDiff(page)
-    expect((await done).applied).toBe(true)
-
-    expect(await storedFieldValue(page, uuid, 'title')).toBe(before.title)
-    expect(await storedFieldValue(page, uuid, 'text')).toBe(before.text)
   })
 })
