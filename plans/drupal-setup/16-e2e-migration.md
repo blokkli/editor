@@ -156,17 +156,17 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
     assembly; the seed needs dates relative to the bake in options
   - Group labels can't be translated (F56): "Navigation" and "Format" are the
     same in all three languages.
-- [ ] `transfer blokkli paragraphs` for `content_editor` and `restricted_editor`
-      (pasting a chart as Jonas then shows what was skipped).
-- [ ] `call_to_action`: unpublish scheduling only (it promotes something with a
-      deadline).
+- [x] `transfer blokkli paragraphs` for `content_editor` and `restricted_editor`
+      (pasting a chart as Jonas then shows what was skipped): done.
+- [x] `call_to_action`: unpublish scheduling only (it promotes something with a
+      deadline): done.
 - [ ] Jonas (`restricted_editor`) loses `update paragraph content chart` ("may
       not add, change or delete charts"), after F55 is fixed. Update the welcome
       texts (EN/DE/FR), the sandbox skill and `CONTRIBUTING.md`.
-- [ ] Élodie (`translator`) loses "take ownership": an edit state covers every
-      language, so taking one over would hand her the editors' unfinished
-      changes. A line in the welcome texts: she can't take over a page someone
-      else is editing.
+- [x] Élodie (`translator`) loses "take ownership": done. An edit state covers
+      every language, so taking one over would hand her the editors' unfinished
+      changes. The welcome texts say she can't take over a page someone else is
+      editing.
 - [ ] The teaser maps its `field_title` and `field_lead` with
       `propsFieldMapping`, so changes to them preview live.
 - [ ] A text filter for `basic_html` that marks external links
@@ -256,9 +256,9 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       make the notifications. Drupal shows 16 per page, not 3: 33 mentions, or a
       new paging assertion. Test 4: a hostless notification from a node with
       `deleted: true`; its `edit-state:approved` part stays (mock only).
-- [ ] `ownership/base`: with changes. Anna opens first, a second editor sees the
-      banner; `pbTakeOwnership`, then no banner after a reload. Test 3 as
-      Élodie, who can't take over.
+- [x] `ownership/base`: done, on `nodes/translated.yml`: Anna claims the edit
+      state, Lea sees the banner and takes over (`pbTakeOwnership`, still hers
+      after a reload); Élodie, on `/fr/bibliotheque`, gets no button.
 - [x] `publish/base`: done. `nodes/draft.yml` (save, then publish; the dialog
       leaves the editor, the spec reopens it and checks the status) and
       `nodes/announcement.yml` (the scheduler, pinned to 15 June next year in
@@ -268,10 +268,10 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       violations; the publish validation reports them too); the plain error by
       faking the `pbPublish` response (`page.route`, matched by pathname);
       `revertAllChanges` between tests.
-- [ ] `block-scheduler/base`: splits. Four of five done, on the blocks page: a
-      title for "neither", texts for both sections; `pbSetParagraphSchedule`;
-      the clock pinned to 15 June next year. The unpublish-only test stays in
-      the mock suite until a `call_to_action` can only be unpublished.
+- [x] `block-scheduler/base`: done, on the editorial page `nodes/blank.yml` (it
+      allows a call to action): a title for "neither", a call to action for
+      "unpublish only", texts for both sections; `pbSetParagraphSchedule`; the
+      clock pinned to 15 June next year.
 - [x] `changelog/base`: done.
 - [x] `exit/base`: done.
 - [x] `entity-title/base`: done. `nodes/draft.yml` (unpublished), the blocks
@@ -378,10 +378,11 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       an image); the converted paragraph by its new UUID, its stored values;
       `pbConvertParagraph`/`pbConvertMultiple`; `revertAllChanges` between
       tests.
-- [ ] `block-transfer/base`: with changes, after the transfer permission.
-      Export: capture the clipboard; import: `pbImport`; Drupal's envelope
-      (version 1, `bundle`, `non_translatable_values`, `translations`,
-      `nested_paragraphs`). Test 4 on a `page` (several paragraph fields).
+- [x] `block-transfer/base`: done, on the blocks page (a `page` has several
+      paragraph fields, so a paste starts a drag). The export from the captured
+      clipboard (`captureClipboard`); `pbImport`; the crafted envelope in
+      Drupal's format (version 1, `bundle`, `translations`,
+      `nested_paragraphs`).
 
 ## Staying behind
 

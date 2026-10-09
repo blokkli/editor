@@ -21,13 +21,14 @@ import {
 } from '../../../e2e/support/schedule'
 import { nextMutation } from '../../support/mutations'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
-import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
+import { editorPath, openEditor } from '../../support/session'
 
 /**
  * The block-scheduler feature: a block-actions item action (id `block-scheduler`)
  * that opens a dialog with a publish and an unpublish section. Each section is
  * available only for paragraph types that support it (`hasPublishOn` /
  * `hasUnpublishOn`, the scheduler's settings of the type): `text` → both,
+ * `call_to_action` → unpublish only (it promotes something with a deadline),
  * `title` → neither. Setting a future `publishOn` makes Drupal report the
  * paragraph as unpublished, which `DraggableList` reflects as
  * `data-bk-is-muted="true"`.
@@ -58,7 +59,8 @@ const enableSection = (
   page.locator(`[data-test="scheduler-${type}-toggle"]`).click()
 
 /**
- * Page lifecycle: one editor page on the page "Blocks" (`UTC` timezone, the
+ * Page lifecycle: one editor page on the editorial page "Blank"
+ * (content/nodes/blank.yml, which allows a call to action; `UTC` timezone, the
  * clock pinned to {@link NOW}) is shared by every test. Each test adds its own
  * paragraph, so they just accumulate harmlessly between tests. `afterEach`
  * closes any open dialog and dismisses the success toast each submit emits
@@ -94,9 +96,12 @@ describe('The block scheduler', async () => {
 
   beforeAll(async () => {
     resetSandbox(sandbox)
-    page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH, {
-      timezoneId: 'UTC',
-    })
+    page = await openEditor(
+      sandbox,
+      'Anna Keller',
+      editorPath('/en/blank', 'blank'),
+      { timezoneId: 'UTC' },
+    )
     // Pin the clock once for all tests. None of these tests drives the canvas
     // drag, so the frozen-`Date.now()` drag-stall trap doesn't apply.
     await setFixedTime(page, NOW)
@@ -125,6 +130,30 @@ describe('The block scheduler', async () => {
     await selectBlock(page, uuid)
     await scheduleAction(page).waitFor({ state: 'visible' })
     expect(await scheduleAction(page).isDisabled()).toBe(true)
+  })
+
+  test('offers only the unpublish section for a "call_to_action" paragraph', async () => {
+    const uuid = await addOne('call_to_action')
+    await openScheduler(uuid)
+
+    // Publish is unavailable (toggle disabled), unpublish is available.
+    expect(
+      await schedulerSection(page, 'publish').getAttribute(
+        'data-test-disabled',
+      ),
+    ).toBe('true')
+    expect(
+      await page
+        .locator(
+          '[data-test="scheduler-publish-toggle"] [data-test="form-toggle-input"]',
+        )
+        .isDisabled(),
+    ).toBe(true)
+    expect(
+      await schedulerSection(page, 'unpublish').getAttribute(
+        'data-test-disabled',
+      ),
+    ).toBe('false')
   })
 
   test('offers both sections for a "text" paragraph', async () => {
