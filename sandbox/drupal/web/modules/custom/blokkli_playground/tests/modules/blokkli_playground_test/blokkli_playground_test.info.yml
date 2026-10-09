@@ -1,0 +1,6 @@
+name: 'blökkli playground test'
+type: module
+description: 'What the E2E sandboxes need beyond the site: the widget on detail pages.'
+package: Testing
+dependencies:
+  - blokkli_playground:blokkli_playground

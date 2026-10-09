@@ -27,8 +27,9 @@ mkdir -p "$directory/private" "$directory/tmp"
 touch "$directory/db.sqlite" "$directory/e2e"
 
 drush --uri="$uri" site:install --existing-config --yes
-# Translations come from a fake, never from DeepL.
-drush --uri="$uri" pm:install --yes paragraphs_blokkli_deepl_test
+# Translations come from a fake, never from DeepL. The widget is allowed on
+# detail pages.
+drush --uri="$uri" pm:install --yes paragraphs_blokkli_deepl_test blokkli_playground_test
 drush --uri="$uri" cache:rebuild
 drush --uri="$uri" blokkli-playground:seed --content=/var/www/html/test/e2e-drupal/content
 drush --uri="$uri" search-api:index

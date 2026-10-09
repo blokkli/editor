@@ -255,6 +255,8 @@ schema_configuration:
           enabled: true
         video:
           enabled: true
+        widget:
+          enabled: true
       paragraphs_blokkli_edit_state:
         paragraphs_blokkli_edit_state:
           enabled: true

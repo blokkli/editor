@@ -1,0 +1,43 @@
+uuid: 4c0eff84-fef1-42cd-a87c-d86dccf1a8c9
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.widget.field_lead
+    - field.field.paragraph.widget.field_link
+    - field.field.paragraph.widget.field_title
+    - paragraphs.paragraphs_type.widget
+  module:
+    - link
+id: paragraph.widget.default
+targetEntityType: paragraph
+bundle: widget
+mode: default
+content:
+  field_lead:
+    type: string_textarea
+    weight: 1
+    region: content
+    settings:
+      rows: 3
+      placeholder: ''
+    third_party_settings: {  }
+  field_link:
+    type: link_default
+    weight: 2
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+  field_title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  publish_on: true
+  status: true
+  unpublish_on: true

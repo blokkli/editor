@@ -17,6 +17,7 @@ const SOURCES = [
   'sandbox/drupal/web/modules/custom/blokkli_playground/src/Drush',
   // The container is baked too, with the test modules' service changes.
   'sandbox/drupal/paragraphs_blokkli/modules/paragraphs_blokkli_deepl/tests/modules',
+  'sandbox/drupal/web/modules/custom/blokkli_playground/tests/modules',
   'test/e2e-drupal/content',
   '.ddev/commands/web/bake-e2e',
 ]

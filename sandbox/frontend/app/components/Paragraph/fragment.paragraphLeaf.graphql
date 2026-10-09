@@ -17,4 +17,5 @@ fragment paragraphLeaf on Paragraph {
   ...paragraphTeaserList
   ...paragraphCallToAction
   ...paragraphSteps
+  ...paragraphWidget
 }

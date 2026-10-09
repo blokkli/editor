@@ -183,6 +183,8 @@ Traefik sends every hostname to the web container's nginx on port 80.
 - Search: a Search API processor that indexes paragraph text (library items
   included) and `Query.search(text, offset, limit)`.
 - Moves the config pages' canonical route to `/blokkli/config-page/{id}`.
+- `tests/modules/blokkli_playground_test`, only in E2E sandboxes (`bake-e2e`
+  installs it): allows the widget on pages.
 
 ## Sandboxes
 
@@ -291,6 +293,10 @@ host, with ddev running: `bun run test:e2e-drupal` or
     default. Then neither the conversation, the routing nor the field edit
     stream calls the model (the `agent-e2e-testing` skill). A spec of the
     conversation restore uses a script too, with a `restore` entry.
+- **The widget** (`widget`) is a paragraph type for the tests: an option of
+  every type and the field combinations the demo has no use for. Its config and
+  component are part of the site (the frontend is one build), but no field
+  allows it, so only E2E sandboxes have widgets (`blokkli_playground_test`).
 - **The fixtures are the tests' own:** users (one per role, and a second content
   editor, all with an English UI), config pages, menus and nodes. A paragraph a
   spec refers to gets a `key`; its UUID is `seedUuid('paragraph', key)`. Content

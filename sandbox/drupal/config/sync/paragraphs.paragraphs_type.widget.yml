@@ -1,0 +1,18 @@
+uuid: 7d31e801-9f48-4816-b846-a7dac70ef910
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli
+    - paragraphs_library
+third_party_settings:
+  paragraphs_library:
+    allow_library_conversion: false
+id: widget
+label: Widget
+icon_uuid: null
+icon_default: null
+description: 'For the E2E tests: every option type and field combination. No field of the site allows it.'
+behavior_plugins:
+  paragraphs_blokkli_data:
+    enabled: true

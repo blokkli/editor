@@ -47,3 +47,4 @@ permissions:
   - 'view paragraph content text'
   - 'view paragraph content title'
   - 'view paragraph content video'
+  - 'view paragraph content widget'

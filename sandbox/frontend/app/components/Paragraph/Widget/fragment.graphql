@@ -1,0 +1,10 @@
+fragment paragraphWidget on ParagraphWidget {
+  title: fieldTitle
+  lead: fieldLead
+  link: fieldLink {
+    title
+    uri {
+      path
+    }
+  }
+}

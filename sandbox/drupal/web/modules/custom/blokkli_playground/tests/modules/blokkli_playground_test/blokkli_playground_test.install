@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for blokkli_playground_test.
+ */
+
+declare(strict_types=1);
+
+use Drupal\field\Entity\FieldConfig;
+
+/**
+ * Implements hook_install().
+ *
+ * Allows the widget on detail pages. No field of the site allows it, so only
+ * E2E sandboxes have widgets.
+ */
+function blokkli_playground_test_install(): void {
+  $field = FieldConfig::loadByName('node', 'page', 'field_paragraphs');
+  assert($field instanceof FieldConfig);
+  $settings = $field->getSetting('handler_settings');
+  $settings['target_bundles']['widget'] = 'widget';
+  $field->setSetting('handler_settings', $settings);
+  $field->save();
+}
