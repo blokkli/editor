@@ -4,10 +4,6 @@ import {
   type AutoTranslateMockConfig,
 } from '../../../playground/app/mock/translationOverride'
 import {
-  OUTDATED_TRANSLATIONS_KEY,
-  type OutdatedTranslationsOverride,
-} from '../../../playground/app/mock/outdatedTranslationsOverride'
-import {
   buildCsv,
   type CsvRow,
 } from '../../../src/runtime/editor/features/translations/CsvDialog/csv'
@@ -60,32 +56,19 @@ export function autoTranslateMockEntry(
 }
 
 /**
- * Build the `openEditor({ localStorage })` entry that marks the given block
- * uuids as having outdated translations in specific languages. Lets a spec
- * reach the Banner's outdated state without driving the full
- * add → translate → re-edit UI loop. See `outdatedTranslationsOverride.ts`.
- *
- * @example
- * const page = await openEditor('/de/page/1?...', {
- *   localStorage: outdatedTranslationsEntry({ [cardUuid]: ['de'] }),
- * })
- */
-export function outdatedTranslationsEntry(
-  map: OutdatedTranslationsOverride,
-): Record<string, string> {
-  return { [OUTDATED_TRANSLATIONS_KEY]: JSON.stringify(map) }
-}
-
-/**
  * Open the batch-translate dialog via the app menu and wait until its fields
- * table is rendered (the loading spinner has resolved).
+ * table has rows (the loading spinner, inside the same section, has
+ * resolved: Drupal loads the texts with a query).
  */
 export async function openTranslateDialog(page: Page): Promise<void> {
   await openAppMenu(page)
   await appMenuButton(page, 'translations').click()
   await dialog(page, 'translations-translate').waitFor({ state: 'visible' })
   await page
-    .locator('[data-test="translations-batch-fields"]')
+    .locator(
+      '[data-test="translations-batch-fields"] [data-test="translations-batch-row"]',
+    )
+    .first()
     .waitFor({ state: 'visible' })
 }
 

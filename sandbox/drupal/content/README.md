@@ -66,6 +66,9 @@ field_paragraphs:
   have its source language.
 - **An entity gets a translation in every language of its maps,** its
   paragraphs' included. A language a map lacks gets the source's value there.
+- **A paragraph only gets a translation in the languages of its own maps** (and
+  its nested paragraphs'). With plain values only, it has none, even in a
+  translated node: the editor shows it as untranslated there.
 - **A plain value on a translatable field** is the same in every language.
 - **`outdated: [fr]`** flags the French translation of the entity and its
   paragraphs as outdated.

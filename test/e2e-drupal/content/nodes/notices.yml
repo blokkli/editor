@@ -1,0 +1,22 @@
+# A page with a German translation whose paragraphs mostly have none, at
+# /en/notices and /de/mitteilungen: a paragraph only gets a translation in the
+# languages of its own maps. The translation specs translate them
+# (features/translations, features/agent/tools/auto_translate_paragraphs).
+key: notices
+type: page
+title: { en: Notices, de: Mitteilungen }
+field_paragraphs:
+  # English only.
+  - type: title
+    key: notices-first-title
+    field_title: First notice
+  - type: title
+    key: notices-second-title
+    field_title: Second notice
+  - type: text
+    key: notices-text
+    field_text: '<p>A notice in English only.</p>'
+  # With its own German value: an up-to-date translation.
+  - type: title
+    key: notices-translated-title
+    field_title: { en: Translated notice, de: Übersetzte Mitteilung }

@@ -357,7 +357,9 @@ describe('Something', async () => {
   `seedUuid('paragraph', key)` (media: `seedUuid('media', key)`, files in
   `content/files/`). For content the site doesn't allow, mark the entity
   `invalid: true` (e.g. `nodes/broken.yml`, a title in a gallery): the seed then
-  skips its checks.
+  skips its checks. A paragraph with plain values has no translation, even in a
+  translated node (`nodes/notices.yml`); `outdated: [de]` flags a translation as
+  outdated (`nodes/waste-collection.yml`).
 
 ## Typechecking
 

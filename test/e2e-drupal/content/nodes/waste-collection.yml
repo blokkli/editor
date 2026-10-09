@@ -1,0 +1,13 @@
+# A page whose German translation is outdated (`outdated: [de]`), at
+# /en/waste-collection and /de/kehrichtabfuhr: the translations banner counts
+# it (features/translations/banner-and-switcher).
+key: waste-collection
+type: page
+title: { en: Waste collection, de: Kehrichtabfuhr }
+outdated: [de]
+field_paragraphs:
+  - type: text
+    key: waste-collection-text
+    field_text:
+      en: '<p>Household waste is collected every Tuesday and Friday.</p>'
+      de: '<p>Der Hauskehricht wird jeden Dienstag abgeholt.</p>'

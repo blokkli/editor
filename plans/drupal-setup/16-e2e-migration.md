@@ -120,7 +120,9 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       from their keys).
 - [ ] Fixtures, with the specs that use them (see "Decisions"):
   - a node with DE and FR translations (there: `nodes/translated.yml`), one with
-    `outdated: [de]`, an unpublished one (`status: false`)
+    `outdated: [de]` (there: `nodes/waste-collection.yml`), one with
+    English-only paragraphs (there: `nodes/notices.yml`), an unpublished one
+    (`status: false`)
   - the editorial front page with fragments, an empty page, a long page (there:
     `nodes/home.yml`, `nodes/empty.yml`, `nodes/long.yml`); an empty editorial
     page (there: `nodes/blank.yml`)
@@ -204,9 +206,9 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [x] `tools/add_paragraphs`: done, on `nodes/empty.yml`; `columns` >
       `field_left` > text, and `accordion` > `columns` > two texts.
 - [x] `tools/add_template`: done, the seeded template by its UUID.
-- [ ] `tools/auto_translate_paragraphs`: `.test`. The DeepL fake; wait for
-      `pbBulkTranslateFieldValues` and reload `/de`; a `call_to_action` or a
-      title instead of the card (`acceptedCount` changes).
+- [x] `tools/auto_translate_paragraphs`: done, on `/de/mitteilungen`
+      (`nodes/notices.yml`): an English-only title instead of the card
+      (`acceptedCount` 1); the DeepL fake; `pbBulkTranslateFieldValues`.
 - [x] `tools/duplicate_paragraphs`: done, the columns of `nodes/nested.yml`.
 - [x] `tools/get_all_page_content`: done, the teaser of `nodes/reading.yml` (its
       title and lead have neither a directive nor a props mapping; Drupal's raw
@@ -229,17 +231,21 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       title, opened at `/de`; seeded EN-only titles (adding while translating is
       unverified); the DeepL fake; `pbBulkTranslateFieldValues` and a reload.
       Tests 3–4 on the widget (a bound field and a props-mapped one).
-- [ ] `translations/banner-and-switcher`: with changes. A DE translation, and a
-      node with `outdated: [de]`; `pbClearOutdatedTranslation`; no banner after
-      a reload.
-- [ ] `translations/batch-translate`: with changes. Each test its own EN-only
-      titles (about 12) and one EN-only text; row keys `<uuid>:field_title`; a
-      paragraph with its own DE value for the preselection. Unverified: the
-      rich-text test against Drupal's CKEditor frame.
+- [x] `translations/banner-and-switcher`: done. The switcher on
+      `nodes/translated.yml`; the banner on `/de/kehrichtabfuhr`
+      (`nodes/waste-collection.yml`, `outdated: [de]`),
+      `pbClearOutdatedTranslation`, still none outdated after a reload.
+- [x] `translations/batch-translate`: done, on `/de/mitteilungen`
+      (`nodes/notices.yml`: two English-only titles and a text, a title with its
+      own German value for the preselection); `revertAllChanges` between tests.
+      The rich-text test works with Drupal's CKEditor frame.
+      `openTranslateDialog` now waits for the rows: Drupal loads them with a
+      query.
 - [x] `translations/csv-export`: done, on the title of `nodes/translated.yml` (a
       plain value: its German value is the English one).
-- [ ] `translations/csv-import`: with changes. As csv-export;
-      `pbBulkTranslateFieldValues` and a reload.
+- [x] `translations/csv-import`: done, on `/de/mitteilungen`;
+      `pbBulkTranslateFieldValues` and a reload; `revertAllChanges` between
+      tests.
 - [ ] `translations/link-title`: on the widget's link with a title.
 - [ ] `translations/link-title-translate`: stays (links are never translatable);
       a test for F58's fix replaces it.

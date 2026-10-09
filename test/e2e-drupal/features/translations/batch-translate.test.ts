@@ -1,30 +1,35 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
+import { setup } from '@nuxt/test-utils/e2e'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page, Locator } from 'playwright-core'
-import { getHostContext, openEditor } from './../../support/session'
-import { setupEditorE2E } from './../../support/setup'
 import {
   blockHost,
   editableState,
   editableFrame,
   setFrameValue,
-} from './../../support/editable'
-import { addBlock } from './../../support/blocks'
-import { clearAdapterCalls, waitForAdapterCall } from './../../support/recorder'
-import { dialog } from './../../support/overlays'
+} from '../../../e2e/support/editable'
+import { dialog } from '../../../e2e/support/overlays'
+import { openTranslateDialog } from '../../../e2e/support/translations'
+import { nextMutation } from '../../support/mutations'
 import {
-  addCardWithSourceTitle,
-  autoTranslateMockEntry,
-  openTranslateDialog,
-} from './../../support/translations'
+  resetSandbox,
+  sandboxHost,
+  seedUuid,
+  workerSandbox,
+} from '../../support/sandbox'
+import { editorPath, openEditor, revertAllChanges } from '../../support/session'
 
-type ImportTranslationsArgs = {
-  items: Array<{
-    langcode: string
-    uuid: string
-    fieldName: string
-    fieldValue: string
-  }>
+// The page "Notices" (content/nodes/notices.yml): two titles and a text
+// without a German value, and a title with an up-to-date German one.
+const A = {
+  uuid: seedUuid('paragraph', 'notices-first-title'),
+  sourceTitle: 'First notice',
 }
+const B = {
+  uuid: seedUuid('paragraph', 'notices-second-title'),
+  sourceTitle: 'Second notice',
+}
+const TEXT = seedUuid('paragraph', 'notices-text')
+const TRANSLATED_TITLE = seedUuid('paragraph', 'notices-translated-title')
 
 /** The table row for a given `uuid:fieldName` key. */
 function batchRow(page: Page, key: string): Locator {
@@ -59,31 +64,34 @@ async function openRowEditor(page: Page, key: string): Promise<void> {
 /**
  * Regression tests for the batch-translate flow (TranslateDialog).
  *
- * What's under test: load source texts → request translations from the mocked
- * service → apply selected ones via `importTranslationsBatched`. The apply is
- * the load-bearing operation — its payload determines what actually changes,
- * and the DOM update afterwards is the user-visible result.
+ * What's under test: load source texts → request translations from the
+ * E2E sandboxes' DeepL fake (`[DE] <source>`) → apply selected ones via
+ * `importTranslationsBatched` (`pbBulkTranslateFieldValues`). The apply is the
+ * load-bearing operation — its payload determines what actually changes, and
+ * the DOM update afterwards is the user-visible result.
  *
  * Why both assertions: a shallow test (just adapter call OR just DOM) misses
  * the failure modes that matter — sending the wrong items, or sending right
  * items that fail to render. We assert both.
  *
- * Page lifecycle: one editor page shared, opened **directly in /de** with the
- * auto-translate mock seeded. Skipping the EN→DE goto saves ~2.3s per test.
- * `beforeEach` clears the adapter recorder. Each test adds its own two cards
- * via `addCardWithSourceTitle`; prior tests' cards remain in mock state but
- * don't interfere — each test's adapter-call assertion is keyed on its own
- * uuids.
+ * Page lifecycle: one editor page shared, opened **directly in /de**: the
+ * German translation of the page "Notices". `afterEach` discards the edit
+ * state (`revertAllChanges`), so every test starts with the same untranslated
+ * titles and text.
  */
 describe('Batch translate (TranslateDialog)', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor('/de/page/1?blokkliEditing=1&testing=true', {
-      localStorage: autoTranslateMockEntry(),
-    })
+    resetSandbox(sandbox)
+    page = await openEditor(
+      sandbox,
+      'Anna Keller',
+      editorPath('/de/mitteilungen', 'notices'),
+    )
     await page.waitForFunction(
       () => window.__BLOKKLI__?.app?.state.editMode.value === 'translating',
     )
@@ -93,20 +101,20 @@ describe('Batch translate (TranslateDialog)', async () => {
     await page.close()
   })
 
-  beforeEach(async () => {
-    await clearAdapterCalls(page)
+  afterEach(async () => {
+    await revertAllChanges(page)
   })
 
-  test("requests, applies, and mutates all added cards' editables", async () => {
-    const a = await addCardWithSourceTitle(page)
-    const b = await addCardWithSourceTitle(page)
+  test("requests, applies, and mutates both titles' editables", async () => {
+    const a = A
+    const b = B
 
     await openTranslateDialog(page)
 
     const rows = page.locator('[data-test="translations-batch-row"]')
-    // Sanity: at least the two added cards' titles are in the table (plus the
-    // host's translatable fields). We assert a lower bound, not an exact count,
-    // because the host page brings its own translatable fields.
+    // Sanity: at least the two titles are in the table (plus the node's and
+    // the other paragraphs' translatable fields). We assert a lower bound, not
+    // an exact count.
     expect(await rows.count()).toBeGreaterThanOrEqual(2)
 
     const requestButton = page.locator(
@@ -129,18 +137,26 @@ describe('Batch translate (TranslateDialog)', async () => {
     // Apply unlocks once requestTranslation resolves.
     await expect.poll(() => applyButton.isDisabled()).toBe(false)
 
+    const imported = nextMutation(page, 'pbBulkTranslateFieldValues')
     await applyButton.click()
     await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
+    const variables = await imported
 
-    // BOTH added cards' title editables should now show the `[DE] …` mock
-    // translation. Wait on each one — the mutation patches asynchronously.
+    // BOTH titles' editables should now show the `[DE] …` translation. Wait on
+    // each one — the mutation patches asynchronously.
     const hostA = await blockHost(page, a.uuid)
     const hostB = await blockHost(page, b.uuid)
     await page.waitForFunction(
       ({ ua, ub }) => {
         const app = window.__BLOKKLI__!.app!
-        const ea = app.directive.findEditableElement('title', JSON.parse(ua))
-        const eb = app.directive.findEditableElement('title', JSON.parse(ub))
+        const ea = app.directive.findEditableElement(
+          'field_title',
+          JSON.parse(ua),
+        )
+        const eb = app.directive.findEditableElement(
+          'field_title',
+          JSON.parse(ub),
+        )
         return (
           !!ea?.textContent?.includes('[DE]') &&
           !!eb?.textContent?.includes('[DE]')
@@ -149,52 +165,48 @@ describe('Batch translate (TranslateDialog)', async () => {
       { ua: JSON.stringify(hostA), ub: JSON.stringify(hostB) },
     )
 
-    // Both cards' applied state matches the mock decoration and carries no
+    // Both titles' applied state matches the fake's translation and carries no
     // residual diff markup.
-    const stateA = await editableState(page, 'title', hostA)
-    const stateB = await editableState(page, 'title', hostB)
+    const stateA = await editableState(page, 'field_title', hostA)
+    const stateB = await editableState(page, 'field_title', hostB)
     expect(stateA?.text.trim()).toMatch(/^\[DE\] /)
     expect(stateB?.text.trim()).toMatch(/^\[DE\] /)
     expect(stateA?.hasDiffMarkup).toBe(false)
     expect(stateB?.hasDiffMarkup).toBe(false)
 
-    // Adapter payload: langcode is DE, items list includes BOTH cards' title
-    // field. A regression that drops one card from the apply would fail here.
-    const call = await waitForAdapterCall<{
-      items: Array<{ langcode: string; uuid: string; fieldName: string }>
-      markUpToDate?: boolean
-    }>(page, 'import_translations_batched')
-    const langs = new Set(call.items.map((i) => i.langcode))
+    // The mutation's items: langcode is DE, and they include BOTH titles. A
+    // regression that drops one title from the apply would fail here.
+    const langs = new Set(variables.items.map((i) => i?.langcode))
     expect([...langs]).toEqual(['de'])
     const sentUuids = new Set(
-      call.items.filter((i) => i.fieldName === 'title').map((i) => i.uuid),
+      variables.items
+        .filter((i) => i?.name === 'field_title')
+        .map((i) => i?.uuid),
     )
     expect(sentUuids.has(a.uuid)).toBe(true)
     expect(sentUuids.has(b.uuid)).toBe(true)
   })
 
   test('only missing or outdated translations are initially selected', async () => {
-    const a = await addCardWithSourceTitle(page)
-
     await openTranslateDialog(page)
 
-    // The freshly added card has no DE translation yet — preselected.
-    const cardCheckbox = batchRow(page, `${a.uuid}:title`).locator(
+    // The first title has no DE translation — preselected.
+    const missingCheckbox = batchRow(page, `${A.uuid}:field_title`).locator(
       '[data-test="translations-batch-row-checkbox"]',
     )
-    expect(await cardCheckbox.isChecked()).toBe(true)
+    expect(await missingCheckbox.isChecked()).toBe(true)
 
-    // The host page's title has a seeded, up-to-date DE translation — not
+    // The other title has a seeded, up-to-date DE translation — not
     // preselected.
-    const host = await getHostContext(page)
-    const hostCheckbox = batchRow(page, `${host.uuid}:title`).locator(
-      '[data-test="translations-batch-row-checkbox"]',
-    )
-    expect(await hostCheckbox.isChecked()).toBe(false)
+    const translatedCheckbox = batchRow(
+      page,
+      `${TRANSLATED_TITLE}:field_title`,
+    ).locator('[data-test="translations-batch-row-checkbox"]')
+    expect(await translatedCheckbox.isChecked()).toBe(false)
 
     // The header checkbox still selects everything in one click.
     await page.locator('[data-test="selection-table-toggle-all"]').click()
-    expect(await hostCheckbox.isChecked()).toBe(true)
+    expect(await translatedCheckbox.isChecked()).toBe(true)
 
     // Nothing is applied in this test — close the dialog explicitly.
     await page.keyboard.press('Escape')
@@ -202,8 +214,7 @@ describe('Batch translate (TranslateDialog)', async () => {
   })
 
   test('row action buttons show a tooltip on hover', async () => {
-    const a = await addCardWithSourceTitle(page)
-    const key = `${a.uuid}:title`
+    const key = `${A.uuid}:field_title`
 
     await openTranslateDialog(page)
 
@@ -223,8 +234,8 @@ describe('Batch translate (TranslateDialog)', async () => {
   })
 
   test('discarding a proposal excludes it from the apply; unchecking does not', async () => {
-    const a = await addCardWithSourceTitle(page)
-    const b = await addCardWithSourceTitle(page)
+    const a = A
+    const b = B
 
     await openTranslateDialog(page)
     const requestButton = page.locator(
@@ -242,49 +253,53 @@ describe('Batch translate (TranslateDialog)', async () => {
     await requestButton.click()
     await expect.poll(() => applyButton.isDisabled()).toBe(false)
 
-    // Discard card A's proposal — that's the mechanism that excludes a row
+    // Discard title A's proposal — that's the mechanism that excludes a row
     // from the apply.
-    const rowA = batchRow(page, `${a.uuid}:title`)
+    const rowA = batchRow(page, `${a.uuid}:field_title`)
     await rowA.locator('[data-test="translations-batch-discard"]').click()
 
-    // Unchecking card B's row must NOT exclude it — after the request, the
+    // Unchecking title B's row must NOT exclude it — after the request, the
     // checkbox has no influence on what gets applied.
-    const rowB = batchRow(page, `${b.uuid}:title`)
+    const rowB = batchRow(page, `${b.uuid}:field_title`)
     await rowB.locator('[data-test="translations-batch-row-checkbox"]').click()
 
+    const imported = nextMutation(page, 'pbBulkTranslateFieldValues')
     await applyButton.click()
     await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
+    const variables = await imported
 
-    // Card B has been translated; Card A still shows its original EN title.
+    // Title B has been translated; title A still shows its original EN title.
     const hostA = await blockHost(page, a.uuid)
     const hostB = await blockHost(page, b.uuid)
     await page.waitForFunction(
       ({ ub }) => {
         const app = window.__BLOKKLI__!.app!
-        const eb = app.directive.findEditableElement('title', JSON.parse(ub))
+        const eb = app.directive.findEditableElement(
+          'field_title',
+          JSON.parse(ub),
+        )
         return !!eb?.textContent?.includes('[DE]')
       },
       { ub: JSON.stringify(hostB) },
     )
 
     const titleA =
-      (await editableState(page, 'title', hostA))?.text.trim() ?? ''
+      (await editableState(page, 'field_title', hostA))?.text.trim() ?? ''
     expect(titleA).not.toContain('[DE]')
 
-    // Adapter call: card A's title is NOT in the items, card B's title IS.
-    const call = await waitForAdapterCall<{
-      items: Array<{ uuid: string; fieldName: string; langcode: string }>
-    }>(page, 'import_translations_batched')
+    // The mutation: title A is NOT in the items, title B IS.
     const sentTitleUuids = new Set(
-      call.items.filter((i) => i.fieldName === 'title').map((i) => i.uuid),
+      variables.items
+        .filter((i) => i?.name === 'field_title')
+        .map((i) => i?.uuid),
     )
     expect(sentTitleUuids.has(a.uuid)).toBe(false)
     expect(sentTitleUuids.has(b.uuid)).toBe(true)
   })
 
   test('a discarded suggestion disables the apply and can be restored', async () => {
-    const a = await addCardWithSourceTitle(page)
-    const key = `${a.uuid}:title`
+    const a = A
+    const key = `${a.uuid}:field_title`
 
     await openTranslateDialog(page)
     const requestButton = page.locator(
@@ -292,8 +307,8 @@ describe('Batch translate (TranslateDialog)', async () => {
     )
     const applyButton = page.locator('[data-test="translations-batch-apply"]')
 
-    // Scope the request to card A's title only so its proposal is the single
-    // pending change — that makes the apply-disabled assertions exact.
+    // Scope the request to title A only so its proposal is the single pending
+    // change — that makes the apply-disabled assertions exact.
     await deselectAll(page)
     const row = batchRow(page, key)
     await row.locator('[data-test="translations-batch-row-checkbox"]').click()
@@ -315,22 +330,20 @@ describe('Batch translate (TranslateDialog)', async () => {
       .waitFor({ state: 'visible' })
     await expect.poll(() => applyButton.isDisabled()).toBe(false)
 
+    const imported = nextMutation(page, 'pbBulkTranslateFieldValues')
     await applyButton.click()
     await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
 
-    const call = await waitForAdapterCall<ImportTranslationsArgs>(
-      page,
-      'import_translations_batched',
-    )
-    expect(call.items).toHaveLength(1)
-    expect(call.items[0]!.uuid).toBe(a.uuid)
-    expect(call.items[0]!.fieldName).toBe('title')
-    expect(call.items[0]!.fieldValue).toBe(`[DE] ${a.sourceTitle}`)
+    const { items } = await imported
+    expect(items).toHaveLength(1)
+    expect(items[0]!.uuid).toBe(a.uuid)
+    expect(items[0]!.name).toBe('field_title')
+    expect(items[0]!.value).toBe(`[DE] ${a.sourceTitle}`)
   })
 
   test('a manually edited proposal is applied instead of the suggestion', async () => {
-    const a = await addCardWithSourceTitle(page)
-    const key = `${a.uuid}:title`
+    const a = A
+    const key = `${a.uuid}:field_title`
 
     await openTranslateDialog(page)
     await page.locator('[data-test="translations-batch-request"]').click()
@@ -352,29 +365,29 @@ describe('Batch translate (TranslateDialog)', async () => {
       .waitFor({ state: 'visible' })
     expect(await row.textContent()).toContain('Hand-revised batch title')
 
+    const imported = nextMutation(page, 'pbBulkTranslateFieldValues')
     await applyButton.click()
     await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
 
-    const call = await waitForAdapterCall<ImportTranslationsArgs>(
-      page,
-      'import_translations_batched',
-    )
-    const item = call.items.find(
-      (i) => i.uuid === a.uuid && i.fieldName === 'title',
+    const { items } = await imported
+    const item = items.find(
+      (i) => i?.uuid === a.uuid && i?.name === 'field_title',
     )
     expect(item).toBeDefined()
-    expect(item!.fieldValue).toBe('Hand-revised batch title')
+    expect(item!.value).toBe('Hand-revised batch title')
     expect(item!.langcode).toBe('de')
 
     const host = await blockHost(page, a.uuid)
     await expect
-      .poll(async () => (await editableState(page, 'title', host))?.text.trim())
+      .poll(async () =>
+        (await editableState(page, 'field_title', host))?.text.trim(),
+      )
       .toBe('Hand-revised batch title')
   })
 
   test('a manual translation can be applied without requesting translations', async () => {
-    const a = await addCardWithSourceTitle(page)
-    const key = `${a.uuid}:title`
+    const a = A
+    const key = `${a.uuid}:field_title`
 
     await openTranslateDialog(page)
     const applyButton = page.locator('[data-test="translations-batch-apply"]')
@@ -390,29 +403,29 @@ describe('Batch translate (TranslateDialog)', async () => {
 
     // A manual edit alone unlocks the apply.
     await expect.poll(() => applyButton.isDisabled()).toBe(false)
+    const imported = nextMutation(page, 'pbBulkTranslateFieldValues')
     await applyButton.click()
     await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
 
     // Only the edited row is applied — other selected rows have neither a
     // proposal nor an edit.
-    const call = await waitForAdapterCall<ImportTranslationsArgs>(
-      page,
-      'import_translations_batched',
-    )
-    expect(call.items).toHaveLength(1)
-    expect(call.items[0]!.uuid).toBe(a.uuid)
-    expect(call.items[0]!.fieldName).toBe('title')
-    expect(call.items[0]!.fieldValue).toBe('Manually translated title')
+    const { items } = await imported
+    expect(items).toHaveLength(1)
+    expect(items[0]!.uuid).toBe(a.uuid)
+    expect(items[0]!.name).toBe('field_title')
+    expect(items[0]!.value).toBe('Manually translated title')
 
     const host = await blockHost(page, a.uuid)
     await expect
-      .poll(async () => (await editableState(page, 'title', host))?.text.trim())
+      .poll(async () =>
+        (await editableState(page, 'field_title', host))?.text.trim(),
+      )
       .toBe('Manually translated title')
   })
 
   test('discarding a manual edit restores the suggestion', async () => {
-    const a = await addCardWithSourceTitle(page)
-    const key = `${a.uuid}:title`
+    const a = A
+    const key = `${a.uuid}:field_title`
 
     await openTranslateDialog(page)
     await page.locator('[data-test="translations-batch-request"]').click()
@@ -432,23 +445,21 @@ describe('Batch translate (TranslateDialog)', async () => {
     await row.locator('[data-test="translations-batch-edit-reset"]').click()
     await pill.waitFor({ state: 'hidden' })
 
+    const imported = nextMutation(page, 'pbBulkTranslateFieldValues')
     await applyButton.click()
     await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
 
     // The apply carries the original suggestion again.
-    const call = await waitForAdapterCall<ImportTranslationsArgs>(
-      page,
-      'import_translations_batched',
+    const { items } = await imported
+    const item = items.find(
+      (i) => i?.uuid === a.uuid && i?.name === 'field_title',
     )
-    const item = call.items.find(
-      (i) => i.uuid === a.uuid && i.fieldName === 'title',
-    )
-    expect(item!.fieldValue).toBe(`[DE] ${a.sourceTitle}`)
+    expect(item!.value).toBe(`[DE] ${a.sourceTitle}`)
   })
 
   test('a rich text field is edited in the backend editor inside the dialog', async () => {
-    const uuid = (await addBlock(page, { bundle: 'text' }))!
-    const key = `${uuid}:text`
+    const uuid = TEXT
+    const key = `${uuid}:field_text`
 
     await openTranslateDialog(page)
     await openRowEditor(page, key)
@@ -479,18 +490,14 @@ describe('Batch translate (TranslateDialog)', async () => {
     await page.locator('[data-test="translations-batch-editor-save"]').click()
     const applyButton = page.locator('[data-test="translations-batch-apply"]')
     await expect.poll(() => applyButton.isDisabled()).toBe(false)
+    const imported = nextMutation(page, 'pbBulkTranslateFieldValues')
     await applyButton.click()
     await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
 
-    const call = await waitForAdapterCall<ImportTranslationsArgs>(
-      page,
-      'import_translations_batched',
-    )
-    const item = call.items.find(
-      (i) => i.uuid === uuid && i.fieldName === 'text',
-    )
+    const { items } = await imported
+    const item = items.find((i) => i?.uuid === uuid && i?.name === 'field_text')
     expect(item).toBeDefined()
-    expect(item!.fieldValue).toContain('Manuell übersetzter Text.')
+    expect(item!.value).toContain('Manuell übersetzter Text.')
     expect(item!.langcode).toBe('de')
   })
 })
