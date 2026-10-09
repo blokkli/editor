@@ -1,0 +1,6 @@
+# An editorial page without paragraphs, at /en/blank: its only heading is the
+# title (H1), and it shows no image. A page would also show the H2 "Related
+# topics" while editing.
+key: blank
+type: editorial
+title: Blank

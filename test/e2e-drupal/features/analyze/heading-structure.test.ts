@@ -1,35 +1,35 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { addBlock } from './../../support/blocks'
-import { dismissMessages } from './../../support/overlays'
-import { setupEditorE2E } from './../../support/setup'
-import {
-  EDITOR_PATH_EMPTY,
-  openEditor,
-  resetMockState,
-} from './../../support/session'
+import { addBlock } from '../../../e2e/support/blocks'
+import { dismissMessages } from '../../../e2e/support/overlays'
 import {
   analyzeResult,
   analyzeResults,
   expandAnalyzeNodes,
   openAnalyzeSection,
   openSidebar,
-} from './../../support/sidebar'
-import { emitEvent } from './../../support/events'
+} from '../../../e2e/support/sidebar'
+import { emitEvent } from '../../../e2e/support/events'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { editorPath, openEditor, revertAllChanges } from '../../support/session'
 
 const PREFIX = 'blokkli:heading-structure:'
 
 /**
  * The built-in `blokkli:heading-structure` analyzer (registered by the
- * playground adapter) checks for exactly one H1, at least one H2 and no
- * skipped levels. It reports a single pass row only when all three hold.
+ * sandbox's adapter) checks for exactly one H1, at least one H2 and no skipped
+ * levels. It reports a single pass row only when all three hold.
  *
- * Runs on the empty page: its Hero renders the entity title as the only
- * heading (an H1), so the baseline is a "missing H2" violation. Headings are
- * added as real blocks — `title` renders an H2, `card_plain` an H3.
+ * Runs on the page "Blank" (content/nodes/blank.yml): its header renders the
+ * node's title as the only heading (an H1), so the baseline is a "missing H2"
+ * violation. An editorial page: a page would show the H2 "Related topics"
+ * while editing. Headings are added as real paragraphs — `title` renders an
+ * H2, an empty `accordion` an H3.
  */
 describe('Analyze — built-in heading structure analyzer', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
@@ -37,7 +37,12 @@ describe('Analyze — built-in heading structure analyzer', async () => {
     analyzeResult(page, PREFIX + id, status)
 
   beforeAll(async () => {
-    page = await openEditor(EDITOR_PATH_EMPTY)
+    resetSandbox(sandbox)
+    page = await openEditor(
+      sandbox,
+      'Anna Keller',
+      editorPath('/en/blank', 'blank'),
+    )
     await openSidebar(page, 'analyze')
   })
 
@@ -48,7 +53,7 @@ describe('Analyze — built-in heading structure analyzer', async () => {
   afterEach(async () => {
     await emitEvent(page, 'select:unselect')
     await dismissMessages(page)
-    await resetMockState(page)
+    await revertAllChanges(page)
   })
 
   test('reports the missing H2 on a page with only the H1', async () => {
@@ -58,11 +63,11 @@ describe('Analyze — built-in heading structure analyzer', async () => {
   })
 
   test('passes once an H2 follows the H1', async () => {
-    await addBlock(page, { bundle: 'title' })
+    await addBlock(page, { bundle: 'title', fieldName: 'field_paragraphs' })
 
     await expect.poll(() => result('valid', 'pass').count()).toBe(1)
     expect(await analyzeResults(page, PREFIX, 'violation').count()).toBe(0)
-    // The pass row lists every heading: the Hero H1 and the title block H2.
+    // The pass row lists every heading: the header's H1 and the title's H2.
     // Pass rows live in the collapsed success section, and two targets mean
     // the row itself starts collapsed too.
     await openAnalyzeSection(page, 'success')
@@ -75,7 +80,7 @@ describe('Analyze — built-in heading structure analyzer', async () => {
 
   test('reports a skipped heading level', async () => {
     // H1 → H3 without an H2 in between.
-    await addBlock(page, { bundle: 'card_plain' })
+    await addBlock(page, { bundle: 'accordion', fieldName: 'field_paragraphs' })
 
     await expect
       .poll(() => result('skipped-levels', 'violation').count())

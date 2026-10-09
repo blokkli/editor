@@ -86,7 +86,11 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
   opens and closes the editor for that.
 - **Media:** a seeded media's UUID is `seedUuid('media', key)`; numeric IDs
   follow the order of creation, don't rely on them. Files go in
-  `test/e2e-drupal/content/files/`.
+  `test/e2e-drupal/content/files/`. Adding one through the adapter needs its
+  numeric ID: find it in the media library by its name
+  (`mediaLibraryGetResults`, see `analyze/alt-text`).
+- **Violations:** Drupal reports none for an added empty paragraph; seed content
+  it doesn't allow (`invalid: true`).
 - **The agent's conversation restore:** the reading pages get
   `mockScript: [{ type: 'restore' }]`.
 - **Pinned dates** must be in the future: Drupal rejects a schedule less than 2
@@ -118,13 +122,15 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
   - a node with DE and FR translations (there: `nodes/translated.yml`), one with
     `outdated: [de]`, an unpublished one (`status: false`)
   - the editorial front page with fragments, an empty page, a long page (there:
-    `nodes/home.yml`, `nodes/empty.yml`, `nodes/long.yml`)
+    `nodes/home.yml`, `nodes/empty.yml`, `nodes/long.yml`); an empty editorial
+    page (there: `nodes/blank.yml`)
   - nestings: `columns` (`field_left`/`field_right`), `accordion`, `section`; a
     teaser with `field_title`/`field_lead` and a `field_link` to a node; a
     `call_to_action`; a `table`; a `chart`; a full `field_related` (3 teasers)
-  - a node with two stored violations (`invalid: true`)
+  - a node with two stored violations (`invalid: true`; there:
+    `nodes/faulty.yml`)
   - image media with and without alt, with files in
-    `test/e2e-drupal/content/files/`
+    `test/e2e-drupal/content/files/` (there: `media.yml`)
   - comment threads (resolved and unresolved, with mentions of Anna by another
     user; there: `comments.yml` on `nodes/feedback.yml`, no mentions yet),
     `templates.yml` (there: columns with two texts), library items
@@ -308,15 +314,15 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 
 ### Analyze, options, editable fields, charts
 
-- [ ] `analyze/alt-text`: with changes. An editorial node without images; two
-      image media, with and without alt (as fixture paragraphs); revert all
-      changes between tests.
-- [ ] `analyze/heading-structure`: with changes. An editorial node; title is the
-      H2, `accordion` the H3 that skips a level.
-- [ ] `analyze/validations`: with changes. Passes on `blocks.yml`; the rest on a
-      node with two stored violations (not `broken.yml`, which has one).
-- [ ] `analyze/highlight-click`: with changes. The two-violation node; the cold
-      load is a second `openEditor`.
+- [x] `analyze/alt-text`: done, on `nodes/blank.yml`; "The lake" and "The hills"
+      (`media.yml`), added through the media library's IDs; `revertAllChanges`
+      between tests.
+- [x] `analyze/heading-structure`: done, on `nodes/blank.yml`; `title` is the
+      H2, an empty `accordion` the H3 that skips a level.
+- [x] `analyze/validations`: done. Passes on `blocks.yml`; the rest on
+      `nodes/faulty.yml` (a gallery with a title and a text).
+- [x] `analyze/highlight-click`: done, on `nodes/faulty.yml`; the cold load is a
+      second `openEditor`.
 - [ ] `options/mutations`, `options/rendering`, `options/tooltips`: on the
       widget, close to the mock specs (its cells show each option's value).
       `resolveOptionText` and `setupWidget` take the bundle and a seeded widget;

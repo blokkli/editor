@@ -1,0 +1,15 @@
+# Two images for the alt text analyzer (features/analyze/alt-text): plain
+# gradients, generated with ImageMagick.
+- key: lake
+  type: image
+  name: The lake
+  field_media_image:
+    file: images/lake.jpg
+    alt: The lake, under a clear sky
+
+# No alt text, on purpose.
+- key: hills
+  type: image
+  name: The hills
+  field_media_image:
+    file: images/hills.jpg

@@ -1,0 +1,15 @@
+# Two violations, on purpose (`invalid: true`), at /en/faulty: a gallery only
+# allows images. features/analyze uses them; broken.yml has one.
+key: faulty
+type: page
+title: Faulty
+field_paragraphs:
+  - type: gallery
+    key: faulty-gallery
+    field_paragraphs:
+      - type: title
+        invalid: true
+        field_title: A title in a gallery
+      - type: text
+        invalid: true
+        field_text: '<p>A text in a gallery.</p>'

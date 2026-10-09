@@ -102,7 +102,8 @@ so reorder-by-mistake doesn't break it.
 - **EditState mutations** persist to
   `__30_blokkli_mock_<uuid>_{mutations,index}` localStorage. `page.reload()`
   _keeps_ them. Remove both keys + emit `reloadState` → ~200ms. See
-  `features/history/base.test.ts`.
+  `features/publish/violations.test.ts`. In the Drupal suite:
+  `revertAllChanges(page)`.
 - **Feature localStorage** (e.g. `blokkli_playground_comments`,
   `blokkli:commentsShowResolved:<context>`, `blokkli:commandPaletteFrequency`) —
   clear the keys; reload only if read at mount.

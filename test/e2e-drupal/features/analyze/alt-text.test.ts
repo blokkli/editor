@@ -1,29 +1,28 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { dismissMessages } from './../../support/overlays'
-import { setupEditorE2E } from './../../support/setup'
-import {
-  EDITOR_PATH_EMPTY,
-  openEditor,
-  resetMockState,
-} from './../../support/session'
+import { dismissMessages } from '../../../e2e/support/overlays'
 import {
   analyzeResult,
   openAnalyzeSection,
   openSidebar,
-} from './../../support/sidebar'
-import { emitEvent } from './../../support/events'
+} from '../../../e2e/support/sidebar'
+import { emitEvent } from '../../../e2e/support/events'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { editorPath, openEditor, revertAllChanges } from '../../support/session'
 
 /**
- * The built-in `blokkli:image-alt-text` analyzer (registered by the
- * playground adapter) reports every `<img>` without a non-empty `alt`.
+ * The built-in `blokkli:image-alt-text` analyzer (registered by the sandbox's
+ * adapter) reports every `<img>` without a non-empty `alt`.
  *
- * Runs on the empty page, which renders no image at all, so the baseline is a
- * status-only pass. Images are added as real image blocks referencing seeded
- * media: media 7 has an alt text, media 9 intentionally has none.
+ * Runs on the page "Blank" (content/nodes/blank.yml), which renders no image
+ * at all, so the baseline is a status-only pass. Images are added as real
+ * image paragraphs referencing seeded media (content/media.yml): "The lake"
+ * has an alt text, "The hills" intentionally has none.
  */
 describe('Analyze — built-in alt text analyzer', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
@@ -33,18 +32,28 @@ describe('Analyze — built-in alt text analyzer', async () => {
     analyzeResult(page, 'blokkli:image-alt-text:missing', 'violation')
 
   /**
-   * Add an image block referencing a seeded media item — the same adapter
-   * call a drop from the media library makes, without the drag gesture.
+   * Add an image paragraph referencing a seeded media item — the same adapter
+   * call a drop from the media library makes, without the drag gesture. The
+   * media is found in the library by its name: Drupal references it by its
+   * numeric ID.
    */
-  function addImageBlock(mediaId: string): Promise<void> {
-    return page.evaluate(async (mediaId) => {
+  function addImageBlock(mediaName: string): Promise<void> {
+    return page.evaluate(async (mediaName) => {
       const app = window.__BLOKKLI__!.app!
+      const { items } = await app.adapter.mediaLibraryGetResults!({
+        filters: {},
+        page: 0,
+      })
+      const media = items.find((item) => item.label === mediaName)
+      if (!media) {
+        throw new Error(`The media library has no "${mediaName}".`)
+      }
       await app.state.mutateWithLoadingState(() =>
         app.adapter.mediaLibraryAddBlock!({
           host: {
             type: app.context.value.entityType,
             uuid: app.context.value.entityUuid,
-            fieldName: 'content',
+            fieldName: 'field_paragraphs',
           },
           preceedingUuid: null,
           targetBundle: 'image',
@@ -52,17 +61,22 @@ describe('Analyze — built-in alt text analyzer', async () => {
             itemType: 'media_library',
             element: () => document.body,
             itemBundles: ['image'],
-            mediaId,
+            mediaId: media.mediaId,
             mediaBundle: 'image',
-            label: '',
+            label: media.label,
           },
         }),
       )
-    }, mediaId)
+    }, mediaName)
   }
 
   beforeAll(async () => {
-    page = await openEditor(EDITOR_PATH_EMPTY)
+    resetSandbox(sandbox)
+    page = await openEditor(
+      sandbox,
+      'Anna Keller',
+      editorPath('/en/blank', 'blank'),
+    )
     await openSidebar(page, 'analyze')
   })
 
@@ -73,7 +87,7 @@ describe('Analyze — built-in alt text analyzer', async () => {
   afterEach(async () => {
     await emitEvent(page, 'select:unselect')
     await dismissMessages(page)
-    await resetMockState(page)
+    await revertAllChanges(page)
   })
 
   test('passes on a page without images', async () => {
@@ -86,7 +100,7 @@ describe('Analyze — built-in alt text analyzer', async () => {
   })
 
   test('passes when every image has an alt text', async () => {
-    await addImageBlock('7')
+    await addImageBlock('The lake')
 
     // Pass rows live in the collapsed success section. A single target opens
     // the row by itself; the target list renders lazily.
@@ -98,7 +112,7 @@ describe('Analyze — built-in alt text analyzer', async () => {
   })
 
   test('reports an image without alt text as a violation', async () => {
-    await addImageBlock('9')
+    await addImageBlock('The hills')
 
     await expect.poll(() => missingResult().count()).toBe(1)
     const row = missingResult()
