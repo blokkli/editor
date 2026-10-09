@@ -1,8 +1,7 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, withApp } from '../../support/session'
-import { addBlock } from '../../support/blocks'
-import { setupEditorE2E } from '../../support/setup'
+import { withApp } from '../../../e2e/support/session'
 import {
   discardEditable,
   editableOverlay,
@@ -10,33 +9,47 @@ import {
   plaintextEditor,
   saveByClickAway,
   storedFieldValue,
-} from '../../support/editable'
-import { openSidebar } from '../../support/sidebar'
-import { runAgentTool } from '../../support/agent'
+} from '../../../e2e/support/editable'
+import { openSidebar } from '../../../e2e/support/sidebar'
+import { runAgentTool } from '../../../e2e/support/agent'
+import { nextMutation } from '../../support/mutations'
+import {
+  resetSandbox,
+  sandboxHost,
+  seedUuid,
+  workerSandbox,
+} from '../../support/sandbox'
+import { editorPath, openEditor } from '../../support/session'
+
+// The page "Widgets" (content/nodes/widgets.yml).
+const LINK = seedUuid('paragraph', 'widgets-link')
+const OTHER_LINK = seedUuid('paragraph', 'widgets-other-link')
+const BUTTON = seedUuid('paragraph', 'widgets-button')
 
 /**
  * Text that lives INSIDE a non-text field, addressed by property path.
  *
- * The `link` block stores its title as a property of a `field_link`-shaped
- * field, the way Drupal does, rather than as a separate text field the way
- * `button` does. Such a value is addressed as `<field>.<property>` —
- * `link.title` — which is the convention `paragraphs_blokkli` already uses for
- * writes (`UpdateFieldValueTrait::updateTextFieldValue` splits on the dot and
- * updates only that property; `field_text.format` ships on it today).
+ * The widget stores its link's title as a property of `field_link`, rather
+ * than as a separate text field the way the `link` paragraph does. Such a
+ * value is addressed as `<field>.<property>` — `field_link.title` — which is
+ * the convention `paragraphs_blokkli` uses for writes
+ * (`UpdateFieldValueTrait::updateTextFieldValue` splits on the dot and updates
+ * only that property). Drupal offers it for a link field with a title and a
+ * single value.
  *
- * `button` is asserted alongside `link` throughout: it carries the same two
- * pieces of information in separate fields, so it is the control proving these
- * assertions are about the field SHAPE, not about the fixture being absent.
+ * The `link` paragraph is asserted alongside the widget throughout: it carries
+ * the same two pieces of information in separate fields, so it is the control
+ * proving these assertions are about the field SHAPE, not about the fixture
+ * being absent.
  */
 describe('link field titles', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   const STORED_TITLE = 'Read more about it'
   const STORED_URI = 'https://www.example.com'
 
   let page: Page
-  let linkUuid: string
-  let buttonUuid: string
 
   async function blockItems(): Promise<
     Array<{ uuid: string; bundle: string; props: Record<string, any> }>
@@ -52,25 +65,18 @@ describe('link field titles', async () => {
     )
   }
 
-  async function linkProps(): Promise<Record<string, any>> {
-    const item = (await blockItems()).find((i) => i.uuid === linkUuid)
+  async function linkProps(uuid: string): Promise<Record<string, any>> {
+    const item = (await blockItems()).find((i) => i.uuid === uuid)
     return item?.props ?? {}
   }
 
   beforeAll(async () => {
-    page = await openEditor()
-    const link = await addBlock(page, { bundle: 'link', fieldName: 'content' })
-    if (!link) throw new Error('Failed to add link block')
-    linkUuid = link
-
-    const button = await addBlock(page, {
-      bundle: 'button',
-      fieldName: 'content',
-    })
-    if (!button) throw new Error('Failed to add button block')
-    buttonUuid = button
-
-    await page.locator(`[data-bk-uuid="${linkUuid}"]`).waitFor()
+    resetSandbox(sandbox)
+    page = await openEditor(
+      sandbox,
+      'Anna Keller',
+      editorPath('/en/widgets', 'widgets'),
+    )
   })
 
   afterAll(async () => {
@@ -92,23 +98,26 @@ describe('link field titles', async () => {
   })
 
   test('the block renders its title from the link field', async () => {
-    const el = page.locator(`[data-bk-uuid="${linkUuid}"]`)
+    const el = page.locator(`[data-bk-uuid="${LINK}"]`)
     expect(await el.textContent()).toContain(STORED_TITLE)
   })
 
   test('the link value carries both uri and title', async () => {
-    const props = await linkProps()
-    expect(props.link).toMatchObject({ uri: STORED_URI, title: STORED_TITLE })
+    const props = await linkProps(LINK)
+    expect(props.link).toMatchObject({
+      uri: { path: STORED_URI },
+      title: STORED_TITLE,
+    })
   })
 
   test('the title is exposed as a text value at its property path', async () => {
     const values = await withApp(page, (app) =>
       app.fieldValue.getTextFieldValues(),
     )
-    expect(values.some((v) => v.uuid === buttonUuid)).toBe(true)
+    expect(values.some((v) => v.uuid === BUTTON)).toBe(true)
 
     const entry = values.find(
-      (v) => v.uuid === linkUuid && v.fieldName === 'link.title',
+      (v) => v.uuid === LINK && v.fieldName === 'field_link.title',
     )
     expect(entry?.value).toBe(STORED_TITLE)
     expect(entry?.fieldType).toBe('plain')
@@ -121,47 +130,45 @@ describe('link field titles', async () => {
       app.fieldValue.getTextFieldValues(),
     )
     expect(
-      values.some((v) => v.uuid === linkUuid && v.fieldName.endsWith('.uri')),
+      values.some((v) => v.uuid === LINK && v.fieldName.endsWith('.uri')),
     ).toBe(false)
   })
 
   test('the title is an editable field at its property path', async () => {
     const names = await withApp(page, (app) =>
       app.types.editableFieldConfig
-        .forEntityTypeAndBundle('paragraph', 'link')
+        .forEntityTypeAndBundle('paragraph', 'widget')
         .map((c) => c.name),
     )
-    expect(names).toContain('link.title')
+    expect(names).toContain('field_link.title')
   })
 
   test('readRawValue resolves the property path', async () => {
-    const value = await withApp(page, (app) => {
-      const uuid = app.state.mutatedFields.value
-        .flatMap((f) => f.list)
-        .find((i) => i.bundle === 'link')?.uuid
-      if (!uuid) return null
-      return app.fieldValue.readRawValue(
-        'paragraph',
-        uuid,
-        'link',
-        'link.title',
-        'plain',
-      )
-    })
+    const value = await page.evaluate(
+      (uuid) =>
+        window.__BLOKKLI__!.app!.fieldValue.readRawValue(
+          'paragraph',
+          uuid,
+          'widget',
+          'field_link.title',
+          'plain',
+        ),
+      LINK,
+    )
     expect(value).toBe(STORED_TITLE)
   })
 
   test('the live preview updates the title without dropping the uri', async () => {
     // The core of it: a prop override used to replace the whole `link` prop
     // with a bare string, destroying the uri. It has to merge into the object.
-    await openEditableField(page, 'link.title', linkUuid)
+    await openEditableField(page, 'field_link.title', LINK)
     const editor = plaintextEditor(page)
     await editor.waitFor({ state: 'visible' })
     expect(await editor.inputValue()).toBe(STORED_TITLE)
 
     // The preview lives in `mutatedItemProps`, not the committed field list, so
     // assert what the block actually renders.
-    const anchor = page.locator(`[data-bk-uuid="${linkUuid}"] a`)
+    const anchor = page.locator(`[data-bk-uuid="${LINK}"] a`)
     await editor.fill('Vorschau')
 
     await expect.poll(() => anchor.textContent()).toContain('Vorschau')
@@ -172,7 +179,7 @@ describe('link field titles', async () => {
       (app) => app.state.mutatedItemProps as Record<string, any>,
     )
     expect(Object.values(override).find((v) => v?.link)?.link).toMatchObject({
-      uri: STORED_URI,
+      uri: { path: STORED_URI },
       title: 'Vorschau',
     })
 
@@ -181,25 +188,27 @@ describe('link field titles', async () => {
   })
 
   test('saving writes only the title and keeps the uri', async () => {
-    // Own block: this one commits a mutation, so it must not disturb the
-    // fixtures the read-only cases share.
-    const uuid = await addBlock(page, { bundle: 'link', fieldName: 'content' })
-    if (!uuid) throw new Error('Failed to add link block')
-    await page.locator(`[data-bk-uuid="${uuid}"]`).waitFor()
-
-    await openEditableField(page, 'link.title', uuid)
+    // A widget of its own: this one stores a change, so it must not disturb
+    // the fixture the read-only cases share.
+    await openEditableField(page, 'field_link.title', OTHER_LINK)
     const editor = plaintextEditor(page)
     await editor.waitFor({ state: 'visible' })
     await editor.fill('Gespeicherter Titel')
+    const saved = nextMutation(page, 'pbUpdateFieldValue')
     await saveByClickAway(page)
 
+    expect(await saved).toMatchObject({
+      uuid: OTHER_LINK,
+      fieldName: 'field_link.title',
+      value: 'Gespeicherter Titel',
+    })
     await expect
-      .poll(() => storedFieldValue(page, uuid, 'link.title'))
+      .poll(() => storedFieldValue(page, OTHER_LINK, 'field_link.title'))
       .toBe('Gespeicherter Titel')
 
-    const item = (await blockItems()).find((i) => i.uuid === uuid)
-    expect(item?.props.link).toMatchObject({
-      uri: STORED_URI,
+    // What Drupal stored: the uri is still there.
+    expect((await linkProps(OTHER_LINK)).link).toMatchObject({
+      uri: { path: STORED_URI },
       title: 'Gespeicherter Titel',
     })
   })
@@ -207,10 +216,10 @@ describe('link field titles', async () => {
   test('the agent reads the title at its property path', async () => {
     await openSidebar(page, 'test-cases')
     const result = await runAgentTool(page, 'get_content_fields', {
-      uuids: [linkUuid],
+      uuids: [LINK],
       includeNested: false,
     })
-    const field = result[linkUuid]?.['link.title']
+    const field = result[LINK]?.['field_link.title']
     expect(field && 'currentValue' in field ? field.currentValue : null).toBe(
       STORED_TITLE,
     )

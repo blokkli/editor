@@ -139,18 +139,13 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 
 ### Additions to the sandbox
 
-- [ ] **The widget** (test-only paragraph type, see "Decisions"):
-  - options of every type: checkbox, checkboxes, radios (default with choice
-    descriptions, icons, grid, colours), text, colour, range, number,
-    datetime-local, an option group; new types are added here first
-  - its component renders every option's value in a cell with a `data-test`
-    (like the playground's widget), so the option specs keep their assertions
-  - fields: a link with an editable title (cardinality 1, not droppable, not an
-    entity mapping target, untranslatable), and a field bound to an element next
-    to one without an element but with a `propsFieldMapping`; more as specs need
-    them
-  - in the GraphQL server config and the frontend's `paragraph` union; a test
-    module allows it in `page.field_paragraphs` in E2E sandboxes
+- [x] **The widget** (test-only paragraph type, see "Decisions"): done. `widget`
+      (config, `Paragraph/Widget`), `field_title` bound, `field_lead` only
+      prop-mapped, `field_link` external only with an optional title;
+      `blokkli_playground_test` (`blokkli_playground/tests/modules/`, installed
+      by `bake-e2e`) allows it on pages; `nodes/widgets.yml`. The playground's
+      options, with labels in EN/DE/FR and without its `background` global
+      option.
 - [ ] Demo options:
   - Title: "Anchor" (text: one ID in every language, also used by the table of
     contents) and "In the table of contents" (checkbox), grouped as "Navigation"
@@ -227,10 +222,11 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 
 ### Translations, comments, publishing
 
-- [ ] `translations/auto-translate`: splits. Tests 1–2 done, on the English-only
-      titles of `/de/mitteilungen` (`nodes/notices.yml`, one per test); the
-      DeepL fake; `pbBulkTranslateFieldValues` and a reload. Tests 3–4 stay in
-      the mock suite until the widget (a bound field and a props-mapped one).
+- [x] `translations/auto-translate`: done. Tests 1–2 on the English-only titles
+      of `/de/mitteilungen` (`nodes/notices.yml`, one per test); tests 3–4 on
+      the widgets of `/de/widgets`, whose element-less `field_lead` can come
+      first (fields without an element keep their input order); the DeepL fake;
+      `pbBulkTranslateFieldValues` and a reload.
 - [x] `translations/banner-and-switcher`: done. The switcher on
       `nodes/translated.yml`; the banner on `/de/kehrichtabfuhr`
       (`nodes/waste-collection.yml`, `outdated: [de]`),
@@ -246,7 +242,9 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [x] `translations/csv-import`: done, on `/de/mitteilungen`;
       `pbBulkTranslateFieldValues` and a reload; `revertAllChanges` between
       tests.
-- [ ] `translations/link-title`: on the widget's link with a title.
+- [x] `translations/link-title`: done, on the widgets' `field_link.title`
+      (`nodes/widgets.yml`); the `link` paragraph is the control (its title is a
+      field of its own); `props.link.uri` is `{ path }`.
 - [ ] `translations/link-title-translate`: stays (links are never translatable);
       a test for F58's fix replaces it.
 - [ ] `comments/base`: with changes. Seeded threads, a second user. 10 of 11
@@ -291,11 +289,10 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       and the exact stored value hold with Drupal.
 - [x] `diff-approval-edit`: done, on `nodes/reading.yml`: its `field_lead`
       (`pbUpdateHostEntityFieldValue`), an added text for the chunk test.
-- [ ] `diff-approval-grouping`: `.test`, splits. Tests 3–5 done
-      (`test/e2e-drupal/diff-approval-grouping.test.ts`: the teaser of
-      `nodes/reading.yml`, its text for the whitespace test). Tests 1–2 stay in
-      the mock suite until the widget (a bound field next to an element-less
-      one).
+- [x] `diff-approval-grouping`: done
+      (`test/e2e-drupal/diff-approval-grouping.test.ts`): the teaser of
+      `nodes/reading.yml`, its text for the whitespace test; tests 1–2 on a
+      widget of `nodes/widgets.yml`, in a second page.
 - [x] `diff-approval-keyboard`: done, on `nodes/reading.yml`: the node's title
       and `field_lead`, its title paragraph's `field_title` (asserted: three
       items, or the reverse order proves nothing).
@@ -334,11 +331,11 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       `nodes/faulty.yml` (a gallery with a title and a text).
 - [x] `analyze/highlight-click`: done, on `nodes/faulty.yml`; the cold load is a
       second `openEditor`.
-- [ ] `options/mutations`, `options/rendering`, `options/tooltips`: on the
-      widget, close to the mock specs (its cells show each option's value).
-      `resolveOptionText` and `setupWidget` take the bundle and a seeded widget;
-      the stored values from the mutations' request bodies
-      (`pbUpdateParagraphOption`, `pbBulkUpdateParagraphBehaviorSettings`).
+- [x] `options/mutations`, `options/rendering`, `options/tooltips`: done, on
+      widgets added to `/en/widgets` (`setupWidget` takes the field name). The
+      stored values from the mutations' request bodies
+      (`pbUpdateParagraphOption`, `pbBulkUpdateParagraphBehaviorSettings`); the
+      global option of the defaults test is `bkVisibleLanguages`.
 - [x] `editable-field/frame`: done, on `/en/empty`; `pbUpdateFieldValue`.
       `editableFrame` waits for the editor's first message (`data-test-ready`):
       Drupal's page loads too slowly for the old wait.

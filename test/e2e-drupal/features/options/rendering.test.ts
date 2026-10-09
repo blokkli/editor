@@ -1,7 +1,6 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, EDITOR_PATH } from './../../support/session'
-import { setupEditorE2E } from './../../support/setup'
 import {
   blockOption,
   blockOptionControl,
@@ -9,7 +8,9 @@ import {
   openOptionGroup,
   resolveOptionText,
   setupWidget,
-} from './../../support/options'
+} from '../../../e2e/support/options'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { editorPath, openEditor } from '../../support/session'
 
 /**
  * Per-type DOM rendering for option controls.
@@ -31,24 +32,31 @@ import {
  *
  * Page lifecycle: the editor is expensive to boot and these tests don't
  * mutate the block's option state — they read defaults and DOM structure.
- * So we open the editor ONCE per file via `beforeAll` and seed ONE Widget
- * up front; every test reads from it. UI state that tests do flip
+ * So we open the editor ONCE per file via `beforeAll` and add ONE Widget
+ * up front, on the page "Widgets" (content/nodes/widgets.yml); every test
+ * reads from it. UI state that tests do flip
  * (group popups opened, the countries dropdown toggled) doesn't bleed
  * across tests in a way that breaks them — group toggles are idempotent
  * and the countries dropdown is only inspected by the test that opens it.
  *
- * The Widget definition (`playground/app/components/Blokkli/Widget/InContentPage.vue`)
+ * The Widget definition (`sandbox/frontend/app/components/Paragraph/Widget`)
  * supplies one example of every radios `displayAs` variant and every other
  * type, so the single shared widget covers the whole surface.
  */
 describe('Options — rendering', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor(EDITOR_PATH)
-    await setupWidget(page)
+    resetSandbox(sandbox)
+    page = await openEditor(
+      sandbox,
+      'Anna Keller',
+      editorPath('/en/widgets', 'widgets'),
+    )
+    await setupWidget(page, 'field_paragraphs')
   })
 
   afterAll(async () => {

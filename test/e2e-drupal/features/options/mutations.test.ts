@@ -1,14 +1,16 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, EDITOR_PATH } from './../../support/session'
-import { setupEditorE2E } from './../../support/setup'
-import { addBlock, selectBlock, selectBlocks } from './../../support/blocks'
+import {
+  addBlock,
+  selectBlock,
+  selectBlocks,
+} from '../../../e2e/support/blocks'
 import {
   blockOption,
   blockOptionControl,
   clickNumberStepper,
   flushOptions,
-  lastUpdateOptions,
   openOptionGroup,
   selectRadiosOption,
   setColorValue,
@@ -21,7 +23,30 @@ import {
   toggleCheckboxOption,
   widgetOptionValue,
   widgetTextColorAttr,
-} from './../../support/options'
+} from '../../../e2e/support/options'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { editorPath, openEditor } from '../../support/session'
+
+type StoredOption = { uuid: string; key: string; value: string }
+
+const OPTION_MUTATIONS = [
+  'pbUpdateParagraphOption',
+  'pbBulkUpdateParagraphBehaviorSettings',
+].map((name) => `/api/graphql_middleware/mutation/${name}`)
+
+/**
+ * The options Drupal receives next: one goes as `pbUpdateParagraphOption`,
+ * several as `pbBulkUpdateParagraphBehaviorSettings`. Start it before the
+ * flush.
+ */
+async function nextOptionsUpdate(page: Page): Promise<StoredOption[]> {
+  const response = await page.waitForResponse((response) =>
+    OPTION_MUTATIONS.includes(new URL(response.url()).pathname),
+  )
+  const variables = response.request().postDataJSON()
+  const items: StoredOption[] = variables.items ?? [variables]
+  return items.map(({ uuid, key, value }) => ({ uuid, key, value }))
+}
 
 /**
  * Regression tests for the `options` feature — mutation path.
@@ -32,19 +57,19 @@ import {
  * `ui.flushPendingChanges()`).
  *
  * Each per-type test asserts BOTH the block's re-rendered DOM (the Widget's
- * JSON cell for the option) AND the adapter payload's storable form. A bug
+ * JSON cell for the option) AND the storable form Drupal receives. A bug
  * that updates state but fails to persist (or vice versa) fails the test;
  * a bug that updates the wrong storable form (e.g. checkbox not serialised to
- * `'0'`/`'1'`) fails on the adapter assertion alone.
+ * `'0'`/`'1'`) fails on the request assertion alone.
  *
- * Page lifecycle: editor opened ONCE per file via `beforeAll`, and ONE
- * shared Widget is seeded up front. Each test mutates a *different* option
+ * Page lifecycle: editor opened ONCE per file via `beforeAll`, on the page
+ * "Widgets" (content/nodes/widgets.yml), and ONE shared Widget is added up
+ * front. Each test mutates a *different* option
  * key on that widget — the diff against the baseline is what's flushed, so
  * stale mutations from earlier tests don't pollute later assertions
  * (`getPendingValues()` only includes keys whose current value differs from
- * the baseline at the time of the flush). `lastUpdateOptions` returns the
- * recorder's most recent call; tests don't interleave, so that call is
- * always *this* test's flush.
+ * the baseline at the time of the flush). `nextOptionsUpdate` waits for the
+ * request of *this* test's flush.
  *
  * `beforeEach` re-selects the shared widget so tests that intentionally
  * change selection (flush-on-unmount, multi-select, per-block remount)
@@ -61,14 +86,20 @@ import {
  *     earlier tests) would defeat the assertions otherwise.
  */
 describe('Options — mutations', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
   let widgetUuid: string
 
   beforeAll(async () => {
-    page = await openEditor(EDITOR_PATH)
-    widgetUuid = await setupWidget(page)
+    resetSandbox(sandbox)
+    page = await openEditor(
+      sandbox,
+      'Anna Keller',
+      editorPath('/en/widgets', 'widgets'),
+    )
+    widgetUuid = await setupWidget(page, 'field_paragraphs')
   })
 
   beforeEach(async () => {
@@ -121,9 +152,10 @@ describe('Options — mutations', async () => {
     expect(
       await widgetOptionValue<string>(page, uuid, 'radiosWithLabelDescription'),
     ).toBe('one')
-    expect(await widgetOptionValue<string>(page, uuid, 'background')).toBe(
-      'white',
-    )
+    // A global option.
+    expect(
+      await widgetOptionValue<string[]>(page, uuid, 'bkVisibleLanguages'),
+    ).toEqual([])
   })
 
   test('checkbox option flips block prop AND records `0` storable; turning showAllOptions off collapses the toolbar', async () => {
@@ -164,10 +196,10 @@ describe('Options — mutations', async () => {
     expect(await blockOption(page, 'showAllOptions').count()).toBe(1)
     expect(await blockOption(page, 'buttonType').count()).toBe(0)
 
+    const stored = nextOptionsUpdate(page)
     await flushOptions(page)
-    const call = await lastUpdateOptions(page)
     // `optionValueToStorable` serialises booleans as `'1'`/`'0'`.
-    expect(call.options).toContainEqual({
+    expect(await stored).toContainEqual({
       uuid,
       key: 'showAllOptions',
       value: '0',
@@ -175,8 +207,10 @@ describe('Options — mutations', async () => {
 
     // Restore the toolbar to its full state so subsequent tests in this
     // describe (which share the same widget) can still see other options.
+    const restored = nextOptionsUpdate(page)
     await toggleCheckboxOption(page, 'showAllOptions')
     await flushOptions(page)
+    await restored
   })
 
   test('radios (default displayAs): picking another option syncs to props and records the key', async () => {
@@ -190,9 +224,9 @@ describe('Options — mutations', async () => {
       .poll(() => widgetOptionValue<string>(page, uuid, 'buttonType'))
       .toBe('secondary')
 
+    const stored = nextOptionsUpdate(page)
     await flushOptions(page)
-    const call = await lastUpdateOptions(page)
-    expect(call.options).toContainEqual({
+    expect(await stored).toContainEqual({
       uuid,
       key: 'buttonType',
       value: 'secondary',
@@ -209,9 +243,9 @@ describe('Options — mutations', async () => {
       .poll(() => widgetOptionValue<string>(page, uuid, 'columns'))
       .toBe('four')
 
+    const stored = nextOptionsUpdate(page)
     await flushOptions(page)
-    const call = await lastUpdateOptions(page)
-    expect(call.options).toContainEqual({
+    expect(await stored).toContainEqual({
       uuid,
       key: 'columns',
       value: 'four',
@@ -228,9 +262,9 @@ describe('Options — mutations', async () => {
       .poll(() => widgetOptionValue<string>(page, uuid, 'columnsGrid'))
       .toBe('twoOne')
 
+    const stored = nextOptionsUpdate(page)
     await flushOptions(page)
-    const call = await lastUpdateOptions(page)
-    expect(call.options).toContainEqual({
+    expect(await stored).toContainEqual({
       uuid,
       key: 'columnsGrid',
       value: 'twoOne',
@@ -247,9 +281,9 @@ describe('Options — mutations', async () => {
       .poll(() => widgetOptionValue<string>(page, uuid, 'color'))
       .toBe('primary')
 
+    const stored = nextOptionsUpdate(page)
     await flushOptions(page)
-    const call = await lastUpdateOptions(page)
-    expect(call.options).toContainEqual({
+    expect(await stored).toContainEqual({
       uuid,
       key: 'color',
       value: 'primary',
@@ -265,10 +299,10 @@ describe('Options — mutations', async () => {
       .poll(() => widgetOptionValue<string[]>(page, uuid, 'countries'))
       .toEqual(['ch', 'de', 'at', 'fr'])
 
+    const stored = nextOptionsUpdate(page)
     await flushOptions(page)
-    const call = await lastUpdateOptions(page)
     // checkboxes arrays are joined by `optionValueToStorable` for transport.
-    expect(call.options).toContainEqual({
+    expect(await stored).toContainEqual({
       uuid,
       key: 'countries',
       value: 'ch,de,at,fr',
@@ -284,9 +318,9 @@ describe('Options — mutations', async () => {
       .poll(() => widgetOptionValue<string>(page, uuid, 'anchorId'))
       .toBe('main')
 
+    const stored = nextOptionsUpdate(page)
     await flushOptions(page)
-    const call = await lastUpdateOptions(page)
-    expect(call.options).toContainEqual({
+    expect(await stored).toContainEqual({
       uuid,
       key: 'anchorId',
       value: 'main',
@@ -306,9 +340,9 @@ describe('Options — mutations', async () => {
       '#ff8800',
     )
 
+    const stored = nextOptionsUpdate(page)
     await flushOptions(page)
-    const call = await lastUpdateOptions(page)
-    expect(call.options).toContainEqual({
+    expect(await stored).toContainEqual({
       uuid,
       key: 'textColor',
       value: '#ff8800',
@@ -325,9 +359,9 @@ describe('Options — mutations', async () => {
       .poll(() => widgetOptionValue<number>(page, uuid, 'range'))
       .toBe(0.42)
 
+    const stored = nextOptionsUpdate(page)
     await flushOptions(page)
-    const call = await lastUpdateOptions(page)
-    expect(call.options).toContainEqual({
+    expect(await stored).toContainEqual({
       uuid,
       key: 'range',
       value: '0.42',
@@ -347,9 +381,9 @@ describe('Options — mutations', async () => {
       .poll(() => widgetOptionValue<number>(page, uuid, 'rows'))
       .toBe(6)
 
+    const stored = nextOptionsUpdate(page)
     await flushOptions(page)
-    const call = await lastUpdateOptions(page)
-    expect(call.options).toContainEqual({
+    expect(await stored).toContainEqual({
       uuid,
       key: 'rows',
       value: '6',
@@ -365,9 +399,9 @@ describe('Options — mutations', async () => {
       .poll(() => widgetOptionValue<string>(page, uuid, 'dateTimeLocal'))
       .toBe('2026-08-14T09:30')
 
+    const stored = nextOptionsUpdate(page)
     await flushOptions(page)
-    const call = await lastUpdateOptions(page)
-    expect(call.options).toContainEqual({
+    expect(await stored).toContainEqual({
       uuid,
       key: 'dateTimeLocal',
       value: '2026-08-14T09:30',
@@ -394,9 +428,9 @@ describe('Options — mutations', async () => {
       .poll(() => widgetOptionValue<number>(page, uuid, 'paddingTop'))
       .toBe(15)
 
+    const stored = nextOptionsUpdate(page)
     await flushOptions(page)
-    const call = await lastUpdateOptions(page)
-    expect(call.options).toContainEqual({
+    expect(await stored).toContainEqual({
       uuid,
       key: 'paddingTop',
       value: '15',
@@ -409,7 +443,7 @@ describe('Options — mutations', async () => {
     // current form's onBeforeUnmount → flushOptions path.
     const otherUuid = await addBlock(page, {
       bundle: 'text',
-      fieldName: 'content',
+      fieldName: 'field_paragraphs',
     })
     if (!otherUuid) {
       throw new Error('Failed to add second block')
@@ -425,10 +459,9 @@ describe('Options — mutations', async () => {
     // Switch selection — the options form unmounts and flushOptions runs in
     // onBeforeUnmount. NO explicit flushOptions(page) here — this asserts the
     // unmount-driven flush specifically.
+    const stored = nextOptionsUpdate(page)
     await selectBlock(page, otherUuid)
-
-    const call = await lastUpdateOptions(page)
-    expect(call.options).toContainEqual({
+    expect(await stored).toContainEqual({
       uuid: widgetUuid,
       key: 'anchorId',
       value: 'flush-test',
@@ -436,10 +469,10 @@ describe('Options — mutations', async () => {
   })
 
   test('multi-select: changing a shared option mutates every selected block and the payload covers every uuid', async () => {
-    const uuidA = await setupWidget(page)
+    const uuidA = await setupWidget(page, 'field_paragraphs')
     const uuidB = await addBlock(page, {
       bundle: 'widget',
-      fieldName: 'content',
+      fieldName: 'field_paragraphs',
     })
     if (!uuidB) {
       throw new Error('Failed to add second widget')
@@ -463,9 +496,11 @@ describe('Options — mutations', async () => {
       .poll(() => widgetOptionValue<string>(page, uuidB, 'buttonType'))
       .toBe('secondary')
 
+    const stored = nextOptionsUpdate(page)
     await flushOptions(page)
-    const call = await lastUpdateOptions(page)
-    const buttonTypeEntries = call.options.filter((o) => o.key === 'buttonType')
+    const buttonTypeEntries = (await stored).filter(
+      (o) => o.key === 'buttonType',
+    )
     // ONE write per selected block — regression that dropped one uuid fails here.
     expect(buttonTypeEntries).toHaveLength(2)
     const uuids = new Set(buttonTypeEntries.map((o) => o.uuid))
@@ -480,10 +515,10 @@ describe('Options — mutations', async () => {
     // Bug class: a stale OptionCollector / mutatedOptions cache survives a
     // selection change and shows block A's modified value when block B is now
     // selected (or persists nothing when switching back).
-    const uuidA = await setupWidget(page)
+    const uuidA = await setupWidget(page, 'field_paragraphs')
     const uuidB = await addBlock(page, {
       bundle: 'widget',
-      fieldName: 'content',
+      fieldName: 'field_paragraphs',
     })
     if (!uuidB) {
       throw new Error('Failed to add second widget')

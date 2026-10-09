@@ -1,0 +1,31 @@
+# Widgets, at /en/widgets and /de/widgets: the test module
+# blokkli_playground_test allows them on pages. Their values are English only
+# (a paragraph only gets translations in the languages of its own maps), so the
+# German page shows the English ones.
+key: widgets
+type: page
+title: { en: Widgets, de: Widgets }
+field_paragraphs:
+  # A title bound to an element, a text without one.
+  - type: widget
+    key: widgets-first
+    field_title: First widget
+    field_lead: The text of the first widget.
+  - type: widget
+    key: widgets-second
+    field_title: Second widget
+    field_lead: The text of the second widget.
+  # A link with a title.
+  - type: widget
+    key: widgets-link
+    field_title: Widget with a link
+    field_link: { uri: 'https://www.example.com', title: Read more about it }
+  - type: widget
+    key: widgets-other-link
+    field_title: Widget with another link
+    field_link: { uri: 'https://www.example.com', title: Read more about it }
+  # A link whose title is a field of its own: the control for the widget's.
+  - type: link
+    key: widgets-button
+    field_title: Read more
+    field_link: 'https://www.example.com'

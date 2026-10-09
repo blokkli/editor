@@ -1,7 +1,6 @@
 import type { Locator, Page } from 'playwright-core'
 import { withApp } from './session'
 import { addBlock, selectBlock } from './blocks'
-import { waitForAdapterCall } from './recorder'
 
 // Interact with a selected block's options in the block-actions toolbar
 // (the `options` feature). Each option is wrapped by
@@ -312,8 +311,8 @@ export function flushOptions(page: Page): Promise<unknown> {
 }
 
 /**
- * Read a Widget's rendered option value cell, parsed as JSON. The Widget's
- * `InContentPage` variant renders each option as `<td data-test="widget-option-<key>">{{
+ * Read a Widget's rendered option value cell, parsed as JSON. The Widget
+ * renders each option as `<td data-test="widget-option-<key>">{{
  * JSON.stringify(options.X) }}</td>` so the value can be asserted
  * locale-independently — and any reactivity break in the bind path between
  * `mutatedOptions` → block `props.options` → template surfaces here.
@@ -351,36 +350,21 @@ export function widgetTextColorAttr(
 }
 
 /**
- * Payload shape recorded by the mock adapter's `updateOptions` method —
- * one storable triple per (block uuid, option key).
- */
-export interface UpdateOptionsCall {
-  options: Array<{ uuid: string; key: string; value: string }>
-}
-
-/**
- * Wait for and return the most recent `update_options` payload recorded by
- * the mock adapter. Pair with `flushOptions(page)` to assert *what* was
- * persisted. The recorder is cumulative within a page lifetime, so each test
- * reads "the last call" — that is the assertion target (no other test
- * interleaves).
- */
-export function lastUpdateOptions(page: Page): Promise<UpdateOptionsCall> {
-  return waitForAdapterCall<UpdateOptionsCall>(page, 'update_options')
-}
-
-/**
- * Add a Widget block to the contentPage host and select it. Waits until the
- * options toolbar's form has actually rendered (`Padding` group is one of the
- * always-present elements on the Widget's `InContentPage` variant).
+ * Add a Widget block to `fieldName` of the page (the mock's `content`, or
+ * Drupal's `field_paragraphs`) and select it. Waits until the options
+ * toolbar's form has actually rendered (`Padding` group is one of the
+ * always-present elements on the Widget's options).
  *
  * Returns the new block's uuid. The Widget renders a JSON table of every
  * `options.X` value — each cell has a `data-test="widget-option-<key>"`
  * attribute, so assertions about "did the editor's edit reach the block's
  * props?" become a simple JSON read.
  */
-export async function setupWidget(page: Page): Promise<string> {
-  const uuid = await addBlock(page, { bundle: 'widget', fieldName: 'content' })
+export async function setupWidget(
+  page: Page,
+  fieldName = 'content',
+): Promise<string> {
+  const uuid = await addBlock(page, { bundle: 'widget', fieldName })
   if (!uuid) {
     throw new Error('Failed to add widget')
   }

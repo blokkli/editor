@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import { waitForEditorReady } from '../../../e2e/support/session'
 import { emitEvent } from '../../../e2e/support/events'
-import { applyDiff, editDiff } from '../../../e2e/support/diff'
+import { applyDiff, cancelDiff, editDiff } from '../../../e2e/support/diff'
 import {
   editableState,
   blockHost,
@@ -30,6 +30,17 @@ const SECOND = {
   sourceTitle: 'Second notice',
 }
 
+// Two widgets of the page "Widgets" (content/nodes/widgets.yml), English only:
+// a title bound to an element, a text (`field_lead`) without one.
+const FIRST_WIDGET = {
+  uuid: seedUuid('paragraph', 'widgets-first'),
+  sourceText: 'The text of the first widget.',
+}
+const SECOND_WIDGET = {
+  uuid: seedUuid('paragraph', 'widgets-second'),
+  sourceText: 'The text of the second widget.',
+}
+
 /**
  * Regression test for the auto-translate DOM-staleness bug.
  *
@@ -47,23 +58,25 @@ const SECOND = {
  * The translations come from the E2E sandboxes' DeepL fake, which returns
  * `[<LANG>] <source>` for each item, so no test reaches DeepL.
  *
- * Page lifecycle: one editor page shared, opened **directly in /de**: the
- * German translation of the page "Notices". Each test translates a title of
- * its own.
+ * Page lifecycle: two pages, opened in parallel and **directly in /de**: the
+ * German translations of the page "Notices" (`page`) and of the page
+ * "Widgets" (`widgetPage`), for a field without an element. Each test
+ * translates a paragraph of its own.
  */
 describe('Auto-translate', async () => {
   const sandbox = workerSandbox()
   await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
+  let widgetPage: Page
 
   /** Select the paragraph and run the auto-translate action on it. */
-  async function autoTranslate(uuid: string): Promise<void> {
+  async function autoTranslate(target: Page, uuid: string): Promise<void> {
     // Select it so AutoTranslate's `selection.uuids` filter picks it up.
-    await emitEvent(page, 'select', uuid)
+    await emitEvent(target, 'select', uuid)
 
     // The PluginItemAction renders with `data-test="plugin-item-action-<id>"`.
-    const autoTranslateButton = page.locator(
+    const autoTranslateButton = target.locator(
       '[data-test="plugin-item-action-auto-translate"]',
     )
     await autoTranslateButton.waitFor({ state: 'visible' })
@@ -71,25 +84,47 @@ describe('Auto-translate', async () => {
 
     // DiffApproval mounts once requestTranslation resolves — the toolbar's
     // Apply button is the stable readiness signal.
-    await page
+    await target
       .locator('[data-test="diff-approval-apply"]')
       .waitFor({ state: 'visible' })
   }
 
+  /**
+   * Make the unit of the element-less `field_lead` the active one: a
+   * block-level group. Fields without an element keep the order they came in,
+   * so it may already be.
+   */
+  async function activateGroupUnit(target: Page): Promise<void> {
+    const toolbar = target.locator('[data-test="diff-approval-toolbar"]')
+    if ((await toolbar.getAttribute('data-test-unit-kind')) !== 'group') {
+      await target.keyboard.press('ArrowDown')
+    }
+    await expect
+      .poll(() => toolbar.getAttribute('data-test-unit-kind'))
+      .toBe('group')
+  }
+
   beforeAll(async () => {
     resetSandbox(sandbox)
-    page = await openEditor(
-      sandbox,
-      'Anna Keller',
-      editorPath('/de/mitteilungen', 'notices'),
-    )
-    await page.waitForFunction(
-      () => window.__BLOKKLI__?.app?.state.editMode.value === 'translating',
+    ;[page, widgetPage] = await Promise.all([
+      openEditor(
+        sandbox,
+        'Anna Keller',
+        editorPath('/de/mitteilungen', 'notices'),
+      ),
+      openEditor(sandbox, 'Anna Keller', editorPath('/de/widgets', 'widgets')),
+    ])
+    await Promise.all(
+      [page, widgetPage].map((target) =>
+        target.waitForFunction(
+          () => window.__BLOKKLI__?.app?.state.editMode.value === 'translating',
+        ),
+      ),
     )
   })
 
   afterAll(async () => {
-    await page.close()
+    await Promise.all([page.close(), widgetPage.close()])
   })
 
   test('translating a title updates the editable DOM after Apply', async () => {
@@ -100,7 +135,7 @@ describe('Auto-translate', async () => {
     expect(before!.hasDiffMarkup).toBe(false)
     expect(before!.diffActive).toBe(false)
 
-    await autoTranslate(FIRST.uuid)
+    await autoTranslate(page, FIRST.uuid)
 
     // The fake returns `[DE] <source>` for each item; the title field should
     // now have its preview overlay applied.
@@ -134,7 +169,7 @@ describe('Auto-translate', async () => {
   })
 
   test('a manually edited translation is persisted instead of the suggestion', async () => {
-    await autoTranslate(SECOND.uuid)
+    await autoTranslate(page, SECOND.uuid)
 
     await editDiff(page)
     const overlay = editableOverlay(page)
@@ -182,5 +217,96 @@ describe('Auto-translate', async () => {
         )?.text.trim(),
       )
       .toBe('Hand-revised translated title')
+  })
+
+  test('every translated field gets a visible highlight', async () => {
+    const { uuid, sourceText } = FIRST_WIDGET
+    await autoTranslate(widgetPage, uuid)
+
+    // Both widget fields (title + text) are translated, so two approval units
+    // exist...
+    const items = widgetPage.locator(
+      '[data-test="diff-approval-highlight-item"]',
+    )
+    await expect.poll(() => items.count()).toBe(2)
+
+    // ...and both must be visible in the canvas. A unit whose highlight can't
+    // be placed is still counted in the toolbar, so hiding it leaves the user
+    // approving something they cannot see.
+    await expect
+      .poll(() =>
+        widgetPage
+          .locator('[data-test="diff-approval-highlight-item"]:visible')
+          .count(),
+      )
+      .toBe(2)
+
+    // The `field_lead` highlight anchors to the block element as a fallback.
+    expect(
+      await widgetPage
+        .locator(
+          '[data-test="diff-approval-highlight-item"][data-test-fallback="true"]:visible',
+        )
+        .count(),
+    ).toBe(1)
+
+    // The element-less field previews through the block's props: while the
+    // unit is accepted (the default), the widget renders the proposed
+    // translation as its real value (no diff markup is possible via a prop).
+    const block = widgetPage.locator(`[data-bk-uuid="${uuid}"]`)
+    await expect.poll(() => block.textContent()).toContain(`[DE] ${sourceText}`)
+
+    // Rejecting the unit restores the original value reactively.
+    await activateGroupUnit(widgetPage)
+    await widgetPage.keyboard.press('Space')
+    await expect
+      .poll(async () =>
+        (await block.textContent())?.includes(`[DE] ${sourceText}`),
+      )
+      .toBe(false)
+    expect(await block.textContent()).toContain(sourceText)
+
+    await cancelDiff(widgetPage)
+
+    // Cancel restores everything — the title's diff markup (DOM strategy) and
+    // the text's prop override (props strategy) are both gone.
+    await expect
+      .poll(async () => (await block.textContent())?.includes('[DE]'))
+      .toBe(false)
+  })
+
+  test('a translation for a field without an editable element can be edited', async () => {
+    const { uuid, sourceText } = SECOND_WIDGET
+    await autoTranslate(widgetPage, uuid)
+
+    // Activate the element-less `field_lead` unit and open the manual edit
+    // overlay for it.
+    await activateGroupUnit(widgetPage)
+    await editDiff(widgetPage)
+    const overlay = editableOverlay(widgetPage)
+    await overlay.waitFor({ state: 'visible' })
+
+    // Seeded with the translated suggestion.
+    await expect
+      .poll(() => plaintextEditor(widgetPage).inputValue())
+      .toBe(`[DE] ${sourceText}`)
+
+    await plaintextEditor(widgetPage).fill('Hand-revised element-less text')
+    await widgetPage.keyboard.press('Enter')
+    await overlay.waitFor({ state: 'detached' })
+
+    // The revision previews through the block's props.
+    const block = widgetPage.locator(`[data-bk-uuid="${uuid}"]`)
+    await expect
+      .poll(() => block.textContent())
+      .toContain('Hand-revised element-less text')
+
+    const translated = nextMutation(widgetPage, 'pbBulkTranslateFieldValues')
+    await applyDiff(widgetPage)
+
+    const { items } = await translated
+    expect(
+      items.find((i) => i?.uuid === uuid && i.name === 'field_lead'),
+    ).toMatchObject({ value: 'Hand-revised element-less text', langcode: 'de' })
   })
 })

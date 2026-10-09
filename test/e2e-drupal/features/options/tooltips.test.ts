@@ -1,14 +1,15 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, EDITOR_PATH } from './../../support/session'
-import { setupEditorE2E } from './../../support/setup'
 import {
   blockOption,
   bringOptionIntoView,
   openOptionGroup,
   resolveOptionText,
   setupWidget,
-} from './../../support/options'
+} from '../../../e2e/support/options'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { editorPath, openEditor } from '../../support/session'
 
 /**
  * Tooltip rendering across option types and placements.
@@ -34,20 +35,26 @@ import {
  * `locator.waitFor({ state })` for retried waits and `isVisible()` /
  * `textContent()` for snapshots.
  *
- * Page lifecycle: the editor opens ONCE per file and seeds ONE Widget up
- * front. Tooltip tests only hover/read — no test mutates option state —
+ * Page lifecycle: the editor opens ONCE per file, on the page "Widgets"
+ * (content/nodes/widgets.yml), and adds ONE Widget up front. Tooltip tests only hover/read — no test mutates option state —
  * so the shared widget is fine. Each test's `.hover()` overrides whatever
  * the previous test was hovering, so the tooltip-visibility state is per
  * test.
  */
 describe('Options — tooltips', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor(EDITOR_PATH)
-    await setupWidget(page)
+    resetSandbox(sandbox)
+    page = await openEditor(
+      sandbox,
+      'Anna Keller',
+      editorPath('/en/widgets', 'widgets'),
+    )
+    await setupWidget(page, 'field_paragraphs')
   })
 
   afterAll(async () => {

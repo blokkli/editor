@@ -360,6 +360,14 @@ describe('Something', async () => {
   skips its checks. A paragraph with plain values has no translation, even in a
   translated node (`nodes/notices.yml`); `outdated: [de]` flags a translation as
   outdated (`nodes/waste-collection.yml`).
+- **The widget** (`sandbox/frontend/app/components/Paragraph/Widget`): a
+  paragraph type for the tests only, like the playground's widget. It has an
+  option of every type, each value in a cell of its own
+  (`data-test="widget-option-<key>"`), a `field_title` bound to an element, a
+  `field_lead` that is only prop-mapped, and a `field_link` with a title
+  (`field_link.title`). Only E2E sandboxes allow it, on pages. Seeded ones are
+  on `nodes/widgets.yml`; `setupWidget(page, 'field_paragraphs')` adds one. A
+  new option type goes here first.
 
 ## Typechecking
 
