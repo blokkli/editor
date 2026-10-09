@@ -375,9 +375,11 @@ host, with ddev running: `bun run test:e2e-drupal` or
 - **Hosts** (`components/Node/*`): each wraps its fields in `BlokkliProvider`.
   The detail page (`Node/Page`) has the sidebar layout: main field, the office's
   contact, related topics (`field-list-type="related"`), and an aside with the
-  table of contents and `field_aside` (`sidebar`). The site config's fields use
-  the field list types `notice`, `service` and `quick_links`, the footer's
-  `footer`.
+  table of contents and `field_aside` (`sidebar`). The table of contents lists
+  the titles of the main field whose option "In the table of contents" is on; a
+  heading's id is its title's "Anchor" option, or else its title as a slug
+  (`anchorId()`). The site config's fields use the field list types `notice`,
+  `service` and `quick_links`, the footer's `footer`.
 - **Paragraphs** (`components/Paragraph/<Bundle>/index.vue`, found by the drupal
   module's default pattern): `defineBlokkli`, a `fragment.graphql` next to it,
   variants with `renderFor` per field list type or parent (e.g.

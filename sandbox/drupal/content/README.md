@@ -98,7 +98,9 @@ Dates are relative to the bake, in the site's timezone, so events and news don't
 go stale.
 
 **Options** are a paragraph's blökkli options. They're never translated. Maps
-are stored as JSON (the chart's `data`, the embed's `heights`). A chart keeps
+are stored as JSON (the chart's `data`, the embed's `heights`). A
+`datetime-local` option (the options schema says which) takes a date relative
+to the bake, like a date field: `'+35 days 19:30'`. A chart keeps
 its texts in the source language and translations of them: give every language
 in its `translations`, and the seed moves the source language's texts into the
 chart itself.

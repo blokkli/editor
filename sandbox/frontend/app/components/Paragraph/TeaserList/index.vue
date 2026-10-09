@@ -42,8 +42,9 @@ import type {
   ParagraphTeaserListFragment,
 } from '#graphql-operations'
 
-// The three latest news items, the next three events or the three current
-// official publications. The title replaces the source's default. The link to
+// The latest news items, the next events or the current official
+// publications, as many as its option says. The title replaces the source's
+// default. The link to
 // all of them leads to the source's overview page (pages/news.vue etc.). Cards
 // only at full width, directly on an editorial page; a list everywhere else.
 defineProps<ParagraphTeaserListFragment>()
@@ -58,9 +59,21 @@ const block = defineBlokkli({
       label: { en: 'Content', de: 'Inhalt', fr: 'Contenu' },
       default: 'news',
       options: {
-        news: { label: { en: 'News', de: 'News', fr: 'Actualités' } },
+        news: {
+          label: { en: 'News', de: 'News', fr: 'Actualités' },
+          description: {
+            en: 'The latest news.',
+            de: 'Die neusten News.',
+            fr: 'Les dernières actualités.',
+          },
+        },
         events: {
           label: { en: 'Events', de: 'Veranstaltungen', fr: 'Événements' },
+          description: {
+            en: 'The next events.',
+            de: 'Die nächsten Veranstaltungen.',
+            fr: 'Les prochains événements.',
+          },
         },
         publications: {
           label: {
@@ -68,8 +81,24 @@ const block = defineBlokkli({
             de: 'Amtliche Publikationen',
             fr: 'Publications officielles',
           },
+          description: {
+            en: 'The current official publications.',
+            de: 'Die aktuellen amtlichen Publikationen.',
+            fr: 'Les publications officielles en cours.',
+          },
         },
       },
+    },
+    count: {
+      type: 'number',
+      label: {
+        en: 'Number of items',
+        de: 'Anzahl Einträge',
+        fr: 'Nombre d’éléments',
+      },
+      default: 3,
+      min: 1,
+      max: 12,
     },
   },
   editor: {
@@ -134,7 +163,7 @@ const variables = computed(() => ({
     language: language.value,
     today,
   }),
-  limit: 3,
+  limit: options.value.count,
 }))
 
 const { data } = await useAsyncGraphqlQuery('nodeList', variables)

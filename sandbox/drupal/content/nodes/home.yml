@@ -21,6 +21,8 @@ field_paragraphs:
   - type: teaser_list
     options: { source: news }
   - type: call_to_action
+    # The assembly's date (nodes/assembly-meeting.yml).
+    options: { date: '+35 days 19:30' }
     field_tagline: { en: Politics, de: Politik, fr: Politique }
     field_title: { en: The next municipal assembly, de: Die nächste Gemeindeversammlung, fr: La prochaine Assemblée communale }
     field_lead:

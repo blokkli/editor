@@ -21,6 +21,9 @@
         >
           {{ title }}
         </h2>
+        <p v-if="date" class="font-semibold">
+          <time :datetime="options.date">{{ date }}</time>
+        </p>
         <p
           v-if="lead || isEditing"
           v-blokkli-editable:field_lead
@@ -48,13 +51,25 @@
 <script lang="ts" setup>
 import type { ParagraphCallToActionFragment } from '#graphql-operations'
 
-// A box with a tagline, a title, a text and up to four links. One link is a
-// button next to the text, several are a list (Link/InList.vue).
+// A box with a tagline, a title, a date, a text and up to four links. One link
+// is a button next to the text, several are a list (Link/InList.vue). The date
+// is an option: a time of day without a time zone, the town's.
 defineProps<ParagraphCallToActionFragment>()
 
 const block = defineBlokkli({
   bundle: 'call_to_action',
   globalOptions: ['bkVisibleLanguages'],
+  options: {
+    date: {
+      type: 'datetime-local',
+      label: { en: 'Date', de: 'Datum', fr: 'Date' },
+      description: {
+        en: 'Shown under the title, e.g. the date of an assembly.',
+        de: 'Wird unter dem Titel angezeigt, z. B. das Datum einer Versammlung.',
+        fr: 'Affichée sous le titre, p. ex. la date d’une assemblée.',
+      },
+    },
+  },
   propsFieldMapping: {
     tagline: { type: 'editable', name: 'field_tagline' },
     title: { type: 'editable', name: 'field_title' },
@@ -68,11 +83,26 @@ const block = defineBlokkli({
     editTitle: (el) => el.querySelector('h2')?.textContent,
   },
 })
-const { uuid, siblings } = block
+const { uuid, siblings, options } = block
 const spacing = useBlockSpacing(block)
 const hasContainer = useHasContainer(block)
 
 const isEditing = import.meta.blokkliEditing
+
+// Formatted as it is, whatever the browser's time zone.
+const language = useLanguage()
+const date = computed(() =>
+  options.value.date
+    ? new Intl.DateTimeFormat(LOCALES[language.value], {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'UTC',
+      }).format(new Date(`${options.value.date}Z`))
+    : '',
+)
 
 // The links prop isn't updated while editing: queryBlocks reads the box's
 // links from the editor's state then.

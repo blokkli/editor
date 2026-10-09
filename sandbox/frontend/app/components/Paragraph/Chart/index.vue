@@ -6,7 +6,12 @@
       { hidden: !hasChart && !isEditing },
     ]"
   >
-    <Chart v-if="hasChart" :data="chartData!" :dynamic-data />
+    <Chart
+      v-if="hasChart"
+      :data="chartData!"
+      :dynamic-data
+      :height="options.height"
+    />
     <p v-else class="bg-surface p-4 text-muted">
       {{ $texts('chart.empty', 'No data yet: edit the chart to add some.') }}
     </p>
@@ -33,6 +38,7 @@ const block = defineBlokkli({
       label: { en: 'Width', de: 'Breite', fr: 'Largeur' },
       default: 'content',
       displayAs: 'icons',
+      group: 'Format',
       options: {
         content: {
           label: { en: 'Content', de: 'Inhalt', fr: 'Contenu' },
@@ -43,6 +49,20 @@ const block = defineBlokkli({
           icon: 'bk_mdi_width_wide',
         },
       },
+    },
+    height: {
+      type: 'range',
+      label: { en: 'Height', de: 'Höhe', fr: 'Hauteur' },
+      description: {
+        en: 'In percent of the usual height.',
+        de: 'In Prozent der üblichen Höhe.',
+        fr: 'En pour cent de la hauteur habituelle.',
+      },
+      default: 100,
+      min: 50,
+      max: 150,
+      step: 10,
+      group: 'Format',
     },
     data: {
       type: 'json',
@@ -57,10 +77,12 @@ const block = defineBlokkli({
     // Adding one opens the chart editor; there's nothing to edit inline.
     addBehaviour: 'complex-option:data',
     disableEdit: true,
-    // Not in nested blocks and on detail pages, where it has no effect
-    // (useBlockWidth).
+    // The width not in nested blocks and on detail pages, where it has no
+    // effect (useBlockWidth).
     determineVisibleOptions: (ctx) =>
-      ctx.parentType || ctx.entity.entityBundle === 'page' ? [] : ['width'],
+      ctx.parentType || ctx.entity.entityBundle === 'page'
+        ? ['height']
+        : ['width', 'height'],
   },
 })
 const { options } = block

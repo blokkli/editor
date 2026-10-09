@@ -22,6 +22,7 @@ use Drupal\Core\Session\AccountSwitcherInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 use Drupal\paragraphs\ParagraphInterface;
+use Drupal\paragraphs_blokkli\BlokkliOptionsSchemaHelper;
 use Drupal\pathauto\PathautoGeneratorInterface;
 use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -153,6 +154,8 @@ final class Seeder {
     private readonly ContentTranslationManagerInterface $contentTranslationManager,
     #[Autowire(service: 'pathauto.generator')]
     private readonly PathautoGeneratorInterface $pathautoGenerator,
+    #[Autowire(service: 'paragraphs_blokkli.options_schema_helper')]
+    private readonly BlokkliOptionsSchemaHelper $optionsSchema,
   ) {}
 
   /**
@@ -643,9 +646,14 @@ final class Seeder {
    * Converts a paragraph's options: blökkli stores them as strings.
    */
   private function options(string $bundle, array $options, string $source, string $at): array {
+    $schema = $this->optionsSchema->getOptionsForBundle($bundle);
     foreach ($options as $name => $value) {
       if ($bundle === 'chart' && $name === 'data' && is_array($value)) {
         $value = $this->chartData($value, $source, "$at.data");
+      }
+      // A date relative to the bake, like a date field's.
+      if (($schema[$name]['type'] ?? NULL) === 'datetime-local' && is_string($value)) {
+        $value = $this->date($value, "$at.$name")?->format('Y-m-d\TH:i') ?? $value;
       }
       $options[$name] = match (TRUE) {
         is_array($value) => json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),

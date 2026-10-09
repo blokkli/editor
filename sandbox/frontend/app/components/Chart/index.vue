@@ -4,9 +4,10 @@
     class="flex flex-col gap-4"
     :class="
       isRound
-        ? '[--bk-chart-height:24rem] md:[--bk-chart-height:22rem]'
-        : '[--bk-chart-height:21rem] md:[--bk-chart-height:27rem]'
+        ? '[--bk-chart-height:calc(24rem*var(--chart-scale))] md:[--bk-chart-height:calc(22rem*var(--chart-scale))]'
+        : '[--bk-chart-height:calc(21rem*var(--chart-scale))] md:[--bk-chart-height:calc(27rem*var(--chart-scale))]'
     "
+    :style="{ '--chart-scale': (height ?? 100) / 100 }"
   >
     <figcaption v-if="title" class="text-h3 text-balance">
       {{ title }}
@@ -63,6 +64,8 @@ use([SVGRenderer, AriaComponent])
 const props = defineProps<{
   data: BlokkliChartData
   dynamicData?: ChartDataSourcePayload | null
+  /** In percent of the usual height, which depends on the chart and screen. */
+  height?: number
 }>()
 
 const language = useLanguage()

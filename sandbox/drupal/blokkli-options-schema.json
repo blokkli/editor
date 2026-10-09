@@ -93,6 +93,19 @@
       },
       "options": {},
       "type": "checkboxes"
+    },
+    "date": {
+      "description": {
+        "de": "Wird unter dem Titel angezeigt, z. B. das Datum einer Versammlung.",
+        "en": "Shown under the title, e.g. the date of an assembly.",
+        "fr": "Affichée sous le titre, p. ex. la date d’une assemblée."
+      },
+      "label": {
+        "de": "Datum",
+        "en": "Date",
+        "fr": "Date"
+      },
+      "type": "datetime-local"
     }
   },
   "chart": {
@@ -121,9 +134,28 @@
       },
       "type": "json"
     },
+    "height": {
+      "default": 100,
+      "description": {
+        "de": "In Prozent der üblichen Höhe.",
+        "en": "In percent of the usual height.",
+        "fr": "En pour cent de la hauteur habituelle."
+      },
+      "group": "Format",
+      "label": {
+        "de": "Höhe",
+        "en": "Height",
+        "fr": "Hauteur"
+      },
+      "max": 150,
+      "min": 50,
+      "step": 10,
+      "type": "range"
+    },
     "width": {
       "default": "content",
       "displayAs": "icons",
+      "group": "Format",
       "label": {
         "de": "Breite",
         "en": "Width",
@@ -713,6 +745,17 @@
       "options": {},
       "type": "checkboxes"
     },
+    "count": {
+      "default": 3,
+      "label": {
+        "de": "Anzahl Einträge",
+        "en": "Number of items",
+        "fr": "Nombre d’éléments"
+      },
+      "max": 12,
+      "min": 1,
+      "type": "number"
+    },
     "source": {
       "default": "news",
       "label": {
@@ -722,6 +765,11 @@
       },
       "options": {
         "events": {
+          "description": {
+            "de": "Die nächsten Veranstaltungen.",
+            "en": "The next events.",
+            "fr": "Les prochains événements."
+          },
           "label": {
             "de": "Veranstaltungen",
             "en": "Events",
@@ -729,6 +777,11 @@
           }
         },
         "news": {
+          "description": {
+            "de": "Die neusten News.",
+            "en": "The latest news.",
+            "fr": "Les dernières actualités."
+          },
           "label": {
             "de": "News",
             "en": "News",
@@ -736,6 +789,11 @@
           }
         },
         "publications": {
+          "description": {
+            "de": "Die aktuellen amtlichen Publikationen.",
+            "en": "The current official publications.",
+            "fr": "Les publications officielles en cours."
+          },
           "label": {
             "de": "Amtliche Publikationen",
             "en": "Official publications",
@@ -816,6 +874,26 @@
     }
   },
   "title": {
+    "anchor": {
+      "default": "",
+      "description": {
+        "de": "Die ID in Links zu diesem Titel, in allen Sprachen gleich. Ohne sie verwenden Links den Titel.",
+        "en": "The ID in links to this heading, the same in every language. Without it, links use the title.",
+        "fr": "L’ID dans les liens vers ce titre, le même dans toutes les langues. Sans lui, les liens utilisent le titre."
+      },
+      "group": "Navigation",
+      "label": {
+        "de": "Anker",
+        "en": "Anchor",
+        "fr": "Ancre"
+      },
+      "placeholder": {
+        "de": "kontakt",
+        "en": "contact",
+        "fr": "contact"
+      },
+      "type": "text"
+    },
     "bkVisibleLanguages": {
       "default": [],
       "description": {
@@ -830,6 +908,16 @@
       },
       "options": {},
       "type": "checkboxes"
+    },
+    "toc": {
+      "default": true,
+      "group": "Navigation",
+      "label": {
+        "de": "Im Inhaltsverzeichnis",
+        "en": "In the table of contents",
+        "fr": "Dans la table des matières"
+      },
+      "type": "checkbox"
     }
   },
   "video": {
