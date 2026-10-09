@@ -227,10 +227,10 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 
 ### Translations, comments, publishing
 
-- [ ] `translations/auto-translate`: with changes. A node with a translated
-      title, opened at `/de`; seeded EN-only titles (adding while translating is
-      unverified); the DeepL fake; `pbBulkTranslateFieldValues` and a reload.
-      Tests 3–4 on the widget (a bound field and a props-mapped one).
+- [ ] `translations/auto-translate`: splits. Tests 1–2 done, on the English-only
+      titles of `/de/mitteilungen` (`nodes/notices.yml`, one per test); the
+      DeepL fake; `pbBulkTranslateFieldValues` and a reload. Tests 3–4 stay in
+      the mock suite until the widget (a bound field and a props-mapped one).
 - [x] `translations/banner-and-switcher`: done. The switcher on
       `nodes/translated.yml`; the banner on `/de/kehrichtabfuhr`
       (`nodes/waste-collection.yml`, `outdated: [de]`),
@@ -266,13 +266,14 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       `nodes/announcement.yml` (the scheduler, pinned to 15 June next year in
       UTC; the scheduled badge after a reload); `pbPublish`, `pbSchedule`,
       `pbSetParagraphSchedule`.
-- [ ] `publish/violations`: splits. Clicking a violation moves (with
-      `broken.yml`); two violations from an empty paragraph maybe with an empty
-      `embed` (two required fields, unverified); the plain error by faking the
-      `pbPublish` response (`page.route`).
-- [ ] `block-scheduler/base`: with changes. Banner, link, section, step and text
-      have scheduling; `pbSetParagraphSchedule`; a future pinned clock.
-      Unpublish-only on a `call_to_action`.
+- [x] `publish/violations`: done, on `nodes/faulty.yml` (its two stored
+      violations; the publish validation reports them too); the plain error by
+      faking the `pbPublish` response (`page.route`, matched by pathname);
+      `revertAllChanges` between tests.
+- [ ] `block-scheduler/base`: splits. Four of five done, on the blocks page: a
+      title for "neither", texts for both sections; `pbSetParagraphSchedule`;
+      the clock pinned to 15 June next year. The unpublish-only test stays in
+      the mock suite until a `call_to_action` can only be unpublished.
 - [x] `changelog/base`: done.
 - [x] `exit/base`: done.
 - [x] `entity-title/base`: done. `nodes/draft.yml` (unpublished), the blocks
