@@ -278,19 +278,20 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       item to the middle: the sandbox's rail scrolls, and its actions cover its
       bottom.
 - [x] `AppMenu`: done, test 3 on `nodes/translated.yml`.
-- [ ] `diff-approval-chunks`: `.test`. Two keyed texts with the `before` markup,
-      `update_text_fields` with `after`. Unverified: the segment rectangles and
-      the exact stored value with Drupal's markup.
-- [ ] `diff-approval-edit`: `.test`. `update_text_fields` on the node's
-      `field_lead`; the chunk test with a text.
+- [x] `diff-approval-chunks`: done, on `/en/empty`: an added text, seeded with
+      the `before` markup by `applyChunkFieldDiff`. The five segment rectangles
+      and the exact stored value hold with Drupal.
+- [x] `diff-approval-edit`: done, on `nodes/reading.yml`: its `field_lead`
+      (`pbUpdateHostEntityFieldValue`), an added text for the chunk test.
 - [ ] `diff-approval-grouping`: `.test`, splits. Tests 3 and 5 with a teaser
       (title and lead, neither bound to an element), test 4 with
       `<p>Alpha</p><p>Beta</p>`; tests 1–2 on the widget.
-- [ ] `diff-approval-keyboard`: `.test`. Updates in reverse order: a title's
-      `field_title`, the node's `field_lead`, its title.
-- [ ] `diff-approval-restore`: `.test`. Applying now saves; test 3 through
-      `pbUpdateHostEntityFieldValue`. The `<BlokkliEditable>` comparison is lost
-      (the sandbox only uses the directive).
+- [x] `diff-approval-keyboard`: done, on `nodes/reading.yml`: the node's title
+      and `field_lead`, its title paragraph's `field_title` (asserted: three
+      items, or the reverse order proves nothing).
+- [x] `diff-approval-restore`: done, on `nodes/reading.yml`; tests 3 and 4 wait
+      for `pbUpdateHostEntityFieldValue`. The `<BlokkliEditable>` comparison is
+      lost (the sandbox only uses the directive).
 - [x] `drag-start`: done, on the title and the first text of `nodes/blocks.yml`.
 - [ ] `Sidebar`: with changes. The localStorage option for
       `blokkli:sidebar:active:right`; a DE translation for test 3.

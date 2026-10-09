@@ -1,9 +1,10 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page, Locator } from 'playwright-core'
-import { openEditor } from './support/session'
-import { runDiffApproval, cancelDiff } from './support/diff'
-import { openSidebar } from './support/sidebar'
-import { setupEditorE2E } from './support/setup'
+import { runDiffApproval, cancelDiff } from '../e2e/support/diff'
+import { openSidebar } from '../e2e/support/sidebar'
+import { resetSandbox, sandboxHost, workerSandbox } from './support/sandbox'
+import { editorPath, openEditor } from './support/session'
 
 /**
  * Regression test for the DiffApproval keyboard-sync bug between the toolbar
@@ -17,10 +18,13 @@ import { setupEditorE2E } from './support/setup'
  *
  * The scenario passes items in reverse visual order (`reverseOrder: true`) so
  * the two arrays differ; without that, both indices would resolve to the same
- * item and the bug would be invisible.
+ * item and the bug would be invisible. On the page "Reading"
+ * (content/nodes/reading.yml), its items are the node's title and
+ * `field_lead`, and its title paragraph's `field_title`.
  */
 describe('DiffApproval keyboard sync', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
@@ -46,9 +50,14 @@ describe('DiffApproval keyboard sync', async () => {
   }
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(
+      sandbox,
+      'Anna Keller',
+      editorPath('/en/reading', 'reading'),
+    )
     // The `runDiffApproval` test-cases API only registers once its sidebar pane
-    // mounts (see `playground/blokkli/features/test-cases/index.vue`).
+    // mounts (see `sandbox/frontend/blokkli/features/test-cases/index.vue`).
     await openSidebar(page, 'test-cases')
   })
 
@@ -60,6 +69,13 @@ describe('DiffApproval keyboard sync', async () => {
     const done = runDiffApproval(page, { reverseOrder: true })
     await toolbar().waitFor()
     await activeHighlight().waitFor()
+    // Reversing only matters with several items: the node's title and lead,
+    // and the title paragraph's title.
+    await expect
+      .poll(() =>
+        page.locator('[data-test="diff-approval-highlight-item"]').count(),
+      )
+      .toBe(3)
 
     // Initial state: all items start accepted, so both surfaces agree on `true`.
     const initial = await readSelected()

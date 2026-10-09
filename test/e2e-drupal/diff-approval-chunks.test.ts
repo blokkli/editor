@@ -1,29 +1,39 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page, Locator } from 'playwright-core'
-import { openEditor } from './support/session'
-import { addBlock } from './support/blocks'
-import { applyChunkFieldDiff, applyDiff, cancelDiff } from './support/diff'
-import { openSidebar } from './support/sidebar'
-import { setupEditorE2E } from './support/setup'
-import { editableState, blockHost, storedFieldValue } from './support/editable'
+import { addBlock } from '../e2e/support/blocks'
+import { applyChunkFieldDiff, applyDiff, cancelDiff } from '../e2e/support/diff'
+import { openSidebar } from '../e2e/support/sidebar'
+import {
+  editableState,
+  blockHost,
+  storedFieldValue,
+} from '../e2e/support/editable'
+import { nextMutation } from './support/mutations'
+import { resetSandbox, sandboxHost, workerSandbox } from './support/sandbox'
+import { editorPath, openEditor } from './support/session'
+
+/** A text, added to the page's paragraphs field. */
+const TEXT = { bundle: 'text', fieldName: 'field_paragraphs' }
 
 /**
  * Chunk-level DiffApproval: a rewrite on a markup field that contains multiple
  * top-level blocks (and a `<ul>`) should be reviewable chunk-by-chunk.
  *
- * Each test adds its own `text` block so per-test state doesn't bleed. The
- * playground's `text` field is a `markup` (frame) field; `applyChunkFieldDiff`
- * seeds it with the test's `before` value before opening the DiffApproval, so
- * the segment count is deterministic.
+ * Each test adds its own `text` paragraph on the page "Empty" so per-test
+ * state doesn't bleed. Its `field_text` is a `frame` field;
+ * `applyChunkFieldDiff` seeds it with the test's `before` value (stored in
+ * Drupal) before opening the DiffApproval, so the segment count is
+ * deterministic.
  *
- * Verification is against the editable's rendered text after apply. The mock
- * decorates block elements on read, so the rendered markup carries filter
- * artifacts and only its plain text is meaningful here — the STORED value is
- * asserted separately via `storedFieldValue`, which is what a partial accept
- * actually writes back.
+ * Verification is against the editable's rendered text after apply. Drupal
+ * renders the value through its text format, so only the rendered plain text
+ * is meaningful here — the STORED value is asserted separately via
+ * `storedFieldValue`, which is what a partial accept actually writes back.
  */
 describe('DiffApproval chunk-level approval', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
@@ -49,7 +59,12 @@ describe('DiffApproval chunk-level approval', async () => {
   }
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(
+      sandbox,
+      'Anna Keller',
+      editorPath('/en/empty', 'empty'),
+    )
     await openSidebar(page, 'test-cases')
   })
 
@@ -58,7 +73,7 @@ describe('DiffApproval chunk-level approval', async () => {
   })
 
   test('shows one rectangle per atomic chunk for a markup rewrite', async () => {
-    const uuid = (await addBlock(page, { bundle: 'text' }))!
+    const uuid = (await addBlock(page, TEXT))!
     const host = await blockHost(page, uuid)
 
     const before =
@@ -67,7 +82,7 @@ describe('DiffApproval chunk-level approval', async () => {
       '<p>New intro</p><ul><li>Bullet A new</li><li>Bullet B new</li><li>Bullet C new</li></ul><p>New outro</p>'
 
     const done = applyChunkFieldDiff(page, {
-      fieldName: 'text',
+      fieldName: 'field_text',
       uuid,
       before,
       after,
@@ -85,13 +100,13 @@ describe('DiffApproval chunk-level approval', async () => {
     await cancelDiff(page)
     const { applied } = await done
     expect(applied).toBe(false)
-    expect((await editableState(page, 'text', host))?.text).toContain(
+    expect((await editableState(page, 'field_text', host))?.text).toContain(
       'Bullet A',
     )
   })
 
   test('rejecting one <li> persists the hybrid: original bullet, new everything else', async () => {
-    const uuid = (await addBlock(page, { bundle: 'text' }))!
+    const uuid = (await addBlock(page, TEXT))!
     const host = await blockHost(page, uuid)
 
     const before =
@@ -100,7 +115,7 @@ describe('DiffApproval chunk-level approval', async () => {
       '<p>New intro</p><ul><li>Bullet A new</li><li>Bullet B new</li><li>Bullet C new</li></ul><p>New outro</p>'
 
     const done = applyChunkFieldDiff(page, {
-      fieldName: 'text',
+      fieldName: 'field_text',
       uuid,
       before,
       after,
@@ -113,12 +128,18 @@ describe('DiffApproval chunk-level approval', async () => {
     // <ul>, child 1 is the second <li>).
     await rejectSegment('1/1')
 
+    const stored = nextMutation(page, 'pbUpdateFieldValue')
     await applyDiff(page)
     const { applied } = await done
     expect(applied).toBe(true)
+    await stored
 
     // After apply: New intro, new A, ORIGINAL B, new C, new outro.
-    const textAfter = (await editableState(page, 'text', host))?.text ?? ''
+    await expect
+      .poll(async () => (await editableState(page, 'field_text', host))?.text)
+      .toContain('New intro')
+    const textAfter =
+      (await editableState(page, 'field_text', host))?.text ?? ''
     expect(textAfter).toContain('New intro')
     expect(textAfter).toContain('Bullet A new')
     expect(textAfter).toContain('Bullet B') // original kept
@@ -129,8 +150,8 @@ describe('DiffApproval chunk-level approval', async () => {
     // The rendered check above cannot see what was actually persisted. A
     // partial accept is the one path that still reassembles the field from
     // parsed DOM, so assert the STORED markup exactly: the rejected <li> keeps
-    // its original text and nothing picked up the mock's render-time markers.
-    expect(await storedFieldValue(page, uuid, 'text')).toBe(
+    // its original text and nothing picked up Drupal's rendered markup.
+    expect(await storedFieldValue(page, uuid, 'field_text')).toBe(
       '<p>New intro</p><ul><li>Bullet A new</li><li>Bullet B</li><li>Bullet C new</li></ul><p>New outro</p>',
     )
   })

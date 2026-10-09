@@ -1,7 +1,8 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, getHostContext } from './support/session'
-import { addBlock } from './support/blocks'
+import { getHostContext } from '../e2e/support/session'
+import { addBlock } from '../e2e/support/blocks'
 import {
   editableState,
   editableText,
@@ -13,7 +14,7 @@ import {
   saveByClickAway,
   discardEditable,
   blockHost,
-} from './support/editable'
+} from '../e2e/support/editable'
 import {
   applyFieldDiff,
   applyChunkFieldDiff,
@@ -21,11 +22,13 @@ import {
   applyDiff,
   editDiff,
   editDiffFromHighlight,
-} from './support/diff'
-import { undo } from './support/toolbar'
-import { openSidebar } from './support/sidebar'
-import { setupEditorE2E } from './support/setup'
+} from '../e2e/support/diff'
+import { undo } from '../e2e/support/toolbar'
+import { openSidebar } from '../e2e/support/sidebar'
 import type { EntityContext } from '../../src/runtime/types'
+import { nextMutation } from './support/mutations'
+import { resetSandbox, sandboxHost, workerSandbox } from './support/sandbox'
+import { editorPath, openEditor } from './support/session'
 
 /**
  * E2E for the DiffApproval "Edit" action: manually revising a suggested value
@@ -41,17 +44,25 @@ import type { EntityContext } from '../../src/runtime/types'
  *    and saving collapses the item to a single whole-field unit.
  *
  * Page lifecycle: one editor page with the `test-cases` sidebar open (the
- * imperative `.test` API registers when its pane mounts). Each test reads its
- * own preconditions fresh; the frame test adds its own text block.
+ * imperative `.test` API registers when its pane mounts), on the page
+ * "Reading" (content/nodes/reading.yml): its `field_lead` is the plain field.
+ * Each test reads its own preconditions fresh; the frame test adds its own
+ * text.
  */
 describe('DiffApproval manual edit', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
   let host: EntityContext
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(
+      sandbox,
+      'Anna Keller',
+      editorPath('/en/reading', 'reading'),
+    )
     host = await getHostContext(page)
     await openSidebar(page, 'test-cases')
   })
@@ -61,11 +72,11 @@ describe('DiffApproval manual edit', async () => {
   })
 
   test('editing a plain suggestion revises the diff and applies the revision', async () => {
-    const original = await editableText(page, 'lead', host)
+    const original = await editableText(page, 'field_lead', host)
     const proposed = original + ' PROPOSED'
     const revised = original + ' REVISED'
 
-    const done = applyFieldDiff(page, 'lead', proposed)
+    const done = applyFieldDiff(page, 'field_lead', proposed)
     await page
       .locator('[data-test="diff-approval-apply"]')
       .waitFor({ state: 'visible' })
@@ -85,29 +96,34 @@ describe('DiffApproval manual edit', async () => {
     // original field value.
     await expect
       .poll(
-        async () => (await editableState(page, 'lead', host))?.hasDiffMarkup,
+        async () =>
+          (await editableState(page, 'field_lead', host))?.hasDiffMarkup,
       )
       .toBe(true)
-    const state = await editableState(page, 'lead', host)
+    const state = await editableState(page, 'field_lead', host)
     expect(state?.diffActive).toBe(true)
     expect(state?.html).toContain('REVISED')
 
+    const stored = nextMutation(page, 'pbUpdateHostEntityFieldValue')
     await applyDiff(page)
     const { applied } = await done
     expect(applied).toBe(true)
+    expect((await stored).value).toBe(revised)
 
-    await waitForEditableText(page, 'lead', host, revised)
+    await waitForEditableText(page, 'field_lead', host, revised)
     expect(await page.locator('[data-bk-diff-active]').count()).toBe(0)
 
+    const undone = nextMutation(page, 'pbSetHistoryIndex')
     await undo(page)
-    await waitForEditableText(page, 'lead', host, original)
+    await undone
+    await waitForEditableText(page, 'field_lead', host, original)
   })
 
   test('discarding an edit keeps the original suggestion', async () => {
-    const original = await editableText(page, 'lead', host)
+    const original = await editableText(page, 'field_lead', host)
     const proposed = original + ' PROPOSED'
 
-    const done = applyFieldDiff(page, 'lead', proposed)
+    const done = applyFieldDiff(page, 'field_lead', proposed)
     await page
       .locator('[data-test="diff-approval-apply"]')
       .waitFor({ state: 'visible' })
@@ -123,10 +139,11 @@ describe('DiffApproval manual edit', async () => {
     // The diff still previews the unmodified proposal.
     await expect
       .poll(
-        async () => (await editableState(page, 'lead', host))?.hasDiffMarkup,
+        async () =>
+          (await editableState(page, 'field_lead', host))?.hasDiffMarkup,
       )
       .toBe(true)
-    const state = await editableState(page, 'lead', host)
+    const state = await editableState(page, 'field_lead', host)
     expect(state?.html).toContain('PROPOSED')
     expect(state?.html).not.toContain('thrown away')
 
@@ -134,12 +151,15 @@ describe('DiffApproval manual edit', async () => {
     const { applied } = await done
     expect(applied).toBe(false)
 
-    await waitForEditableText(page, 'lead', host, original)
+    await waitForEditableText(page, 'field_lead', host, original)
     expect(await page.locator('[data-bk-diff-active]').count()).toBe(0)
   })
 
   test('editing a segmented frame field seeds the merged state and collapses to one unit', async () => {
-    const uuid = (await addBlock(page, { bundle: 'text' }))!
+    const uuid = (await addBlock(page, {
+      bundle: 'text',
+      fieldName: 'field_paragraphs',
+    }))!
     const textHost = await blockHost(page, uuid)
 
     const before =
@@ -148,7 +168,7 @@ describe('DiffApproval manual edit', async () => {
       '<p>First paragraph rewritten.</p><p>Second paragraph stays.</p><p>Third paragraph rewritten.</p>'
 
     const done = applyChunkFieldDiff(page, {
-      fieldName: 'text',
+      fieldName: 'field_text',
       uuid,
       before,
       after,
@@ -167,8 +187,8 @@ describe('DiffApproval manual edit', async () => {
     await editDiff(page)
 
     // The frame editor mounts and receives the merged seed: rejected chunk →
-    // original text, accepted chunk → proposed text. The playground form echoes
-    // the pushed value, so the live preview shows the seed in the block.
+    // original text, accepted chunk → proposed text. Drupal's form echoes the
+    // pushed value, so the live preview shows the seed in the block.
     await editableFrame(page)
     await page.waitForFunction(
       ({ fieldName, host }) => {
@@ -182,7 +202,7 @@ describe('DiffApproval manual edit', async () => {
           text.includes('Third paragraph rewritten.')
         )
       },
-      { fieldName: 'text', host: textHost },
+      { fieldName: 'field_text', host: textHost },
     )
 
     await setFrameValue(page, '<p>Completely revised by hand.</p>')
@@ -196,7 +216,7 @@ describe('DiffApproval manual edit', async () => {
         )
         return !!el?.textContent?.includes('Completely revised by hand.')
       },
-      { fieldName: 'text', host: textHost },
+      { fieldName: 'field_text', host: textHost },
     )
     await saveByClickAway(page)
     await editableOverlay(page).waitFor({ state: 'detached' })
@@ -219,12 +239,16 @@ describe('DiffApproval manual edit', async () => {
         .getAttribute('data-test-unit-kind'),
     ).toBe('whole')
 
+    const stored = nextMutation(page, 'pbUpdateFieldValue')
     await applyDiff(page)
     const { applied } = await done
     expect(applied).toBe(true)
+    expect((await stored).value).toContain('Completely revised by hand.')
 
     await expect
-      .poll(async () => (await editableState(page, 'text', textHost))?.text)
+      .poll(
+        async () => (await editableState(page, 'field_text', textHost))?.text,
+      )
       .toContain('Completely revised by hand.')
     expect(await page.locator('[data-bk-diff-active]').count()).toBe(0)
   })
