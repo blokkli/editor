@@ -173,8 +173,9 @@ Traefik sends every hostname to the web container's nginx on port 80.
 - Drush `blokkli-playground:seed [--source] [--content]` (refuses when nodes
   exist; rebuilds node access at the end) and
   `blokkli-playground:template <dir>` (image derivatives, router, a GraphQL
-  warm-up, then `VACUUM INTO
-  <dir>/db.sqlite`).
+  warm-up, then `VACUUM INTO <dir>/db.sqlite`, switched to WAL mode: otherwise
+  the first parallel requests to a fresh copy race to switch it, and the losers
+  fail with "database is locked").
 - The access policy above; class-based hooks (`src/Hook`): previews of
   unpublished entities, menu access, an event's `unpublish_on` from its date.
 - Editor plugins: conversions (link → text, text ↔ title) and the transform

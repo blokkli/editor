@@ -13,6 +13,8 @@ import { ROOT, TEMPLATE } from './support/sandbox'
 const SOURCES = [
   'sandbox/drupal/config/sync',
   'sandbox/drupal/web/modules/custom/blokkli_playground/src/Seed',
+  // The template command (blokkli-playground:template).
+  'sandbox/drupal/web/modules/custom/blokkli_playground/src/Drush',
   // The container is baked too, with the test modules' service changes.
   'sandbox/drupal/paragraphs_blokkli/modules/paragraphs_blokkli_deepl/tests/modules',
   'test/e2e-drupal/content',

@@ -121,6 +121,15 @@ final class SeedCommands extends DrushCommands {
       unlink($target);
     }
     $this->database->query('VACUUM INTO :target', [':target' => $target]);
+    // VACUUM INTO writes a database in rollback journal mode. Each connection
+    // switches it to WAL (an init command of Drupal's SQLite driver), which
+    // needs an exclusive lock: the first requests to a fresh copy race for it,
+    // and the losers fail with "database is locked". A database in WAL mode
+    // already makes that a no-op. The mode is stored in the file, and closing
+    // the connection checkpoints the log, so the file still copies on its own.
+    $copy = new \PDO('sqlite:' . $target);
+    $copy->exec('PRAGMA journal_mode=WAL');
+    unset($copy);
     $this->logger()->success(sprintf('Wrote %s (%.1f MB, %d image style derivatives).', $target, filesize($target) / 1e6, $derivatives));
   }
 
