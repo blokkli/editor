@@ -3,13 +3,8 @@ import type { Page } from 'playwright-core'
 import { openEditor, withApp } from './../../support/session'
 import { setupEditorE2E } from './../../support/setup'
 import { blockCount, blockState } from './../../support/blocks'
-import { topLevelBlockUuids } from './../../support/selection'
 import { emitEvent } from './../../support/events'
-import {
-  pasteText,
-  draggedBundles,
-  dropDragInto,
-} from './../../support/clipboard'
+import { pasteText, dropDragInto } from './../../support/clipboard'
 import {
   bundleSelector,
   bundleSelectorItemIds,
@@ -28,15 +23,18 @@ import {
  * pointer drag is covered by `add-block-drag.test.ts`, and the WebGL hit-test
  * can't be driven deterministically). See `support/clipboard.ts`.
  *
- * The playground mock maps `plaintext → ['text','title']` (→ selector),
- * `video → 'video'` (→ no selector), and stores the pasted string as the new
- * block's field value — so assertions are locale-independent (bundle
- * machine-names, stored values, document order; never translated labels). Only
- * one paste per test: a second is swallowed by `onPaste`'s in-drag guard.
+ * The playground mock maps `plaintext → ['text','title']` (→ selector) and
+ * stores the pasted string as the new block's field value — so assertions are
+ * locale-independent (bundle machine-names, stored values; never translated
+ * labels). Only one paste per test: a second is swallowed by `onPaste`'s
+ * in-drag guard.
+ *
+ * Drupal maps plain text to one paragraph type, so the selector cases stay
+ * with the mock; the rest runs against Drupal
+ * (`test/e2e-drupal/features/clipboard/paste`).
  */
 
 const MARKER = 'UNIQUE_PASTE_MARKER_123'
-const YOUTUBE_URL = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
 
 /**
  * Page lifecycle: one editor page shared. Each test pastes once (the file's
@@ -46,8 +44,7 @@ const YOUTUBE_URL = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
  * (which the `ArtboardTooltip` listens for via `keyPressed`) and emits
  * `dragging:end` defensively. Each test takes a local `before` snapshot and
  * finds the newly-added block via uuid-diff rather than `selectedUuids[0]`
- * (a prior test's block can still be selected — see the same trap in
- * `native-drop.test.ts`).
+ * (a prior test's block can still be selected).
  */
 describe('The clipboard feature', async () => {
   await setupEditorE2E()
@@ -88,25 +85,6 @@ describe('The clipboard feature', async () => {
     expect(await blockCount(page)).toBe(before)
   })
 
-  test('picking "text" adds a text block carrying the pasted content', async () => {
-    await pasteText(page, MARKER)
-    const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
-    await dropDragInto(page)
-    await bundleSelector(page).waitFor({ state: 'visible' })
-
-    await pickBundle(page, 'text')
-
-    await expect.poll(() => blockCount(page)).toBe(uuidsBefore.length + 1)
-    const newUuid = (
-      await withApp(page, (app) => app.state.getAllUuids())
-    ).find((uuid) => !uuidsBefore.includes(uuid))!
-    const info = await blockState(page, newUuid)
-    expect(info.bundle).toBe('text')
-    expect(info.props?.text).toBe(MARKER)
-    // The selector closes once a bundle is chosen.
-    await expect.poll(() => bundleSelector(page).count()).toBe(0)
-  })
-
   test('picking "title" instead creates a title block', async () => {
     await pasteText(page, MARKER)
     const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
@@ -123,41 +101,5 @@ describe('The clipboard feature', async () => {
     // The chosen bundle drives which block type is created.
     expect(info.bundle).toBe('title')
     expect(info.props?.title).toBe(MARKER)
-  })
-
-  test('pasting a YouTube URL adds a video block directly (no selector)', async () => {
-    await pasteText(page, YOUTUBE_URL)
-
-    // The URL was detected as a video, so a single bundle resolves — no choice.
-    expect(await draggedBundles(page)).toEqual(['video'])
-
-    const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
-    await dropDragInto(page)
-
-    await expect.poll(() => blockCount(page)).toBe(uuidsBefore.length + 1)
-    expect(await bundleSelector(page).count()).toBe(0)
-    const newUuid = (
-      await withApp(page, (app) => app.state.getAllUuids())
-    ).find((uuid) => !uuidsBefore.includes(uuid))!
-    expect((await blockState(page, newUuid)).bundle).toBe('video')
-  })
-
-  test('the drop inserts the block at the chosen position', async () => {
-    const topBefore = await topLevelBlockUuids(page)
-    const first = topBefore[0]!
-
-    await pasteText(page, MARKER)
-    const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
-    await dropDragInto(page, { preceedingUuid: first })
-    await bundleSelector(page).waitFor({ state: 'visible' })
-    await pickBundle(page, 'text')
-    await expect.poll(() => blockCount(page)).toBe(uuidsBefore.length + 1)
-
-    // Dropping after `first` places the new block immediately after it.
-    const newUuid = (
-      await withApp(page, (app) => app.state.getAllUuids())
-    ).find((uuid) => !uuidsBefore.includes(uuid))!
-    const topAfter = await topLevelBlockUuids(page)
-    expect(topAfter[topAfter.indexOf(first) + 1]).toBe(newUuid)
   })
 })

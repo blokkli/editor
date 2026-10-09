@@ -178,10 +178,9 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       `filter_html`. It's what the mock's processing imitates.
 - [x] The seed: `deleted: true` on users and nodes, deleted after seeding (a
       comment by a deleted author, a notification whose page is gone): done.
-- [ ] A fake for YouTube and Vimeo: a test module
-      (`blokkli_playground/tests/modules/`) with an HTTP client middleware for
-      the oEmbed providers list, the video data and the thumbnail. Installed by
-      `bake-e2e`, and in the global setup's fingerprint.
+- [x] A fake for YouTube and Vimeo: done. `VideoFake`, an HTTP client middleware
+      in `blokkli_playground_test`, answers the oEmbed providers list (without
+      discovery), the video data and the thumbnail.
 
 ### Agent (`features/agent/`)
 
@@ -357,11 +356,11 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 ### Clipboard, add list, history and the block actions
 
 - [x] `clipboard/copy-paste`: done.
-- [ ] `clipboard/paste`: splits. Drupal turns plain text into a `text` only (no
-      bundle selector): test 2 becomes "adds a text", test 5 skips the selector.
-      Tests 1 and 3 stay, test 4 with the YouTube fake.
-- [ ] `clipboard/native-drop`: test 1 (its bundles become `['text']`), test 2
-      with the YouTube fake.
+- [x] `clipboard/paste`: done. Tests 2, 4 and 5, on the blocks page: plain text
+      adds a text (no selector), a YouTube URL a video (`pbAddVideoRemote`, the
+      fake's media name). Tests 1 and 3 stay in the mock suite.
+- [x] `clipboard/native-drop`: done, on the blocks page: its bundles are
+      `['text']`; the YouTube URL with the video fake.
 - [x] `add-list/actions`: done, on the front page.
 - [x] `add-list/base`: done, on the front page; the seeded `home-columns`
       instead of a new grid. With it selected, the fragment action is disabled.
