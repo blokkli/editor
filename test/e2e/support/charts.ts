@@ -30,7 +30,7 @@ export async function openChartEditor(page: Page, uuid: string): Promise<void> {
   await chartSeriesColor(page, 0).waitFor({ state: 'visible' })
 }
 
-/** Close the chart editor and wait for the value to be saved. */
+/** Close the chart editor, which saves the chart (see `closeComplexOption`). */
 export function closeChartEditor(page: Page): Promise<void> {
   return closeComplexOption(page, CHART_DATA_TYPE)
 }

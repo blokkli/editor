@@ -1,7 +1,6 @@
 import type { Locator, Page } from 'playwright-core'
 import { emitEvent } from './events'
 import { closeNestedEditor, nestedEditorOverlay } from './overlays'
-import { clearAdapterCalls, waitForAdapterCall } from './recorder'
 
 // Helpers for the complex-options feature — the editor overlay used to edit
 // structured option values (e.g. charts) registered via
@@ -26,15 +25,13 @@ export function openComplexOption(
 }
 
 /**
- * Close the complex-option editor and wait for the value to be persisted.
- * Closing always saves through `updateOptions`, so this also awaits the
- * recorded `update_options` adapter call (open the editor with `?testing=true`).
+ * Close the complex-option editor. Closing always saves through
+ * `updateOptions`: wait for the backend's mutation in the spec (in the Drupal
+ * suite, `nextMutation(page, 'pbUpdateParagraphOption')`).
  */
-export async function closeComplexOption(
+export function closeComplexOption(
   page: Page,
   dataType: string,
 ): Promise<void> {
-  await clearAdapterCalls(page)
-  await closeNestedEditor(page, `complex-option-${dataType}`)
-  await waitForAdapterCall(page, 'update_options')
+  return closeNestedEditor(page, `complex-option-${dataType}`)
 }

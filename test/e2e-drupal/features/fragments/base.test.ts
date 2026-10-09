@@ -5,7 +5,7 @@ import { withApp } from '../../../e2e/support/session'
 import { blockRendered, dropAddAction } from '../../../e2e/support/blocks'
 import { closeFormOverlay, formOverlay } from '../../../e2e/support/overlays'
 import { emitEvent } from '../../../e2e/support/events'
-import { nextMutation } from '../../support/mutations'
+import { countMutations, nextMutation } from '../../support/mutations'
 import {
   resetSandbox,
   sandboxHost,
@@ -34,9 +34,6 @@ import { editorPath, openEditor } from '../../support/session'
 const ALLOWED = ['quick_links', 'today']
 
 const HOME = seedUuid('node', 'home')
-
-const ADD_FRAGMENT_PATH =
-  '/api/graphql_middleware/mutation/pbAddFragmentParagraph'
 
 function fragmentOption(page: Page, name: string): Locator {
   return page.locator(`[data-test-fragment-name="${name}"]`)
@@ -90,16 +87,12 @@ describe('The fragments feature', async () => {
   await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
-  let fragmentAdds = 0
+  let fragmentAdds: () => number
 
   beforeAll(async () => {
     resetSandbox(sandbox)
     page = await openEditor(sandbox, 'Anna Keller', editorPath('/en', 'home'))
-    page.on('request', (request) => {
-      if (new URL(request.url()).pathname === ADD_FRAGMENT_PATH) {
-        fragmentAdds++
-      }
-    })
+    fragmentAdds = countMutations(page, 'pbAddFragmentParagraph')
   })
 
   afterAll(async () => {
@@ -149,7 +142,7 @@ describe('The fragments feature', async () => {
   })
 
   test('submitting without a selection is a no-op', async () => {
-    const adds = fragmentAdds
+    const adds = fragmentAdds()
     await openFragmentsDialog(page)
 
     // No fragment picked → the submit guard (`if (selectedItem.value)`) returns
@@ -157,11 +150,11 @@ describe('The fragments feature', async () => {
     await fragmentsSubmit(page).click()
 
     expect(await formOverlay(page, 'fragments').count()).toBe(1)
-    expect(fragmentAdds).toBe(adds)
+    expect(fragmentAdds()).toBe(adds)
   })
 
   test('closing the dialog adds nothing', async () => {
-    const adds = fragmentAdds
+    const adds = fragmentAdds()
     const before = await fragmentBlocks(page)
     await openFragmentsDialog(page)
 
@@ -169,7 +162,7 @@ describe('The fragments feature', async () => {
     await emitEvent(page, 'overlay:close')
     await formOverlay(page, 'fragments').waitFor({ state: 'detached' })
 
-    expect(fragmentAdds).toBe(adds)
+    expect(fragmentAdds()).toBe(adds)
     expect(await fragmentBlocks(page)).toEqual(before)
   })
 

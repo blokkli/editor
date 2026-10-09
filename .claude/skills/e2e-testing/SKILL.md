@@ -339,7 +339,9 @@ describe('Something', async () => {
   (`support/mutations.ts`) waits for the next request of that mutation and
   returns its variables, typed by the GraphQL operations; an optional filter
   waits for a matching one. Start it before the action, await it after; then
-  reload to see what Drupal stored. It replaces the mock suite's recorder.
+  reload to see what Drupal stored. It replaces the mock suite's recorder. That
+  nothing was sent: `countMutations(page, name)` returns a counter of the
+  mutation's requests from then on.
 - **Resetting between tests:** `revertAllChanges(page)` discards the edit state
   (the editor's "Discard"), a round trip instead of a reset and a new login.
 - **Playground-only, not available here:** the adapter recorder

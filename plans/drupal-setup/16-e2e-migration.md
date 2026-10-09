@@ -68,9 +68,9 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
   `nextMutation(page, '<name>')` (`support/mutations.ts`) returns the next
   request's variables, typed; started before the action, awaited after. Then
   reload or reopen to see what Drupal stored. The items are shaped as in the
-  schema (e.g. `{uuid, name, value, langcode}`). That nothing was sent: count
-  the mutation's requests with `page.on('request')` (`fragments/base`; a helper
-  in `support/mutations.ts` once a second spec needs it).
+  schema (e.g. `{uuid, name, value, langcode}`). That nothing was sent:
+  `countMutations(page, '<name>')`, started in `beforeAll`, compared before and
+  after.
 - **Resetting the mock's localStorage between tests:** `revertAllChanges(page)`
   (`pbRevertAllChanges`, deletes the edit state; the new one belongs to whoever
   reverted). Or reset the sandbox and reopen.
@@ -322,15 +322,17 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       `resolveOptionText` and `setupWidget` take the bundle and a seeded widget;
       the stored values from the mutations' request bodies
       (`pbUpdateParagraphOption`, `pbBulkUpdateParagraphBehaviorSettings`).
-- [ ] `editable-field/frame`: with changes. `text.field_text`; the frame URL is
-      the Drupal adapter's `buildEditableFrameUrl`; `pbUpdateFieldValue`.
+- [x] `editable-field/frame`: done, on `/en/empty`; `pbUpdateFieldValue`.
       `editableFrame` waits for the editor's first message (`data-test-ready`):
       Drupal's page loads too slowly for the old wait.
-- [ ] `editable-field/plaintext`: with changes. `title.field_title`; required:
-      `call_to_action.field_title` or `step.field_title` (maximum 255); the
-      fallback: a link without a title; `pbUpdateFieldValue`.
+- [x] `editable-field/plaintext`: done, on the front page. `title.field_title`
+      (optional), `call_to_action.field_title` (required, maximum 255, a new one
+      is "Lorem ipsum dolor"), the fallback on `home-link` (it shows "Blocks");
+      `pbUpdateFieldValue`, and `countMutations` for "nothing stored".
 - [x] `editable-field/readability`: done, on the node's `field_lead`.
-- [ ] `charts/colors`: with changes. Wait for `pbUpdateParagraphOption`.
+- [x] `charts/colors`: done, on `/en/empty`; closing waits for
+      `pbUpdateParagraphOption` (`closeComplexOption` no longer waits for the
+      mock's recorder).
 
 ### Clipboard, add list, history and the block actions
 

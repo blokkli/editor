@@ -1,17 +1,32 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, waitForEditorReady } from './../../support/session'
-import { setupEditorE2E } from './../../support/setup'
-import { addBlock } from './../../support/blocks'
-import { emitEvent } from './../../support/events'
-import { clearAdapterCalls } from './../../support/recorder'
+import { waitForEditorReady } from '../../../e2e/support/session'
+import { addBlock } from '../../../e2e/support/blocks'
+import { emitEvent } from '../../../e2e/support/events'
 import {
   chartEditorOverlay,
   chartSeriesColorId,
   closeChartEditor,
   openChartEditor,
   setChartSeriesColor,
-} from './../../support/charts'
+} from '../../../e2e/support/charts'
+import { nextMutation } from '../../support/mutations'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { editorPath, openEditor } from '../../support/session'
+
+/** A chart, added to the page's paragraphs field. */
+const CHART = { bundle: 'chart', fieldName: 'field_paragraphs' }
+
+/**
+ * Close the chart editor, and wait until Drupal has stored the chart: closing
+ * always saves its `data` option.
+ */
+async function closeAndStoreChart(page: Page): Promise<void> {
+  const stored = nextMutation(page, 'pbUpdateParagraphOption')
+  await closeChartEditor(page)
+  await stored
+}
 
 /**
  * Reproduces the reported bug: after picking a *ramped* colour (a shade such as
@@ -26,11 +41,18 @@ import {
  *  - after a page reload
  */
 describe('Charts colour persistence', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
+
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(
+      sandbox,
+      'Anna Keller',
+      editorPath('/en/empty', 'empty'),
+    )
   })
 
   afterAll(async () => {
@@ -44,21 +66,20 @@ describe('Charts colour persistence', async () => {
         .isVisible()
         .catch(() => false)
     ) {
-      await closeChartEditor(page)
+      await closeAndStoreChart(page)
     }
-    await clearAdapterCalls(page)
     await emitEvent(page, 'select:unselect')
   })
 
   test('keeps a ramped series colour when re-editing in the same session', async () => {
-    const uuid = await addBlock(page, { bundle: 'chart', fieldName: 'content' })
+    const uuid = await addBlock(page, CHART)
     expect(uuid).toBeTruthy()
 
     await openChartEditor(page, uuid!)
 
     // Pick a shade of a ramped colour — the case that triggers the reset.
     await setChartSeriesColor(page, 0, 'red.500')
-    await closeChartEditor(page)
+    await closeAndStoreChart(page)
 
     // Re-open WITHOUT reloading — the colour must survive.
     await openChartEditor(page, uuid!)
@@ -66,12 +87,12 @@ describe('Charts colour persistence', async () => {
   })
 
   test('keeps a ramped series colour after a page reload', async () => {
-    const uuid = await addBlock(page, { bundle: 'chart', fieldName: 'content' })
+    const uuid = await addBlock(page, CHART)
     expect(uuid).toBeTruthy()
 
     await openChartEditor(page, uuid!)
     await setChartSeriesColor(page, 0, 'red.300')
-    await closeChartEditor(page)
+    await closeAndStoreChart(page)
 
     await page.reload()
     await waitForEditorReady(page)

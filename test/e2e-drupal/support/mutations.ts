@@ -30,3 +30,27 @@ export async function nextMutation<K extends keyof Mutation & string>(
   )
   return response.request().postDataJSON()
 }
+
+/**
+ * Counts the requests of a GraphQL mutation from now on, to tell that an action
+ * sent nothing. What the mock suite's recorder counted.
+ *
+ * ```ts
+ * const saves = countMutations(page, 'pbUpdateFieldValue')
+ * await discardEditable(page)
+ * expect(saves()).toBe(0)
+ * ```
+ */
+export function countMutations(
+  page: Page,
+  name: keyof Mutation & string,
+): () => number {
+  const path = `/api/graphql_middleware/mutation/${name}`
+  let count = 0
+  page.on('request', (request) => {
+    if (new URL(request.url()).pathname === path) {
+      count++
+    }
+  })
+  return () => count
+}
