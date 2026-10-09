@@ -147,14 +147,17 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       by `bake-e2e`) allows it on pages; `nodes/widgets.yml`. The playground's
       options, with labels in EN/DE/FR and without its `background` global
       option.
-- [ ] Demo options:
-  - Title: "Anchor" (text: one ID in every language, also used by the table of
-    contents) and "In the table of contents" (checkbox), grouped as "Navigation"
-  - Chart: "Height" (range), grouped with its width as "Format"
-  - Teaser list: "Number of items" (number, replaces the hard-coded 3), and
-    descriptions on its source choices
-  - Call to action: a date (datetime-local), e.g. for the next municipal
-    assembly; the seed needs dates relative to the bake in options
+- [x] Demo options: done.
+  - Title: "Anchor" (`anchor`, text: one ID in every language, also used by the
+    table of contents) and "In the table of contents" (`toc`, checkbox, only on
+    detail pages), grouped as "Navigation"
+  - Chart: "Height" (`height`, range, in percent of the usual height), grouped
+    with its width as "Format"
+  - Teaser list: "Number of items" (`count`, number, replaces the hard-coded 3),
+    and descriptions on its source choices
+  - Call to action: a date (`date`, datetime-local), shown under the title; on
+    the front page the next municipal assembly's. The seed turns a relative date
+    into a `datetime-local` option's value (the options schema says which).
   - Group labels can't be translated (F56): "Navigation" and "Format" are the
     same in all three languages.
 - [x] `transfer blokkli paragraphs` for `content_editor` and `restricted_editor`
@@ -318,9 +321,10 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       `field_left`.
 - [x] `breadcrumbs/base`: done, on `nodes/nested.yml` (the three texts in
       `field_right`).
-- [ ] `anchors/base`: with changes. The title paragraph's ID (a slug of
-      `field_title`) instead of the `anchorId` option; test 9 expects
-      `<linkPath>#my-section`. Test 8 stays.
+- [x] `anchors/base`: done, on titles added to `nodes/blank.yml`, with their
+      `anchor` option instead of `anchorId`; a call to action is the tall
+      paragraph above. Test 9 expects the node's system path
+      (`/node/<n>#my-section`). Test 8 stays in the mock suite.
 
 ### Analyze, options, editable fields, charts
 
