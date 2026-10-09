@@ -80,7 +80,8 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
   node gets a read-only editor: give each user their own node, or use that for
   the read-only tests. Edit states can't be seeded; the owner is whoever opens
   the editor first (in the code: loading the edit state creates it, and its
-  `uid` defaults to the current user).
+  `uid` defaults to the current user). `claimEditState(sandbox, user, path)`
+  opens and closes the editor for that.
 - **Media:** a seeded media's UUID is `seedUuid('media', key)`; numeric IDs
   follow the order of creation, don't rely on them. Files go in
   `test/e2e-drupal/content/files/`.
@@ -183,12 +184,12 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [x] `mock-scripts/grid-with-cards`: done, as
       `features/agent/ask-then-add.test.ts` (`columns` with a title and three
       texts, on `nodes/empty.yml`).
-- [ ] `mock-scripts/mode-context`: with changes. Read-only through another
-      user's edit state, translating on the `/de` page.
-- [ ] `mock-scripts/mode-guard`: with changes. Read-only as above; an empty
-      page.
-- [ ] `mock-scripts/ownership-flow`: with changes. Read-only as above;
-      `pbTakeOwnership`.
+- [x] `mock-scripts/mode-context`: done. Anna on `/en/empty` (editing) and
+      `/de/bibliothek` (translating), then Lea on `/en/empty` (read-only).
+- [x] `mock-scripts/mode-guard`: done. Lea on `/en/empty`, after Anna
+      (`claimEditState`).
+- [x] `mock-scripts/ownership-flow`: done. As mode-guard; Lea takes ownership
+      (`pbTakeOwnership`).
 - [x] `mock-scripts/routing-autoload`: done.
 - [x] `mock-scripts/selection-context`: done, on the keyed paragraphs of
       `nodes/blocks.yml`.

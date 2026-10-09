@@ -1,17 +1,22 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { EDITOR_PATH_EMPTY, openEditor } from '../../../support/session'
-import { setupEditorE2E } from '../../../support/setup'
-import { blockCount } from '../../../support/blocks'
+import { blockCount } from '../../../e2e/support/blocks'
 import {
   getAgentTranscript,
   openAgentPanel,
-  setAgentMockScript,
   submitAgentPrompt,
   waitForAgentReply,
-} from '../../../support/agent'
-import type { MockScript } from '#blokkli/agent/shared/types'
-import { OWNERSHIP_OVERRIDE_KEY } from '../../../../../playground/app/mock/ownershipOverride'
+} from '../../../e2e/support/agent'
+import {
+  resetSandbox,
+  sandboxHost,
+  seedUuid,
+  workerSandbox,
+} from '../../support/sandbox'
+import { claimEditState, editorPath, openEditor } from '../../support/session'
+
+const EMPTY_PATH = editorPath('/en/empty', 'empty')
 
 /**
  * The execution-time mode guard: per-turn filtering keeps out-of-mode tools
@@ -20,25 +25,50 @@ import { OWNERSHIP_OVERRIDE_KEY } from '../../../../../playground/app/mock/owner
  * provider. The server must refuse it with a tool error instead of dispatching
  * it to the client, and the loop must continue normally.
  *
- * Setup: a readonly session (ownership override — current user is not the
- * owner) whose scripted first agent turn calls `add_paragraphs`, an
+ * Setup: a read-only session (Lea on the page "Empty", whose edit state is
+ * Anna's) whose scripted first agent turn calls `add_paragraphs`, an
  * editing-only mutation tool. The guard fires before input validation and
  * before any `tool_call` reaches the client, so no approval UI appears and no
  * block is created.
  */
 describe('agent: refuses out-of-mode tool calls at execution time', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor(EDITOR_PATH_EMPTY, {
-      localStorage: {
-        [OWNERSHIP_OVERRIDE_KEY]: JSON.stringify({
-          currentUserIsOwner: false,
-          ownerName: 'Alice Example',
-        }),
-      },
+    resetSandbox(sandbox)
+    await claimEditState(sandbox, 'Anna Keller', EMPTY_PATH)
+    page = await openEditor(sandbox, 'Lea Steiner', EMPTY_PATH, {
+      mockScript: [
+        { type: 'user', content: 'add a text block' },
+        {
+          type: 'agent',
+          content: [
+            { type: 'text', text: 'Adding a block now.' },
+            {
+              type: 'tool_use',
+              id: 'tu_forbidden',
+              name: 'add_paragraphs',
+              input: {
+                parent: {
+                  type: 'node',
+                  uuid: seedUuid('node', 'empty'),
+                  fieldName: 'field_paragraphs',
+                },
+                paragraphs: [{ bundle: 'text' }],
+              },
+            },
+          ],
+        },
+        // The error relay goes back to the "LLM"; the mock then plays this
+        // turn, proving the loop survived the refusal.
+        {
+          type: 'agent',
+          content: [{ type: 'text', text: 'Understood, page is read-only.' }],
+        },
+      ],
     })
   })
 
@@ -47,31 +77,6 @@ describe('agent: refuses out-of-mode tool calls at execution time', async () => 
   })
 
   test('mutation tool_use in readonly gets a tool error, loop continues', async () => {
-    const script: MockScript = [
-      { type: 'user', content: 'add a text block' },
-      {
-        type: 'agent',
-        content: [
-          { type: 'text', text: 'Adding a block now.' },
-          {
-            type: 'tool_use',
-            id: 'tu_forbidden',
-            name: 'add_paragraphs',
-            input: {
-              parent: { type: 'node', uuid: 'x', fieldName: 'field' },
-              paragraphs: [{ bundle: 'text' }],
-            },
-          },
-        ],
-      },
-      // The error relay goes back to the "LLM"; the mock then plays this turn,
-      // proving the loop survived the refusal.
-      {
-        type: 'agent',
-        content: [{ type: 'text', text: 'Understood, page is read-only.' }],
-      },
-    ]
-    await setAgentMockScript(page, script)
     await openAgentPanel(page)
 
     await submitAgentPrompt(page, 'add a text block')

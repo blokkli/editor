@@ -1,20 +1,18 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import {
-  EDITOR_PATH_EMPTY,
-  openEditor,
-  withApp,
-} from '../../../support/session'
-import { setupEditorE2E } from '../../../support/setup'
+import { withApp } from '../../../e2e/support/session'
 import {
   getAgentTranscript,
   openAgentPanel,
-  setAgentMockScript,
   submitAgentPrompt,
   waitForAgentReply,
-} from '../../../support/agent'
-import type { MockScript, Transcript } from '#blokkli/agent/shared/types'
-import { OWNERSHIP_OVERRIDE_KEY } from '../../../../../playground/app/mock/ownershipOverride'
+} from '../../../e2e/support/agent'
+import type { Transcript } from '#blokkli/agent/shared/types'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { claimEditState, editorPath, openEditor } from '../../support/session'
+
+const EMPTY_PATH = editorPath('/en/empty', 'empty')
 
 /**
  * The reported bug: the user opens the editor NOT owning the edit state (agent
@@ -27,8 +25,9 @@ import { OWNERSHIP_OVERRIDE_KEY } from '../../../../../playground/app/mock/owner
  * server re-filters tools by edit mode on every turn — nothing is pinned at
  * WebSocket init anymore.
  *
- * Ownership is taken programmatically (the same call the banner button makes,
- * `features/ownership/index.vue`) — the open agent sidebar covers the banner
+ * Lea opens the page "Empty", whose edit state is Anna's. She takes ownership
+ * programmatically (the same call the banner button makes,
+ * `features/ownership/index.vue`): the open agent sidebar covers the banner
  * here, and the banner UI has its own coverage in ownership/base.test.ts.
  *
  * The restore→baseline-note path (a resumed conversation gets a full
@@ -38,18 +37,21 @@ import { OWNERSHIP_OVERRIDE_KEY } from '../../../../../playground/app/mock/owner
  * `Session.restoreConversation`.
  */
 describe('agent: follows ownership change mid-conversation', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor(EDITOR_PATH_EMPTY, {
-      localStorage: {
-        [OWNERSHIP_OVERRIDE_KEY]: JSON.stringify({
-          currentUserIsOwner: false,
-          ownerName: 'Alice Example',
-        }),
-      },
+    resetSandbox(sandbox)
+    await claimEditState(sandbox, 'Anna Keller', EMPTY_PATH)
+    page = await openEditor(sandbox, 'Lea Steiner', EMPTY_PATH, {
+      mockScript: [
+        { type: 'user', content: 'what can you do?' },
+        { type: 'agent', content: [{ type: 'text', text: 'Reply one.' }] },
+        { type: 'user', content: 'add a text paragraph' },
+        { type: 'agent', content: [{ type: 'text', text: 'Reply two.' }] },
+      ],
     })
   })
 
@@ -64,13 +66,6 @@ describe('agent: follows ownership change mid-conversation', async () => {
   }
 
   test('readonly at start, editing tools + context note after taking ownership', async () => {
-    const script: MockScript = [
-      { type: 'user', content: 'what can you do?' },
-      { type: 'agent', content: [{ type: 'text', text: 'Reply one.' }] },
-      { type: 'user', content: 'add a text paragraph' },
-      { type: 'agent', content: [{ type: 'text', text: 'Reply two.' }] },
-    ]
-    await setAgentMockScript(page, script)
     await openAgentPanel(page)
 
     // Turn 1 — not the owner, session is readonly.

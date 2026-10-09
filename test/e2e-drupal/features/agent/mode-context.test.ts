@@ -1,23 +1,17 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import {
-  EDITOR_PATH,
-  EDITOR_PATH_EMPTY,
-  openEditor,
-} from '../../../support/session'
-import { setupEditorE2E } from '../../../support/setup'
-import {
   getAgentTranscript,
   openAgentPanel,
-  setAgentMockScript,
   submitAgentPrompt,
   waitForAgentReply,
-} from '../../../support/agent'
+} from '../../../e2e/support/agent'
 import type { MockScript, Transcript } from '#blokkli/agent/shared/types'
-import {
-  OWNERSHIP_OVERRIDE_KEY,
-  type OwnershipOverride,
-} from '../../../../../playground/app/mock/ownershipOverride'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import { editorPath, openEditor } from '../../support/session'
+
+const EMPTY_PATH = editorPath('/en/empty', 'empty')
 
 /**
  * Pins how the agent session reflects the editor's edit mode — the LLM-facing
@@ -29,10 +23,11 @@ import {
  *  - what the system prompt says about the edit mode and content language
  *    (`page-context` section)
  *
- * One page per mode: editing (empty page as owner), translating (/de of the
- * demo page), readonly (demo page with the ownership override so the current
- * user is not the owner). Each runs a single scripted turn — `lastTools` and
- * the transcript only exist after an LLM request.
+ * One page per mode: editing (Anna on the page "Empty", which makes her the
+ * owner of its edit state), translating (Anna on the German translation of the
+ * page "Library"), read-only (Lea on the page "Empty", whose edit state is
+ * Anna's). Each runs a single scripted turn — `lastTools` and the transcript
+ * only exist after an LLM request.
  *
  * Representative tools per filter dimension:
  *  - `add_paragraphs`  eager, editing-only
@@ -43,27 +38,33 @@ import {
  *  - `get_page_structure`  lazy, all modes
  */
 describe('agent: edit mode context and tool availability', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let editingPage: Page
   let translatingPage: Page
   let readonlyPage: Page
 
-  function ownershipEntry(override: OwnershipOverride) {
-    return { [OWNERSHIP_OVERRIDE_KEY]: JSON.stringify(override) }
-  }
+  const mockScript: MockScript = [
+    { type: 'user', content: 'hello' },
+    { type: 'agent', content: [{ type: 'text', text: 'Scripted reply.' }] },
+  ]
 
   beforeAll(async () => {
-    ;[editingPage, translatingPage, readonlyPage] = await Promise.all([
-      openEditor(EDITOR_PATH_EMPTY),
-      openEditor('/de/page/1?blokkliEditing=1&testing=true'),
-      openEditor(EDITOR_PATH, {
-        localStorage: ownershipEntry({
-          currentUserIsOwner: false,
-          ownerName: 'Alice Example',
-        }),
-      }),
+    resetSandbox(sandbox)
+    ;[editingPage, translatingPage] = await Promise.all([
+      openEditor(sandbox, 'Anna Keller', EMPTY_PATH, { mockScript }),
+      openEditor(
+        sandbox,
+        'Anna Keller',
+        editorPath('/de/bibliothek', 'translated'),
+        { mockScript },
+      ),
     ])
+    // Anna's editor created the edit state, so Lea's is read-only.
+    readonlyPage = await openEditor(sandbox, 'Lea Steiner', EMPTY_PATH, {
+      mockScript,
+    })
   })
 
   afterAll(async () => {
@@ -75,11 +76,6 @@ describe('agent: edit mode context and tool availability', async () => {
   })
 
   async function runTurnAndGetTranscript(page: Page): Promise<Transcript> {
-    const script: MockScript = [
-      { type: 'user', content: 'hello' },
-      { type: 'agent', content: [{ type: 'text', text: 'Scripted reply.' }] },
-    ]
-    await setAgentMockScript(page, script)
     await openAgentPanel(page)
     await submitAgentPrompt(page, 'hello')
     await waitForAgentReply(page, 'Scripted reply.')

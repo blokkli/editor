@@ -1,7 +1,7 @@
 import { expect } from 'vitest'
 import type { Page } from 'playwright-core'
 import type { AgentToolMap, AgentToolName } from '#blokkli-build/agent-client'
-import type { MockScript, Transcript } from '#blokkli/agent/shared/types'
+import type { Transcript } from '#blokkli/agent/shared/types'
 // Side-effect import pulls in the `__BLOKKLI_AGENT_TEST_GET_TRANSCRIPT__`
 // global augmentation declared on `Window`. Type-only.
 import type {} from '../../../src/modules/agent/runtime/app/helpers/testSeam'
@@ -34,29 +34,12 @@ export async function runAgentTool<T extends AgentToolName>(
 }
 
 /**
- * Install a mock LLM script on the page. Must be called BEFORE the agent
- * WebSocket connects — the script is read on `init` send, so set it before
- * opening the agent sidebar. The playground sets `enableMock: true` in its
- * agent module config; production builds without that flag ignore the global.
- */
-export async function setAgentMockScript(
-  page: Page,
-  script: MockScript,
-): Promise<void> {
-  await page.evaluate((s) => {
-    window.__BLOKKLI_AGENT_MOCK_SCRIPT__ = s as MockScript
-  }, script)
-}
-
-/**
  * Open the agent sidebar and clear any auto-restored conversation. The
  * playground's mock adapter persists conversations server-side, so re-opening
  * the panel pulls the previous session back. For mock-script tests, the mock
  * provider derives its turn index from the assistant-message count in the
  * history Session sees — a restored turn pushes our reply past turn 0. Clear
  * unconditionally: if there's nothing to clear, the button never appears.
- *
- * Call after `setAgentMockScript` so the WS-open `init` carries the script.
  */
 export async function openAgentPanel(page: Page): Promise<void> {
   await openSidebar(page, 'agent')

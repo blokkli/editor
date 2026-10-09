@@ -20,7 +20,8 @@ You have SEVERAL skills available that you MUST use!!
 - **e2e-testing** => Use when writing, debugging, or running the Playwright E2E
   tests (`test/e2e/`, and `test/e2e-drupal/` against Drupal sandboxes)
 - **agent-e2e-testing** => Use when writing or debugging tests under
-  `test/e2e/features/agent/` (mock-provider scripts, tool-bypass tests)
+  `features/agent/` of either E2E suite (mock-provider scripts, tool-bypass
+  tests)
 - **sandbox** => Use when working on `sandbox/` or `.ddev/`: how the Drupal
   site, its Nuxt app, the control app and the sandboxes are set up
 

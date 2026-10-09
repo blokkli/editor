@@ -74,6 +74,21 @@ export async function openEditor(
 }
 
 /**
+ * Makes the user the owner of the page's edit state: they open the path in the
+ * editor, which creates it, and close it again. Anyone else then gets a
+ * read-only editor there, until they take ownership. Edit states can't be
+ * seeded.
+ */
+export async function claimEditState(
+  sandbox: string,
+  user: TestUser,
+  path: string,
+): Promise<void> {
+  const page = await openEditor(sandbox, user, path)
+  await page.close()
+}
+
+/**
  * Discards all changes, as the editor's "Discard" does: Drupal deletes the
  * edit state and starts a new one from what is published, owned by the user
  * who reverted. Cheaper than resetting the sandbox and reopening the editor.

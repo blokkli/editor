@@ -2,19 +2,22 @@
 description:
   blökkli agent E2E tests — mock-provider scripts, tool-bypass tests, support
   helpers, data-test hooks. Use when writing or debugging tests under
-  `test/e2e/features/agent/`.
+  `test/e2e-drupal/features/agent/` or `test/e2e/features/agent/`.
 ---
 
 # Agent E2E Testing Skill
 
 How to test the agent module end to end. Two distinct test styles live under
-`test/e2e/features/agent/`:
+`test/e2e-drupal/features/agent/`, the Drupal suite:
 
 ```
-test/e2e/features/agent/
+test/e2e-drupal/features/agent/
 ├── tools/         # individual tool tests — bypass the LLM
-└── mock-scripts/  # full-flow tests — drive the LLM via the mock provider
+└── *.test.ts      # full-flow tests — drive the LLM via the mock provider
 ```
+
+The mock suite keeps only the tool tests that can't move yet, in
+`test/e2e/features/agent/tools/`; new agent specs go into the Drupal suite.
 
 Pick the right one for the question you're answering. Pair this skill with
 `/e2e-testing` (which covers the shared-page pattern, the `data-test` contract,
@@ -28,49 +31,54 @@ involved, no WebSocket, no scripting. Asserts the tool's return shape and any
 side effects on the page state.
 
 ```ts
-import { runAgentTool } from '../../../support/agent'
+import { runAgentTool } from '../../../../e2e/support/agent'
 
 const result = await runAgentTool(page, 'get_page_text', {})
 expect(result.text).toMatchInlineSnapshot(...)
 ```
 
 `runAgentTool` calls into `window.__BLOKKLI__.test.runAgentTool(name, params)` —
-registered by the playground's `test-cases` feature. The sidebar must be opened
-first with `openSidebar(page, 'test-cases')` for the global to exist.
+registered by the app's `test-cases` feature. The sidebar must be opened first
+with `openSidebar(page, 'test-cases')` for the global to exist.
 
-**`mock-scripts/` — exercise the whole loop.** Use this when you're testing that
-the conversation flow works end to end — UI state transitions on submit, tool
-calls firing from an LLM response, multi-turn behaviour, error paths. The mock
-LLM provider replays a scripted sequence of agent turns; real tools fire for
-real and produce real tool relays.
+**The full-flow specs — exercise the whole loop.** Use these when you're testing
+that the conversation flow works end to end — UI state transitions on submit,
+tool calls firing from an LLM response, multi-turn behaviour, error paths. The
+mock LLM provider replays a scripted sequence of agent turns; real tools fire
+for real and produce real tool relays.
 
-**Default to `EDITOR_PATH_EMPTY` (page 4).** Mock-script tests should open the
-empty page and have the agent build whatever state they need to exercise. If a
-test needs pre-existing blocks (e.g. asserting a rewrite or delete flow), seed
-them via `addBlock` or `runAgentTool` after `openEditor` and before the prompt.
-Page 1 is loaded with the demo content and is shared with non-agent tests —
-asserting on its block counts is fragile.
+**The script comes with `openEditor`** (`test/e2e-drupal/support/session.ts`):
+its `mockScript` option installs it before the page loads, and every page gets
+one (`[]` by default), so no spec reaches the model.
+
+**Default to the page "Empty"** (`editorPath('/en/empty', 'empty')`) when the
+agent builds the state it needs; use a seeded page whose content fits when the
+test needs paragraphs to rewrite or delete (find them with
+`seedUuid('paragraph', key)`). For the read-only mode, another user opens the
+page first: `claimEditState(sandbox, 'Anna Keller', path)`, then open it as Lea.
 
 ```ts
 import {
-  EDITOR_PATH_EMPTY,
-  openEditor,
-  withApp,
-} from '../../../support/session'
-import {
   openAgentPanel,
-  setAgentMockScript,
   submitAgentPrompt,
   waitForAgentReply,
-} from '../../../support/agent'
-import type { MockScript } from '#blokkli/agent/shared/types'
+} from '../../../e2e/support/agent'
+import { editorPath, openEditor } from '../../support/session'
 
-const page = await openEditor(EDITOR_PATH_EMPTY)
-const script: MockScript = [
-  { type: 'user', content: 'hello' },
-  { type: 'agent', content: [{ type: 'text', text: 'Hi! How can I help?' }] },
-]
-await setAgentMockScript(page, script)
+const page = await openEditor(
+  sandbox,
+  'Anna Keller',
+  editorPath('/en/empty', 'empty'),
+  {
+    mockScript: [
+      { type: 'user', content: 'hello' },
+      {
+        type: 'agent',
+        content: [{ type: 'text', text: 'Hi! How can I help?' }],
+      },
+    ],
+  },
+)
 await openAgentPanel(page)
 await submitAgentPrompt(page, 'hello')
 await waitForAgentReply(page, 'Hi! How can I help?')
@@ -211,7 +219,8 @@ After the real tool relay lands, the mock plays the second `agent` turn.
 ## How the opt-in works (architecture)
 
 - **Module config**: `enableMock?: boolean` in `AgentModuleOptions`. The
-  playground sets it to `true`; production builds leave it off (default).
+  playground and the sandbox frontend set it to `true` (the hosted sandbox build
+  must turn it off); production builds leave it off (default).
 - **Build templates** emit `export const enableMock` for both the server
   (`agent-server`) and the client (`agent-client`). When off,
   `createMockProvider` isn't imported.
@@ -235,8 +244,8 @@ After the real tool relay lands, the mock plays the second `agent` turn.
   calls `loadLatestFromAdapter` when no mock script is present, or when the
   script has a `restore` entry. This both guarantees a clean turn-0 history for
   the mock provider AND lets parallel mock tests against the same entity run
-  without trampling each other's conversation (the playground keys conversations
-  by entity UUID).
+  without trampling each other's conversation (both apps keep conversations per
+  host entity).
 
 `?testing=true` is unrelated to the mock — it gates the adapter recorder.
 Mock-script tests don't depend on it.
@@ -246,7 +255,6 @@ Mock-script tests don't depend on it.
 | Helper                                     | What it does                                                                                                   |
 | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
 | `runAgentTool(page, name, params)`         | Invoke one tool client-side (no LLM). Returns the tool's `result`. Requires `openSidebar(page, 'test-cases')`. |
-| `setAgentMockScript(page, script)`         | Install a script on the window. **Must be called before `openAgentPanel`** — read once during `sendInit`.      |
 | `openAgentPanel(page)`                     | Open the agent sidebar and clear any auto-restored conversation. Idempotent.                                   |
 | `submitAgentPrompt(page, prompt)`          | Fill the input and click submit.                                                                               |
 | `answerAgentQuestion(page, value)`         | Pick a radio option in the `ask_question` tool UI by `value`, then click Confirm.                              |
@@ -279,18 +287,19 @@ Add new ones following `data-test="agent-<thing>"`:
 1. In the running app, hit "Copy conversation JSON" on the Transcript panel.
 2. Paste the snapshot verbatim into a test file as
    `const script: MockScript = [...]`.
-3. Write the test calling `setAgentMockScript` + `openAgentPanel` +
-   `submitAgentPrompt` with the original first user prompt + assertions.
+3. Write the test passing it as `openEditor`'s `mockScript`, then
+   `openAgentPanel` + `submitAgentPrompt` with the original first user prompt +
+   assertions.
 
 No transformation step. The snapshot **is** the script.
 
 ### Why clear auto-restored conversations
 
-The playground persists conversations server-side. On panel re-open the prior
-session is auto-restored, so the mock's turn index (derived from the
-assistant-message count) won't be `0`. `openAgentPanel` clicks
-`agent-new-conversation` if it's visible. Without that, the mock would play turn
-N+M instead of turn N, and your script would silently misalign.
+Both apps persist conversations server-side. On panel re-open the prior session
+is auto-restored, so the mock's turn index (derived from the assistant-message
+count) won't be `0`. `openAgentPanel` clicks `agent-new-conversation` if it's
+visible. Without that, the mock would play turn N+M instead of turn N, and your
+script would silently misalign.
 
 ### Authenticated state in mock mode
 
@@ -313,24 +322,24 @@ still real, so auth code stays exercised in tests.
 
 ```ts
 // tools/ pattern
-import { runAgentTool } from '../../../support/agent'
+import { runAgentTool } from '../../../../e2e/support/agent'
 const result = await runAgentTool(page, 'tool_name', { ...params })
 
-// mock-scripts/ pattern
+// full-flow pattern
 import {
   openAgentPanel,
-  setAgentMockScript,
   submitAgentPrompt,
   waitForAgentReply,
-} from '../../../support/agent'
-import type { MockScript } from '#blokkli/agent/shared/types'
+} from '../../../e2e/support/agent'
 
-await setAgentMockScript(page, script)
+const page = await openEditor(sandbox, 'Anna Keller', path, {
+  mockScript: script,
+})
 await openAgentPanel(page)
 await submitAgentPrompt(page, 'user prompt')
 await waitForAgentReply(page, 'expected substring')
 ```
 
-For Playwright lifecycle (`setupEditorE2E`, `openEditor`, shared-page rules, the
+For Playwright lifecycle (`workerSandbox`, `openEditor`, shared-page rules, the
 `data-test` contract, `withApp`), see `/e2e-testing`. For agent module internals
 (WebSocket protocol, tool system, providers, Session loop), see `/agent`.

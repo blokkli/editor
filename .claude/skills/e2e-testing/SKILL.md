@@ -22,10 +22,10 @@ frame-timed drop logic, DOM lifecycle.
 Most of this skill is about the mock playground suite. The Drupal suite
 (`test/e2e-drupal/`) shares its helpers: see "The Drupal suite" below.
 
-For tests under `test/e2e/features/agent/` see `/agent-e2e-testing` — covers the
-`tools/` (call one tool, no LLM) vs `mock-scripts/` (drive the full loop via the
-mock LLM provider) split, the mock script grammar, and the agent-specific
-support helpers.
+For the agent's tests (`features/agent/`) see `/agent-e2e-testing` — covers the
+`tools/` (call one tool, no LLM) vs full-flow (drive the loop via the mock LLM
+provider) split, the mock script grammar, and the agent-specific support
+helpers.
 
 **Extract to `support/` when used by 2+ files** (and refactor existing callers
 onto it — don't leave a copy behind). One-file-only helpers stay local.
@@ -327,7 +327,8 @@ describe('Something', async () => {
   Steiner (`content_editor`), Marc Brunner (`reviewer`), Élodie Favre
   (`translator`), Jonas Weber (`restricted_editor`), all with an English UI.
   Whoever opens a node's editor first owns its edit state; another user gets a
-  read-only editor.
+  read-only editor. `claimEditState(sandbox, user, path)` makes a user the owner
+  (they open the editor and close it).
 - **Each spec file resets its sandbox in `beforeAll`.** Between the tests of a
   file, state carries over, as in the mock suite. A reset ends the session:
   close the page before it and open a new one after it.
