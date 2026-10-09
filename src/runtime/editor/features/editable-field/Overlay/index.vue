@@ -333,7 +333,8 @@ function restoreOriginalState() {
 }
 
 /**
- * Persist the changed value via the adapter.
+ * Persist the changed value via the adapter, then hand the field back to its
+ * component, which renders what is stored now.
  */
 async function persistValue() {
   if (props.host.type === itemEntityType) {
@@ -352,6 +353,7 @@ async function persistValue() {
       }),
     )
   }
+  override.release()
 }
 
 /**

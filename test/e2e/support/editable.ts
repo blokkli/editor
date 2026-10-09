@@ -200,23 +200,22 @@ export function frameSrc(page: Page): Promise<string | null> {
 }
 
 /**
- * The open frame editable's content frame, once its CKEditor has mounted.
+ * The open frame editable's content frame, once its editor is ready.
  *
  * The frame is a same-origin page (`/blokkli-form/.../fieldValueEditor`) hosting
- * a CKEditor. Wait for `.ck-editor__editable` (the editor's own, non-mangled
- * markup) so a subsequent `setFrameValue` actually applies.
+ * a CKEditor. Its first message tells the editor it's ready
+ * (`data-test-ready`): only then does a subsequent `setFrameValue` apply.
  */
 export async function editableFrame(page: Page): Promise<Frame> {
-  const locator = page.locator('[data-test="editable-frame"]')
+  const locator = page.locator(
+    '[data-test="editable-frame"][data-test-ready="true"]',
+  )
   await locator.waitFor({ state: 'attached' })
   const handle = await locator.elementHandle()
   const frame = await handle?.contentFrame()
   if (!frame) {
     throw new Error('Editable frame has no content frame')
   }
-  await frame.waitForFunction(
-    () => !!document.querySelector('.ck-editor__editable'),
-  )
   return frame
 }
 

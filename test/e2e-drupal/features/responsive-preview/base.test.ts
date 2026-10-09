@@ -101,8 +101,11 @@ describe('The responsive preview', async () => {
   })
 
   test('scrolls the selected block into view inside the iframe', async () => {
-    // The last text sits far below the fold in the narrow viewport.
-    await expect.poll(() => blockExists(frame, LAST_TEXT)).toBe(true)
+    // The last text sits far below the fold in the narrow viewport. Under
+    // load, the preview can take more than a second to render it.
+    await frame
+      .locator(`[data-bk-uuid="${LAST_TEXT}"]`)
+      .waitFor({ state: 'attached' })
     expect(await blockInView(frame, LAST_TEXT)).toBe(false)
 
     // Select it in the editor; the preview should follow. Re-emit inside the

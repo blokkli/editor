@@ -1,0 +1,20 @@
+# An editorial page the agent reads, at /en/reading. It shows no date, so its
+# text is the same in every bake.
+key: reading
+type: editorial
+title: Reading
+field_lead: The lead of the page.
+field_paragraphs:
+  - type: title
+    key: reading-title
+    field_title: A section
+  - type: text
+    key: reading-text
+    field_text: '<p>A paragraph of text.</p>'
+  # Its title and lead aren't editable in the page: no directive, no props
+  # mapping.
+  - type: teaser
+    key: reading-teaser
+    field_title: A teaser
+    field_lead: The lead of the teaser.
+    field_link: { node: blocks }

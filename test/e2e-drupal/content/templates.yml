@@ -1,0 +1,11 @@
+# Paragraph templates. Templates aren't translated: they're created in the
+# source language only.
+- key: two-texts-left
+  label: Two texts on the left
+  paragraphs:
+    - type: columns
+      field_left:
+        - type: text
+          field_text: '<p>The first text of the template.</p>'
+        - type: text
+          field_text: '<p>The second text of the template.</p>'

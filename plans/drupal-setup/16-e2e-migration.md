@@ -124,7 +124,7 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
     `test/e2e-drupal/content/files/`
   - comment threads (resolved and unresolved, with mentions of Anna by another
     user; there: `comments.yml` on `nodes/feedback.yml`, no mentions yet),
-    `templates.yml`, library items
+    `templates.yml` (there: columns with two texts), library items
 
 ### Additions to the sandbox
 
@@ -192,25 +192,27 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [x] `mock-scripts/routing-autoload`: done.
 - [x] `mock-scripts/selection-context`: done, on the keyed paragraphs of
       `nodes/blocks.yml`.
-- [ ] `tools/add_paragraphs`: `.test`. `two_columns` > text becomes
-      `columns.field_left` > text; three levels `accordion` > `columns` > text;
-      child keys are field names.
-- [ ] `tools/add_template`: `.test`. A seeded template (`columns` with two texts
-      in `field_left`).
+- [x] `tools/add_paragraphs`: done, on `nodes/empty.yml`; `columns` >
+      `field_left` > text, and `accordion` > `columns` > two texts.
+- [x] `tools/add_template`: done, the seeded template by its UUID.
 - [ ] `tools/auto_translate_paragraphs`: `.test`. The DeepL fake; wait for
       `pbBulkTranslateFieldValues` and reload `/de`; a `call_to_action` or a
       title instead of the card (`acceptedCount` changes).
-- [ ] `tools/duplicate_paragraphs`: `.test`. Keyed `columns` > texts instead of
-      made-up IDs.
-- [ ] `tools/get_all_page_content`: `.test`. A teaser with title and lead
-      (unverified: that `textFieldValues` has them).
-- [ ] `tools/get_page_text`: `.test`. A node with a title, `field_lead` and
-      title/text/teaser paragraphs; a new snapshot.
+- [x] `tools/duplicate_paragraphs`: done, the columns of `nodes/nested.yml`.
+- [x] `tools/get_all_page_content`: done, the teaser of `nodes/reading.yml` (its
+      title and lead have neither a directive nor a props mapping; Drupal's raw
+      values have them).
+- [x] `tools/get_page_text`: done, `nodes/reading.yml` (editorial: no date in
+      the snapshot).
 - [ ] `tools/processed-text`: splits. With the external-link filter, the 14
       markup tests move (seed external links in `field_text`). The 6 on plain
       strings stay: Drupal never processes those.
-- [ ] `tools/update_text_fields`: `.test`. A title's `field_title` (plain, so
-      the plaintext editor opens); assert after a reload.
+- [x] `tools/update_text_fields`: done, on the title of `nodes/blocks.yml`; the
+      stored items of `pbBulkUpdateFieldValues` instead of a reload. It found
+      that the editor lost Vue's text node of a field rendered with `{{ }}` (the
+      mock's components use `v-text`), so an applied suggestion or an undo after
+      an inline edit didn't show: fixed in `useEditableFieldOverride`, tested by
+      `editable-field/rerender` (also for `v-html`).
 
 ### Translations, comments, publishing
 
@@ -319,6 +321,8 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       (`pbUpdateParagraphOption`, `pbBulkUpdateParagraphBehaviorSettings`).
 - [ ] `editable-field/frame`: with changes. `text.field_text`; the frame URL is
       the Drupal adapter's `buildEditableFrameUrl`; `pbUpdateFieldValue`.
+      `editableFrame` waits for the editor's first message (`data-test-ready`):
+      Drupal's page loads too slowly for the old wait.
 - [ ] `editable-field/plaintext`: with changes. `title.field_title`; required:
       `call_to_action.field_title` or `step.field_title` (maximum 255); the
       fallback: a link without a title; `pbUpdateFieldValue`.

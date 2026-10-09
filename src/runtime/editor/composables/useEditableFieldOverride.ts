@@ -32,6 +32,12 @@ export type EditableFieldOverride = {
   setDiffHtml(html: string): void
   /** Restore the original value (shorthand for setValue(originalValue)). */
   restore(): void
+  /**
+   * Hand the field back to its component once the value is stored: re-inserts
+   * the nodes a direct write replaced, into which Vue has rendered the stored
+   * value. The other strategies reset themselves with the new state.
+   */
+  release(): void
 }
 
 const NOOP_OVERRIDE: EditableFieldOverride = {
@@ -42,6 +48,7 @@ const NOOP_OVERRIDE: EditableFieldOverride = {
   setValue() {},
   setDiffHtml() {},
   restore() {},
+  release() {},
 }
 
 /**
@@ -80,7 +87,6 @@ export function useEditableFieldOverride(
 
   const fieldType: 'plain' | 'markup' =
     config.type === 'frame' || config.type === 'markup' ? 'markup' : 'plain'
-  const isMarkup = config.type !== 'plain'
 
   // Determine the props mapping (element-independent).
   function findMatchingProp(
@@ -214,6 +220,7 @@ export function useEditableFieldOverride(
       // real value (the component may escape it, e.g. via v-text).
       setDiffHtml() {},
       restore: restoreMutatedProp,
+      release() {},
     }
   }
   // Re-assign after guard so TypeScript knows it's defined inside closures.
@@ -224,42 +231,61 @@ export function useEditableFieldOverride(
   const usesMutatedProps = !!matchingProp
   const usesDirectDom = !isComponent && !matchingProp
 
-  // The element's Vue-managed child nodes, captured when a diff preview is
-  // applied. We keep the live node objects (not a clone) so that re-inserting
-  // them in restore() preserves Vue's vnode → element references — a fresh
-  // textContent/innerHTML write would detach them and silently break the next
-  // inline edit (Vue would patch a node no longer in the document).
+  // The element's Vue-managed child nodes, captured before the first write that
+  // replaces them (a diff preview, or a value written to the DOM directly). We
+  // keep the live node objects (not a clone) so that re-inserting them in
+  // restore() preserves Vue's vnode → element references — a fresh
+  // textContent/innerHTML write would detach them for good, and every later
+  // render (the stored value, an undo) would patch a node no longer in the
+  // document, e.g. one rendered with `{{ title }}`.
   let savedNodes: ChildNode[] | null = null
 
+  // The child nodes of the last write. If the element no longer holds them, its
+  // component re-rendered it in the meantime (`v-text` and `v-html` replace the
+  // children), and the saved nodes are outdated.
+  let writtenNodes: ChildNode[] = []
+
+  /** Write into the element, keeping Vue's nodes aside on the first write. */
+  function writeDom(property: 'textContent' | 'innerHTML', value: string) {
+    savedNodes ??= Array.from(element.childNodes)
+    element[property] = value
+    writtenNodes = Array.from(element.childNodes)
+  }
+
   /**
-   * Re-insert the preserved original child nodes, undoing a diff preview without
-   * destroying Vue's node identity. Returns true if a diff was actually undone.
+   * Re-insert the preserved original child nodes, undoing a write without
+   * destroying Vue's node identity; unless the component re-rendered the
+   * element since, which leaves it as it is. Returns true if a write was undone.
    */
   function reattachOriginalNodes(): boolean {
-    if (savedNodes) {
-      element.replaceChildren(...savedNodes)
-      savedNodes = null
-      return true
+    if (!savedNodes) {
+      return false
     }
-    return false
+    const current = element.childNodes
+    const isWritten =
+      current.length === writtenNodes.length &&
+      writtenNodes.every((node, i) => current[i] === node)
+    if (isWritten) {
+      element.replaceChildren(...savedNodes)
+    }
+    savedNodes = null
+    return true
   }
 
   function setValue(value: string): void {
-    // If a diff preview is active, put the originals back first so the reactive/
-    // DOM write below targets the live, Vue-tracked nodes.
-    reattachOriginalNodes()
     element.removeAttribute('data-bk-diff-active')
+
+    if (usesDirectDom) {
+      writeDom(config.type === 'plain' ? 'textContent' : 'innerHTML', value)
+      return
+    }
+
+    // The reactive strategies patch Vue's nodes: if a diff preview is active,
+    // put them back first.
+    reattachOriginalNodes()
 
     if (usesMutatedProps) {
       setMutatedProp(value)
-    }
-
-    if (usesDirectDom) {
-      if (config.type === 'plain') {
-        element.textContent = value
-      } else {
-        element.innerHTML = value
-      }
     }
 
     if (isComponent) {
@@ -272,28 +298,27 @@ export function useEditableFieldOverride(
   }
 
   function setDiffHtml(html: string): void {
-    // Preserve the Vue-managed children before overwriting, but only on the
-    // transition into a diff (don't capture the diff markup itself on re-apply).
-    if (!element.hasAttribute('data-bk-diff-active')) {
-      savedNodes = Array.from(element.childNodes)
-    }
     element.setAttribute('data-bk-diff-active', '')
     // Use innerHTML directly so the <ins>/<del> tags render as markup rather than
-    // being escaped by a v-text binding. The original nodes live on in
-    // `savedNodes` and are re-inserted verbatim by restore(), so Vue's vnode
-    // references survive and there is no VDOM/DOM mismatch to repair afterwards.
-    element.innerHTML = html
+    // being escaped by a v-text binding. The original nodes are kept aside once
+    // (never the diff markup itself on re-apply, nor what another override wrote
+    // in between, e.g. the editable overlay opened from the diff) and are
+    // re-inserted verbatim by restore(), so Vue's vnode references survive and
+    // there is no VDOM/DOM mismatch to repair afterwards.
+    writeDom('innerHTML', html)
   }
 
   function restore(): void {
     const wasDiffActive = element.hasAttribute('data-bk-diff-active')
     element.removeAttribute('data-bk-diff-active')
 
-    // Diff-preview path: re-insert the exact original nodes. This restores the
-    // DOM *and* Vue's node identity, so subsequent reactive patches (e.g. inline
-    // edits) land on live nodes. setDiffHtml never touched mutatedItemProps, so
-    // there is nothing else to undo here.
-    if (wasDiffActive && reattachOriginalNodes()) {
+    // Re-insert the exact original nodes, if a diff preview or a direct write
+    // replaced them. This restores the DOM *and* Vue's node identity, so
+    // subsequent reactive patches (e.g. inline edits) land on live nodes. For
+    // the direct DOM strategy that's all there is to undo; setDiffHtml never
+    // touched mutatedItemProps either.
+    const reattached = reattachOriginalNodes()
+    if (usesDirectDom || (wasDiffActive && reattached)) {
       return
     }
 
@@ -301,14 +326,6 @@ export function useEditableFieldOverride(
     // apply it.
     if (usesMutatedProps) {
       restoreMutatedProp()
-    }
-
-    if (usesDirectDom) {
-      if (isMarkup) {
-        element.innerHTML = originalValue
-      } else {
-        element.textContent = originalValue
-      }
     }
 
     if (isComponent) {
@@ -320,6 +337,13 @@ export function useEditableFieldOverride(
     }
   }
 
+  function release(): void {
+    if (usesDirectDom) {
+      element.removeAttribute('data-bk-diff-active')
+      reattachOriginalNodes()
+    }
+  }
+
   return {
     element,
     originalValue,
@@ -328,5 +352,6 @@ export function useEditableFieldOverride(
     setValue,
     setDiffHtml,
     restore,
+    release,
   }
 }

@@ -1,10 +1,16 @@
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openEditor, withApp } from '../../../support/session'
-import { openSidebar } from '../../../support/sidebar'
-import { setupEditorE2E } from '../../../support/setup'
-import { runAgentTool } from '../../../support/agent'
+import { withApp } from '../../../../e2e/support/session'
+import { openSidebar } from '../../../../e2e/support/sidebar'
+import { runAgentTool } from '../../../../e2e/support/agent'
 import type { MutationToolResult } from '#blokkli/agent/app/types'
+import {
+  resetSandbox,
+  sandboxHost,
+  workerSandbox,
+} from '../../../support/sandbox'
+import { editorPath, openEditor } from '../../../support/session'
 
 /**
  * The tool's *declared* result schema is the prepare-phase mutation action
@@ -35,17 +41,25 @@ async function addParagraphs(
  *
  * Fix: nest children under each parent's `children` keyed by paragraph field
  * name, so the response mirrors the input shape and round-trips cleanly. The
- * runtime path goes through `toolsProvider.buildMutationResult`; the test-cases
- * playground feature wires `runAgentTool` through the same
+ * runtime path goes through `toolsProvider.buildMutationResult`; the
+ * test-cases feature wires `runAgentTool` through the same
  * `buildNewParagraphsTree` helper, so this spec pins the production code.
+ *
+ * On the empty page (content/nodes/empty.yml).
  */
 describe('agent: add_paragraphs result shape', async () => {
-  await setupEditorE2E()
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
 
   beforeAll(async () => {
-    page = await openEditor()
+    resetSandbox(sandbox)
+    page = await openEditor(
+      sandbox,
+      'Anna Keller',
+      editorPath('/en/empty', 'empty'),
+    )
     // The test-cases sidebar registers `runAgentTool` on `window.__BLOKKLI__.test`
     // only once its pane mounts.
     await openSidebar(page, 'test-cases')
@@ -64,18 +78,18 @@ describe('agent: add_paragraphs result shape', async () => {
     const result = await addParagraphs(page, {
       paragraphs: [
         {
-          bundle: 'two_columns',
+          bundle: 'columns',
           children: {
-            left: [
+            field_left: [
               {
                 bundle: 'text',
-                contentFields: { text: '<p>Hello from left.</p>' },
+                contentFields: { field_text: '<p>Hello from left.</p>' },
               },
             ],
           },
         },
       ],
-      parent: { type: entityType, uuid: entityUuid, field: 'content' },
+      parent: { type: entityType, uuid: entityUuid, field: 'field_paragraphs' },
       position: 'end',
     })
 
@@ -86,22 +100,23 @@ describe('agent: add_paragraphs result shape', async () => {
       )
     }
 
-    // Exactly ONE top-level entry — the two_columns. The nested text must NOT
+    // Exactly ONE top-level entry — the columns. The nested text must NOT
     // appear as a sibling (the bug we're guarding against).
     expect(result.newParagraphs).toBeDefined()
     expect(result.newParagraphs).toHaveLength(1)
 
     const root = result.newParagraphs![0]!
-    expect(root.bundle).toBe('two_columns')
+    expect(root.bundle).toBe('columns')
 
-    // The text lives under `children.left[0]`, mirroring the input shape.
+    // The text lives under `children.field_left[0]`, mirroring the input
+    // shape.
     expect(root.children).toBeDefined()
-    expect(root.children!.left).toBeDefined()
-    expect(root.children!.left).toHaveLength(1)
-    expect(root.children!.left![0]!.bundle).toBe('text')
-    expect(root.children!.left![0]!.uuid).toBeTruthy()
+    expect(root.children!.field_left).toBeDefined()
+    expect(root.children!.field_left).toHaveLength(1)
+    expect(root.children!.field_left![0]!.bundle).toBe('text')
+    expect(root.children!.field_left![0]!.uuid).toBeTruthy()
     // The child entry has no children of its own — a leaf text block.
-    expect(root.children!.left![0]!.children).toBeUndefined()
+    expect(root.children!.field_left![0]!.children).toBeUndefined()
 
     // Sanity: the IDs in newParagraphs match the blocks now in the editor.
     const liveBundles = await page.evaluate(
@@ -112,9 +127,9 @@ describe('agent: add_paragraphs result shape', async () => {
           child: app.blocks.getBlock(childUuid)?.bundle ?? null,
         }
       },
-      { rootUuid: root.uuid, childUuid: root.children!.left![0]!.uuid },
+      { rootUuid: root.uuid, childUuid: root.children!.field_left![0]!.uuid },
     )
-    expect(liveBundles.root).toBe('two_columns')
+    expect(liveBundles.root).toBe('columns')
     expect(liveBundles.child).toBe('text')
   })
 
@@ -127,20 +142,20 @@ describe('agent: add_paragraphs result shape', async () => {
     const result = await addParagraphs(page, {
       paragraphs: [
         {
-          bundle: 'two_columns',
+          bundle: 'accordion',
           children: {
-            left: [
+            field_paragraphs: [
               {
-                bundle: 'button_list',
+                bundle: 'columns',
                 children: {
-                  blocks: [{ bundle: 'button' }, { bundle: 'button' }],
+                  field_left: [{ bundle: 'text' }, { bundle: 'text' }],
                 },
               },
             ],
           },
         },
       ],
-      parent: { type: entityType, uuid: entityUuid, field: 'content' },
+      parent: { type: entityType, uuid: entityUuid, field: 'field_paragraphs' },
       position: 'end',
     })
 
@@ -152,15 +167,15 @@ describe('agent: add_paragraphs result shape', async () => {
 
     expect(result.newParagraphs).toHaveLength(1)
     const root = result.newParagraphs![0]!
-    expect(root.bundle).toBe('two_columns')
+    expect(root.bundle).toBe('accordion')
 
-    const buttonList = root.children?.left?.[0]
-    expect(buttonList?.bundle).toBe('button_list')
+    const columns = root.children?.field_paragraphs?.[0]
+    expect(columns?.bundle).toBe('columns')
 
-    const buttons = buttonList?.children?.blocks
-    expect(buttons).toHaveLength(2)
-    expect(buttons![0]!.bundle).toBe('button')
-    expect(buttons![1]!.bundle).toBe('button')
+    const texts = columns?.children?.field_left
+    expect(texts).toHaveLength(2)
+    expect(texts![0]!.bundle).toBe('text')
+    expect(texts![1]!.bundle).toBe('text')
   })
 
   test('keeps multiple top-level adds at the root', async () => {
@@ -174,9 +189,9 @@ describe('agent: add_paragraphs result shape', async () => {
     const result = await addParagraphs(page, {
       paragraphs: [
         { bundle: 'title' },
-        { bundle: 'text', contentFields: { text: '<p>Body.</p>' } },
+        { bundle: 'text', contentFields: { field_text: '<p>Body.</p>' } },
       ],
-      parent: { type: entityType, uuid: entityUuid, field: 'content' },
+      parent: { type: entityType, uuid: entityUuid, field: 'field_paragraphs' },
       position: 'end',
     })
 
