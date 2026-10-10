@@ -2,22 +2,19 @@
 description:
   blökkli agent E2E tests — mock-provider scripts, tool-bypass tests, support
   helpers, data-test hooks. Use when writing or debugging tests under
-  `test/e2e-drupal/features/agent/` or `test/e2e/features/agent/`.
+  `test/e2e-drupal/features/agent/`.
 ---
 
 # Agent E2E Testing Skill
 
 How to test the agent module end to end. Two distinct test styles live under
-`test/e2e-drupal/features/agent/`, the Drupal suite:
+`test/e2e-drupal/features/agent/`:
 
 ```
 test/e2e-drupal/features/agent/
 ├── tools/         # individual tool tests — bypass the LLM
 └── *.test.ts      # full-flow tests — drive the LLM via the mock provider
 ```
-
-The mock suite keeps only the tool tests that can't move yet, in
-`test/e2e/features/agent/tools/`; new agent specs go into the Drupal suite.
 
 Pick the right one for the question you're answering. Pair this skill with
 `/e2e-testing` (which covers the shared-page pattern, the `data-test` contract,
@@ -218,9 +215,9 @@ After the real tool relay lands, the mock plays the second `agent` turn.
 
 ## How the opt-in works (architecture)
 
-- **Module config**: `enableMock?: boolean` in `AgentModuleOptions`. The
-  playground and the sandbox frontend set it to `true` (the hosted sandbox build
-  must turn it off); production builds leave it off (default).
+- **Module config**: `enableMock?: boolean` in `AgentModuleOptions`. The sandbox
+  frontend sets it to `true` (the hosted sandbox build must turn it off);
+  production builds leave it off (default).
 - **Build templates** emit `export const enableMock` for both the server
   (`agent-server`) and the client (`agent-client`). When off,
   `createMockProvider` isn't imported.
@@ -244,11 +241,8 @@ After the real tool relay lands, the mock plays the second `agent` turn.
   calls `loadLatestFromAdapter` when no mock script is present, or when the
   script has a `restore` entry. This both guarantees a clean turn-0 history for
   the mock provider AND lets parallel mock tests against the same entity run
-  without trampling each other's conversation (both apps keep conversations per
+  without trampling each other's conversation (Drupal keeps conversations per
   host entity).
-
-`?testing=true` is unrelated to the mock — it gates the adapter recorder.
-Mock-script tests don't depend on it.
 
 ## Support helpers (`test/e2e-drupal/support/agent.ts`)
 

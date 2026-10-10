@@ -8,9 +8,8 @@ export interface BlokkliGlobalWindowObject {
    * The full editor API (the object returned by `useBlokkli()`).
    *
    * Assigned (see `setApp`) so E2E tests can both drive the editor (mutations,
-   * event bus) and assert against live state. Playground-only test scaffolding
-   * augments this interface with a `test` namespace (see the playground
-   * `test-cases` feature).
+   * event bus) and assert against live state. The sandbox frontend's
+   * `test-cases` feature augments this interface with a `test` namespace.
    *
    * The assignment is a test-only seam: its call site (in `EditProvider.vue`)
    * is wrapped in `blokkli-test-only` markers and stripped from the published

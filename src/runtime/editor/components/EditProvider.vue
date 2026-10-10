@@ -430,8 +430,8 @@ provide(INJECT_APP, app)
 // Expose the editor API on `window.__BLOKKLI__.app` so the Playwright E2E specs
 // can drive and assert against the live editor. This is a test-only seam: the
 // markers below strip it from the published library during the dist build (see
-// `scripts/mangle-dist.ts` / `stripTestSeams`). The playground builds from
-// `src/`, so the seam survives there and E2E runs against a production build.
+// `scripts/mangle-dist.ts` / `stripTestSeams`). The sandbox's frontend builds
+// from `src/`, so the seam survives there and E2E runs against it.
 // blokkli-test-only:start
 useGlobalBlokkliObject().setApp(app)
 // blokkli-test-only:end

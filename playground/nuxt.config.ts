@@ -92,7 +92,7 @@ export default defineNuxtConfig({
     shim: true,
     strict: true,
     tsConfig: {
-      include: ['../../test/e2e/**/*', '../blokkli/features/**/*'],
+      include: ['../blokkli/features/**/*'],
       compilerOptions: {
         noUncheckedIndexedAccess: true,
       },
@@ -115,7 +115,6 @@ export default defineNuxtConfig({
       agentModule({
         allowedFetchOrigins: ['https://stadt.winterthur.ch'],
         debugPrompt: true,
-        enableMock: true,
         provider: 'anthropic',
         models: [
           {

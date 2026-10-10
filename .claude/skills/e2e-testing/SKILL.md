@@ -1,27 +1,26 @@
 ---
 description:
-  blökkli Playwright E2E tests — shared-page pattern, `data-test` contract,
-  helpers, canvas drag, cleanup checklist. Use when writing, debugging, or
-  running E2E tests: `test/e2e/` against the mock playground, `test/e2e-drupal/`
-  against Drupal sandboxes.
+  blökkli Playwright E2E tests against Drupal sandboxes (`test/e2e-drupal/`) —
+  shared-page pattern, `data-test` contract, helpers, canvas drag, cleanup
+  checklist. Use when writing, debugging, or running E2E tests.
 ---
 
 # E2E Testing Skill
 
 Vitest + `@nuxt/test-utils/e2e` driving a real Playwright `Page` against the
-live editor. Catches what unit tests can't: canvas, pointer gestures,
+live editor, on a sandbox of the ddev site: the Drupal adapter, and Drupal
+stores every mutation. Catches what unit tests can't: canvas, pointer gestures,
 frame-timed drop logic, DOM lifecycle.
 
-- Specs: `test/e2e/*.test.ts`, feature specs under `test/e2e/features/*/`.
+- Specs: `test/e2e-drupal/*.test.ts`, feature specs under
+  `test/e2e-drupal/features/*/`.
 - Helpers: `test/e2e-drupal/support/` (no barrel — import direct from each
   module). Modules: `session`, `sandbox`, `mutations`, `blocks`, `editable`,
   `diff`, `events`, `toolbar`, `menu`, `sidebar`, `overlays`, `options`,
   `preview`, `schedule`, `selection`, `clipboard`, `bundleSelector`, `history`,
   `itemActions`, `keyboard`, `translations`, `agent`, `charts`,
   `complexOptions`.
-
-Most of this skill is about the mock playground suite. The Drupal suite
-(`test/e2e-drupal/`) has the helpers: see "The Drupal suite" below.
+- Fixtures: `test/e2e-drupal/content` (see "Fixtures" below).
 
 For the agent's tests (`features/agent/`) see `/agent-e2e-testing` — covers the
 `tools/` (call one tool, no LLM) vs full-flow (drive the loop via the mock LLM
@@ -33,37 +32,46 @@ onto it — don't leave a copy behind). One-file-only helpers stay local.
 
 ## Running
 
-`bun run test:e2e` against the playground at `http://localhost:3000`. Start it
-yourself first: `bun run dev` (HMR) or `bun run dev:build && bun run dev:start`
-(static, what the suite is tuned against). `setupEditorE2E()` does
-`build=false; server=false`; always `await` it at the top of an async
-`describe`.
+On the host, with ddev running: `bun run test:e2e-drupal [files]`, or
+`bun run verify -- e2e-drupal`. How the sandboxes, their template and the fakes
+for DeepL and the agent work: the `sandbox` skill, "E2E tests".
 
-**Debug with the Playwright MCP**, not the test loop — drive the running
-playground via `browser_run_code_unsafe` / `browser_evaluate`. Lock the recipe
-into a spec, then `bun run test:e2e`.
+To debug, reproduce in a sandbox of your own
+(`ddev drush blokkli-sandbox:create a1`, then
+`ddev drush uli --uri=https://a1.blokkli.ddev.site`) instead of looping the
+test, then lock the recipe into a spec.
 
 ## Page lifecycle: share, don't reopen
 
-**One editor page per file.** Every `page.goto` costs ~2.3s (`__BLOKKLI__.app`
-mount + `[data-test="init-overlay"]` detach after hydration). 6 tests × goto =
-~14s wasted vs one `beforeAll`.
+**One editor page per file.** Opening the editor costs a login and a full
+hydration (`__BLOKKLI__.app` mount + `[data-test="init-overlay"]` detach). 6
+tests × open = seconds wasted vs one `beforeAll`.
 
 ```ts
-describe('My feature', async () => {
-  await setupEditorE2E()
+describe('Something', async () => {
+  const sandbox = workerSandbox()
+  await setup({ host: sandboxHost(sandbox) })
+
   let page: Page
+
   beforeAll(async () => {
-    page = await openEditor('/page/1?blokkliEditing=1&testing=true')
+    resetSandbox(sandbox)
+    page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH)
   })
+
   afterAll(async () => {
     await page.close()
   })
+
   afterEach(async () => {
     /* cheap reset, see checklist */
   })
 })
 ```
+
+**Each spec file resets its sandbox in `beforeAll`.** Between the tests of a
+file, state carries over. A reset ends the session: close the page before it and
+open a new one after it.
 
 **Make accumulating state harmless** one of two ways:
 
@@ -73,10 +81,11 @@ describe('My feature', async () => {
 2. **Shared fixture, different axes per test** — one seeded widget, each test
    mutates a different option key. See `features/options/mutations.test.ts`.
 
-**Parallel pages when state can't be reset cheaply.** Permission overrides and
-entity-status seeds are read once at editor init. Open variants in parallel in
-`beforeAll` (`defaultPage` + `denyPage`, etc.), clean both in parallel in
-`afterEach`. See `features/delete`, `duplicate`, `entity-title`, `publish`.
+**Parallel pages when state can't be reset cheaply.** Permissions, the published
+status and schedules are read once at editor init. Open the variants in parallel
+in `beforeAll` — another user, or another seeded node — and clean them in
+parallel in `afterEach`. See `features/delete`, `duplicate`, `entity-title`,
+`publish`.
 
 **Test ordering matters.** State-flipping tests (`takeOwnership`, submitting a
 `publishOn` that changes a dialog default) run LAST in their page. Comment why
@@ -89,28 +98,25 @@ so reorder-by-mistake doesn't break it.
 | State                                                                                   | Reset                                                                                         |
 | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | Selection                                                                               | `emitEvent(page, 'select:unselect')`                                                          |
-| Adapter recorder                                                                        | `clearAdapterCalls(page)` (else `waitForAdapterCall` resolves on stale)                       |
 | Form overlay / dialog                                                                   | `closeFormOverlay(page, id)` or `emitEvent(page, 'overlay:close')`                            |
 | Toast (6.1s timer, intercepts bottom-toolbar clicks)                                    | `dismissMessages(page)`                                                                       |
 | Lingering drag                                                                          | `if (await withApp(page, a => a.selection.isDragging.value)) emitEvent(page, 'dragging:end')` |
-| App menu / popup                                                                        | `closeAppMenu(page)`, `dismissPopup(page, id)`                                                |
+| App menu                                                                                | `closeAppMenu(page)`                                                                          |
 | `BlokkliTransition` leave-DOM ghost (e.g. `BundleSelector` via `caret-tooltip`, ~150ms) | `loc.waitFor({ state: 'detached' })`                                                          |
 
 ### Reset without reloading
 
-`page.reload()` is ~2s AND re-hydrates the editor. Almost always wrong.
+`page.reload()` re-hydrates the editor. Almost always wrong.
 
-- **EditState mutations** persist to
-  `__30_blokkli_mock_<uuid>_{mutations,index}` localStorage. `page.reload()`
-  _keeps_ them. Remove both keys + emit `reloadState` → ~200ms. See
-  `features/publish/violations.test.ts`. In the Drupal suite:
-  `revertAllChanges(page)`.
-- **Feature localStorage** (e.g. `blokkli_playground_comments`,
-  `blokkli:commentsShowResolved:<context>`, `blokkli:commandPaletteFrequency`) —
-  clear the keys; reload only if read at mount.
-- **Per-language tests**: open at `/de/page/1` directly. The "forbidden in
-  translating mode" comment refers to the UI add-list — `addBlock` (adapter
-  call) works in any language.
+- **The edit state's mutations:** `revertAllChanges(page)` discards them (the
+  editor's "Discard"), a round trip instead of a reset and a new login.
+- **Feature localStorage** (e.g. `blokkli:commentsShowResolved:<context>`,
+  `blokkli:commandPaletteFrequency`) — clear the keys; reload only if read at
+  mount.
+- **Per-language tests**: open the translation's path directly
+  (`editorPath('/de/bibliothek', 'translated')`). The "forbidden in translating
+  mode" comment refers to the UI add-list — `addBlock` (adapter call) works in
+  any language.
 
 ## Test seams: `window.__BLOKKLI__`
 
@@ -135,31 +141,15 @@ await dragNewBlockIntoPage(page, 'title')
 expect(await opened).toBe('title')
 ```
 
-## Adapter recorder (`?testing=true`)
+## What Drupal stored
 
-Open with `?testing=true` → mock adapter records selected calls to
-`localStorage` (survives the publish reload that wipes `window` props).
-`waitForAdapterCall(page, 'method')` resolves with args of the first match.
-
-```ts
-const args = await waitForAdapterCall<{ publishIfUnpublished?: boolean }>(
-  page,
-  'publish',
-)
-```
-
-Add new methods via `recordAdapterCall(...)` in
-`playground/app/mock/blokkli.editAdapter.ts` (gated by `isTesting`). Recorder
-source: `playground/app/mock/testRecorder.ts`.
-
-Caveats:
-
-- **First match wins.** For a 2nd call of the same method, poll the count, then
-  take `.at(-1)`.
-- **`undefined` is dropped** (JSON). A cleared field records as
-  `{ uuid, type }`.
-- **One submit can record extras** — e.g. scheduler clears the untouched section
-  as a `null`. `.find()` by discriminator, don't assume length/order.
+`nextMutation(page, 'pbUpdateParagraphOption')` (`support/mutations.ts`) waits
+for the next request of that mutation and returns its variables, typed by the
+GraphQL operations; an optional filter waits for a matching one. Start it before
+the action, await it after; then reload to see what Drupal stored. That nothing
+was sent: `countMutations(page, name)` returns a counter of the mutation's
+requests from then on. `storedFieldValue(page, uuid, field)` reads the raw value
+the adapter supplies, not the rendered one.
 
 ## `data-test-*` — the DOM contract
 
@@ -192,8 +182,15 @@ matches either; assert exact: `getAttribute === 'true'`.
 
 ## Key helpers
 
-- `openEditor(path?, { timezoneId?, permissions?, localStorage? })` — opens,
-  pre-dismisses `agent`/`tour` popups, waits for editor ready.
+- `openEditor(sandbox, user, path, { mockScript?, timezoneId?, localStorage? })`
+  — logs the user in, pre-dismisses the `agent`/`tour` popups, always gives the
+  agent a mock script (default `[]`; `[{ type: 'restore' }]` to test the restore
+  of a conversation), waits for the editor.
+- `editorPath('/en/blocks', 'blocks')` — a seeded node's path in the editor;
+  `BLOCKS_EDITOR_PATH` is that one. `support/sandbox.ts` has the reset, the
+  login path and `seedUuid()`.
+- `claimEditState(sandbox, user, path)` — makes the user the owner of the node's
+  edit state (they open the editor and close it).
 - `waitForEditorReady(page)` — re-runnable after a test-driven `page.goto`.
 - `withApp`, `setFixedTime`, `nextEditableOpen`, `blockCount`, `getHostContext`.
 - `addBlock(page, { bundle, fieldName, entityUuid? })` → uuid. **The cheap way
@@ -205,9 +202,8 @@ matches either; assert exact: `getAttribute === 'true'`.
   primitive-typed props remain). Pair with `toMatchInlineSnapshot` to assert a
   whole post-mutation tree in one shot instead of N individual `expect`s.
 - `toolbarButton`, `undo`, `openAppMenu`, `closeAppMenu`, `appMenuButton`,
-  `openSidebar`, `popup`, `dismissPopup`, `dialog`, `dialogSubmit`,
-  `dialogCancel`, `closeFormOverlay`, `dismissMessages`, `plaintextEditor`.
-- `clearAdapterCalls`, `waitForAdapterCall`, `recordedAdapterCalls`.
+  `openSidebar`, `dialog`, `dialogSubmit`, `closeFormOverlay`,
+  `dismissMessages`, `plaintextEditor`.
 - Editable/diff: `openEditableField`, `editableText`, `waitForEditableText`,
   `runDiffApproval`, `applyFieldDiff`, `applyDiff`, `cancelDiff`.
 - `getPreviewFrame(page)` — preview iframe `Frame`, gated on hydration.
@@ -215,6 +211,8 @@ matches either; assert exact: `getAttribute === 'true'`.
   pointer drag onto a canvas-rendered drop slot. Use ONLY when the drag gesture
   is what's under test (the helper encapsulates the gesture; for drop-handler
   logic alone, see `app.dragdrop.getDropHandler(...)` below).
+
+Where a helper takes a field, it defaults to `field_paragraphs`.
 
 ## Assertions
 
@@ -228,6 +226,10 @@ matches either; assert exact: `getAttribute === 'true'`.
 - **No translation dependencies.** Assert locale-independent facts: structure,
   `data-test-*` raw values, stable substrings (e.g. `'2026'`). Never read `$t`
   to build expected strings.
+- **Waiting:** a change goes through Drupal, so `expect.poll`'s default second
+  can be too short: wait for its mutation (`nextMutation`) before asserting.
+  Options are stored when the paragraph is deselected (or an action runs); the
+  editor and the preview have them before.
 - **TRAP: not `@playwright/test`.** Web-first matchers DON'T EXIST —
   `expect(loc).toBeDisabled()` throws `Invalid Chai property`. Read state off
   the Locator and assert the boolean with `expect.poll`:
@@ -237,11 +239,56 @@ matches either; assert exact: `getAttribute === 'true'`.
   ```
   To wait, use `loc.waitFor({ state: 'visible' | 'hidden' | 'detached' })`.
 
+## The sandbox's content and users
+
+- **Users** (`content/users.yml`, typed as `TestUser`): Anna Keller and Lea
+  Steiner (`content_editor`), Marc Brunner (`reviewer`), Élodie Favre
+  (`translator`), Jonas Weber (`restricted_editor`), all with an English UI.
+  Whoever opens a node's editor first owns its edit state; another user gets a
+  read-only editor. Test permissions with users of other roles: there are no
+  permission overrides.
+- **Drupal's names:** fields are `field_paragraphs`, `field_text`, …; bundles
+  are the paragraph types.
+- **Harmless choices:** a test that would run "whatever comes first" (the
+  palette's first command, …) picks one by its ID: Drupal publishes or discards
+  as readily as anything else.
+- **Pinned dates** must be in the future: Drupal rejects a schedule less than 2
+  minutes after its own time.
+- **The content model:** a `page` allows neither `section` nor `call_to_action`,
+  an `editorial` node does; only editorial and office nodes allow fragments (the
+  front page, `home`, is editorial). While editing, a `page` always shows an H2
+  ("Related topics"). Text fields are `frame`, string fields `plain`; a
+  paragraph's `field_title` holds 255 characters at most. A converted paragraph
+  gets a new UUID.
+- **Media:** numeric IDs follow the order of creation; don't rely on them.
+  Adding one through the adapter needs its ID: find it in the media library by
+  its name (`mediaLibraryGetResults`, see `features/analyze/alt-text`).
+- **Fixtures:** add what a spec needs to `test/e2e-drupal/content` when the spec
+  comes, in the seed format (`sandbox/drupal/content/README.md`); the next run
+  rebakes. Reuse a node whose content fits; changing one means running the specs
+  that use its key. Give a paragraph a `key` to find it:
+  `seedUuid('paragraph', key)` (media: `seedUuid('media', key)`, files in
+  `content/files/`). For content the site doesn't allow, mark the entity
+  `invalid: true` (e.g. `nodes/broken.yml`, a title in a gallery): the seed then
+  skips its checks. A paragraph with plain values has no translation, even in a
+  translated node (`nodes/notices.yml`); `outdated: [de]` flags a translation as
+  outdated (`nodes/waste-collection.yml`). `deleted: true` on a user or node
+  deletes it after seeding, leaving its comments without an author or its
+  notifications without a page (`users.yml`: Nora Huber, `nodes/removed.yml`).
+- **The widget** (`sandbox/frontend/app/components/Paragraph/Widget`): a
+  paragraph type for the tests only. It has an option of every type, each value
+  in a cell of its own (`data-test="widget-option-<key>"`), a `field_title`
+  bound to an element, a `field_lead` that is only prop-mapped, and a
+  `field_link` with a title (`field_link.title`). Only E2E sandboxes allow it,
+  on pages. Seeded ones are on `nodes/widgets.yml`; `setupWidget(page)` adds
+  one. A new option type goes here first.
+
 ## Gotchas
 
 - Dropping a block with `addBehaviour` opens its editable, whose overlay
-  intercepts pointer input — `page.keyboard.press('Escape')` before another
-  drag. One drag per test sidesteps it.
+  intercepts pointer input. The text's frame editor has no Escape handler in the
+  main document: close it with `saveByClickAway` (an unchanged overlay saves
+  nothing). One drag per test sidesteps it.
 - Canvas double-click to edit is unreliable (artboard vs screen coords) — use
   `eventBus.emit('editable:open', { fieldName, uuid? })`.
 - **Drop logic without a canvas drop:**
@@ -253,16 +300,16 @@ matches either; assert exact: `getAttribute === 'true'`.
   `app.selection.isDragging` / `dragItems` (then
   `emitEvent(page, 'dragging:end')`).
 - **Deterministic time:** `setFixedTime(page, instant)` fakes only `Date`
-  (rAF/timers keep running). Pair with
-  `openEditor(path, { timezoneId: 'UTC' })`. **TRAP**: a frozen `Date.now()`
-  stalls the canvas drag (move throttling reads it) — pin AFTER any drag. Pick
-  mid-month midday so TZ offsets can't shift "today".
+  (rAF/timers keep running). Pair with `openEditor`'s `timezoneId: 'UTC'`.
+  **TRAP**: a frozen `Date.now()` stalls the canvas drag (move throttling reads
+  it) — pin AFTER any drag. Pick mid-month midday so TZ offsets can't shift
+  "today".
 - **`BundleSelector` search input swallows Escape** (`@keydown.capture.stop`
   kills it before the keyboard provider). To dismiss in cleanup, click
   `[data-test="artboard-tooltip-close"]` instead.
-- Timeouts are tight: `testTimeout: 15s`, `hookTimeout: 15s`. If you're tempted
-  to bump them, fix the underlying race — almost always the cleanup checklist
-  above.
+- Timeouts are tight: `testTimeout: 15s`, `hookTimeout: 30s` (the hooks reset
+  sandboxes). If you're tempted to bump them, fix the underlying race — almost
+  always the cleanup checklist above.
 - **Responsive-preview iframe sync**: same-origin iframe (`?blokkliPreview`).
   Reach via
   `(await page.locator('[data-test="preview-iframe"]').elementHandle()).contentFrame()`,
@@ -278,13 +325,9 @@ matches either; assert exact: `getAttribute === 'true'`.
 
 ## The `test-cases` feature
 
-Backs `.test`, in two copies with the same API:
-`playground/blokkli/features/test-cases/` for the mock suite, and
-`sandbox/frontend/blokkli/features/test-cases/` for the Drupal suite. The
-sandbox's is `devOnly`: the dev server has it, the hosted production build
-doesn't. Its scenarios name the sandbox's fields (`field_lead`,
-`title.field_title`, `text.field_text`). The playground's copy goes with the
-mock suite; **new cases go into the sandbox's copy only.**
+`sandbox/frontend/blokkli/features/test-cases/` backs `.test`. It is `devOnly`:
+the dev server has it, the hosted production build doesn't. Its scenarios name
+the sandbox's fields (`field_lead`, `title.field_title`, `text.field_text`).
 
 `index.vue` registers the feature + `PluginSidebar` + the
 `window.__BLOKKLI__.test` lifecycle (assign on mount, delete on unmount). One
@@ -293,116 +336,12 @@ component per scenario under `cases/<Name>/index.vue`; each emits
 before `.test` is populated. Add a case = new `cases/<Name>/index.vue` + extend
 `BlokkliTestApi` in `types.ts`. Don't grow `index.vue`.
 
-## The Drupal suite (`test/e2e-drupal/`)
-
-The same tools against a sandbox of the ddev site: the Drupal adapter, and
-Drupal stores every mutation. How the sandboxes, their template and the fakes
-for DeepL and the agent work: the `sandbox` skill, "E2E tests". Run on the host,
-with ddev running: `bun run test:e2e-drupal`.
-
-```ts
-describe('Something', async () => {
-  const sandbox = workerSandbox()
-  await setup({ host: sandboxHost(sandbox) })
-
-  let page: Page
-
-  beforeAll(async () => {
-    resetSandbox(sandbox)
-    page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH)
-  })
-
-  afterAll(async () => {
-    await page.close()
-  })
-})
-```
-
-- **`openEditor(sandbox, user, path, opts)`** comes from
-  `test/e2e-drupal/support/session.ts`, not from the mock suite: it logs the
-  user in and always gives the agent a mock script (`mockScript`, default `[]`;
-  `[{ type: 'restore' }]` to test the restore of a conversation). Also
-  `timezoneId` and `localStorage` entries, as in the mock suite.
-  `editorPath('/en/blocks', 'blocks')` is a seeded node's path in the editor.
-  `support/sandbox.ts` has the reset, the login path and `seedUuid()`.
-- **Users** (`content/users.yml`, typed as `TestUser`): Anna Keller and Lea
-  Steiner (`content_editor`), Marc Brunner (`reviewer`), Élodie Favre
-  (`translator`), Jonas Weber (`restricted_editor`), all with an English UI.
-  Whoever opens a node's editor first owns its edit state; another user gets a
-  read-only editor. `claimEditState(sandbox, user, path)` makes a user the owner
-  (they open the editor and close it).
-- **Each spec file resets its sandbox in `beforeAll`.** Between the tests of a
-  file, state carries over, as in the mock suite. A reset ends the session:
-  close the page before it and open a new one after it.
-- **The other helpers in `support/`:** `withApp`, `waitForEditorReady`,
-  `addBlock`, the agent and diff helpers, and anything else that drives the
-  editor's UI or `window.__BLOKKLI__.app`. Where they take a field, it defaults
-  to `field_paragraphs`.
-- **What Drupal stored:** `nextMutation(page, 'pbUpdateParagraphOption')`
-  (`support/mutations.ts`) waits for the next request of that mutation and
-  returns its variables, typed by the GraphQL operations; an optional filter
-  waits for a matching one. Start it before the action, await it after; then
-  reload to see what Drupal stored. It replaces the mock suite's recorder. That
-  nothing was sent: `countMutations(page, name)` returns a counter of the
-  mutation's requests from then on.
-- **Resetting between tests:** `revertAllChanges(page)` discards the edit state
-  (the editor's "Discard"), a round trip instead of a reset and a new login.
-- **Playground-only, not available here:** the adapter recorder
-  (`?testing=true`), the mock adapter's localStorage state, its translation mock
-  and the permission overrides. Test permissions with users of other roles.
-- **Drupal's names:** fields are `field_paragraphs`, `field_text`, …; bundles
-  are the paragraph types.
-- **Waiting:** a change goes through Drupal, so `expect.poll`'s default second
-  can be too short: wait for its mutation (`nextMutation`) before asserting.
-  Options are stored when the paragraph is deselected (or an action runs); the
-  editor and the preview have them before.
-- **Harmless choices:** a test that would run "whatever comes first" (the
-  palette's first command, …) picks one by its ID: Drupal publishes or discards
-  as readily as anything else.
-- **Pinned dates** must be in the future: Drupal rejects a schedule less than 2
-  minutes after its own time.
-- **The content model:** a `page` allows neither `section` nor `call_to_action`,
-  an `editorial` node does; only editorial and office nodes allow fragments (the
-  front page, `home`, is editorial). While editing, a `page` always shows an H2
-  ("Related topics"). Text fields are `frame`, string fields `plain`; a
-  paragraph's `field_title` holds 255 characters at most. A converted paragraph
-  gets a new UUID.
-- **Media:** numeric IDs follow the order of creation; don't rely on them.
-  Adding one through the adapter needs its ID: find it in the media library by
-  its name (`mediaLibraryGetResults`, see `features/analyze/alt-text`).
-- **A mock spec that stays** (the mock can do what Drupal can't, or does
-  differently) says why in its docblock and names its Drupal counterpart.
-- **Fixtures:** add what a spec needs to `test/e2e-drupal/content` when the spec
-  comes, in the seed format (`sandbox/drupal/content/README.md`); the next run
-  rebakes. Reuse a node whose content fits; changing one means running the specs
-  that use its key. Give a paragraph a `key` to find it:
-  `seedUuid('paragraph', key)` (media: `seedUuid('media', key)`, files in
-  `content/files/`). For content the site doesn't allow, mark the entity
-  `invalid: true` (e.g. `nodes/broken.yml`, a title in a gallery): the seed then
-  skips its checks. A paragraph with plain values has no translation, even in a
-  translated node (`nodes/notices.yml`); `outdated: [de]` flags a translation as
-  outdated (`nodes/waste-collection.yml`). `deleted: true` on a user or node
-  deletes it after seeding, leaving its comments without an author or its
-  notifications without a page (`users.yml`: Nora Huber, `nodes/removed.yml`).
-- **The widget** (`sandbox/frontend/app/components/Paragraph/Widget`): a
-  paragraph type for the tests only, like the playground's widget. It has an
-  option of every type, each value in a cell of its own
-  (`data-test="widget-option-<key>"`), a `field_title` bound to an element, a
-  `field_lead` that is only prop-mapped, and a `field_link` with a title
-  (`field_link.title`). Only E2E sandboxes allow it, on pages. Seeded ones are
-  on `nodes/widgets.yml`; `setupWidget(page, 'field_paragraphs')` adds one. A
-  new option type goes here first.
-
 ## Typechecking
 
-E2E specs span `src/runtime` AND an app's scaffolding (the `.test` augmentation,
-the generated types), so each suite typechecks with the app it runs against:
-
-- **`test/e2e/`:** `test/e2e/tsconfig.json` references
-  `playground/.nuxt/tsconfig.app.json`; `playground/nuxt.config.ts` includes
-  `../../test/e2e/**/*` and `../blokkli/features/**/*`. Covered by
-  `bun run typecheck:playground`.
-- **`test/e2e-drupal/`:** references `sandbox/frontend/.nuxt/tsconfig.app.json`;
-  `sandbox/frontend/nuxt.config.ts` includes `../blokkli/features/**/*` and
-  `../../../test/e2e-drupal/**/*`. Covered by
-  `bun run typecheck:sandbox-frontend`.
+E2E specs span `src/runtime` AND the app's scaffolding (the `.test`
+augmentation, the generated types), so they typecheck with the sandbox's
+frontend: `test/e2e-drupal/tsconfig.json` references
+`sandbox/frontend/.nuxt/tsconfig.app.json`, and
+`sandbox/frontend/nuxt.config.ts` includes `../blokkli/features/**/*` and
+`../../../test/e2e-drupal/**/*`. Covered by
+`bun run typecheck:sandbox-frontend`.

@@ -47,22 +47,6 @@ export default defineConfig({
       },
       {
         test: {
-          name: 'e2e',
-          // Recurse: feature-specific specs live under `test/e2e/features/`.
-          include: ['test/e2e/**/*.{test,spec}.ts'],
-          environment: 'node',
-          // E2E drives a real browser against the locally-running playground.
-          // No build runs in `setup()` (host mode), so timeouts only need to
-          // cover page load + hydration + a few editor interactions — not a
-          // ~30s Nuxt build. A genuinely stuck test fails fast instead of
-          // burning a minute on a transition that never finishes.
-          testTimeout: 15000,
-          hookTimeout: 15000,
-          maxWorkers: 4,
-        },
-      },
-      {
-        test: {
           name: 'e2e-drupal',
           // Against a sandbox of the ddev site, one per worker
           // (test/e2e-drupal/support/sandbox.ts).

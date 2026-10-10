@@ -472,8 +472,8 @@ that with settings management, which is off).
   and need the `.nuxt` folders the daemons generate.
 - `typecheck:playground` fails in the container when the host's `bun run dev`
   rebuilt `dist/` (its symlinks point to host paths); run it on the host.
-- E2E runs on the host: against the mock playground, `bun run test:e2e`; against
-  sandboxes of this site, `bun run test:e2e-drupal` (see E2E tests).
+- E2E runs on the host, against sandboxes of this site:
+  `bun run test:e2e-drupal` (see E2E tests).
 - The module's own tests and checks run in the submodule's own ddev project: in
   `sandbox/drupal/paragraphs_blokkli`, `ddev phpunit-parallel`, `ddev phpcs`,
   `ddev phpstan`.

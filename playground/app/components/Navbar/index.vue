@@ -30,7 +30,7 @@
           <li>
             <a href="https://docs.blokk.li">Docs</a>
           </li>
-          <li v-if="!isTesting">
+          <li>
             <iframe
               src="https://ghbtns.com/github-btn.html?user=blokkli&repo=editor&type=star&count=true"
               frameborder="0"
@@ -48,10 +48,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useRuntimeConfig, useRoute } from '#imports'
-
-const route = useRoute()
-const isTesting = computed(() => route.query.testing === 'true')
+import { useRuntimeConfig } from '#imports'
 
 const version = useRuntimeConfig().public.version
 

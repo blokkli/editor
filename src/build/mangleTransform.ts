@@ -215,7 +215,7 @@ export function mangleTemplateAndScript(code: string): string {
  *
  * 1. `data-test*` attributes (static `data-test="…"`, and bound
  *    `:data-test-…="…"` / `v-bind:data-test="…"`). These exist only as the
- *    stable selector contract for the Playwright specs in `test/e2e/`. There
+ *    stable selector contract for the Playwright specs in `test/e2e-drupal/`. There
  *    are no script/style usages of `data-test` in `src/`, so a template-level
  *    strip is safe and complete.
  * 2. Code regions wrapped in test-only markers:
@@ -230,8 +230,8 @@ export function mangleTemplateAndScript(code: string): string {
  *    and templates.
  *
  * Only the dist post-process (`scripts/mangle-dist.ts`) runs this. The
- * playground builds the editor from `src/`, not `dist/`, so the seams stay
- * intact there and E2E keeps working against a production build.
+ * sandbox's frontend builds the editor from `src/`, not `dist/`, so the seams
+ * stay intact there and E2E keeps working.
  */
 export function stripTestSeams(code: string): string {
   let result = code

@@ -16,9 +16,6 @@ import { allTypes } from './mock/allTypes'
 import { conversions } from './mock/conversions'
 import { entityStorageManager } from './mock/entityStorage'
 import { state, editState, mapBlockItem, exportState } from './mock/state'
-import { recordAdapterCall } from './mock/testRecorder'
-import { readPermissionOverrides } from './mock/permissionOverrides'
-import { readOwnershipOverride } from './mock/ownershipOverride'
 import { getParagraphBundles } from './mock/state/Paragraph'
 import type { MutatedState } from './mock/state/EditState'
 import { ContentPage, type Content } from './mock/state/Entity/Content'
@@ -47,10 +44,7 @@ import type {
   DroppableFieldConfig,
   EditableFieldConfig,
 } from '#blokkli/editor/features/editable-field/types'
-import type {
-  FieldConfig,
-  BlockPermission,
-} from '#blokkli/editor/types/definitions'
+import type { FieldConfig } from '#blokkli/editor/types/definitions'
 import type {
   DroppableFieldGetItemsEvent,
   DroppableFieldUpdateEvent,
@@ -193,10 +187,6 @@ const textAnalyzer = defineAnalyzer(() => {
     id: 'text-analyzer',
     continuous: true,
     run: async function (context) {
-      const isTesting = window.location.search.includes('testing=true')
-      if (isTesting) {
-        return null
-      }
       const allTextElements = context.getTextElements()
 
       // Prepare data for API call
@@ -248,15 +238,11 @@ export default defineBlokkliEditAdapter((ctx) => {
   const router = useRouter()
   const route = useRoute()
 
-  const isTesting = route.query.testing === 'true'
-
   // =============================================================================
   // Debugging
   // =============================================================================
-  // Set to false to debug the "take ownership" flow. In E2E specs the initial
-  // state is seeded via `ownershipOverride.ts` (gated on `isTesting`).
-  const ownershipOverride = isTesting ? readOwnershipOverride() : null
-  let isOwner = ownershipOverride?.currentUserIsOwner ?? true
+  // Set to false to debug the "take ownership" flow.
+  let isOwner = true
   const mockResponse = (
     mutatedState: MutatedState,
   ): Promise<MutationResponseLike<MutatedState>> => {
@@ -572,13 +558,6 @@ export default defineBlokkliEditAdapter((ctx) => {
         'list_users',
         'transfer_blocks',
       ]
-      // Let E2E specs replace the user permissions (see permissionOverrides.ts).
-      if (isTesting) {
-        const override = readPermissionOverrides().userPermissions
-        if (override) {
-          return Promise.resolve(override as UserPermissions[])
-        }
-      }
       return Promise.resolve(permissions)
     },
     getCurrentUser() {
@@ -609,23 +588,6 @@ export default defineBlokkliEditAdapter((ctx) => {
       return Promise.resolve([])
     },
     getAllBundles() {
-      // Let E2E specs override per-bundle block permissions (see
-      // permissionOverrides.ts) without hardcoding test cases in the adapter.
-      if (isTesting) {
-        const overrides = readPermissionOverrides().blockPermissions
-        if (overrides) {
-          return Promise.resolve(
-            allTypes.map((type) =>
-              overrides[type.id]
-                ? {
-                    ...type,
-                    permissions: overrides[type.id] as BlockPermission[],
-                  }
-                : type,
-            ),
-          )
-        }
-      }
       return Promise.resolve(allTypes)
     },
     getConversions() {
@@ -776,9 +738,6 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
     applyHostTransformPlugin: (e) => addMutation('transform_host', e),
     takeOwnership: async () => {
-      if (isTesting) {
-        recordAdapterCall('take_ownership', {})
-      }
       isOwner = true
       const entity = getEntity()
       const mutatedState = await editState.getMutatedState(
@@ -848,10 +807,9 @@ export default defineBlokkliEditAdapter((ctx) => {
         currentIndex: editState.currentIndex,
         mutations: editState.getMutationItems(),
         currentUserIsOwner: isOwner,
-        ownerName: ownershipOverride?.ownerName ?? state.owner.name,
-        ownerId: ownershipOverride?.ownerId ?? state.owner.id,
+        ownerName: state.owner.name,
+        ownerId: state.owner.id,
         // The mock has no persisted "changed" timestamp — fake it as "now".
-        // Using Date.now() keeps E2E deterministic under setFixedTime().
         lastChanged: Math.floor(Date.now() / 1000),
         mutatedEntity: inputState.context.entity.getData(),
         mutatedState: {
@@ -867,13 +825,8 @@ export default defineBlokkliEditAdapter((ctx) => {
         entity: {
           id: ctx.value.entityUuid,
           label: 'Demo Page',
-          // The mock entity is unpublished by default. E2E specs flip this via
-          // localStorage to exercise the entity-title status indicator's
-          // published branches (gated by `isTesting`, like the permission and
-          // schedule overrides).
-          status:
-            isTesting &&
-            localStorage.getItem('blokkli:test:entityStatus') === 'true',
+          // The mock entity is unpublished.
+          status: false,
           bundleLabel: 'Page',
         },
         translationState: {
@@ -935,9 +888,6 @@ export default defineBlokkliEditAdapter((ctx) => {
       }
     },
     markTranslationUpToDate: (uuids, langcode) => {
-      if (isTesting) {
-        recordAdapterCall('mark_translation_up_to_date', { uuids, langcode })
-      }
       return addMutation('mark_translation_up_to_date', { uuids, langcode })
     },
 
@@ -1227,9 +1177,6 @@ export default defineBlokkliEditAdapter((ctx) => {
       }),
 
     convertBlocks: (uuids, targetBundle) => {
-      if (isTesting) {
-        recordAdapterCall('convertBlocks', { uuids, targetBundle })
-      }
       return addMutation('convert', {
         uuids,
         targetBundle,
@@ -1299,27 +1246,12 @@ export default defineBlokkliEditAdapter((ctx) => {
 
       const paragraphs = e.uuids.map(serialize).filter(falsy)
       if (!paragraphs.length) {
-        if (isTesting) {
-          recordAdapterCall('exportBlocksToTransferable', {
-            uuids: e.uuids,
-            bundles: null,
-            transferable: null,
-          })
-        }
         return null
       }
 
       const envelope = {
         bundles: paragraphs.map((p) => p.bundle),
         transferable: JSON.stringify({ version: 1, paragraphs }),
-      }
-
-      if (isTesting) {
-        recordAdapterCall('exportBlocksToTransferable', {
-          uuids: e.uuids,
-          bundles: envelope.bundles,
-          transferable: envelope.transferable,
-        })
       }
 
       return envelope
@@ -1344,28 +1276,10 @@ export default defineBlokkliEditAdapter((ctx) => {
         | MockImportSummary
         | undefined
 
-      if (isTesting) {
-        recordAdapterCall('importBlocksFromTransferable', {
-          host: e.host,
-          afterUuid: e.afterUuid ?? null,
-          importSummary,
-        })
-      }
-
       return { ...result, importSummary }
     },
 
     updateFieldValue: (e) => {
-      if (isTesting) {
-        // Record the editor-facing method (not the mutation it maps to): in a
-        // German locale this routes to `edit_translation`, so keying on the
-        // mutation id would make E2E assertions mode-dependent.
-        recordAdapterCall('updateFieldValue', {
-          uuid: e.uuid,
-          fieldName: e.fieldName,
-          fieldValue: e.fieldValue,
-        })
-      }
       const lang = ctx.value.language
       if (lang && lang !== 'en') {
         return addMutation('edit_translation', {
@@ -1382,12 +1296,6 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     updateEntityFieldValue: (e) => {
-      if (isTesting) {
-        recordAdapterCall('updateEntityFieldValue', {
-          fieldName: e.fieldName,
-          fieldValue: e.fieldValue,
-        })
-      }
       return addMutation('update_entity_field_value', {
         fieldName: e.fieldName,
         fieldValue: e.fieldValue,
@@ -1395,12 +1303,6 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     importTranslationsBatched: ({ items, markUpToDate }) => {
-      if (isTesting) {
-        recordAdapterCall('import_translations_batched', {
-          items,
-          markUpToDate,
-        })
-      }
       return addMutation('import_translations_batched', { items, markUpToDate })
     },
 
@@ -1555,9 +1457,6 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     updateOptions: (options) => {
-      if (isTesting) {
-        recordAdapterCall('update_options', { options })
-      }
       return addMutation('update_options', {
         options,
       })
@@ -2075,13 +1974,6 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     async fragmentsAddBlock(e) {
-      if (isTesting) {
-        recordAdapterCall('fragmentsAddBlock', {
-          name: e.name,
-          host: e.host,
-          preceedingUuid: e.preceedingUuid ?? null,
-        })
-      }
       const blockUuid = e.options ? crypto.randomUUID() : undefined
       const result = await addMutation('add', {
         bundle: 'blokkli_fragment',
@@ -2197,10 +2089,6 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     async publish(options) {
-      if (isTesting) {
-        recordAdapterCall('publish', options)
-      }
-
       const delay = getRandomNumberInRange(400, 1600)
       await sleep(delay)
 
@@ -2246,9 +2134,8 @@ export default defineBlokkliEditAdapter((ctx) => {
         }
       }
 
-      // Only persist in dev mode (and not under E2E, so tests don't clobber the
-      // playground's persisted snapshot).
-      if (import.meta.dev && !isTesting) {
+      // Only persist in dev mode.
+      if (import.meta.dev) {
         try {
           const data = await exportState()
 
@@ -2277,10 +2164,6 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     async scheduleEditState(options) {
-      if (isTesting) {
-        recordAdapterCall('scheduleEditState', options)
-      }
-
       const scheduleKey = `blokkli_schedule_${options.hostEntityType}_${options.hostEntityUuid}`
       const scheduleData = {
         date: options.date,
@@ -2301,9 +2184,6 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     async setBlockScheduleDate(blocks) {
-      if (isTesting) {
-        recordAdapterCall('setBlockScheduleDate', { blocks })
-      }
       return addMutation('set_block_schedule', { blocks })
     },
 
@@ -2614,9 +2494,6 @@ export default defineBlokkliEditAdapter((ctx) => {
     },
 
     updateHostOptions: (options) => {
-      if (isTesting) {
-        recordAdapterCall('update_host_options', { options })
-      }
       return addMutation('update_host_options', {
         options,
       })
@@ -2659,21 +2536,9 @@ export default defineBlokkliEditAdapter((ctx) => {
 
     adapter.userSettings = {
       load() {
-        // Under E2E, don't restore persisted UI state (open sidebars such as the
-        // responsive preview, etc.) so the editor always starts from a clean,
-        // deterministic layout — and tests don't inherit whatever the dev user
-        // last had open.
-        if (isTesting) {
-          return Promise.resolve({})
-        }
         return $fetch<string>('/api/user-settings')
       },
       async persist(data) {
-        // Likewise, never write test-driven UI changes back to the shared dev
-        // user settings.
-        if (isTesting) {
-          return
-        }
         await $fetch<string>('/api/user-settings', {
           method: 'post',
           body: {

@@ -6,7 +6,7 @@
 # gates piped through tail/grep.
 #
 # Usage:
-#   bun run verify              # all gates EXCEPT e2e and e2e-drupal
+#   bun run verify              # all gates EXCEPT e2e-drupal
 #   bun run verify -- <gate>    # run a single gate
 #
 # Gates:
@@ -19,7 +19,6 @@
 #   php         phpcs and phpstan over sandbox/drupal/web/modules/custom
 #     (skipped without PHP or sandbox/drupal/vendor)
 #   unit        vitest unit tests
-#   e2e         vitest E2E tests (requires the playground on localhost:3000)
 #   e2e-drupal  vitest E2E tests against sandboxes of the ddev site (on the
 #     host, with ddev running)
 
@@ -64,18 +63,6 @@ run_gate() {
     printf '  ✗ %s FAILED (exit %s, %ss)\n' "$name" "$status" "$duration"
     FAILED+=("$name")
   fi
-}
-
-gate_e2e() {
-  # The E2E suite runs against an already-running playground. Fail fast with a
-  # clear message instead of letting every spec time out.
-  if ! (exec 3<>/dev/tcp/127.0.0.1/3000) 2>/dev/null; then
-    printf '  ✗ test:e2e FAILED: playground is not running on localhost:3000\n'
-    printf '    Start it first: bun run dev (or dev:build && dev:start)\n'
-    FAILED+=("test:e2e (playground not running)")
-    return
-  fi
-  run_gate "test:e2e" bun run test:e2e
 }
 
 gate_e2e_drupal() {
@@ -178,9 +165,6 @@ case "$GATE" in
   unit | test:unit)
     run_gate "test:unit" bun run test:unit
     ;;
-  e2e | test:e2e)
-    gate_e2e
-    ;;
   e2e-drupal | test:e2e-drupal)
     gate_e2e_drupal
     ;;
@@ -189,7 +173,7 @@ case "$GATE" in
     printf 'Valid gates: format, lint, typecheck, typecheck:build,\n' >&2
     printf 'typecheck:runtime, typecheck:server, typecheck:playground,\n' >&2
     printf 'typecheck:sandbox-frontend, typecheck:sandbox-control,\n' >&2
-    printf 'php, unit, e2e, e2e-drupal\n' >&2
+    printf 'php, unit, e2e-drupal\n' >&2
     exit 2
     ;;
 esac
@@ -201,8 +185,7 @@ else
   printf 'FAILED gates: %s\n' "${FAILED[*]}"
 fi
 if [ "$E2E_SKIPPED" -eq 1 ]; then
-  printf 'NOTE: E2E tests were NOT run. Run them with: bun run verify -- e2e\n'
-  printf '      and bun run verify -- e2e-drupal\n'
+  printf 'NOTE: E2E tests were NOT run. Run them with: bun run verify -- e2e-drupal\n'
 fi
 if [ "${#SANDBOX_SKIPPED[@]}" -gt 0 ]; then
   printf 'NOTE: skipped %s: the .nuxt of the\n' "${SANDBOX_SKIPPED[*]}"

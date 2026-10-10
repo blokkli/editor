@@ -18,10 +18,9 @@ You have SEVERAL skills available that you MUST use!!
 - **typecheck** => Use when you need to check Typescript types!
 - **changelog** => Use when creating changelog entries for a new release
 - **e2e-testing** => Use when writing, debugging, or running the Playwright E2E
-  tests (`test/e2e/`, and `test/e2e-drupal/` against Drupal sandboxes)
+  tests (`test/e2e-drupal/`, against Drupal sandboxes)
 - **agent-e2e-testing** => Use when writing or debugging tests under
-  `features/agent/` of either E2E suite (mock-provider scripts, tool-bypass
-  tests)
+  `test/e2e-drupal/features/agent/` (mock-provider scripts, tool-bypass tests)
 - **sandbox** => Use when working on `sandbox/` or `.ddev/`: how the Drupal
   site, its Nuxt app, the control app and the sandboxes are set up
 
@@ -116,11 +115,11 @@ individual gates by hand.**
 bun run verify                 # format:fix, lint:fix, all 5 typechecks,
                                # phpcs and phpstan (Drupal's custom modules),
                                # unit tests. Does NOT run e2e (and says so).
-bun run verify -- e2e          # E2E suite (needs the mock playground running)
 bun run verify -- e2e-drupal   # E2E against Drupal sandboxes (host, ddev running)
 bun run verify -- <gate>       # One gate only: format, lint, typecheck,
-                               # typecheck:runtime (etc.), php, unit, e2e
-bun run test:watch             # Watch mode during development
+                               # typecheck:runtime (etc.), php, unit,
+                               # e2e-drupal
+bun run test:unit:watch        # Unit tests in watch mode
 ```
 
 Rules:

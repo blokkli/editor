@@ -162,8 +162,8 @@ export class EntityStorageManager {
       750,
       1400,
     )
-    // Intentionally has no alt text: the alt text analyzer E2E test adds an
-    // image block referencing this media to get a reported violation.
+    // Intentionally has no alt text, so an image block referencing this media
+    // gets an alt text violation.
     this.createImage(
       '9',
       '/placeholder.jpg',
@@ -438,19 +438,14 @@ export class EntityStorageManager {
       this.createVideo((i + 100).toString(), item.url, item.title)
     })
 
-    // An intentionally empty page — no blocks in any field. Used by agent
-    // E2E tests that need a blank canvas (e.g. asserting that the agent can
-    // add blocks to an empty page, or rendering the empty-state UI).
+    // An intentionally empty page — no blocks in any field (e.g. for the
+    // empty-state UI).
     const emptyPage = new ContentPage('4')
     emptyPage.title().setText('Empty page')
     emptyPage.lead().setText('')
     this.storages.content.add(emptyPage)
 
-    // Another empty page, reserved for agent E2E tests that exercise
-    // conversation persistence (auto-restore on reload). Conversations are
-    // keyed by entity uuid and `loadLatest` returns the newest one, so these
-    // tests need an entity nothing else writes conversations for — page 4 is
-    // shared by all mock-script agent tests, whose turns also persist.
+    // Another empty page.
     const agentRestorePage = new ContentPage('2')
     agentRestorePage.title().setText('Agent conversation restore page')
     agentRestorePage.lead().setText('')

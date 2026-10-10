@@ -229,8 +229,6 @@ Their DE and FR strings are in `translations` in `nuxt.config.ts`.
   tests. It works on the host and in the container. The typechecks of the
   sandbox's apps need the `.nuxt` folders that their daemons generate, and are
   skipped without them.
-- `bun run verify -- e2e` runs the E2E suite against the mock playground on
-  `localhost:3000`, on the host.
 - `bun run verify -- e2e-drupal` runs the E2E tests in `test/e2e-drupal/`
   against sandboxes of the ddev site, on the host. They bake their own template
   from `test/e2e-drupal/content` the first time and whenever it changes. Neither
