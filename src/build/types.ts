@@ -4,6 +4,7 @@ import type { Theme, ThemeName } from '../global/types/theme'
 import type { CollectedBlockFile } from './Collector/Blocks'
 import type { BlokkliModule } from '../modules/defineBlokkliModule'
 import type { ColorOption } from '../global/types/colorOptions'
+import type { DefinitionString } from '../global/types/blockOptions'
 
 export type { AdapterMethodsBase as AdapterMethods }
 
@@ -76,6 +77,13 @@ export type ModuleOptions = {
    * referencing the option name.
    */
   globalOptions?: BlockDefinitionOptionsInputBase
+
+  /**
+   * The labels of option groups, keyed by the `group` of the options.
+   *
+   * A group without labels is shown as its key.
+   */
+  optionGroups?: Record<string, DefinitionString>
 
   /**
    * Custom path where the blökkli edit adapter can be found.

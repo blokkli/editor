@@ -3,7 +3,7 @@
     class="bk-blokkli-item-options-group"
     :class="{ 'bk-is-active': isActive }"
     data-test="option-group"
-    :data-test-group="label"
+    :data-test-group="groupId"
     :data-test-active="isActive"
   >
     <button
@@ -23,6 +23,7 @@
 import { Icon } from '#blokkli/editor/components'
 
 defineProps<{
+  groupId: string
   label: string
   isActive: boolean
 }>()

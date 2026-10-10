@@ -275,16 +275,15 @@ export async function toggleCheckboxesOption(
 
 /**
  * Open an option `group` dropdown (e.g. `Padding`) by clicking its toggle
- * button. No-op if already open. Group labels are literal strings from
- * `defineBlokkli` — not translated — so the `data-test-group` attribute
- * mirrors them verbatim.
+ * button. No-op if already open. The `data-test-group` attribute is the
+ * options' `group` as written in `defineBlokkli`, not its translated label.
  */
 export async function openOptionGroup(
   page: Page,
-  label: string,
+  groupId: string,
 ): Promise<void> {
   const group = page.locator(
-    `[data-test="option-group"][data-test-group="${label}"]`,
+    `[data-test="option-group"][data-test-group="${groupId}"]`,
   )
   if ((await group.getAttribute('data-test-active')) === 'true') {
     return
@@ -295,7 +294,7 @@ export async function openOptionGroup(
   await group.locator('[data-test="option-group-toggle"]').click()
   await page
     .locator(
-      `[data-test="option-group"][data-test-group="${label}"][data-test-active="true"]`,
+      `[data-test="option-group"][data-test-group="${groupId}"][data-test-active="true"]`,
     )
     .waitFor()
 }

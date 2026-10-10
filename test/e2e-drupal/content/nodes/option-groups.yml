@@ -1,0 +1,8 @@
+# A chart, whose options "Width" and "Height" are in the group `size`, at
+# /en/option-groups and /de/optionsgruppen.
+key: option-groups
+type: page
+title: { en: Option groups, de: Optionsgruppen }
+field_paragraphs:
+  - type: chart
+    key: option-groups-chart

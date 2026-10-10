@@ -38,7 +38,7 @@ const block = defineBlokkli({
       label: { en: 'Width', de: 'Breite', fr: 'Largeur' },
       default: 'content',
       displayAs: 'icons',
-      group: 'Format',
+      group: 'size',
       options: {
         content: {
           label: { en: 'Content', de: 'Inhalt', fr: 'Contenu' },
@@ -62,7 +62,7 @@ const block = defineBlokkli({
       min: 50,
       max: 150,
       step: 10,
-      group: 'Format',
+      group: 'size',
     },
     data: {
       type: 'json',

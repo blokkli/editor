@@ -31,7 +31,7 @@ const block = defineBlokkli({
       },
       placeholder: { en: 'contact', de: 'kontakt', fr: 'contact' },
       default: '',
-      group: 'Navigation',
+      group: 'navigation',
     },
     toc: {
       type: 'checkbox',
@@ -41,7 +41,7 @@ const block = defineBlokkli({
         fr: 'Dans la table des matières',
       },
       default: true,
-      group: 'Navigation',
+      group: 'navigation',
     },
   },
   editor: {

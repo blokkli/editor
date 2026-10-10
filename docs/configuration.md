@@ -69,6 +69,24 @@ blokkli: {
 See [Options](/define-blokkli/options) and
 [defineBlokkli() globalOptions](/define-blokkli#globaloptions) for details.
 
+## optionGroups
+
+**Type:** `Record<string, string | Record<string, string>>`
+
+The labels of option groups, keyed by the `group` of the options. A label is a
+string or one per language, like an option's `label`. A group without labels is
+shown as its key.
+
+```typescript
+blokkli: {
+  optionGroups: {
+    size: { en: 'Size', de: 'Grösse', fr: 'Taille' },
+  },
+}
+```
+
+See [Grouping](/define-blokkli/options#grouping).
+
 ## chunkNames
 
 **Type:** `string[]`\

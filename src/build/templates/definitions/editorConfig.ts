@@ -7,6 +7,7 @@ export default defineCodeTemplate(
   (ctx) => {
     const settingsOverride = ctx.helper.options.settingsOverride || {}
     const colorOptions = ctx.helper.options.colorOptions || {}
+    const optionGroups = ctx.helper.options.optionGroups || {}
     const featureFragmentNames = ctx.getFeatureFragmentNames()
 
     return `
@@ -17,6 +18,8 @@ export const themes = ${JSON.stringify(themes, null, 2)}
 export const theme = ${JSON.stringify(ctx.theme.fullTheme, null, 2)}
 
 export const colorOptions = ${JSON.stringify(colorOptions, null, 2)}
+
+export const optionGroups = ${JSON.stringify(optionGroups, null, 2)}
 
 export const settingsOverride = ${JSON.stringify(settingsOverride)}
 
@@ -77,6 +80,12 @@ export declare const themes: Record<string, Theme>
  * The available color options.
  */
 export declare const colorOptions: Record<ValidColorOption, GeneratedColorOption>
+
+/**
+ * The labels of option groups, keyed by the group, as a string or one per
+ * language.
+ */
+export declare const optionGroups: Record<string, string | Record<string, string>>
 
 /**
  * The default theme.

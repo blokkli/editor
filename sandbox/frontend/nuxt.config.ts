@@ -108,6 +108,10 @@ export default defineNuxtConfig({
   },
 
   blokkli: {
+    optionGroups: {
+      navigation: { en: 'Navigation', de: 'Navigation', fr: 'Navigation' },
+      size: { en: 'Size', de: 'Grösse', fr: 'Taille' },
+    },
     globalOptions: {
       width: {
         type: 'radios',

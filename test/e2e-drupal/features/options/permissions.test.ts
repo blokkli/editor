@@ -24,7 +24,7 @@ const TEXT = seedUuid('paragraph', 'statistics-text')
  *
  * A disabled option outside a group isn't rendered; inside a group it's shown
  * disabled (`data-test-disabled`). The chart's editor is an option outside a
- * group (`data`, a complex option); its height is in the group "Format".
+ * group (`data`, a complex option); its height is in the group `size`.
  *
  * Page lifecycle: one editor page, Jonas on the page "Statistics". Nothing is
  * changed; `afterEach` deselects.
@@ -54,7 +54,7 @@ describe('The options of a paragraph without edit permission', async () => {
 
   test('are disabled', async () => {
     await selectBlock(page, CHART)
-    await openOptionGroup(page, 'Format')
+    await openOptionGroup(page, 'size')
 
     expect(
       await blockOption(page, 'height').getAttribute('data-test-disabled'),

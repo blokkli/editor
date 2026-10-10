@@ -52,8 +52,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                     | `texts`              | low      | open       |
 | F52 | [A comment's label throws](#f52-a-comments-label-throws)                                                                                | `paragraphs_blokkli` | low      | open       |
 | F53 | [Violations while editing come from the stored structure](#f53-violations-while-editing-come-from-the-stored-structure)                 | `paragraphs_blokkli` | medium   | open       |
-| F54 | [`datetime-local` options render as text fields](#f54-datetime-local-options-render-as-text-fields)                                     | `paragraphs_blokkli` | low      | open       |
-| F56 | [Option group labels can't be translated](#f56-option-group-labels-cant-be-translated)                                                  | `@blokkli/editor`    | low      | workaround |
 | F61 | [Edit state responses are never cached](#f61-edit-state-responses-are-never-cached)                                                     | `paragraphs_blokkli` | low      | open       |
 | F62 | [An edit state shows the latest revision without revision access](#f62-an-edit-state-shows-the-latest-revision-without-revision-access) | `paragraphs_blokkli` | low      | to verify  |
 
@@ -834,42 +832,6 @@ From chunk 04 (2026-09-26):
   that a mutation removes leaves no violation in the mutated state.
 - **E2E:** `test/e2e-drupal/invalid-content.test.ts`, "drops the violation once
   the misplaced paragraph is gone", is marked `it.fails` until it's fixed.
-
-## F54: `datetime-local` options render as text fields
-
-- **Found:** 2026-10-08, reading the code for chunk 16.
-- **Reproduced:** 2026-10-10: the call to action's behavior form, rendered in a
-  sandbox, has `<input type="text" name="date" size="60" maxlength="128">` for
-  the option "Date".
-- **Symptom:** in Drupal's paragraph form (the Behavior tab), a `datetime-local`
-  option is a plain text field: no picker, its min and max are ignored, and its
-  format isn't validated.
-- **Cause:** `ParagraphsBlokkliData::buildOptionElement()` builds a `textfield`
-  with `#attributes['type'] = 'datetime-local'`
-  (`src/Plugin/paragraphs/Behavior/ParagraphsBlokkliData.php:206` at `3f07f6e`),
-  and core's `Textfield::preRenderTextfield()` sets the type back to `text`
-  (`core/lib/Drupal/Core/Render/Element/Textfield.php:92`). The kernel test
-  (`OptionsSchemaFormTest.php:157`) checks the render array, not the rendered
-  element.
-- **Fix idea:** a `#pre_render` after the textfield's that restores the type, or
-  core's `datetime` element with a value conversion; a test on the rendered
-  output.
-
-## F56: Option group labels can't be translated
-
-- **Found:** 2026-10-08, reading the code for chunk 16.
-- **Checked:** 2026-10-10. Its type is `group?: string`, while `label` is a
-  `DefinitionString` (`src/global/types/blockOptions.ts`, in this repository);
-  nothing translates it on the way to the form.
-- **Symptom:** an option's `group` is shown as written, in every language.
-- **Cause:** `group` is a plain string, used as the group's key and its label
-  (`src/runtime/editor/features/options/Form/index.vue` `optionGroups`,
-  `Group.vue`). Option and choice labels accept a `DefinitionString` per
-  language; groups don't (like F28).
-- **Workaround in the sandbox:** group labels that are the same in English,
-  German and French ("Navigation", "Format").
-- **Fix idea:** accept a `DefinitionString` for `group`, keyed by its English
-  label or a separate key.
 
 ## F61: Edit state responses are never cached
 

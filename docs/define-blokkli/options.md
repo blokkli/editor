@@ -495,8 +495,7 @@ console.log(options.value.data)
 If your block defines a lot of options the horizontal space available might not
 be enough. To solve this, you can group options into a dropdown.
 
-To do this, just define the desired group label using the `group` property when
-defining options:
+To do this, give the options the same `group`:
 
 ```typescript
 const { options } = defineBlokkli({
@@ -522,4 +521,27 @@ const { options } = defineBlokkli({
     },
   },
 })
+```
+
+The group is shown as written. For a label in several languages, use a key as
+the `group` and define its labels once, in the module option
+[`optionGroups`](/configuration#optiongroups). The editor shows the label for
+its interface language:
+
+```typescript
+// nuxt.config.ts
+blokkli: {
+  optionGroups: {
+    mobile: { en: 'Mobile', de: 'Mobil', fr: 'Mobile' },
+  },
+}
+```
+
+```typescript
+showOnMobile: {
+  type: 'checkbox',
+  label: 'Show on mobile',
+  default: false,
+  group: 'mobile', // [!code focus:1]
+},
 ```

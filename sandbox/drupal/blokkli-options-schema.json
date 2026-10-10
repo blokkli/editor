@@ -141,7 +141,7 @@
         "en": "In percent of the usual height.",
         "fr": "En pour cent de la hauteur habituelle."
       },
-      "group": "Format",
+      "group": "size",
       "label": {
         "de": "Höhe",
         "en": "Height",
@@ -155,7 +155,7 @@
     "width": {
       "default": "content",
       "displayAs": "icons",
-      "group": "Format",
+      "group": "size",
       "label": {
         "de": "Breite",
         "en": "Width",
@@ -881,7 +881,7 @@
         "en": "The ID in links to this heading, the same in every language. Without it, links use the title.",
         "fr": "L’ID dans les liens vers ce titre, le même dans toutes les langues. Sans lui, les liens utilisent le titre."
       },
-      "group": "Navigation",
+      "group": "navigation",
       "label": {
         "de": "Anker",
         "en": "Anchor",
@@ -911,7 +911,7 @@
     },
     "toc": {
       "default": true,
-      "group": "Navigation",
+      "group": "navigation",
       "label": {
         "de": "Im Inhaltsverzeichnis",
         "en": "In the table of contents",

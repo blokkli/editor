@@ -18,10 +18,11 @@
 
     <OptionsFormGroup
       v-for="group in optionGroups"
-      :key="'group_' + group.label"
+      :key="'group_' + group.id"
+      :group-id="group.id"
       :label="group.label"
-      :is-active="group.label === activeGroup"
-      @toggle="onToggleGroup(group.label)"
+      :is-active="group.id === activeGroup"
+      @toggle="onToggleGroup(group.id)"
     >
       <OptionsFormItem
         v-for="plugin in group.options"
@@ -60,6 +61,7 @@ import {
   BK_VISIBLE_LANGUAGES,
 } from './../../../../../global/constants'
 import { fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
+import { optionGroups as optionGroupLabels } from '#blokkli-build/editor-config'
 import {
   getAvailableOptions,
   getMutatedOptionValue,
@@ -72,17 +74,19 @@ if (import.meta.hot) {
 }
 
 type OptionGroup = {
+  /** The options' `group`. */
+  id: string
   label: string
   options: OptionItem[]
 }
 
 const activeGroup = ref('')
 
-function onToggleGroup(label: string) {
-  if (activeGroup.value === label) {
+function onToggleGroup(id: string) {
+  if (activeGroup.value === id) {
     activeGroup.value = ''
   } else {
-    activeGroup.value = label
+    activeGroup.value = id
   }
 }
 
@@ -343,14 +347,19 @@ const singleVisibleOptions = computed(() =>
 const optionGroups = computed<OptionGroup[]>(() => {
   return Object.values(
     visibleOptions.value.reduce<Record<string, OptionGroup>>((acc, option) => {
-      if (option.option.group) {
-        if (!acc[option.option.group]) {
-          acc[option.option.group] = {
-            label: option.option.group,
+      const id = option.option.group
+      if (id) {
+        if (!acc[id]) {
+          // A group without labels is shown as its id.
+          acc[id] = {
+            id,
+            label: definitions.resolveDefinitionString(
+              optionGroupLabels[id] ?? id,
+            ),
             options: [option],
           }
         } else {
-          acc[option.option.group]!.options.push(option)
+          acc[id]!.options.push(option)
         }
       }
       return acc
