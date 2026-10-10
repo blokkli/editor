@@ -1,12 +1,19 @@
 <template>
   <PanelSection
     :title="
-      $t('publishValidationErrorsTitle', 'Cannot publish: validation errors')
+      violations.length
+        ? $t(
+            'publishValidationErrorsTitle',
+            'Cannot publish: validation errors',
+          )
+        : $t('publishErrorsTitle', 'Cannot publish')
     "
     padded
     data-test="publish-validation-errors"
   >
     <InfoBox
+      v-if="violations.length"
+      data-test="publish-violations-info"
       :text="
         $t(
           'publishValidationErrorsDescription',

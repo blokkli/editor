@@ -732,6 +732,7 @@
   "publishDescriptionUnpublished": "Alle Änderungen speichern ohne die Seite zu publizieren",
   "publishDialogTitle": "Änderungen veröffentlichen",
   "publishError": "Änderungen konnten nicht publiziert werden.",
+  "publishErrorsTitle": "Publikation nicht möglich",
   "publishMode": "Veröffentlichungsmodus",
   "publishModeImmediateDescription": "Änderungen sofort veröffentlichen",
   "publishModeSaveDescription": "Änderungen speichern ohne veröffentlichen",

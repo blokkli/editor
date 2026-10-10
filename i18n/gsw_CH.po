@@ -3173,6 +3173,10 @@ msgctxt "publishError"
 msgid "Changes could not be published."
 msgstr "D'Änderige hän nid chönne publiziert wärde."
 
+msgctxt "publishErrorsTitle"
+msgid "Cannot publish"
+msgstr ""
+
 msgctxt "publishMode"
 msgid "Publish mode"
 msgstr "Veröffentlichigsmodus"

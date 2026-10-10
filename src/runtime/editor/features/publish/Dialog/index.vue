@@ -716,11 +716,23 @@ async function onSubmit() {
         mutationStatusItems.value[item.id] = { id: item.id, success: true }
         publishedIds.value.push(item.id)
       } else {
+        const errors = response?.errors ?? []
+        const violations = response?.violations ?? []
         mutationStatusItems.value[item.id] = {
           id: item.id,
           success: false,
-          errors: response?.errors,
-          violations: response?.violations,
+          // A failure without a reason (e.g. a GraphQL error) still says that
+          // something went wrong.
+          errors:
+            errors.length || violations.length
+              ? errors
+              : [
+                  $t(
+                    'unexpectedMutationError',
+                    'An unexpected error happened.',
+                  ),
+                ],
+          violations,
         }
       }
 

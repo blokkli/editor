@@ -56,7 +56,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F53 | [Violations while editing come from the stored structure](#f53-violations-while-editing-come-from-the-stored-structure)                 | `paragraphs_blokkli` | medium   | open       |
 | F54 | [`datetime-local` options render as text fields](#f54-datetime-local-options-render-as-text-fields)                                     | `paragraphs_blokkli` | low      | open       |
 | F56 | [Option group labels can't be translated](#f56-option-group-labels-cant-be-translated)                                                  | `@blokkli/editor`    | low      | workaround |
-| F57 | [A failed publish shows no message](#f57-a-failed-publish-shows-no-message)                                                             | both                 | medium   | open       |
 | F61 | [Edit state responses are never cached](#f61-edit-state-responses-are-never-cached)                                                     | `paragraphs_blokkli` | low      | open       |
 | F62 | [An edit state shows the latest revision without revision access](#f62-an-edit-state-shows-the-latest-revision-without-revision-access) | `paragraphs_blokkli` | low      | to verify  |
 
@@ -911,27 +910,6 @@ From chunk 04 (2026-09-26):
   German and French ("Navigation", "Format").
 - **Fix idea:** accept a `DefinitionString` for `group`, keyed by its English
   label or a separate key.
-
-## F57: A failed publish shows no message
-
-- **Found:** 2026-10-08, reading the code for chunk 16.
-- **Reproduced:** 2026-10-10, in a sandbox, publishing while a drush process
-  held the edit state's lock. Drupal logged the `LockAcquiringException` and
-  answered `errors: ["Internal server error"]` with `action: null`.
-- **Symptom:** when publishing fails for any reason other than validation (e.g.
-  the entity can't be saved, or the lock can't be acquired), the publish dialog
-  shows "Cannot publish: validation errors" without an item.
-- **Cause:**
-  - `paragraphs_blokkli`'s `Publish` data producer only catches
-    `MutationViolationException`
-    (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/Publish.php`
-    at `3f07f6e`); every other exception becomes a GraphQL error.
-  - nuxt-graphql-middleware returns `{ data, errors }` without rejecting, and
-    the Drupal adapter's `mapMutation` ignores `errors`
-    (`src/modules/drupal/runtime/adapter/index.ts:486-498`). Only a failed
-    request reaches the dialog's catch ("An unexpected error happened.").
-- **Fix idea:** the producer returns other exceptions' messages in `errors`, and
-  the adapter turns GraphQL errors into a failed result.
 
 ## F61: Edit state responses are never cached
 
