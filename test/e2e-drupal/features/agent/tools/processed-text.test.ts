@@ -3,7 +3,12 @@ import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import { openSidebar } from '../../../../e2e/support/sidebar'
 import { runAgentTool, runComponentTool } from '../../../../e2e/support/agent'
-import { storedFieldValue } from '../../../../e2e/support/editable'
+import {
+  editableOverlay,
+  openEditableField,
+  plaintextEditor,
+  storedFieldValue,
+} from '../../../../e2e/support/editable'
 import { applyDiff } from '../../../../e2e/support/diff'
 import {
   resetSandbox,
@@ -16,32 +21,33 @@ import { editorPath, openEditor } from '../../../support/session'
 /**
  * The agent must never see — let alone persist — a *processed* field value.
  *
- * Drupal renders a text through its text format, and what is rendered is NOT
- * what is stored: basic_html's external-link filter gives each link to another
- * site `target="_blank"` and appends a visually hidden "(opens in a new tab)".
+ * What the sandbox renders is NOT always what is stored:
+ * - basic_html's external-link filter gives each link to another site
+ *   `target="_blank"` and appends a visually hidden "(opens in a new tab)";
+ * - titles and leads are rendered with Swiss spelling, "ss" for "ß"
+ *   (`blokkli_playground`'s GraphQL resolvers).
+ *
  * The agent's read path (`fieldValue.readValue` → `propsFieldMapping` →
  * `element.innerHTML`) resolves the *rendered* value, and every write basis is
- * derived from that same read, so an agent edit would bake the filter output
- * into the stored value. Re-processing on the next render then compounds it:
+ * derived from that same read, so an agent edit would bake the processing into
+ * the stored value. Re-processing on the next render then compounds it:
  * `filter_html` strips the stored hint's `<span>` but keeps its text, and the
  * filter appends another.
  *
- * The filter does two of the things a text format does, each detectable
- * through a different read path: it injects an attribute (`target`, only
- * visible in markup) and inserts nodes (the hint, also visible to
- * `textContent`, turndown and readability chunking). The texts of the page
- * "Links" (content/nodes/links.yml) are the fixture; the raw values are
- * available through the adapter's `textFieldValues` (read via
+ * Each processing is detectable through a different read path: the filter
+ * injects an attribute (`target`, only visible in markup) and inserts nodes
+ * (the hint, also visible to `textContent`, turndown and readability
+ * chunking); the spelling changes a plain string, on a paragraph and on the
+ * page itself. The page "Links" (content/nodes/links.yml) is the fixture; the
+ * raw values are available through the adapter's `textFieldValues` (read via
  * `storedFieldValue`), which is what Drupal stores.
- *
- * The plain-string cases stay with the mock (`test/e2e/features/agent/tools/
- * processed-text`): Drupal never processes a plain string.
  *
  * `requireApproval: false` drives `update_text_fields` without its approval UI —
  * the tool applies on mount and `runComponentTool` resolves.
  *
  * Page lifecycle: one editor page with the `test-cases` sidebar open. The reads
- * share one text; each write changes its own.
+ * share one text; each write changes its own, and the patch of the page's lead
+ * runs last.
  */
 describe('agent: text field values are always unprocessed', async () => {
   const sandbox = workerSandbox()
@@ -56,8 +62,15 @@ describe('agent: text field values are always unprocessed', async () => {
   /** Attribute injection — visible only in markup (also once JSON-escaped). */
   const TARGET = '_blank'
 
+  /** The page's lead and a title as stored; rendered, "ß" is "ss". */
+  const RAW_LEAD = 'Alpha Straße Beta'
+  const RAW_TITLE = 'Alpha Fußweg'
+
+  /** The page itself. */
+  const HOST = seedUuid('node', 'links')
   /** The text the reads share. */
   const READ = seedUuid('paragraph', 'links-read')
+  const TITLE = seedUuid('paragraph', 'links-title')
 
   let page: Page
 
@@ -88,19 +101,33 @@ describe('agent: text field values are always unprocessed', async () => {
   test('readRawValue returns the stored field value', async () => {
     // The provider-level contract underneath every tool below — and the read
     // basis `delegate_text_rewrite` turns into its `baseValue`.
-    const values = await page.evaluate((uuid) => {
-      const fieldValue = window.__BLOKKLI__!.app!.fieldValue
-      const args = ['paragraph', uuid, 'text', 'field_text', 'markup'] as const
-      return {
-        raw: fieldValue.readRawValue(...args),
-        rendered: fieldValue.readValue(...args),
-      }
-    }, READ)
+    const values = await page.evaluate(
+      ({ read, host }) => {
+        const fieldValue = window.__BLOKKLI__!.app!.fieldValue
+        const text = [
+          'paragraph',
+          read,
+          'text',
+          'field_text',
+          'markup',
+        ] as const
+        const lead = ['node', host, 'page', 'field_lead', 'plain'] as const
+        return {
+          raw: fieldValue.readRawValue(...text),
+          rendered: fieldValue.readValue(...text),
+          rawLead: fieldValue.readRawValue(...lead),
+          renderedLead: fieldValue.readValue(...lead),
+        }
+      },
+      { read: READ, host: HOST },
+    )
     expect(values.raw).toBe(RAW)
+    expect(values.rawLead).toBe(RAW_LEAD)
     // `readValue` is deliberately left alone — the editor's preview machinery
     // restores what was on screen, so it must keep returning the rendered value.
     expect(values.rendered).toContain(HINT)
     expect(values.rendered).toContain(TARGET)
+    expect(values.renderedLead).toBe('Alpha Strasse Beta')
   })
 
   test('get_all_page_content reports raw markup', async () => {
@@ -146,6 +173,22 @@ describe('agent: text field values are always unprocessed', async () => {
     expect(isProcessed(result.structure)).toBe(false)
   })
 
+  test('get_content_fields reports raw plain text for a field of the page', async () => {
+    const result = await runAgentTool(page, 'get_content_fields', {
+      uuids: [HOST],
+      includeNested: false,
+    })
+    const field = result[HOST]?.field_lead
+    expect(field, 'field_lead should be present').toBeDefined()
+    expect((field as { currentValue?: string }).currentValue).toBe(RAW_LEAD)
+  })
+
+  test('get_page_structure reports the raw content of the page', async () => {
+    const result = await runAgentTool(page, 'get_page_structure', {})
+    expect(result.structure).toContain(RAW_LEAD)
+    expect(result.structure).toContain(RAW_TITLE)
+  })
+
   test('search_text returns stored snippets for field matches', async () => {
     const result = await runAgentTool(page, 'search_text', {
       query: 'Alpha',
@@ -173,15 +216,16 @@ describe('agent: text field values are always unprocessed', async () => {
 
   // ── DOM-derived reads ─────────────────────────────────────────────────────
 
-  test('get_page_text reports the inserted hint as rendered text, and says so', async () => {
-    // Deliberately still processed: the hint is genuinely part of the page,
-    // and `get_page_text` is the only tool that captures content belonging to
-    // no field. The payload has to carry its own provenance, so the model
-    // knows it cannot use the text as an edit target — a tool description is
-    // read once, far from the point of use.
+  test('get_page_text reports rendered text, and says so', async () => {
+    // Deliberately still processed: the hint and the spelling are genuinely
+    // part of the page, and `get_page_text` is the only tool that captures
+    // content belonging to no field. The payload has to carry its own
+    // provenance, so the model knows it cannot use the text as an edit target
+    // — a tool description is read once, far from the point of use.
     const result = await runAgentTool(page, 'get_page_text', {})
     expect(result.source).toBe('rendered')
     expect(result.text).toContain(HINT)
+    expect(result.text).toContain('Alpha Fussweg')
   })
 
   // ── Writes: what gets persisted ───────────────────────────────────────────
@@ -262,10 +306,49 @@ describe('agent: text field values are always unprocessed', async () => {
     expect((await renderedText()).split(HINT)).toHaveLength(2)
   })
 
+  test('opening a field’s editor seeds the stored value', async () => {
+    // The path a HUMAN uses: seeded from the rendered value, opening the title
+    // and saving it would store "ss", without the agent involved.
+    await openEditableField(page, 'field_title', TITLE)
+    const editor = plaintextEditor(page)
+    await editor.waitFor({ state: 'visible' })
+    expect(await editor.inputValue()).toBe(RAW_TITLE)
+
+    await page.keyboard.press('Escape')
+    await editableOverlay(page).waitFor({ state: 'detached' })
+  })
+
   // ── Paths that are ALREADY correct ────────────────────────────────────────
 
   test('get_readability_issues analyses raw values', async () => {
     const result = await runAgentTool(page, 'get_readability_issues', {})
     expect(isProcessed(JSON.stringify(result))).toBe(false)
+  })
+
+  test('getTextFieldValues exposes raw values', async () => {
+    expect(await storedFieldValue(page, READ, 'field_text')).toBe(RAW)
+    expect(await storedFieldValue(page, TITLE, 'field_title')).toBe(RAW_TITLE)
+    expect(await storedFieldValue(page, HOST, 'field_lead')).toBe(RAW_LEAD)
+  })
+
+  // LAST: changes the page's lead, which the reads above expect as stored.
+  test('a patch on a plain field of the page preserves the raw text', async () => {
+    // The patch is applied to the field's CURRENT value; the rendered lead
+    // has "ss".
+    await runComponentTool(page, 'update_text_fields', {
+      operations: [
+        {
+          uuid: HOST,
+          fieldName: 'field_lead',
+          search: 'Beta',
+          replace: 'Gamma',
+        },
+      ],
+      requireApproval: false,
+    })
+
+    await expect
+      .poll(() => storedFieldValue(page, HOST, 'field_lead'))
+      .toBe('Alpha Straße Gamma')
   })
 })

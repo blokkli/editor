@@ -1,11 +1,16 @@
-# A page of texts with an external link, at /en/links. basic_html's filter
-# renders each link with target="_blank" and a visually hidden "(opens in a new
-# tab)" after it; the stored values have neither. The tests that change a text
-# have their own.
+# A page whose texts are rendered differently from how they're stored, at
+# /en/links. basic_html's filter renders each external link with
+# target="_blank" and a visually hidden "(opens in a new tab)" after it; titles
+# and leads are rendered with "ss" for "ß" (Swiss spelling). The tests that
+# change a text have their own.
 key: links
 type: page
 title: Links
+field_lead: Alpha Straße Beta
 field_paragraphs:
+  - type: title
+    key: links-title
+    field_title: Alpha Fußweg
   - type: text
     key: links-read
     field_text:
