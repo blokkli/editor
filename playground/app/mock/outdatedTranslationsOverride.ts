@@ -13,8 +13,8 @@
  * that block should report as outdated.
  *
  * Plain TS (no Nuxt imports) so the E2E support helpers can share the storage
- * key and types with it (mirrors `permissionOverrides.ts`,
- * `translationOverride.ts`, and `testRecorder.ts`).
+ * key and types with it (mirrors `permissionOverrides.ts` and
+ * `testRecorder.ts`).
  */
 export const OUTDATED_TRANSLATIONS_KEY = 'blokkli:test:outdatedTranslations'
 

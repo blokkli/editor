@@ -9,12 +9,7 @@ query pbTextFieldValues(
     langcode: $langcode
   ) {
     textFieldValues(langcode: $langcode) {
-      uuid
-      fieldName
-      value
-      fieldType
-      entityType
-      entityBundle
+      ...blokkliTextFieldValue
     }
   }
 }

@@ -857,14 +857,19 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           ...ctx.value,
           langcode,
         }).then((v) =>
-          (v.data.state?.textFieldValues || []).map((tfv) => ({
-            uuid: tfv.uuid,
-            fieldName: tfv.fieldName,
-            value: tfv.value,
-            fieldType: tfv.fieldType as 'plain' | 'markup',
-            entityType: tfv.entityType,
-            entityBundle: tfv.entityBundle,
-          })),
+          (v.data.state?.textFieldValues || [])
+            // An untranslatable field's value is shared by every language.
+            // Without the flag (older versions of the module), every value
+            // counts as translatable.
+            .filter((tfv) => tfv.isTranslatable !== false)
+            .map((tfv) => ({
+              uuid: tfv.uuid,
+              fieldName: tfv.fieldName,
+              value: tfv.value,
+              fieldType: tfv.fieldType as 'plain' | 'markup',
+              entityType: tfv.entityType,
+              entityBundle: tfv.entityBundle,
+            })),
         )
     }
 

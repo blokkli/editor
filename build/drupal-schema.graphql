@@ -7823,6 +7823,12 @@ type ParagraphsBlokkliTextFieldValue {
 
   ""
   entityBundle: String!
+
+  """
+  Whether the value can differ per language. An untranslatable field's value
+  is shared by every translation.
+  """
+  isTranslatable: Boolean!
 }
 
 ""

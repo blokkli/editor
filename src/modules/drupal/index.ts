@@ -233,6 +233,26 @@ export declare const templateEditRouteName: string|null
     }
     if (editStateFields.has('textFieldValues')) {
       addGraphqlDocument('features/textFieldValues.graphql')
+      // Older versions of the module don't say whether a value is translatable.
+      const textFieldValueFields = [
+        'uuid',
+        'fieldName',
+        'value',
+        'fieldType',
+        'entityType',
+        'entityBundle',
+        'isTranslatable',
+      ].filter((field) =>
+        getTypeFields('ParagraphsBlokkliTextFieldValue').has(field),
+      )
+      graphql.addDocument(
+        'blokkli:textFieldValue',
+        `
+fragment blokkliTextFieldValue on ParagraphsBlokkliTextFieldValue {
+  ${textFieldValueFields.join('\n  ')}
+}
+`,
+      )
     }
     addMutation('ignore_analyze')
     addMutation('unignore_analyze')

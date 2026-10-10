@@ -57,7 +57,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F54 | [`datetime-local` options render as text fields](#f54-datetime-local-options-render-as-text-fields)                     | `paragraphs_blokkli` | low      | to verify  |
 | F56 | [Option group labels can't be translated](#f56-option-group-labels-cant-be-translated)                                  | `@blokkli/editor`    | low      | to verify  |
 | F57 | [A failed publish shows no message](#f57-a-failed-publish-shows-no-message)                                             | both                 | medium   | to verify  |
-| F58 | [Translation rows include untranslatable fields](#f58-translation-rows-include-untranslatable-fields)                   | both                 | medium   | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -915,19 +914,3 @@ From chunk 04 (2026-09-26):
     request reaches the dialog's catch ("An unexpected error happened.").
 - **Fix idea:** the producer returns other exceptions' messages in `errors`, and
   the adapter turns GraphQL errors into a failed result.
-
-## F58: Translation rows include untranslatable fields
-
-- **Found:** 2026-10-08, reading the code for chunk 16 (not reproduced).
-- **Symptom:** the translation dialog can list fields that aren't translatable.
-  Applying a "translation" to one writes the shared value, which changes it in
-  every language.
-- **Cause:** `paragraphs_blokkli`'s `TextFieldValues` doesn't check whether a
-  field is translatable
-  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/TextFieldValues.php`
-  at `3f07f6e`, no `isTranslatable()` check), and neither the editor's
-  translation dialog nor the Drupal adapter filters them. Possibly affected in
-  the sandbox: `blokkli_fragment.field_blokkli_fragment_name` (unverified).
-- **Fix idea:** skip untranslatable fields in the module's translation values,
-  with a kernel test; an E2E test in the Drupal suite (16) replaces the mock's
-  `link-title-translate`.

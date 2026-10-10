@@ -18,10 +18,12 @@ declare module '#blokkli/editor/adapter' {
     ) => Promise<MutationResponseLike<T>>
 
     /**
-     * Load all text field values for a given language.
+     * Load the translatable text field values for a given language.
      *
-     * Used by the CSV export to fetch source language values when the editor
-     * is viewing a translation.
+     * Used by the translation flows (the translate dialog, the CSV export and
+     * import, the agent's auto translation). A field whose value is shared by
+     * every language is left out: "translating" it would change it in every
+     * language.
      */
     loadTextFieldValuesForLanguage?: (
       langcode: string,
