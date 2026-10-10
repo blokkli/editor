@@ -613,12 +613,12 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         `/paragraphs_blokkli/${ctx.value.entityType}/${ctx.value.entityUuid}/last_changed`,
       ).then((v) => v.changed)
 
-    const buildAnchorLink: DrupalAdapter['buildAnchorLink'] = (
-      id: string,
-      _uuid: string,
-    ) => {
-      return `${entityConfig.linkPath}#${id}`
-    }
+    // An entity without a canonical link has no link path: the anchors
+    // feature then falls back to the current route's path.
+    const buildAnchorLink: DrupalAdapter['buildAnchorLink'] =
+      entityConfig.linkPath
+        ? (id: string) => `${entityConfig.linkPath}#${id}`
+        : undefined
 
     const adapter: DrupalAdapter = {
       addNewBlock,
