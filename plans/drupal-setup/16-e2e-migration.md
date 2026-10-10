@@ -75,7 +75,7 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
   (`pbRevertAllChanges`, deletes the edit state; the new one belongs to whoever
   reverted). Or reset the sandbox and reopen.
 - **Permission overrides:** a user with the right role. `restricted_editor`
-  (Jonas) can't create or delete `chart` and `section`.
+  (Jonas) can't create or delete `chart` and `section`, nor update `chart`.
 - **`.test`:** the same API, from the sandbox frontend's copy of the
   `test-cases` feature, so these specs keep their calls.
 - **Ownership:** `canEdit` needs `currentUserIsOwner`. A second user on the same
@@ -118,7 +118,9 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [x] Verify: whether opening the editor makes a user the edit state's owner
       (yes, see "How a spec moves"); whether seeded media get stable IDs (UUIDs
       from their keys).
-- [ ] Fixtures, with the specs that use them (see "Decisions"):
+- [x] Fixtures, with the specs that use them (see "Decisions"): done, where a
+      spec needed them (none needed a table, an accordion or section, or a full
+      `field_related`):
   - a node with DE and FR translations (there: `nodes/translated.yml`), one with
     `outdated: [de]` (there: `nodes/waste-collection.yml`), one with
     English-only paragraphs (there: `nodes/notices.yml`), an unpublished one
@@ -164,16 +166,17 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       (pasting a chart as Jonas then shows what was skipped): done.
 - [x] `call_to_action`: unpublish scheduling only (it promotes something with a
       deadline): done.
-- [ ] Jonas (`restricted_editor`) loses `update paragraph content chart` ("may
-      not add, change or delete charts"), after F55 is fixed. Update the welcome
-      texts (EN/DE/FR), the sandbox skill and `CONTRIBUTING.md`. Then
-      `edit/base`'s last test moves (a seeded chart Jonas can't edit).
+- [x] Jonas (`restricted_editor`) loses `update paragraph content chart`: done,
+      after F55's fix (the options of a paragraph the user may not edit are
+      disabled; `features/options/permissions`). The welcome texts, the sandbox
+      skill and `CONTRIBUTING.md` say so.
 - [x] Élodie (`translator`) loses "take ownership": done. An edit state covers
       every language, so taking one over would hand her the editors' unfinished
       changes. The welcome texts say she can't take over a page someone else is
       editing.
-- [ ] The teaser maps its `field_title` and `field_lead` with
-      `propsFieldMapping`, so changes to them preview live.
+- [x] The teaser maps its `field_title` and `field_lead` with
+      `propsFieldMapping`: done (both definitions), so changes to them preview
+      live. `diff-approval-grouping` checks the preview.
 - [x] A text filter for `basic_html` that marks external links: done.
       `blokkli_playground`'s `ExternalLinks`, after `filter_html`: every http(s)
       link gets `target="_blank"` and a visually hidden "(opens in a new tab)"
@@ -212,8 +215,7 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       (`acceptedCount` 1); the DeepL fake; `pbBulkTranslateFieldValues`.
 - [x] `tools/duplicate_paragraphs`: done, the columns of `nodes/nested.yml`.
 - [x] `tools/get_all_page_content`: done, the teaser of `nodes/reading.yml` (its
-      title and lead have neither a directive nor a props mapping; Drupal's raw
-      values have them).
+      title and lead have no directive; Drupal's raw values have them).
 - [x] `tools/get_page_text`: done, `nodes/reading.yml` (editorial: no date in
       the snapshot).
 - [x] `tools/processed-text`: done, on `nodes/links.yml` (texts with an external
@@ -252,8 +254,11 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [x] `translations/link-title`: done, on the widgets' `field_link.title`
       (`nodes/widgets.yml`); the `link` paragraph is the control (its title is a
       field of its own); `props.link.uri` is `{ path }`.
-- [ ] `translations/link-title-translate`: stays (links are never translatable);
-      a test for F58's fix replaces it.
+- [x] `translations/link-title-translate`: replaced, after F58's fix (text
+      values say whether they're translatable; the Drupal adapter's
+      `loadTextFieldValuesForLanguage` leaves out the others, as the mock's
+      does). On `/de/widgets`: the widget's link title isn't offered, the link
+      paragraph's title is.
 - [x] `comments/base`: done, all 11, on `nodes/feedback.yml`; the deleted author
       is Nora Huber (`users.yml`, `deleted: true`).
 - [x] `comments/deep-link`: done, on `nodes/feedback.yml` (`comments.yml`: an
@@ -375,10 +380,10 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [x] `fragments/base`: done, on the front page; `pbAddFragmentParagraph`. Both
       fragments render without config pages ("Frequently searched" shows its
       placeholder while editing). "Nothing sent" counts the mutation's requests.
-- [ ] `edit/base`: done but for "without edit permission", which waits for Jonas
-      (above). On the front page: its text, the call to action for the
+- [x] `edit/base`: done. On the front page: its text, the call to action for the
       multi-selection, `home-columns` for `disableEdit`, and a seeded
-      `quick_links` fragment.
+      `quick_links` fragment. Without edit permission: Jonas and the chart of
+      `nodes/statistics.yml`.
 - [x] `duplicate/base`: done. Anna on the front page (the full field: the call
       to action's links), Jonas on `nodes/statistics.yml` (a chart he can't
       add); `pbDuplicateParagraph`.
@@ -398,7 +403,6 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 
 What the mock suite keeps until it goes:
 
-- `translations/link-title-translate`: links are never translatable.
 - `clipboard/paste` tests 1 and 3: Drupal turns plain text into one paragraph
   type; offering several would be a module change for little gain.
 - `tools/processed-text`: the 6 tests on plain strings.
