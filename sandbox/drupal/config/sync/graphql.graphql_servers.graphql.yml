@@ -16,6 +16,7 @@ schema_configuration:
   core_composable:
     extensions:
       blokkli_playground_search: blokkli_playground_search
+      blokkli_playground_swiss_spelling: blokkli_playground_swiss_spelling
       blokkli_sandbox: blokkli_sandbox
       breadcrumb: breadcrumb
       entity_query: entity_query

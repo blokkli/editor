@@ -147,7 +147,8 @@ Blockingersee, Lac de Bloquens or Lake Blockingen. The town is Bloquens in
 French, also as the site name. Streets have French names in French (rue du
 Village) and keep the German ones in English.
 
-- **Swiss spelling** (ss, no ß), formal Sie, "Fr. 45.–", "8.00 Uhr".
+- **Swiss spelling** (ss, no ß; titles and leads are rendered with ss anyway),
+  formal Sie, "Fr. 45.–", "8.00 Uhr".
 - **No current years in running text** (history is fine); dates belong in date
   fields, relative to the bake.
 - **Everything is invented:** people, addresses, phone numbers (032 555 01 xx),

@@ -183,11 +183,15 @@ Traefik sends every hostname to the web container's nginx on port 80.
   unpublished entities, menu access, an event's `unpublish_on` from its date.
 - Editor plugins: conversions (link → text, text ↔ title) and the transform
   "search and replace".
-- A text filter on `basic_html`, after `filter_html` (which would remove its
-  output): every http(s) link gets `target="_blank"` and a visually hidden
-  "(opens in a new tab)" after it (`.visually-hidden` in `.rich-text`). So a
-  rendered text differs from the stored one: the agent's `processed-text` E2E
-  tests rely on it.
+- What's rendered differs from what's stored, as on real sites; the agent's
+  `processed-text` E2E tests rely on it:
+  - A text filter on `basic_html`, after `filter_html` (which would remove its
+    output): every http(s) link gets `target="_blank"` and a visually hidden
+    "(opens in a new tab)" after it (`.visually-hidden` in `.rich-text`).
+  - Swiss spelling: titles and leads (`fieldTitle`, `fieldLead` of every
+    paragraph and node type) are resolved with "ss" for "ß"
+    (`SwissSpellingExtension`, resolvers on the interfaces `Paragraph` and
+    `Node`). The stored value keeps its "ß".
 - Search: a Search API processor that indexes paragraph text (library items
   included) and `Query.search(text, offset, limit)`.
 - Moves the config pages' canonical route to `/blokkli/config-page/{id}`.
