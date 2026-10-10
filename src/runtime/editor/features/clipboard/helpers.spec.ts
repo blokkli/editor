@@ -1,5 +1,10 @@
 import { describe, expect, test } from 'vitest'
-import { buildFileMapEvent, buildMapBundleEvents } from './helpers'
+import {
+  buildFileMapEvent,
+  buildMapBundleEvents,
+  groupFileBundles,
+  narrowFileGroups,
+} from './helpers'
 
 /**
  * A drag event whose items have the kinds and types, and the files, if the
@@ -67,5 +72,40 @@ describe('buildFileMapEvent', () => {
       fileSize: 300,
       fileName: 'photo.jpg',
     })
+  })
+})
+
+describe('groupFileBundles', () => {
+  test('groups the files by type, with the bundles all of them have', () => {
+    expect(
+      groupFileBundles([
+        { type: 'image', bundles: ['image', 'gallery'] },
+        { type: 'file', bundles: ['document'] },
+        { type: 'image', bundles: ['image'] },
+      ]),
+    ).toEqual([
+      { type: 'image', bundles: ['image'] },
+      { type: 'file', bundles: ['document'] },
+    ])
+  })
+})
+
+describe('narrowFileGroups', () => {
+  const groups = [
+    { type: 'image' as const, bundles: ['image', 'gallery'] },
+    { type: 'file' as const, bundles: ['document'] },
+  ]
+
+  test('keeps the bundles that can be added', () => {
+    expect(narrowFileGroups(groups, (bundle) => bundle !== 'gallery')).toEqual([
+      { type: 'image', bundles: ['image'] },
+      { type: 'file', bundles: ['document'] },
+    ])
+  })
+
+  test('returns null when a group has none left', () => {
+    expect(
+      narrowFileGroups(groups, (bundle) => bundle !== 'document'),
+    ).toBeNull()
   })
 })

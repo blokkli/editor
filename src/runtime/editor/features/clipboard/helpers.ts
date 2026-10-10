@@ -1,7 +1,9 @@
 import type {
+  ClipboardFileGroup,
   ClipboardMapBundleEventFile,
   ClipboardMapBundleEventImage,
   ClipboardMapBundleEventPlaintext,
+  ClipboardUploadType,
 } from './types'
 
 const ALLOWED_HTML_ATTRIBUTES = ['href']
@@ -37,7 +39,7 @@ export function sanitizeHtml(el: Element) {
 /**
  * Whether a file of the MIME type is mapped and added as an image or a file.
  */
-export function getFileType(mimeType: string): 'image' | 'file' {
+export function getFileType(mimeType: string): ClipboardUploadType {
   return mimeType.startsWith('image/') ? 'image' : 'file'
 }
 
@@ -95,4 +97,38 @@ export function buildMapBundleEvents(
   }
 
   return []
+}
+
+/**
+ * Group files by type, each group with the bundles all its files can have. A
+ * group without any can't be added.
+ */
+export function groupFileBundles(
+  files: Array<{ type: ClipboardUploadType; bundles: string[] }>,
+): ClipboardFileGroup[] {
+  const groups: ClipboardFileGroup[] = []
+  for (const { type, bundles } of files) {
+    const group = groups.find((v) => v.type === type)
+    if (group) {
+      group.bundles = group.bundles.filter((bundle) => bundles.includes(bundle))
+    } else {
+      groups.push({ type, bundles: [...bundles] })
+    }
+  }
+  return groups
+}
+
+/**
+ * Narrow the groups to the bundles that can be added, such as those a field
+ * allows. Returns null if a group has none left.
+ */
+export function narrowFileGroups(
+  groups: ClipboardFileGroup[],
+  canAddBundle: (bundle: string) => boolean,
+): ClipboardFileGroup[] | null {
+  const narrowed = groups.map((group) => ({
+    type: group.type,
+    bundles: group.bundles.filter(canAddBundle),
+  }))
+  return narrowed.every((group) => group.bundles.length) ? narrowed : null
 }

@@ -24,9 +24,9 @@ import { computed } from '#imports'
 import { FormSelect, FormRadio } from '#blokkli/editor/components'
 import type { PluginConfigInputOptions } from '#blokkli/editor/types/pluginConfig'
 
-const props = defineProps<PluginConfigInputOptions>()
+const props = defineProps<PluginConfigInputOptions & { idPrefix: string }>()
 
 const value = defineModel<string>()
 
-const id = computed(() => 'plugin-form-item-' + props.name)
+const id = computed(() => 'plugin-form-item-' + props.idPrefix + props.name)
 </script>

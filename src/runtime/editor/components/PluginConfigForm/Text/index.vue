@@ -1,7 +1,7 @@
 <template>
   <FormTextarea
     v-if="multiline"
-    :id="name"
+    :id="idPrefix + name"
     v-model="value"
     :label
     :required
@@ -12,7 +12,7 @@
   />
   <FormText
     v-else
-    :id="name"
+    :id="idPrefix + name"
     v-model="value"
     lazy
     :label
@@ -28,7 +28,7 @@
 import { FormText, FormTextarea } from '#blokkli/editor/components'
 import type { PluginConfigInputText } from '#blokkli/editor/types/pluginConfig'
 
-defineProps<PluginConfigInputText>()
+defineProps<PluginConfigInputText & { idPrefix: string }>()
 
 const value = defineModel<string>()
 </script>

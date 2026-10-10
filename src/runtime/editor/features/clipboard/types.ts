@@ -1,4 +1,5 @@
 import type { BlokkliItemHost } from '#blokkli/editor/types/field'
+import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
 import type getVideoId from 'get-video-id'
 
 export type AddClipboardItemEvent = {
@@ -53,6 +54,91 @@ export type BlokkliClipboardItem =
   | ClipboardItemVideo
   | ClipboardItemImage
   | ClipboardItemFile
+
+/**
+ * How a file is uploaded and added: as an image or as a file.
+ */
+export type ClipboardUploadType = 'image' | 'file'
+
+/**
+ * Files of one type, and the bundles a block for each of them can have.
+ */
+export type ClipboardFileGroup = {
+  type: ClipboardUploadType
+  bundles: string[]
+}
+
+export type UploadFileEvent = {
+  file: File
+  type: ClipboardUploadType
+  /**
+   * Called with the share of the file uploaded, from 0 to 1.
+   */
+  onProgress: (progress: number) => void
+  /**
+   * Aborts the upload.
+   */
+  signal: AbortSignal
+}
+
+/**
+ * An uploaded file, from which a media is created. Or, if a media with the same
+ * file exists, that media, which is added as it is.
+ */
+export type UploadFileResult =
+  | { fileId: string }
+  | { media: { id: string; label: string } }
+
+/**
+ * A file uploaded to create a media from.
+ */
+export type ClipboardUpload = {
+  type: ClipboardUploadType
+  fileId: string
+}
+
+/**
+ * The form of the media created from an uploaded file.
+ */
+export type ClipboardUploadForm = {
+  /**
+   * The form's fields.
+   */
+  inputs: PluginConfigInput[]
+  /**
+   * Whether the fields are all the form needs: if not, a required field can't
+   * be filled in, and no media can be created.
+   */
+  complete: boolean
+}
+
+export type CreateMediaFromUploadsItem = {
+  upload: ClipboardUpload
+  /**
+   * The values of the form's fields, keyed by their names.
+   */
+  values: Record<string, unknown>
+}
+
+export type CreateMediaFromUploadsResult = {
+  /**
+   * The ID of the media created, or null.
+   */
+  mediaId: string | null
+  /**
+   * The errors, each with the name of its field, or null.
+   */
+  errors: { name: string | null; message: string }[]
+}
+
+export type AddBlocksFromUploadsEvent = {
+  /**
+   * The media to add a block for, in order, each with the block's bundle.
+   */
+  items: { type: ClipboardUploadType; mediaId: string; bundle: string }[]
+  host: BlokkliItemHost
+  afterUuid: string | null
+}
 
 export type PasteExistingBlocksEvent = {
   uuids: string[]
@@ -165,6 +251,40 @@ declare module '#blokkli/editor/adapter' {
      */
     pasteExistingBlocks?(
       e: PasteExistingBlocksEvent,
+    ): Promise<MutationResponseLike<T>>
+
+    /**
+     * Upload a file to create a media from. Rejects with an error whose message
+     * says why the upload failed.
+     *
+     * With uploadFile, getUploadForm, createMediaFromUploads and
+     * addBlocksFromUploads, pasted and dropped files are uploaded in a dialog,
+     * where their media's fields are filled in. Without, each file is read and
+     * added with addBlockFromClipboardItem.
+     */
+    uploadFile?(e: UploadFileEvent): Promise<UploadFileResult>
+
+    /**
+     * Get the form of the media created from an uploaded file, or null if the
+     * file is no longer available.
+     */
+    getUploadForm?(e: {
+      upload: ClipboardUpload
+    }): Promise<ClipboardUploadForm | null>
+
+    /**
+     * Create the media of uploaded files, through their forms. Returns a result
+     * per item, in the same order.
+     */
+    createMediaFromUploads?(e: {
+      items: CreateMediaFromUploadsItem[]
+    }): Promise<CreateMediaFromUploadsResult[]>
+
+    /**
+     * Add a block for each media created from an uploaded file.
+     */
+    addBlocksFromUploads?(
+      e: AddBlocksFromUploadsEvent,
     ): Promise<MutationResponseLike<T>>
   }
 }

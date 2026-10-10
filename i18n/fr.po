@@ -2086,6 +2086,50 @@ msgctxt "clipboardUnsupportedFile"
 msgid "The type or size of \"@name\" is not supported."
 msgstr ""
 
+msgctxt "clipboardUploadBundles"
+msgid "Block types"
+msgstr ""
+
+msgctxt "clipboardUploadCreateFailed"
+msgid "The media couldn't be created."
+msgstr ""
+
+msgctxt "clipboardUploadCreated"
+msgid "The media is created."
+msgstr ""
+
+msgctxt "clipboardUploadDuplicate"
+msgid "The file exists as the media \"@label\", which is added."
+msgstr ""
+
+msgctxt "clipboardUploadFailed"
+msgid "The file couldn't be uploaded."
+msgstr ""
+
+msgctxt "clipboardUploadFiles"
+msgid "Files"
+msgstr ""
+
+msgctxt "clipboardUploadImages"
+msgid "Images"
+msgstr ""
+
+msgctxt "clipboardUploadIncomplete"
+msgid "The media needs a field that can't be filled in here."
+msgstr ""
+
+msgctxt "clipboardUploadRetry"
+msgid "Try again"
+msgstr ""
+
+msgctxt "clipboardUploadSubmit"
+msgid "Add"
+msgstr ""
+
+msgctxt "clipboardUploadTitle"
+msgid "Add files"
+msgstr ""
+
 msgctxt "close"
 msgid "Close"
 msgstr "Fermer"

@@ -2135,6 +2135,50 @@ msgctxt "clipboardUnsupportedFile"
 msgid "The type or size of \"@name\" is not supported."
 msgstr "Dr Typ oder d'Grössi vo «@name» würd nid unterstützt."
 
+msgctxt "clipboardUploadBundles"
+msgid "Block types"
+msgstr "Blocktype"
+
+msgctxt "clipboardUploadCreateFailed"
+msgid "The media couldn't be created."
+msgstr "S'Medium het nid chönne erstellt wärde."
+
+msgctxt "clipboardUploadCreated"
+msgid "The media is created."
+msgstr "S'Medium isch erstellt."
+
+msgctxt "clipboardUploadDuplicate"
+msgid "The file exists as the media \"@label\", which is added."
+msgstr "D'Datei gits scho als Medium «@label», das würd drzuegfüegt."
+
+msgctxt "clipboardUploadFailed"
+msgid "The file couldn't be uploaded."
+msgstr "D'Datei het nid chönne ufeglade wärde."
+
+msgctxt "clipboardUploadFiles"
+msgid "Files"
+msgstr "Dateie"
+
+msgctxt "clipboardUploadImages"
+msgid "Images"
+msgstr "Bilder"
+
+msgctxt "clipboardUploadIncomplete"
+msgid "The media needs a field that can't be filled in here."
+msgstr "S'Medium bruucht es Fäld, wo me do nid cha usfülle."
+
+msgctxt "clipboardUploadRetry"
+msgid "Try again"
+msgstr "Nämol probiere"
+
+msgctxt "clipboardUploadSubmit"
+msgid "Add"
+msgstr "Zuefüege"
+
+msgctxt "clipboardUploadTitle"
+msgid "Add files"
+msgstr "Dateie zuefüege"
+
 msgctxt "close"
 msgid "Close"
 msgstr "Zuemache"

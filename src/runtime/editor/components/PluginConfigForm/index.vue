@@ -5,6 +5,7 @@
       v-for="item in renderedConfig"
       :key="item.name"
       :class="'bk-is-type-' + item.type"
+      :data-test="'config-form-' + item.name"
     >
       <FormCheckbox
         v-if="item.type === 'checkbox'"
@@ -15,13 +16,18 @@
         v-else-if="item.type === 'text'"
         v-bind="item"
         v-model="value[item.name]"
+        :id-prefix
         lazy
       />
       <FormOptions
         v-else-if="item.type === 'options'"
         v-bind="item"
         v-model="value[item.name]"
+        :id-prefix
       />
+      <p v-if="errors?.[item.name]" class="mt-5 text-sm text-red-normal">
+        {{ errors[item.name] }}
+      </p>
       <slot name="after" />
     </li>
   </ol>
@@ -31,12 +37,19 @@
 import FormCheckbox from './Checkbox/index.vue'
 import FormText from './Text/index.vue'
 import FormOptions from './Options/index.vue'
-import { computed } from '#imports'
+import { computed, useId } from '#imports'
 import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
 
 const props = defineProps<{
   config: PluginConfigInput[]
+  /**
+   * Errors to show at the fields, keyed by their names.
+   */
+  errors?: Record<string, string>
 }>()
+
+// The fields' names repeat when several forms are shown.
+const idPrefix = useId() + '-'
 
 const renderedConfig = computed(() =>
   props.config.filter((v) => v.type !== 'seed'),

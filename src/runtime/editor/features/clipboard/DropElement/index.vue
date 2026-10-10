@@ -63,7 +63,9 @@ const props = defineProps<{
 const { types, $t } = useBlokkli()
 
 const itemType = computed<DropElementItemType>(() => {
-  return props.items[0]?.type || 'file'
+  const type = props.items[0]?.type || 'file'
+  // Files of several types are files.
+  return props.items.every((item) => item.type === type) ? type : 'file'
 })
 
 function getItemIcon(type: DropElementItemType): BlokkliIcon {

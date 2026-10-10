@@ -2179,6 +2179,50 @@ msgctxt "clipboardUnsupportedFile"
 msgid "The type or size of \"@name\" is not supported."
 msgstr "Der Typ oder die Grösse von «@name» wird nicht unterstützt."
 
+msgctxt "clipboardUploadBundles"
+msgid "Block types"
+msgstr "Blocktypen"
+
+msgctxt "clipboardUploadCreateFailed"
+msgid "The media couldn't be created."
+msgstr "Das Medium konnte nicht erstellt werden."
+
+msgctxt "clipboardUploadCreated"
+msgid "The media is created."
+msgstr "Das Medium ist erstellt."
+
+msgctxt "clipboardUploadDuplicate"
+msgid "The file exists as the media \"@label\", which is added."
+msgstr "Die Datei existiert bereits als Medium «@label», das hinzugefügt wird."
+
+msgctxt "clipboardUploadFailed"
+msgid "The file couldn't be uploaded."
+msgstr "Die Datei konnte nicht hochgeladen werden."
+
+msgctxt "clipboardUploadFiles"
+msgid "Files"
+msgstr "Dateien"
+
+msgctxt "clipboardUploadImages"
+msgid "Images"
+msgstr "Bilder"
+
+msgctxt "clipboardUploadIncomplete"
+msgid "The media needs a field that can't be filled in here."
+msgstr "Das Medium benötigt ein Feld, das hier nicht ausgefüllt werden kann."
+
+msgctxt "clipboardUploadRetry"
+msgid "Try again"
+msgstr "Erneut versuchen"
+
+msgctxt "clipboardUploadSubmit"
+msgid "Add"
+msgstr "Hinzufügen"
+
+msgctxt "clipboardUploadTitle"
+msgid "Add files"
+msgstr "Dateien hinzufügen"
+
 msgctxt "close"
 msgid "Close"
 msgstr "Schliessen"

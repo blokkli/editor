@@ -10,6 +10,7 @@
         :value="value"
         type="text"
         class="bk-form-input"
+        data-test="form-text-input"
         :placeholder
         :required
         :disabled
