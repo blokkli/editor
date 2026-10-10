@@ -67,9 +67,8 @@ describe('Reviewing', async () => {
       .toContainEqual(expect.stringContaining(marker))
   })
 
-  // Drupal never caches a response with an edit state (`currentUserIsOwner`
-  // makes it uncacheable), so this doesn't cover the cache tag that storing the
-  // edit state invalidates: the module's LoadEditStateDataProducerTest does.
+  // Drupal caches the response with the edit state: storing Anna's must
+  // invalidate the one the reviewer got before, which had no owner.
   test('the reviewer gets the edit state once an editor has opened the page', async () => {
     // Opening the editor stores the edit state; Anna owns it.
     await claimEditState(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH)

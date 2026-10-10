@@ -52,7 +52,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                     | `texts`              | low      | open       |
 | F52 | [A comment's label throws](#f52-a-comments-label-throws)                                                                                | `paragraphs_blokkli` | low      | open       |
 | F53 | [Violations while editing come from the stored structure](#f53-violations-while-editing-come-from-the-stored-structure)                 | `paragraphs_blokkli` | medium   | open       |
-| F61 | [Edit state responses are never cached](#f61-edit-state-responses-are-never-cached)                                                     | `paragraphs_blokkli` | low      | open       |
 | F62 | [An edit state shows the latest revision without revision access](#f62-an-edit-state-shows-the-latest-revision-without-revision-access) | `paragraphs_blokkli` | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
@@ -832,24 +831,6 @@ From chunk 04 (2026-09-26):
   that a mutation removes leaves no violation in the mutated state.
 - **E2E:** `test/e2e-drupal/invalid-content.test.ts`, "drops the violation once
   the misplaced paragraph is gone", is marked `it.fails` until it's fixed.
-
-## F61: Edit state responses are never cached
-
-- **Found:** 2026-10-10, while fixing a reviewer's edit state.
-- **Symptom:** every GraphQL response with an edit state has a max-age of 0, and
-  triggers a deprecation since Drupal 11.2: calling `addCacheableDependency()`
-  with an object that doesn't implement `CacheableDependencyInterface` "is
-  deprecated in drupal:11.2.0 and is required in drupal:12.0.0". On Drupal 12,
-  it fails.
-- **Cause:** the resolver of `currentUserIsOwner` passes
-  `\Drupal::currentUser()`, an `AccountProxy`, to `addCacheableDependency()`;
-  the one of `ownerName` passes the owner, which is `NULL` for an edit state
-  without one
-  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/SchemaExtension/EditExtension.php`
-  at `308bf53`).
-- **Fix idea:** the `user` cache context for `currentUserIsOwner`, and the owner
-  only if there is one. The responses then become cacheable: check first that
-  everything in them has the cache tags that invalidate it.
 
 ## F62: An edit state shows the latest revision without revision access
 

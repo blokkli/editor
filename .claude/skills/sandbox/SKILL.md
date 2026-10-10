@@ -483,17 +483,18 @@ that with settings management, which is off).
 
 ## Symptoms
 
-| Symptom                                                         | Cause                                                                 |
-| --------------------------------------------------------------- | --------------------------------------------------------------------- |
-| 502 with the Nuxt page                                          | daemon down, `node_modules` missing, or an invalid GraphQL document   |
-| "This sandbox is private"                                       | not logged in (`ddev drush uli`), or no preview grant                 |
-| The "unknown sandbox" page                                      | no `sandboxes/<id>/db.sqlite`                                         |
-| drush: "There's no sandbox '…'"                                 | `--uri` names a sandbox that doesn't exist                            |
-| A new option isn't validated or offered in Drupal               | the options schema wasn't regenerated: `ddev nuxt restart`, commit it |
-| "Cannot find name" in a sandbox typecheck after a config change | stale `.nuxt`: `ddev nuxt [control] restart`                          |
-| A new service or route is missing in a sandbox                  | its database's caches: `drush --uri=… cr`, bake for the templates     |
-| No agent in a sandbox                                           | not premium (`lifetime.json`), or no auth secret                      |
-| No "Sandbox" button                                             | not logged in with toolbar access, or a sandbox without `--expires`   |
-| A claim fails with `rate_limit` locally                         | 3 claims an hour, shared by everyone locally                          |
-| A block has empty props while editing                           | its fragment isn't in the `paragraph` union                           |
-| A block's drag copy looks different                             | its layout depends on an ancestor's class                             |
+| Symptom                                                         | Cause                                                                                                       |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| 502 with the Nuxt page                                          | daemon down, `node_modules` missing, or an invalid GraphQL document                                         |
+| "This sandbox is private"                                       | not logged in (`ddev drush uli`), or no preview grant                                                       |
+| The "unknown sandbox" page                                      | no `sandboxes/<id>/db.sqlite`                                                                               |
+| drush: "There's no sandbox '…'"                                 | `--uri` names a sandbox that doesn't exist                                                                  |
+| A new option isn't validated or offered in Drupal               | the options schema wasn't regenerated: `ddev nuxt restart`, commit it                                       |
+| "Cannot find name" in a sandbox typecheck after a config change | stale `.nuxt`: `ddev nuxt [control] restart`                                                                |
+| A new service or route is missing in a sandbox                  | its database's caches: `drush --uri=… cr`, bake for the templates                                           |
+| No agent in a sandbox                                           | not premium (`lifetime.json`), or no auth secret                                                            |
+| No "Sandbox" button                                             | not logged in with toolbar access, or a sandbox without `--expires`                                         |
+| A claim fails with `rate_limit` locally                         | 3 claims an hour, shared by everyone locally                                                                |
+| A block has empty props while editing                           | its fragment isn't in the `paragraph` union                                                                 |
+| A block's drag copy looks different                             | its layout depends on an ancestor's class                                                                   |
+| The editor shows an outdated state after a change elsewhere     | a cached GraphQL result without the tag that invalidates it: `drush cr` confirms; fix the tag in the module |
