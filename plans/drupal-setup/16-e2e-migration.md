@@ -166,16 +166,19 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       deadline): done.
 - [ ] Jonas (`restricted_editor`) loses `update paragraph content chart` ("may
       not add, change or delete charts"), after F55 is fixed. Update the welcome
-      texts (EN/DE/FR), the sandbox skill and `CONTRIBUTING.md`.
+      texts (EN/DE/FR), the sandbox skill and `CONTRIBUTING.md`. Then
+      `edit/base`'s last test moves (a seeded chart Jonas can't edit).
 - [x] Élodie (`translator`) loses "take ownership": done. An edit state covers
       every language, so taking one over would hand her the editors' unfinished
       changes. The welcome texts say she can't take over a page someone else is
       editing.
 - [ ] The teaser maps its `field_title` and `field_lead` with
       `propsFieldMapping`, so changes to them preview live.
-- [ ] A text filter for `basic_html` that marks external links
-      (`target="_blank"` and a visually hidden "(opens in a new tab)"), after
-      `filter_html`. It's what the mock's processing imitates.
+- [x] A text filter for `basic_html` that marks external links: done.
+      `blokkli_playground`'s `ExternalLinks`, after `filter_html`: every http(s)
+      link gets `target="_blank"` and a visually hidden "(opens in a new tab)"
+      (translated). A stored hint compounds visibly: `filter_html` keeps its
+      text, the filter appends another.
 - [x] The seed: `deleted: true` on users and nodes, deleted after seeding (a
       comment by a deleted author, a notification whose page is gone): done.
 - [x] A fake for YouTube and Vimeo: done. `VideoFake`, an HTTP client middleware
@@ -213,9 +216,10 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
       values have them).
 - [x] `tools/get_page_text`: done, `nodes/reading.yml` (editorial: no date in
       the snapshot).
-- [ ] `tools/processed-text`: splits. With the external-link filter, the 14
-      markup tests move (seed external links in `field_text`). The 6 on plain
-      strings stay: Drupal never processes those.
+- [x] `tools/processed-text`: done, on `nodes/links.yml` (texts with an external
+      link). The 14 markup tests are 12 there: with one fixture, the link cases
+      fold into the markup ones (`get_content_fields`, a patch next to the
+      link). The 6 on plain strings stay: Drupal never processes those.
 - [x] `tools/update_text_fields`: done, on the title of `nodes/blocks.yml`; the
       stored items of `pbBulkUpdateFieldValues` instead of a reload. It found
       that the editor lost Vue's text node of a field rendered with `{{ }}` (the
@@ -371,9 +375,10 @@ code; nothing was run. "Unverified" marks what it couldn't confirm.
 - [x] `fragments/base`: done, on the front page; `pbAddFragmentParagraph`. Both
       fragments render without config pages ("Frequently searched" shows its
       placeholder while editing). "Nothing sent" counts the mutation's requests.
-- [ ] `edit/base`: splits. Tests 1–4 on `blocks.yml`; `columns` instead of
-      `two_columns`; a seeded fragment for the fragment test. Without edit
-      permission: Jonas and a seeded chart.
+- [ ] `edit/base`: done but for "without edit permission", which waits for Jonas
+      (above). On the front page: its text, the call to action for the
+      multi-selection, `home-columns` for `disableEdit`, and a seeded
+      `quick_links` fragment.
 - [x] `duplicate/base`: done. Anna on the front page (the full field: the call
       to action's links), Jonas on `nodes/statistics.yml` (a chart he can't
       add); `pbDuplicateParagraph`.

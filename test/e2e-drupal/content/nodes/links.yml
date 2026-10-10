@@ -1,0 +1,28 @@
+# A page of texts with an external link, at /en/links. basic_html's filter
+# renders each link with target="_blank" and a visually hidden "(opens in a new
+# tab)" after it; the stored values have neither. The tests that change a text
+# have their own.
+key: links
+type: page
+title: Links
+field_paragraphs:
+  - type: text
+    key: links-read
+    field_text:
+      '<p>Alpha and <a href="https://www.example.com">Omega</a></p><p>Beta and
+      Gamma</p>'
+  - type: text
+    key: links-patch
+    field_text:
+      '<p>Alpha and <a href="https://www.example.com">Omega</a></p><p>Beta and
+      Gamma</p>'
+  - type: text
+    key: links-diff
+    field_text:
+      '<p>Alpha and <a href="https://www.example.com">Omega</a></p><p>Beta and
+      Gamma</p>'
+  - type: text
+    key: links-compound
+    field_text:
+      '<p>Alpha and <a href="https://www.example.com">Omega</a></p><p>Beta and
+      Gamma</p>'

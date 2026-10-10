@@ -28,3 +28,6 @@ field_paragraphs:
     field_right:
       - type: text
         field_text: '<p>A text on the right.</p>'
+  - type: blokkli_fragment
+    key: home-fragment
+    field_blokkli_fragment_name: quick_links
