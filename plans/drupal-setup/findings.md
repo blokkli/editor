@@ -7,58 +7,58 @@ removed; its commit names it.
 Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 (2.0.x), unless noted otherwise.
 
-| #   | Finding                                                                                                                 | Project              | Severity | Status     |
-| --- | ----------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- |
-| F4  | [`clearOutdated` type mismatch](#f4-clearoutdated-type-mismatch)                                                        | `paragraphs_blokkli` | low      | open       |
-| F5  | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                               | Drupal core          | high     | workaround |
-| F6  | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                | `blokkli_starterkit` | low      | open       |
-| F7  | [Undeclared dependencies and config gaps](#f7-undeclared-dependencies-and-config-gaps)                                  | `paragraphs_blokkli` | low      | open       |
-| F9  | [Link titles from entity mappings](#f9-link-titles-from-entity-mappings)                                                | `paragraphs_blokkli` | medium   | workaround |
-| F10 | [Paragraphs below level 5 are lost on publish](#f10-paragraphs-below-level-5-are-lost-on-publish)                       | `paragraphs_blokkli` | medium   | workaround |
-| F11 | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                   | `paragraphs_blokkli` | low      | open       |
-| F12 | ["Make reusable" on a container with unpublished children](#f12-make-reusable-on-a-container-with-unpublished-children) | `paragraphs_blokkli` | medium   | open       |
-| F13 | [`bkVisibleLanguages` on library blocks](#f13-bkvisiblelanguages-on-library-blocks)                                     | `@blokkli/editor`    | low      | open       |
-| F14 | [The comment filter leaks into new text formats](#f14-the-comment-filter-leaks-into-new-text-formats)                   | `paragraphs_blokkli` | low      | open       |
-| F15 | [Config pages have no label in entity lists](#f15-config-pages-have-no-label-in-entity-lists)                           | `paragraphs_blokkli` | low      | open       |
-| F16 | [Mutations ignore a field's allowed types](#f16-mutations-ignore-a-fields-allowed-types)                                | `paragraphs_blokkli` | medium   | open       |
-| F17 | [`detach_reusable` bugs](#f17-detach_reusable-bugs)                                                                     | `paragraphs_blokkli` | medium   | open       |
-| F18 | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                       | both                 | low      | workaround |
-| F19 | [Template and library search](#f19-template-and-library-search)                                                         | both                 | low      | open       |
-| F20 | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                       | `paragraphs_blokkli` | low      | open       |
-| F21 | ["Add to library" needs two clicks](#f21-add-to-library-needs-two-clicks)                                               | `@blokkli/editor`    | low      | open       |
-| F23 | [A past unpublish date blocks publishing](#f23-a-past-unpublish-date-blocks-publishing)                                 | both                 | low      | open       |
-| F24 | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                       | `paragraphs_blokkli` | medium   | open       |
-| F25 | [An empty change description keeps the old log](#f25-an-empty-change-description-keeps-the-old-log)                     | `paragraphs_blokkli` | low      | open       |
-| F26 | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation) | `paragraphs_blokkli` | medium   | open       |
-| F27 | [Machine translation fails silently](#f27-machine-translation-fails-silently)                                           | `@blokkli/editor`    | low      | open       |
-| F28 | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                  | `@blokkli/editor`    | low      | workaround |
-| F29 | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                            | `paragraphs_blokkli` | low      | workaround |
-| F30 | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                           | `paragraphs_blokkli` | low      | open       |
-| F31 | [The "add translation" dialog has no language](#f31-the-add-translation-dialog-has-no-language)                         | `@blokkli/editor`    | low      | open       |
-| F32 | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                     | `paragraphs_blokkli` | medium   | open       |
-| F33 | [Transform plugins don't get the language](#f33-transform-plugins-dont-get-the-language)                                | both                 | low      | workaround |
-| F34 | [The table of contents links to hidden nested headings](#f34-the-table-of-contents-links-to-hidden-nested-headings)     | `@blokkli/editor`    | low      | open       |
-| F35 | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)    | `@blokkli/editor`    | low      | open       |
-| F36 | [The `translations` option ignores English](#f36-the-translations-option-ignores-english)                               | `@blokkli/editor`    | low      | workaround |
-| F37 | [The iframe height editor isn't translated](#f37-the-iframe-height-editor-isnt-translated)                              | `@blokkli/editor`    | low      | open       |
-| F38 | [Editors can't view paragraph types](#f38-editors-cant-view-paragraph-types)                                            | `paragraphs_blokkli` | high     | workaround |
-| F39 | [The editor ignores `create_comments`](#f39-the-editor-ignores-create_comments)                                         | `@blokkli/editor`    | low      | open       |
-| F40 | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                 | `paragraphs_blokkli` | low      | open       |
-| F41 | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                             | `paragraphs_blokkli` | low      | open       |
-| F42 | [Uploads skip media create access](#f42-uploads-skip-media-create-access)                                               | `paragraphs_blokkli` | medium   | open       |
-| F43 | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                          | both                 | low      | open       |
-| F44 | [No approval step](#f44-no-approval-step)                                                                               | both                 | low      | open       |
-| F45 | ["Replace" fails on link fields](#f45-replace-fails-on-link-fields)                                                     | `paragraphs_blokkli` | medium   | open       |
-| F46 | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                | both                 | low      | open       |
-| F48 | [A preview grant opens more than the preview](#f48-a-preview-grant-opens-more-than-the-preview)                         | `paragraphs_blokkli` | low      | open       |
-| F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                     | `texts`              | low      | open       |
-| F52 | [A comment's label throws](#f52-a-comments-label-throws)                                                                | `paragraphs_blokkli` | low      | open       |
-| F53 | [Violations while editing come from the stored structure](#f53-violations-while-editing-come-from-the-stored-structure) | `paragraphs_blokkli` | medium   | open       |
-| F54 | [`datetime-local` options render as text fields](#f54-datetime-local-options-render-as-text-fields)                     | `paragraphs_blokkli` | low      | open       |
-| F56 | [Option group labels can't be translated](#f56-option-group-labels-cant-be-translated)                                  | `@blokkli/editor`    | low      | workaround |
-| F57 | [A failed publish shows no message](#f57-a-failed-publish-shows-no-message)                                             | both                 | medium   | open       |
-| F59 | [A reviewer keeps getting no edit state](#f59-a-reviewer-keeps-getting-no-edit-state)                                   | `paragraphs_blokkli` | medium   | open       |
-| F60 | [Without an edit state, the editor stops working](#f60-without-an-edit-state-the-editor-stops-working)                  | `@blokkli/editor`    | medium   | open       |
+| #   | Finding                                                                                                                                 | Project              | Severity | Status     |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- |
+| F4  | [`clearOutdated` type mismatch](#f4-clearoutdated-type-mismatch)                                                                        | `paragraphs_blokkli` | low      | open       |
+| F5  | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                                               | Drupal core          | high     | workaround |
+| F6  | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                                | `blokkli_starterkit` | low      | open       |
+| F7  | [Undeclared dependencies and config gaps](#f7-undeclared-dependencies-and-config-gaps)                                                  | `paragraphs_blokkli` | low      | open       |
+| F9  | [Link titles from entity mappings](#f9-link-titles-from-entity-mappings)                                                                | `paragraphs_blokkli` | medium   | workaround |
+| F10 | [Paragraphs below level 5 are lost on publish](#f10-paragraphs-below-level-5-are-lost-on-publish)                                       | `paragraphs_blokkli` | medium   | workaround |
+| F11 | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                                   | `paragraphs_blokkli` | low      | open       |
+| F12 | ["Make reusable" on a container with unpublished children](#f12-make-reusable-on-a-container-with-unpublished-children)                 | `paragraphs_blokkli` | medium   | open       |
+| F13 | [`bkVisibleLanguages` on library blocks](#f13-bkvisiblelanguages-on-library-blocks)                                                     | `@blokkli/editor`    | low      | open       |
+| F14 | [The comment filter leaks into new text formats](#f14-the-comment-filter-leaks-into-new-text-formats)                                   | `paragraphs_blokkli` | low      | open       |
+| F15 | [Config pages have no label in entity lists](#f15-config-pages-have-no-label-in-entity-lists)                                           | `paragraphs_blokkli` | low      | open       |
+| F16 | [Mutations ignore a field's allowed types](#f16-mutations-ignore-a-fields-allowed-types)                                                | `paragraphs_blokkli` | medium   | open       |
+| F17 | [`detach_reusable` bugs](#f17-detach_reusable-bugs)                                                                                     | `paragraphs_blokkli` | medium   | open       |
+| F18 | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                                       | both                 | low      | workaround |
+| F19 | [Template and library search](#f19-template-and-library-search)                                                                         | both                 | low      | open       |
+| F20 | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                                       | `paragraphs_blokkli` | low      | open       |
+| F21 | ["Add to library" needs two clicks](#f21-add-to-library-needs-two-clicks)                                                               | `@blokkli/editor`    | low      | open       |
+| F23 | [A past unpublish date blocks publishing](#f23-a-past-unpublish-date-blocks-publishing)                                                 | both                 | low      | open       |
+| F24 | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                                       | `paragraphs_blokkli` | medium   | open       |
+| F25 | [An empty change description keeps the old log](#f25-an-empty-change-description-keeps-the-old-log)                                     | `paragraphs_blokkli` | low      | open       |
+| F26 | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation)                 | `paragraphs_blokkli` | medium   | open       |
+| F27 | [Machine translation fails silently](#f27-machine-translation-fails-silently)                                                           | `@blokkli/editor`    | low      | open       |
+| F28 | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                                  | `@blokkli/editor`    | low      | workaround |
+| F29 | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                                            | `paragraphs_blokkli` | low      | workaround |
+| F30 | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                                           | `paragraphs_blokkli` | low      | open       |
+| F31 | [The "add translation" dialog has no language](#f31-the-add-translation-dialog-has-no-language)                                         | `@blokkli/editor`    | low      | open       |
+| F32 | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                                     | `paragraphs_blokkli` | medium   | open       |
+| F33 | [Transform plugins don't get the language](#f33-transform-plugins-dont-get-the-language)                                                | both                 | low      | workaround |
+| F34 | [The table of contents links to hidden nested headings](#f34-the-table-of-contents-links-to-hidden-nested-headings)                     | `@blokkli/editor`    | low      | open       |
+| F35 | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)                    | `@blokkli/editor`    | low      | open       |
+| F36 | [The `translations` option ignores English](#f36-the-translations-option-ignores-english)                                               | `@blokkli/editor`    | low      | workaround |
+| F37 | [The iframe height editor isn't translated](#f37-the-iframe-height-editor-isnt-translated)                                              | `@blokkli/editor`    | low      | open       |
+| F38 | [Editors can't view paragraph types](#f38-editors-cant-view-paragraph-types)                                                            | `paragraphs_blokkli` | high     | workaround |
+| F39 | [The editor ignores `create_comments`](#f39-the-editor-ignores-create_comments)                                                         | `@blokkli/editor`    | low      | open       |
+| F40 | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                 | `paragraphs_blokkli` | low      | open       |
+| F41 | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                                             | `paragraphs_blokkli` | low      | open       |
+| F42 | [Uploads skip media create access](#f42-uploads-skip-media-create-access)                                                               | `paragraphs_blokkli` | medium   | open       |
+| F43 | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                                          | both                 | low      | open       |
+| F44 | [No approval step](#f44-no-approval-step)                                                                                               | both                 | low      | open       |
+| F45 | ["Replace" fails on link fields](#f45-replace-fails-on-link-fields)                                                                     | `paragraphs_blokkli` | medium   | open       |
+| F46 | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                | both                 | low      | open       |
+| F48 | [A preview grant opens more than the preview](#f48-a-preview-grant-opens-more-than-the-preview)                                         | `paragraphs_blokkli` | low      | open       |
+| F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                     | `texts`              | low      | open       |
+| F52 | [A comment's label throws](#f52-a-comments-label-throws)                                                                                | `paragraphs_blokkli` | low      | open       |
+| F53 | [Violations while editing come from the stored structure](#f53-violations-while-editing-come-from-the-stored-structure)                 | `paragraphs_blokkli` | medium   | open       |
+| F54 | [`datetime-local` options render as text fields](#f54-datetime-local-options-render-as-text-fields)                                     | `paragraphs_blokkli` | low      | open       |
+| F56 | [Option group labels can't be translated](#f56-option-group-labels-cant-be-translated)                                                  | `@blokkli/editor`    | low      | workaround |
+| F57 | [A failed publish shows no message](#f57-a-failed-publish-shows-no-message)                                                             | both                 | medium   | open       |
+| F61 | [Edit state responses are never cached](#f61-edit-state-responses-are-never-cached)                                                     | `paragraphs_blokkli` | low      | open       |
+| F62 | [An edit state shows the latest revision without revision access](#f62-an-edit-state-shows-the-latest-revision-without-revision-access) | `paragraphs_blokkli` | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -933,38 +933,37 @@ From chunk 04 (2026-09-26):
 - **Fix idea:** the producer returns other exceptions' messages in `errors`, and
   the adapter turns GraphQL errors into a failed result.
 
-## F59: A reviewer keeps getting no edit state
+## F61: Edit state responses are never cached
 
-- **Found:** 2026-10-10, in a sandbox, while verifying F39.
-- **Symptom:** a user who can't create edit states (the reviewer) opens the
-  editor of a page that has none, and gets no state, as expected. Once someone
-  who can edit opens the page and so creates the edit state, the reviewer still
-  gets `state: null`, until the caches are cleared (then F60).
-- **Cause:** `LoadEditState::resolve()`
-  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/LoadEditState.php`
-  at `308bf53`) caches the `NULL` with the host's tag
-  (`paragraphs_blokkli_host:<uuid>`) and the create access. Creating an edit
-  state doesn't invalidate that tag: core invalidates
-  `getCacheTagsToInvalidate()`, which has it, only on an update
-  (`EntityBase::invalidateTagsOnSave()`); a new entity invalidates its list
-  tags.
-- **Fix idea:** add the edit state's list cache tag to the `NULL` result, or
-  invalidate the host's tag when an edit state is created.
+- **Found:** 2026-10-10, while fixing a reviewer's edit state.
+- **Symptom:** every GraphQL response with an edit state has a max-age of 0, and
+  triggers a deprecation since Drupal 11.2: calling `addCacheableDependency()`
+  with an object that doesn't implement `CacheableDependencyInterface` "is
+  deprecated in drupal:11.2.0 and is required in drupal:12.0.0". On Drupal 12,
+  it fails.
+- **Cause:** the resolver of `currentUserIsOwner` passes
+  `\Drupal::currentUser()`, an `AccountProxy`, to `addCacheableDependency()`;
+  the one of `ownerName` passes the owner, which is `NULL` for an edit state
+  without one
+  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/SchemaExtension/EditExtension.php`
+  at `308bf53`).
+- **Fix idea:** the `user` cache context for `currentUserIsOwner`, and the owner
+  only if there is one. The responses then become cacheable: check first that
+  everything in them has the cache tags that invalidate it.
 
-## F60: Without an edit state, the editor stops working
+## F62: An edit state shows the latest revision without revision access
 
-- **Found:** 2026-10-10, in a sandbox, while verifying F39.
-- **Symptom:** when `pbEditState` returns `state: null` (e.g. the reviewer on a
-  page nobody has edited, or F59), the editor shows "blökkli has stopped
-  working": "Called getMappedState() before a state is available."
-- **Cause:** the analyze feature's continuous run (`runContinuous()` in
-  `src/runtime/editor/features/analyze/Main.vue`, in this repository) runs the
-  readability analyzer, which calls `fieldValue.getTextFieldValues()`
-  (`src/runtime/editor/providers/readability.ts:145`). That calls
-  `state.getMappedState()` without a guard
-  (`src/runtime/editor/providers/fieldValue.ts:371`), which throws without a
-  state (`src/runtime/editor/providers/state.ts:839`). `getRawFieldValues()` in
-  the same provider catches this case.
-- **Fix idea:** don't run the analyzers before a state has loaded, and let
-  `getTextFieldValues()` return nothing without a state, like
-  `getRawFieldValues()`.
+- **Found:** 2026-10-10, reading the code while letting reviewers open entities
+  without an edit state (not reproduced: the sandbox has no such revisions).
+- **Symptom:** whoever may view edit states sees the host entity's latest
+  revision in the editor, even one they couldn't view otherwise, e.g. a content
+  moderation draft without "View latest version". With the read-only edit state
+  for reviewers, that's every entity with blökkli they can view, not only the
+  ones someone has edited.
+- **Cause:** `ParagraphsBlokkliEditState::getHostEntity()` loads the latest
+  revision, while `LoadHostEntity::resolve()`
+  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/LoadHostEntity.php`)
+  checks view access on the default revision only.
+- **Fix idea:** when the latest revision isn't the default one, check access to
+  it (`view revision`, or content moderation's latest version access); without
+  it, use the default revision.

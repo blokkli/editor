@@ -176,15 +176,15 @@ For machine translation, see
 
 ### Edit State Permissions
 
-| Permission                                                     | Description                                                                             |
-| -------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `view paragraphs blokkli edit state`                           | View edit states (required for all users)                                               |
-| `create paragraphs blokkli edit state`                         | Create new edit states                                                                  |
-| `edit paragraphs blokkli edit state`                           | Perform mutations (add, move, delete, etc.) and publish, with update access to the host |
-| `review paragraphs blokkli edit state`                         | Open the editor read-only, e.g. to comment. It doesn't publish.                         |
-| `take ownership of paragraphs blokkli edit state`              | Transfer edit state ownership                                                           |
-| `delete paragraphs blokkli edit state`                         | Delete edit states                                                                      |
-| `publish paragraphs blokkli edit state with validation errors` | Publish despite validation errors                                                       |
+| Permission                                                     | Description                                                                                             |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `view paragraphs blokkli edit state`                           | View edit states (required for all users)                                                               |
+| `create paragraphs blokkli edit state`                         | Create new edit states                                                                                  |
+| `edit paragraphs blokkli edit state`                           | Perform mutations (add, move, delete, etc.) and publish, with update access to the host                 |
+| `review paragraphs blokkli edit state`                         | Open the editor read-only, e.g. to comment, also where nobody has made changes yet. It doesn't publish. |
+| `take ownership of paragraphs blokkli edit state`              | Transfer edit state ownership                                                                           |
+| `delete paragraphs blokkli edit state`                         | Delete edit states                                                                                      |
+| `publish paragraphs blokkli edit state with validation errors` | Publish despite validation errors                                                                       |
 
 ### Collaboration Permissions
 
