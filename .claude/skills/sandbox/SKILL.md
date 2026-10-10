@@ -281,7 +281,8 @@ host, with ddev running: `bun run test:e2e-drupal` or
   `sandbox/drupal/content`. `ddev bake-e2e` installs into a scratch sandbox
   (`e2ebake`), so the dev site stays as it is. vitest's global setup bakes when
   its fingerprint changes: config, the seed code, the fixtures, the fakes,
-  `bake-e2e`, and the date (seeded dates are relative to the bake). About 16 s.
+  `bake-e2e`, the dumped GraphQL schema (the template caches it), and the date
+  (seeded dates are relative to the bake). About 16 s.
 - **One sandbox per vitest worker:** `e2e1`, `e2e2`, … (`VITEST_POOL_ID`).
   `resetSandbox()` makes it a fresh copy of the template in about 20 ms: plain
   file copies on the host, the database last. Each spec file resets in

@@ -20,6 +20,8 @@ const SOURCES = [
   'sandbox/drupal/web/modules/custom/blokkli_playground/tests/modules',
   'test/e2e-drupal/content',
   '.ddev/commands/web/bake-e2e',
+  // The template caches the GraphQL schema; a change to it is dumped here.
+  'build/drupal-schema.graphql',
 ]
 
 function files(path: string): string[] {
