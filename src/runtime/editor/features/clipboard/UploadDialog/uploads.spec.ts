@@ -179,6 +179,35 @@ describe('createUploads', () => {
     expect(uploads).toHaveLength(2)
   })
 
+  test('a removed file is left out', async () => {
+    const { adapter, uploads } = buildAdapter()
+    const state = createUploads(
+      [buildFile('a.png'), buildFile('b.png')],
+      adapter,
+    )
+    state.start()
+    uploads[0]!.result.reject(new Error('The file is broken.'))
+    uploads[1]!.result.resolve({ fileId: '2' })
+    await flush()
+    state.items[1]!.values.alt = 'A cat'
+    expect(state.isReady.value).toBe(false)
+
+    state.remove(state.items[0]!)
+    expect(state.items.map((item) => item.file.name)).toEqual(['b.png'])
+    expect(state.isReady.value).toBe(true)
+  })
+
+  test('without files, nothing can be added', async () => {
+    const { adapter, uploads } = buildAdapter()
+    const state = createUploads([buildFile('a.png')], adapter)
+    state.start()
+    uploads[0]!.result.reject(new Error())
+    await flush()
+
+    state.remove(state.items[0]!)
+    expect(state.isReady.value).toBe(false)
+  })
+
   test('the media can be created once the required fields are filled in', async () => {
     const { adapter, uploads } = buildAdapter()
     const state = createUploads([buildFile('a.png')], adapter)

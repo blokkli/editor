@@ -3419,7 +3419,7 @@ msgstr "grad ebe"
 
 msgctxt "remove"
 msgid "Remove"
-msgstr ""
+msgstr "Entferne"
 
 msgctxt "replaceField"
 msgid "Replace @field"

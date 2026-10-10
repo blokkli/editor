@@ -14,6 +14,10 @@ export type UploadStatus = 'queued' | 'uploading' | 'uploaded' | 'failed'
  * A file of the upload dialog, from its upload to its media.
  */
 export type UploadItem = {
+  /**
+   * The file's position among the files given.
+   */
+  id: number
   file: File
   type: ClipboardUploadType
   status: UploadStatus
@@ -84,7 +88,8 @@ export function createUploads(
   concurrency = 2,
 ) {
   const items = reactive<UploadItem[]>(
-    files.map((file) => ({
+    files.map((file, id) => ({
+      id,
       file: markRaw(file),
       type: getFileType(file.type),
       status: 'queued',
@@ -102,19 +107,21 @@ export function createUploads(
   const controllers = new Set<AbortController>()
 
   /**
-   * Whether every file is uploaded and its media can be created: its form's
-   * required fields are filled in.
+   * Whether there are files, each uploaded and its media can be created: its
+   * form's required fields are filled in.
    */
-  const isReady = computed(() =>
-    items.every(
-      (item) =>
-        item.status === 'uploaded' &&
-        (item.mediaId !== null ||
-          (!!item.form?.complete &&
-            item.form.inputs.every((input) =>
-              isFilled(input, item.values[input.name]),
-            ))),
-    ),
+  const isReady = computed(
+    () =>
+      items.length > 0 &&
+      items.every(
+        (item) =>
+          item.status === 'uploaded' &&
+          (item.mediaId !== null ||
+            (!!item.form?.complete &&
+              item.form.inputs.every((input) =>
+                isFilled(input, item.values[input.name]),
+              ))),
+      ),
   )
 
   /**
@@ -184,6 +191,17 @@ export function createUploads(
   }
 
   /**
+   * Leave a file out, e.g. one that can't be uploaded: no block is added for
+   * it.
+   */
+  function remove(item: UploadItem) {
+    const index = items.indexOf(item)
+    if (index !== -1) {
+      items.splice(index, 1)
+    }
+  }
+
+  /**
    * Abort the running uploads; the queued ones aren't started.
    */
   function abort() {
@@ -224,5 +242,5 @@ export function createUploads(
     return items.every((item) => item.mediaId !== null)
   }
 
-  return { items, isReady, start, retry, abort, createMedia }
+  return { items, isReady, start, retry, remove, abort, createMedia }
 }

@@ -15,11 +15,12 @@ import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
  * (described by Drupal), the media created in one request, then the blocks
  * added in one mutation. Images become `image` paragraphs, documents `link`
  * ones. The files are built in the page: images drawn on a canvas, so Drupal
- * takes them as images, each of another colour, so none is a duplicate.
+ * takes them as images, each of another colour, so none is a duplicate. A
+ * broken one is zeros, which Drupal refuses.
  */
 
 /** A file to paste. */
-type TestFile = { name: string; type: string }
+type TestFile = { name: string; type: string; broken?: boolean }
 
 /**
  * Dispatch a synthetic `paste` carrying files built in the page.
@@ -27,9 +28,11 @@ type TestFile = { name: string; type: string }
 function pasteFiles(page: Page, files: TestFile[]): Promise<void> {
   return page.evaluate(async (files) => {
     const dt = new DataTransfer()
-    for (const { name, type } of files) {
+    for (const { name, type, broken } of files) {
       let blob: Blob
-      if (type.startsWith('image/')) {
+      if (broken) {
+        blob = new Blob([new Uint8Array(64)], { type })
+      } else if (type.startsWith('image/')) {
         const canvas = document.createElement('canvas')
         canvas.width = 40
         canvas.height = 30
@@ -123,6 +126,11 @@ describe('Uploading pasted files', async () => {
     await pasteAndDrop(page, [{ name: 'Mačka.png', type: 'image/png' }])
 
     await expect.poll(() => uploadStatuses(page)).toEqual(['uploaded'])
+    // The media's name, its file's name unless changed.
+    const name = uploadDialog(page).locator(
+      '[data-test="config-form-name[0][value]"] [data-test="form-text-input"]',
+    )
+    expect(await name.inputValue()).toBe('Mačka.png')
     const alt = uploadDialog(page).locator(
       '[data-test="config-form-field_media_image[0][alt]"] [data-test="form-text-input"]',
     )
@@ -138,6 +146,53 @@ describe('Uploading pasted files', async () => {
     const info = await blockState(page, uuid)
     expect(info.bundle).toBe('image')
     expect(info.props?.media?.image?.alt).toBe('A cat')
+  })
+
+  test("Drupal's error shows at its field, and the file is added once it's fixed", async () => {
+    const before = await blockCount(page)
+    await pasteAndDrop(page, [{ name: 'credit.png', type: 'image/png' }])
+
+    await expect.poll(() => uploadStatuses(page)).toEqual(['uploaded'])
+    const credit = uploadDialog(page).locator(
+      '[data-test="config-form-field_credit[0][value]"]',
+    )
+    const input = credit.locator('[data-test="form-text-input"]')
+    // Typed, a value stays within the field's maximum length; set past it,
+    // Drupal refuses it at the field.
+    await input.evaluate((el: HTMLInputElement) => {
+      el.value = 'x'.repeat(300)
+      el.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+    await dialogSubmit(page).click()
+    await credit.locator('[data-test="config-form-error"]').waitFor()
+    expect(await uploadStatuses(page)).toEqual(['uploaded'])
+
+    await input.fill('Jane Doe')
+    await input.blur()
+    await dialogSubmit(page).click()
+    await uploadDialog(page).waitFor({ state: 'detached' })
+    await expect.poll(() => blockCount(page)).toBe(before + 1)
+  })
+
+  test('a file Drupal refuses can be removed, and the others are added', async () => {
+    const before = await blockCount(page)
+    await pasteAndDrop(page, [
+      { name: 'photo.png', type: 'image/png' },
+      { name: 'broken.png', type: 'image/png', broken: true },
+    ])
+
+    await expect
+      .poll(() => uploadStatuses(page))
+      .toEqual(['uploaded', 'failed'])
+    expect(await dialogSubmit(page).isDisabled()).toBe(true)
+    await uploadDialog(page)
+      .locator('[data-test="clipboard-upload-remove"]')
+      .click()
+    expect(await uploadStatuses(page)).toEqual(['uploaded'])
+
+    await dialogSubmit(page).click()
+    await uploadDialog(page).waitFor({ state: 'detached' })
+    await expect.poll(() => blockCount(page)).toBe(before + 1)
   })
 
   test('an image and a PDF are added as an image and a link, in order', async () => {

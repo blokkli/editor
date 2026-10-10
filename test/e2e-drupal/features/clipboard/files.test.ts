@@ -1,7 +1,12 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { withApp, BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
+import {
+  withApp,
+  BLOCKS_EDITOR_PATH,
+  editorPath,
+  openEditor,
+} from '../../support/session'
 import { emitEvent } from '../../support/events'
 import { blockCount } from '../../support/blocks'
 import { draggedBundles, dropDragInto } from '../../support/clipboard'
@@ -86,20 +91,30 @@ async function hasMessageFor(page: Page, fileName: string): Promise<boolean> {
  * Page lifecycle: one editor page shared, on the page "Blocks". `afterEach`
  * ends a drag and dispatches `dragleave`, which resets the clipboard feature's
  * drag counter (see `native-drop.test.ts`), and clears the messages.
+ * `translatorPage` (Élodie Favre, a translator, who may not create media) is
+ * on the page "Library", whose edit state is hers: she edits it.
  */
 describe('Pasting and dragging in files', async () => {
   const sandbox = workerSandbox()
   await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
+  let translatorPage: Page
 
   beforeAll(async () => {
     resetSandbox(sandbox)
-    page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH)
+    ;[page, translatorPage] = await Promise.all([
+      openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH),
+      openEditor(
+        sandbox,
+        'Élodie Favre',
+        editorPath('/en/library', 'translated'),
+      ),
+    ])
   })
 
   afterAll(async () => {
-    await page.close()
+    await Promise.all([page.close(), translatorPage.close()])
   })
 
   afterEach(async () => {
@@ -111,7 +126,7 @@ describe('Pasting and dragging in files', async () => {
         new DragEvent('dragleave', { bubbles: true, cancelable: true }),
       )
     })
-    await dismissMessages(page)
+    await Promise.all([dismissMessages(page), dismissMessages(translatorPage)])
   })
 
   test('a pasted image larger than the field allows is refused', async () => {
@@ -130,6 +145,20 @@ describe('Pasting and dragging in files', async () => {
 
     await expect.poll(() => hasMessageFor(page, 'drawing.bmp')).toBe(true)
     expect(await isDragging(page)).toBe(false)
+  })
+
+  test('a user who may not create media cannot paste images', async () => {
+    expect(
+      await withApp(translatorPage, (app) => app.state.editMode.value),
+    ).toBe('editing')
+    await dispatchFiles(translatorPage, 'paste', [
+      { name: 'photo.png', ...PNG },
+    ])
+
+    await expect
+      .poll(() => hasMessageFor(translatorPage, 'photo.png'))
+      .toBe(true)
+    expect(await isDragging(translatorPage)).toBe(false)
   })
 
   test('pasted images start a drag adding a block for each', async () => {

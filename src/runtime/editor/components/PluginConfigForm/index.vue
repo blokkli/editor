@@ -4,7 +4,7 @@
     <li
       v-for="item in renderedConfig"
       :key="item.name"
-      :class="'bk-is-type-' + item.type"
+      :class="['bk-is-type-' + item.type, { 'bk-form-item': stacked }]"
       :data-test="'config-form-' + item.name"
     >
       <FormCheckbox
@@ -25,7 +25,11 @@
         v-model="value[item.name]"
         :id-prefix
       />
-      <p v-if="errors?.[item.name]" class="mt-5 text-sm text-red-normal">
+      <p
+        v-if="errors?.[item.name]"
+        class="mt-5 text-sm text-red-normal"
+        data-test="config-form-error"
+      >
         {{ errors[item.name] }}
       </p>
       <slot name="after" />
@@ -91,8 +95,9 @@ defineExpose({
 <style lang="postcss">
 .bk .bk-plugin-config-form {
   @apply flex flex-wrap gap-10 items-end;
+  /* Spaced as FormItems are. */
   &.bk-is-stacked {
-    @apply flex-col items-stretch;
+    @apply flex-col items-stretch gap-0;
   }
   > li {
     @apply flex-1 shrink;

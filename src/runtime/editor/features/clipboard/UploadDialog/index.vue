@@ -29,18 +29,18 @@
     <PanelSection :title="filesTitle">
       <ul>
         <li
-          v-for="(item, index) in uploads.items"
-          :key="index"
+          v-for="item in uploads.items"
+          :key="item.id"
           class="flex gap-15 p-panel-gap border-b border-b-mono-300 last:border-b-0"
           data-test="clipboard-upload-item"
           :data-test-status="item.status"
         >
           <img
-            v-if="thumbnails[index]"
-            :src="thumbnails[index]"
+            v-if="thumbnails.get(item.file)"
+            :src="thumbnails.get(item.file)"
             alt=""
             class="w-[160px] h-120 shrink-0 object-contain bg-mono-200"
-            @error="thumbnails[index] = null"
+            @error="thumbnails.delete(item.file)"
           />
           <div
             v-else
@@ -91,6 +91,14 @@
                 @click="uploads.retry(item)"
               >
                 {{ $t('clipboardUploadRetry', 'Try again') }}
+              </button>
+              <button
+                type="button"
+                class="bk-button bk-scheme-mono bk-is-light bk-is-small shrink-0"
+                data-test="clipboard-upload-remove"
+                @click="onRemove(item)"
+              >
+                {{ $t('remove', 'Remove') }}
               </button>
             </div>
             <p
@@ -155,7 +163,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, ref, useBlokkli } from '#imports'
+import { computed, onBeforeUnmount, reactive, ref, useBlokkli } from '#imports'
 import {
   ConfigForm,
   DialogModal,
@@ -196,12 +204,14 @@ const uploads = createUploads(props.files, adapter as UploadMethods)
 uploads.start()
 
 // The images' thumbnails, while the dialog is shown.
-const thumbnailUrls = props.files.map((file) =>
-  file.type.startsWith('image/') ? URL.createObjectURL(file) : null,
+const thumbnailUrls = new Map(
+  props.files
+    .filter((file) => file.type.startsWith('image/'))
+    .map((file) => [file, URL.createObjectURL(file)]),
 )
 
 // A file that can't be shown as an image gets the icon instead.
-const thumbnails = ref(thumbnailUrls.slice())
+const thumbnails = reactive(new Map(thumbnailUrls))
 
 const isCreating = ref(false)
 
@@ -219,7 +229,11 @@ const bundles = ref<Partial<Record<ClipboardUploadType, string>>>(
  */
 const choices = computed(() =>
   props.groups
-    .filter((group) => group.bundles.length > 1)
+    .filter(
+      (group) =>
+        group.bundles.length > 1 &&
+        uploads.items.some((item) => item.type === group.type),
+    )
     .map((group) => ({
       type: group.type,
       label:
@@ -321,8 +335,16 @@ function onCancel() {
   emit('cancel')
 }
 
+function onRemove(item: UploadItem) {
+  uploads.remove(item)
+  // Without files, there's nothing left to add.
+  if (!uploads.items.length) {
+    onCancel()
+  }
+}
+
 onBeforeUnmount(() => {
   uploads.abort()
-  thumbnailUrls.forEach((url) => url && URL.revokeObjectURL(url))
+  thumbnailUrls.forEach((url) => URL.revokeObjectURL(url))
 })
 </script>

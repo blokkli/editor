@@ -353,7 +353,7 @@ the schema dump, then the frontend.
   in, media created only for the files without, errors at their fields.
 - `ConfigForm` shows errors at its fields (`errors`), and its inputs' ids are
   unique per form (`useId()`): the dialog shows forms with the same names. It
-  can stack its fields (`stacked`).
+  can stack its fields (`stacked`), spaced as `FormItem`s are.
 - No paste while a dialog is open. The drop element calls files of several types
   "File".
 - New strings through `bun run texts`, translated for `de` and `gsw_CH`; `fr`
@@ -378,7 +378,7 @@ the schema dump, then the frontend.
   `createMediaFromUploads` in the language being edited, `addBlocksFromUploads`
   with the media type from the clipboard config.
 
-### 9. Tests
+### 9. Tests (done, not committed)
 
 - Done with steps 6 to 8: the unit tests (the clipboard helpers, the drop
   targets, the dialog's state), `files.test.ts` (refused files named before
@@ -387,14 +387,19 @@ the schema dump, then the frontend.
   image and a PDF added as an image and a link, after the paragraph they were
   dropped after; "Cancel" adds nothing, and nothing is pasted while the dialog
   is open; no upload without the token).
-- Open: an error shows at its field; a user who can't create media (the
-  translator) can't paste files, which covers `canUpload` in
-  `clipboardMapBundle`.
-- The sandbox: add `name` to the image and document types' `media_library` form
-  displays, so the dialog asks for a name.
+- The sandbox: the image and document types' `media_library` form displays have
+  `name`, so the dialog asks for it, prefilled with the file's name.
 - The dialog: a "Remove" button on a failed row. A file Drupal refuses fails
-  again on every retry, and keeps "Add" disabled until the whole dialog is
-  cancelled.
+  again on every retry and kept "Add" disabled; removed, it gets no block. With
+  the last file removed, the dialog closes.
+- `upload.test.ts`: the name is prefilled; Drupal's error shows at its field (a
+  credit past the field's maximum length, set in the page: typed, the browser
+  keeps it within), and the file is added once it's fixed; a file Drupal refuses
+  (zeros) is removed, and the others are added.
+- `files.test.ts`: a translator, who may not create media, can't paste images
+  (on a page of their own, which they edit). It covers `canUpload` in
+  `clipboardMapBundle`.
+- Unit tests: a removed file is left out; without files, nothing can be added.
 
 ### 10. Docs and skills
 
