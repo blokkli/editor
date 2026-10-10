@@ -27,8 +27,7 @@ Statuses: `todo`, `in progress`.
 - **The Drupal docs** (`docs/modules/drupal/`) lack what the
   `blokkli-setup-drupal` skill covers: the same-origin requirement, the GraphQL
   server config (extensions, `bundles`, `fields`), GraphQL access, the explicit
-  allowed types, core `media` for the settings form, the library item route, and
-  the header forwarding.
+  allowed types, the library item route, and the header forwarding.
 
 ## Upstream bugs
 

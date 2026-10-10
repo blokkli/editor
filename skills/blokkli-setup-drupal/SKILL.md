@@ -76,11 +76,11 @@ Nuxt. The starterkit's route list
 
 ```bash
 composer require drupal/paragraphs_blokkli drupal/graphql_core_schema
-drush en paragraphs_blokkli paragraphs_blokkli_graphql media
+drush en paragraphs_blokkli paragraphs_blokkli_graphql
 ```
 
-- Core `media` is needed even without media types: blökkli's settings form
-  returns a 500 without it.
+- `paragraphs_blokkli` depends on core `media`, which `drush en` installs with
+  it.
 - Feature submodules (library, comments, search, templates, …) have their own
   skills and docs: `blokkli-setup-library`, `blokkli-setup-fragments`,
   `blokkli-setup-templates`, `blokkli-setup-publishing` (scheduling, revisions,
@@ -422,6 +422,5 @@ export default defineBlokkliEditAdapter(async (ctx) => {
 | Adding a paragraph fails unless it opens the form                         | The paragraph type has a required field: blökkli can't set values when adding it directly |
 | Pasted text fails                                                         | The text field has no allowed formats                                                     |
 | A pasted file is refused                                                  | The media field's allowed extensions or maximum size                                      |
-| `/admin/config/content/blokkli` returns 500                               | Core `media` isn't enabled                                                                |
 | SSR renders as anonymous, or everything is a 500                          | Cookies or `X-Forwarded-*` not forwarded, or `onServerError` swallows Drupal's status     |
 | The dev server hangs on "continue with the previously downloaded schema?" | The schema download failed; fix access or use a dumped schema                             |

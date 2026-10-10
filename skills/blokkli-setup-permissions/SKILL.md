@@ -148,9 +148,9 @@ editors should have it.
 ## 4. Media
 
 - The media permissions control Drupal's media forms and library.
-- blökkli's paste and drop of images and files creates media without checking
-  `create <media type> media`: any user who may edit the page can upload. Don't
-  rely on media permissions to prevent uploads.
+- Pasting and dropping images and files in blökkli creates media of the types
+  set in blökkli's settings, and needs `create <media type> media` for that
+  type. Without it, the paste fails with an error.
 
 ## 5. Check it
 

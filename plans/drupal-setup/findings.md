@@ -129,9 +129,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
     it.
   - `paragraphs_blokkli_search_api` extends `search_api` classes without
     declaring `search_api`.
-  - The main module's settings form (`src/Form/SettingsForm.php:417`) loads the
-    `media_type` storage unconditionally, so `/admin/config/content/blokkli`
-    returns 500 without core `media`.
 - **"All types allowed" reads as "none allowed".** For a paragraphs field with
   `target_bundles: null`, `ParagraphsBlokkliFieldConfig`
   (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/ParagraphsBlokkliFieldConfig.php:84`)
@@ -701,6 +698,9 @@ From chunk 04 (2026-09-26):
   prevent uploads.
 - **Fix idea:** check the media type's create access before creating it, and
   offer the clipboard only when the user has it.
+- **Fixed in part** (the uploads plan, step 1): `add_image` and `add_file` check
+  the media type's create access. The editor still offers pasting files to a
+  user without it; [the uploads plan](../uploads/README.md) changes that.
 
 ## F43: Translators can't be limited to translating
 
