@@ -122,8 +122,9 @@ the schema dump, then the frontend.
 - Access: `edit paragraphs blokkli edit state`, the media type's create access
   (a type without a media type is a 403), and a CSRF token in the `X-CSRF-Token`
   header (`_csrf_request_header_token`, token key
-  `CsrfRequestHeaderAccessCheck::TOKEN_KEY`). `/session/token` isn't routed to
-  Drupal, so GraphQL hands out the token (step 5).
+  `CsrfRequestHeaderAccessCheck::TOKEN_KEY`). A project needn't send core's
+  `/session/token` to Drupal (the sandbox does), so GraphQL hands out the token
+  (step 5).
 - The body: the raw file, `Content-Type: application/octet-stream`, the name in
   `Content-Disposition: file; filename="…"`, percent-encoded (an
   `XMLHttpRequest` header can't carry most non-Latin-1 characters, and core's
@@ -209,7 +210,7 @@ the schema dump, then the frontend.
   describes the image type's form as complete, with the credit and the alt text;
   the name is hidden in its `media_library` form display until step 9.
 
-### 4. Drupal: creating the media (done, not committed)
+### 4. Drupal: creating the media (done)
 
 - The GraphQL mutation `pbCreateMediaFromUploads(langcode, items)`, not an edit
   state mutation: media is shared between pages and saved straight away. An item
@@ -254,19 +255,34 @@ the schema dump, then the frontend.
   without values, a failing item, refused items, an unknown language).
   `UploadTestTrait` creates the uploads.
 
-### 5. Drupal: the clipboard config and the token
+### 5. Drupal: the clipboard config and the token (done, not committed)
 
-- `ParagraphsBlokkliSupportedClipboardImage` and `…File` get whether the media
-  type can be uploaded: the user has create access, and its form (built without
-  a file) is complete. Its cache metadata: the access result's
-  (`user.permissions`) and the tags of the media type, the form display and the
-  field configs.
-- The token comes from a mutation, like `paragraphsBlokkliAgentToken`: the
-  GraphQL results cache never caches mutations, and the token is per session.
-  The adapter requests it when a dialog opens.
-- Then: `ddev drush cr`, `bun run drupal:schema` in the container,
-  `bun run dev:prepare` on the host (revert
-  `playground/app/options-schema.json`).
+- `ParagraphsBlokkliSupportedClipboardImage` and `…File` have `canUpload`: the
+  user has the upload route's access (the edit permission and the media type's
+  create access), and the media's form, built without a file (the upload isn't
+  known yet), is complete.
+- Its cache metadata: the access result's (`user.permissions`),
+  `entity_field_info` (a change of a field or of the media type clears the field
+  definitions) and the form displays' list tag (a display created for the form
+  mode doesn't invalidate its own tag). A form hook that depends on anything
+  else isn't accounted for. `fileExtensions` and `maxFileSize` weren't
+  invalidated before; they are now.
+- The mutation `pbUploadToken` returns the token for the upload route's
+  `X-CSRF-Token` header (`/session/token`'s), or null without the edit
+  permission. A mutation, like `paragraphsBlokkliAgentToken`: the GraphQL
+  results cache never caches mutations, and the token is per session. The
+  adapter requests it when a dialog opens.
+- Kernel tests: `SupportedClipboardsDataProducerTest` (`canUpload` with and
+  without access, an incomplete form, the entry invalidated by a changed media
+  type, a changed source field and a display created for the form mode) and
+  `UploadTokenDataProducerTest` (the token passes the header's check; none for a
+  reviewer).
+- `build/drupal-schema.graphql` has steps 3 to 5.
+- On the dev site, through a real session (Anna Keller, logged in with a
+  one-time link, curl): `canUpload` for images and files, the token, the upload
+  without it (403, "missing"), with a wrong one (403, "invalid") and with it
+  (the file's ID), the form, and the media created, its file permanent in
+  `public://media/images`. Deleted afterwards, with the session.
 
 ### 6. blökkli: drops of several file types
 

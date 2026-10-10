@@ -5997,6 +5997,13 @@ type Query {
   pbGetDroppableFieldConfig(entityType: String!, entityBundle: String!): [ParagraphsBlokkliDroppableFieldConfig!]
   pbMediaLibraryGetResults(filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliMediaLibraryResults
   pbGetSupportedClipboards: [ParagraphsBlokkliSupportedClipboard!]
+
+  """
+  Get the form of a media created from a file uploaded in the editor. Only for
+  the current user's temporary files.
+  """
+  pbGetUploadForm(type: ParagraphsBlokkliUploadType!, fileId: String!): ParagraphsBlokkliUploadForm
+
   pbGetUrlPrefixes: [ParagraphsBuilderUrlPrefix!]!
 
   "Get the entity config."
@@ -6148,6 +6155,20 @@ type Mutation {
   Returns the number of unread notifications remaining afterwards.
   """
   pbMarkNotificationsAsRead(uuids: [String!]): Int!
+
+  """
+  Create media from files uploaded in the editor, through their forms, in the
+  given language. Only for the current user's temporary files. Returns a
+  result per item, in the same order, or null for an unknown language.
+  """
+  pbCreateMediaFromUploads(langcode: String!, items: [ParagraphsBlokkliUploadMediaInput!]!): [ParagraphsBlokkliUploadMediaResult!]
+
+  """
+  The token for the upload route's X-CSRF-Token header: the current session's
+  token, as /session/token returns it, which a frontend may not route to
+  Drupal. Returns null without the permission to edit.
+  """
+  pbUploadToken: String
 
   paragraphsBlokkliTemplateDelete(uuid: String!): ParagraphsBlokkliMutationResult!
 }
@@ -7574,6 +7595,13 @@ type ParagraphsBlokkliSupportedClipboardImage implements ParagraphsBlokkliSuppor
 
   ""
   maxFileSize: Int!
+
+  """
+  Whether the user can upload images and create their media in the editor: they
+  can create media of the type, and its form is complete (see
+  ParagraphsBlokkliUploadForm).
+  """
+  canUpload: Boolean!
 }
 
 ""
@@ -7586,6 +7614,13 @@ type ParagraphsBlokkliSupportedClipboardFile implements ParagraphsBlokkliSupport
 
   ""
   maxFileSize: Int!
+
+  """
+  Whether the user can upload files and create their media in the editor: they
+  can create media of the type, and its form is complete (see
+  ParagraphsBlokkliUploadForm).
+  """
+  canUpload: Boolean!
 }
 
 ""
@@ -7814,6 +7849,39 @@ type ParagraphsBlokkliConfigInputHost implements ParagraphsBlokkliConfigInput {
 
   ""
   required: Boolean!
+}
+
+"The form of a media created from a file uploaded in the editor."
+type ParagraphsBlokkliUploadForm {
+  "The form's fields, in the order of the form."
+  inputs: [ParagraphsBlokkliConfigInput!]!
+
+  """
+  Whether the editor can submit the form. False when a shown required field
+  can't be described, or the form has no submit button.
+  """
+  complete: Boolean!
+}
+
+"The media created from a file uploaded in the editor, or why it wasn't."
+type ParagraphsBlokkliUploadMediaResult {
+  "The ID of the created media."
+  mediaId: String
+
+  "The errors, each with the input it belongs to."
+  errors: [ParagraphsBlokkliUploadError!]!
+}
+
+"An error of a media created from a file uploaded in the editor."
+type ParagraphsBlokkliUploadError {
+  """
+  The name of the form's input the error belongs to, or null if it belongs to
+  none, such as an error of the file.
+  """
+  name: String
+
+  "The message, as plain text."
+  message: String!
 }
 
 ""
@@ -8585,6 +8653,24 @@ enum ParagraphsBlokkliRemoteVideoProvider {
 enum ParagraphsBlokkliConfigInputOptionsVariant {
   select
   radio
+}
+
+"The type of a file uploaded in the editor, which decides its media type."
+enum ParagraphsBlokkliUploadType {
+  image
+  file
+}
+
+"A media to create from a file uploaded in the editor."
+input ParagraphsBlokkliUploadMediaInput {
+  "The upload's type."
+  type: ParagraphsBlokkliUploadType!
+
+  "The ID of the uploaded file."
+  fileId: String!
+
+  "The values of the form's inputs, keyed by their names."
+  values: MapData
 }
 
 input ParagraphsBlokkliAddMultipleItemChildren {
