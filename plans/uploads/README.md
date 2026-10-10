@@ -378,7 +378,7 @@ the schema dump, then the frontend.
   `createMediaFromUploads` in the language being edited, `addBlocksFromUploads`
   with the media type from the clipboard config.
 
-### 9. Tests (done, not committed)
+### 9. Tests (done)
 
 - Done with steps 6 to 8: the unit tests (the clipboard helpers, the drop
   targets, the dialog's state), `files.test.ts` (refused files named before
@@ -401,16 +401,28 @@ the schema dump, then the frontend.
   `clipboardMapBundle`.
 - Unit tests: a removed file is left out; without files, nothing can be added.
 
-### 10. Docs and skills
+### 10. Docs and skills (done)
 
-- `docs/modules/drupal/`: uploads (the route, its limits, the form mode, and
-  that hooks for the base form ID `media_form` apply, `#states` don't).
-- The clipboard feature's `docs.md` (it still describes a sidebar that no longer
-  exists) and the adapter methods.
-- `skills/blokkli-setup-drupal`: the form mode decides the fields; a visible
-  required field the dialog can't show prevents uploads of that type; the body
-  size limits.
-- The `sandbox` skill, if its config changes need explaining.
+- `docs/modules/drupal/configuration.md`: "Uploads" (the media types and their
+  mappings, access, the route, the limits, temporary files, the language,
+  duplicates, the `media_library` form mode and the widgets it shows, the form's
+  hooks, `#states`), the media type for files in the settings, uploads in
+  "Feature Detection", the media create access next to the permissions.
+  `faq.md`: refused files. `getting-started.md`: the media types.
+- The clipboard feature's `docs.md`, rewritten (it described a sidebar that no
+  longer exists): new blocks, files, the upload dialog. The adapter docs:
+  `uploadFile`, `getUploadForm`, `createMediaFromUploads`,
+  `addBlocksFromUploads`, and `clipboardMapBundle` with the file's name, the
+  drag and refusals.
+- `skills/blokkli-setup-drupal`: the body size limits, the `media_library` form
+  display decides the dialog's fields (a visible required field it can't show
+  means no uploads of the type), the media create access.
+- The `sandbox` skill needs nothing: the form displays are ordinary config, and
+  the upload quota (`UploadQuotaSubscriber`, on file validation) covers the
+  route.
+- The module: an upload next to a file of the same name keeps its name, only its
+  URI gets the suffix ("image_0.png"), so the media's default name is the file's
+  (`MediaUploader::storeFile()`, `UploadControllerTest::testSameName()`).
 
 ## Later
 

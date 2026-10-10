@@ -124,7 +124,12 @@ Watch out for:
 
 - **Uploads:** pasted and dropped files go through core's upload handling, as in
   a form. The media field's extensions, maximum size and directory (tokens
-  included) apply.
+  included) apply. The file is the request's body, so PHP's `post_max_size` and
+  the web server's body size (nginx's `client_max_body_size`) limit it too.
+- **The upload dialog's fields:** the media type's `media_library` form display
+  decides them. Put the name and the alt text there. The dialog shows text
+  fields, text areas, checkboxes, selects and radios; a visible required field
+  of another widget means no uploads of that media type.
 - **Text formats:** pasting text into a text field without allowed formats
   fails. Set its allowed formats.
 - **Link fields that a mapping targets:** blökkli sets the link title to the
@@ -215,7 +220,8 @@ permissions yourself.
   them, so the editor offers them none. Grant view access in a custom module
   (`hook_paragraphs_type_access()`, in the `blokkli-setup-permissions` skill).
 - **Content:** editors also need the usual permissions to edit the host entity
-  and to use its media.
+  and to use its media, and create access to the media types of pasted and
+  dropped files (`create image media`).
 - Roles for editors, reviewers and translators, and per-type permissions: the
   `blokkli-setup-permissions` skill.
 

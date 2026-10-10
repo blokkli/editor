@@ -46,7 +46,7 @@ Assign the following permissions to your editor role at
 Go to `/admin/config/content/blokkli` and:
 
 - Enable the entity types and bundles that should be editable (e.g., Node: Page)
-- Configure media bundles for image and video uploads
+- Configure the media bundles for pasted and dropped images, files and videos
 
 If you use the media library or content search features, configure entity
 mappings at `/admin/config/content/blokkli/entity-mapping` to map media types to

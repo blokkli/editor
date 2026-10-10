@@ -55,6 +55,10 @@ For example:
 - If `BlokkliParagraphTemplate` or one of its fields `uuid`, `label`,
   `description`, `isDefault` and `paragraphs` doesn't exist → templates feature
   disabled
+- If `pbGetUploadForm`, `pbCreateMediaFromUploads`, `pbUploadToken` or the
+  clipboard's `canUpload` and `mediaBundle` don't exist (an older
+  `paragraphs_blokkli`) → pasted and dropped files are added without the upload
+  dialog
 
 This means you only need to enable Drupal submodules — the Nuxt side adapts
 automatically.
@@ -90,7 +94,10 @@ Configure at `/admin/config/content/blokkli`:
 
 - **Enabled entity types** — Which content types/bundles are editable with
   blökkli
-- **Media bundle for images** — Which media type to use for pasted images
+- **Media bundle for images** — Which media type to use for pasted and dropped
+  images (see [Uploads](#uploads))
+- **Media bundle for files** — Which media type to use for other pasted and
+  dropped files, such as PDFs
 - **Media bundle for remote video** — Which media type for YouTube/Vimeo links
 - **Clipboard text paragraphs** — Which paragraph types to create when pasting
   text, each with the field for the text. The editor offers those whose field
@@ -122,6 +129,44 @@ types. This powers drag-and-drop from the media library and content search.
 For example, mapping `media:image` to `paragraph:image` means that when a user
 drags an image from the media library, blökkli knows to create an `image`
 paragraph and set its media reference field.
+
+### Uploads
+
+Pasted and dropped files are uploaded to Drupal in a dialog, where the user
+fills in the fields of each file's media before it's created. Images use the
+media type for images, other files the one for files (see
+[Main Settings](#main-settings)), and the media type's entity mappings decide
+the paragraph types a file can become. Without a mapping, the type's files are
+refused.
+
+- **Access:** the `edit paragraphs blokkli edit state` permission and create
+  access to the media type, such as `create image media`. Without it, the editor
+  refuses the user's files.
+- **The route:** `POST /paragraphs_blokkli/upload/{image|file}`, under the path
+  the setup already sends to Drupal. Its body is the raw file. It needs a CSRF
+  token, which the editor gets through GraphQL.
+- **Limits:** core's upload handling checks the file, as in a form: the source
+  field's allowed extensions, maximum size and directory apply. As the file is
+  the request's body, PHP's `post_max_size` (not `upload_max_filesize`) and the
+  web server's body size (nginx's `client_max_body_size`) limit it too.
+- **Temporary files:** an upload is a temporary file of the user, moved to the
+  field's directory when its media is created. Cron deletes an abandoned upload,
+  after six hours by default.
+- **Languages:** the media is created in the language being edited.
+- **Duplicates:** with the `filehash` module or Rokka, a file that exists as a
+  media isn't uploaded again: the existing media is added.
+
+The dialog shows the media's form in the `media_library` form mode: set the
+fields there, such as the name and the alternative text. Text fields, text
+areas, checkboxes, single-value selects and radios are shown; other widgets keep
+their default values. A media type whose form has a visible required field the
+dialog can't show isn't offered for uploads.
+
+The form is a media entity form with the form ID
+`media_<type>_paragraphs_blokkli_upload_form` and the base form ID `media_form`.
+Hooks for `media_form` and `hook_form_alter()` apply, and so does the form's
+validation; hooks for the add or edit form's ID (`media_image_add_form`) don't.
+`#states` aren't applied: a field they would hide is shown.
 
 ### Options Schema
 
@@ -185,6 +230,9 @@ For machine translation, see
 | `take ownership of paragraphs blokkli edit state`              | Transfer edit state ownership                                                                           |
 | `delete paragraphs blokkli edit state`                         | Delete edit states                                                                                      |
 | `publish paragraphs blokkli edit state with validation errors` | Publish despite validation errors                                                                       |
+
+Pasting and dropping files also needs create access to the media types they use,
+such as `create image media` (see [Uploads](#uploads)).
 
 ### Collaboration Permissions
 

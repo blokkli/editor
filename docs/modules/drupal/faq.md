@@ -165,6 +165,22 @@ See
 [Configuration — Drupal Submodules](/modules/drupal/configuration#drupal-submodules)
 for the full list.
 
+## Pasted or dropped files are refused
+
+The editor names a file it won't add in a message. Check, for the media type set
+for images or for files at `/admin/config/content/blokkli`:
+
+1. The user has create access to the media type (e.g. `create image media`)
+2. An entity mapping maps the media type to a paragraph type the field allows
+3. The source field allows the file's extension and size
+4. The media type's `media_library` form display has no visible required field
+   the upload dialog can't show (text fields, text areas, checkboxes, selects
+   and radios are shown)
+
+A file larger than PHP's `post_max_size` or the web server's body size fails
+during its upload. See
+[Configuration — Uploads](/modules/drupal/configuration#uploads).
+
 ## Fragments are not available
 
 If fragments don't appear at all in the editor, check:
