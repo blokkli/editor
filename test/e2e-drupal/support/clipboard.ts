@@ -187,7 +187,7 @@ export function draggedBundles(page: Page): Promise<string[]> {
 }
 
 export interface DropDragOptions {
-  /** Target field on the host (defaults to the host entity's `content`). */
+  /** Target field on the host (defaults to the host entity's `field_paragraphs`). */
   fieldName?: string
   /** Host uuid the field lives on (defaults to the host entity uuid). */
   hostUuid?: string
@@ -206,7 +206,7 @@ export function dropDragInto(
 ): Promise<void> {
   return page.evaluate((o) => {
     const app = window.__BLOKKLI__!.app!
-    const fieldName = o.fieldName ?? 'content'
+    const fieldName = o.fieldName ?? 'field_paragraphs'
     const hostUuid = o.hostUuid ?? app.context.value.entityUuid
     const field = app.fields.find(hostUuid, fieldName)
     if (!field) {

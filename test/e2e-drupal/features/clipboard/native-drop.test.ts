@@ -1,18 +1,17 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { withApp } from '../../../e2e/support/session'
-import { blockCount, blockState } from '../../../e2e/support/blocks'
-import { emitEvent } from '../../../e2e/support/events'
+import { withApp, BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
+import { blockCount, blockState } from '../../support/blocks'
+import { emitEvent } from '../../support/events'
 import {
   nativeDragEnterText,
   dropNativeDrag,
   draggedBundles,
-} from '../../../e2e/support/clipboard'
-import { bundleSelector } from '../../../e2e/support/bundleSelector'
+} from '../../support/clipboard'
+import { bundleSelector } from '../../support/bundleSelector'
 import { nextMutation } from '../../support/mutations'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
-import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 
 /**
  * Dragging content from the OS into the editor (a native drag, as opposed to a

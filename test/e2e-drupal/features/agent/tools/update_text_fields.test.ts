@@ -1,15 +1,15 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openSidebar } from '../../../../e2e/support/sidebar'
-import { runComponentTool } from '../../../../e2e/support/agent'
+import { openSidebar } from '../../../support/sidebar'
+import { runComponentTool } from '../../../support/agent'
 import {
   blockHost,
   waitForEditableText,
   plaintextEditor,
   editableOverlay,
-} from '../../../../e2e/support/editable'
-import { applyDiff, editDiff } from '../../../../e2e/support/diff'
+} from '../../../support/editable'
+import { applyDiff, editDiff } from '../../../support/diff'
 import type { BatchRewriteResult } from '../../../../../src/modules/agent/runtime/app/tools/update_text_fields/index'
 import { nextMutation } from '../../../support/mutations'
 import {

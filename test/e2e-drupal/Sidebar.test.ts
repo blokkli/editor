@@ -9,10 +9,14 @@ import {
   test,
 } from 'vitest'
 import type { Page } from 'playwright-core'
-import { waitForEditorReady, withApp } from '../e2e/support/session'
-import { emitEvent } from '../e2e/support/events'
+import {
+  waitForEditorReady,
+  withApp,
+  editorPath,
+  openEditor,
+} from './support/session'
+import { emitEvent } from './support/events'
 import { resetSandbox, sandboxHost, workerSandbox } from './support/sandbox'
-import { editorPath, openEditor } from './support/session'
 
 /** The page "Library" (content/nodes/translated.yml): it has a German translation. */
 const LIBRARY_PATH = editorPath('/en/library', 'translated')

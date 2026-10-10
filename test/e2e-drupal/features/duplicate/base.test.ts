@@ -6,15 +6,15 @@ import {
   blockCount,
   selectBlock,
   selectBlocks,
-} from '../../../e2e/support/blocks'
+} from '../../support/blocks'
 import {
   clickItemAction,
   itemAction,
   itemActionDisabled,
-} from '../../../e2e/support/itemActions'
-import { selectedUuids } from '../../../e2e/support/selection'
-import { pressShortcut } from '../../../e2e/support/keyboard'
-import { emitEvent } from '../../../e2e/support/events'
+} from '../../support/itemActions'
+import { selectedUuids } from '../../support/selection'
+import { pressShortcut } from '../../support/keyboard'
+import { emitEvent } from '../../support/events'
 import {
   resetSandbox,
   sandboxHost,

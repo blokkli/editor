@@ -2,11 +2,14 @@ import { readFileSync } from 'node:fs'
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { waitForEditorReady } from '../../../e2e/support/session'
-import { openAppMenu, appMenuButton } from '../../../e2e/support/menu'
-import { dialog } from '../../../e2e/support/overlays'
+import {
+  waitForEditorReady,
+  BLOCKS_EDITOR_PATH,
+  openEditor,
+} from '../../support/session'
+import { openAppMenu, appMenuButton } from '../../support/menu'
+import { dialog } from '../../support/overlays'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
-import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 
 /**
  * The changelog feature adds a "What's New" app-menu button and remembers, in

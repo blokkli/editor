@@ -1,24 +1,23 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { withApp } from '../../../e2e/support/session'
-import { blockCount, blockState } from '../../../e2e/support/blocks'
-import { topLevelBlockUuids } from '../../../e2e/support/selection'
-import { emitEvent } from '../../../e2e/support/events'
+import { withApp, BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
+import { blockCount, blockState } from '../../support/blocks'
+import { topLevelBlockUuids } from '../../support/selection'
+import { emitEvent } from '../../support/events'
 import {
   pasteText,
   draggedBundles,
   dropDragInto,
-} from '../../../e2e/support/clipboard'
+} from '../../support/clipboard'
 import {
   bundleSelector,
   bundleSelectorItemIds,
   pickBundle,
-} from '../../../e2e/support/bundleSelector'
-import { storedFieldValue } from '../../../e2e/support/editable'
+} from '../../support/bundleSelector'
+import { storedFieldValue } from '../../support/editable'
 import { nextMutation } from '../../support/mutations'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
-import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 
 /**
  * The clipboard feature turns a paste into a drag-and-drop: `onPaste` detects

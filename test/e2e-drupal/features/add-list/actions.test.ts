@@ -1,8 +1,8 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { closeFormOverlay, formOverlay } from '../../../e2e/support/overlays'
-import { dropAddAction } from '../../../e2e/support/blocks'
+import { closeFormOverlay, formOverlay } from '../../support/overlays'
+import { dropAddAction } from '../../support/blocks'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 import { editorPath, openEditor } from '../../support/session'
 

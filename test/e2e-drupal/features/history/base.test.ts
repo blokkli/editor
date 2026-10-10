@@ -6,10 +6,10 @@ import {
   blockExists,
   blockRendered,
   selectBlock,
-} from '../../../e2e/support/blocks'
-import { toolbarButton, undo } from '../../../e2e/support/toolbar'
-import { pressShortcut } from '../../../e2e/support/keyboard'
-import { selectedUuids } from '../../../e2e/support/selection'
+} from '../../support/blocks'
+import { toolbarButton, undo } from '../../support/toolbar'
+import { pressShortcut } from '../../support/keyboard'
+import { selectedUuids } from '../../support/selection'
 import {
   activeHistoryIndex,
   clickCurrentRevision,
@@ -18,7 +18,7 @@ import {
   historyItems,
   mutationCount,
   openHistory,
-} from '../../../e2e/support/history'
+} from '../../support/history'
 import { nextMutation } from '../../support/mutations'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 import { editorPath, openEditor, revertAllChanges } from '../../support/session'

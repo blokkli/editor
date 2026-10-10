@@ -2,13 +2,13 @@ import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import type { MockScript } from '#blokkli/agent/shared/types'
-import { pageStructure } from '../../../e2e/support/blocks'
+import { pageStructure } from '../../support/blocks'
 import {
   answerAgentQuestion,
   openAgentPanel,
   submitAgentPrompt,
   waitForAgentReply,
-} from '../../../e2e/support/agent'
+} from '../../support/agent'
 import {
   resetSandbox,
   sandboxHost,

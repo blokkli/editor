@@ -1,22 +1,19 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { waitForEditorReady, withApp } from '../../../e2e/support/session'
-import { addBlock } from '../../../e2e/support/blocks'
 import {
-  closeFormOverlay,
-  dialog,
-  formOverlay,
-} from '../../../e2e/support/overlays'
-import { toolbarButton } from '../../../e2e/support/toolbar'
-import { emitEvent } from '../../../e2e/support/events'
-import { nextMutation } from '../../support/mutations'
-import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
-import {
+  waitForEditorReady,
+  withApp,
   BLOCKS_EDITOR_PATH,
   editorPath,
   openEditor,
 } from '../../support/session'
+import { addBlock } from '../../support/blocks'
+import { closeFormOverlay, dialog, formOverlay } from '../../support/overlays'
+import { toolbarButton } from '../../support/toolbar'
+import { emitEvent } from '../../support/events'
+import { nextMutation } from '../../support/mutations'
+import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 
 /**
  * The entity-title feature (`features/entity-title/index.vue`) renders the

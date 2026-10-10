@@ -1,13 +1,10 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openSidebar } from '../../../../e2e/support/sidebar'
-import { runComponentTool } from '../../../../e2e/support/agent'
-import {
-  plaintextEditor,
-  editableOverlay,
-} from '../../../../e2e/support/editable'
-import { applyDiff, editDiff } from '../../../../e2e/support/diff'
+import { openSidebar } from '../../../support/sidebar'
+import { runComponentTool } from '../../../support/agent'
+import { plaintextEditor, editableOverlay } from '../../../support/editable'
+import { applyDiff, editDiff } from '../../../support/diff'
 import type { AutoTranslateResult } from '../../../../../src/modules/agent/runtime/app/tools/auto_translate_paragraphs/index'
 import { nextMutation } from '../../../support/mutations'
 import {

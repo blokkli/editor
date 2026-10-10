@@ -1,13 +1,13 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { selectBlocks } from '../../../e2e/support/blocks'
+import { selectBlocks } from '../../support/blocks'
 import {
   getAgentTranscript,
   openAgentPanel,
   submitAgentPrompt,
   waitForAgentReply,
-} from '../../../e2e/support/agent'
+} from '../../support/agent'
 import {
   resetSandbox,
   sandboxHost,

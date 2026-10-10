@@ -1,19 +1,24 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { waitForEditorReady } from '../../../e2e/support/session'
+import {
+  waitForEditorReady,
+  editorPath,
+  openEditor,
+  revertAllChanges,
+} from '../../support/session'
 import {
   blockHost,
   editableState,
   waitForEditableText,
-} from '../../../e2e/support/editable'
-import { dialog } from '../../../e2e/support/overlays'
+} from '../../support/editable'
+import { dialog } from '../../support/overlays'
 import {
   buildPoFixture,
   buildSingleLangCsv,
   switchToCsvImportTab,
   uploadTranslationsFile,
-} from '../../../e2e/support/translations'
+} from '../../support/translations'
 import { nextMutation } from '../../support/mutations'
 import {
   resetSandbox,
@@ -21,7 +26,6 @@ import {
   seedUuid,
   workerSandbox,
 } from '../../support/sandbox'
-import { editorPath, openEditor, revertAllChanges } from '../../support/session'
 
 // The English-only titles of the page "Notices" (content/nodes/notices.yml).
 const FIRST = {

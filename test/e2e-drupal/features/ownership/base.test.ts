@@ -1,10 +1,15 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { waitForEditorReady, withApp } from '../../../e2e/support/session'
+import {
+  waitForEditorReady,
+  withApp,
+  claimEditState,
+  editorPath,
+  openEditor,
+} from '../../support/session'
 import { nextMutation } from '../../support/mutations'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
-import { claimEditState, editorPath, openEditor } from '../../support/session'
 
 /**
  * Tests for the ownership feature (`features/ownership/index.vue`).

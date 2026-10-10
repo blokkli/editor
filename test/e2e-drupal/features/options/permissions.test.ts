@@ -1,9 +1,9 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { selectBlock } from '../../../e2e/support/blocks'
-import { emitEvent } from '../../../e2e/support/events'
-import { blockOption, openOptionGroup } from '../../../e2e/support/options'
+import { selectBlock } from '../../support/blocks'
+import { emitEvent } from '../../support/events'
+import { blockOption, openOptionGroup } from '../../support/options'
 import {
   resetSandbox,
   sandboxHost,

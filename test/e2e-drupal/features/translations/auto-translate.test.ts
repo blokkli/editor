@@ -1,15 +1,19 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { waitForEditorReady } from '../../../e2e/support/session'
-import { emitEvent } from '../../../e2e/support/events'
-import { applyDiff, cancelDiff, editDiff } from '../../../e2e/support/diff'
+import {
+  waitForEditorReady,
+  editorPath,
+  openEditor,
+} from '../../support/session'
+import { emitEvent } from '../../support/events'
+import { applyDiff, cancelDiff, editDiff } from '../../support/diff'
 import {
   editableState,
   blockHost,
   plaintextEditor,
   editableOverlay,
-} from '../../../e2e/support/editable'
+} from '../../support/editable'
 import { nextMutation } from '../../support/mutations'
 import {
   resetSandbox,
@@ -17,7 +21,6 @@ import {
   seedUuid,
   workerSandbox,
 } from '../../support/sandbox'
-import { editorPath, openEditor } from '../../support/session'
 
 // Two titles of the page "Notices" (content/nodes/notices.yml) without a
 // German value: the German page shows their English one.

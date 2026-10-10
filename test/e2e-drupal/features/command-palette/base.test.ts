@@ -1,13 +1,12 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { withApp } from '../../../e2e/support/session'
-import { selectBlock } from '../../../e2e/support/blocks'
-import { topLevelBlockUuids } from '../../../e2e/support/selection'
-import { toolbarButton } from '../../../e2e/support/toolbar'
-import { emitEvent } from '../../../e2e/support/events'
+import { withApp, BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
+import { selectBlock } from '../../support/blocks'
+import { topLevelBlockUuids } from '../../support/selection'
+import { toolbarButton } from '../../support/toolbar'
+import { emitEvent } from '../../support/events'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
-import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 
 /**
  * The command palette (`features/command-palette`) is a keyboard-driven launcher

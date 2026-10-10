@@ -40,25 +40,12 @@ export function chartSeriesColor(page: Page, index: number): Locator {
   return page.locator(`[data-test="chart-series-color-${index}"]`)
 }
 
-/** The category colour control (in the data table rows) at `index`. */
-export function chartCategoryColor(page: Page, index: number): Locator {
-  return page.locator(`[data-test="chart-category-color-${index}"]`)
-}
-
 /** Read the current colour id (e.g. `red.500`) of a series colour control. */
 export function chartSeriesColorId(
   page: Page,
   index: number,
 ): Promise<string | null> {
   return chartSeriesColor(page, index).getAttribute('data-test-color')
-}
-
-/** Read the current colour id of a category colour control. */
-export function chartCategoryColorId(
-  page: Page,
-  index: number,
-): Promise<string | null> {
-  return chartCategoryColor(page, index).getAttribute('data-test-color')
 }
 
 /** Pick a colour (by id, e.g. `red.500`) for a series via the colour dropdown. */
@@ -68,15 +55,6 @@ export function setChartSeriesColor(
   colorId: string,
 ): Promise<void> {
   return pickColor(page, `chart-series-color-${index}`, colorId)
-}
-
-/** Pick a colour (by id) for a category via the colour dropdown. */
-export function setChartCategoryColor(
-  page: Page,
-  index: number,
-  colorId: string,
-): Promise<void> {
-  return pickColor(page, `chart-category-color-${index}`, colorId)
 }
 
 /**

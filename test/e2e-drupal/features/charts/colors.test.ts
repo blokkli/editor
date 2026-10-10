@@ -1,19 +1,22 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { waitForEditorReady } from '../../../e2e/support/session'
-import { addBlock } from '../../../e2e/support/blocks'
-import { emitEvent } from '../../../e2e/support/events'
+import {
+  waitForEditorReady,
+  editorPath,
+  openEditor,
+} from '../../support/session'
+import { addBlock } from '../../support/blocks'
+import { emitEvent } from '../../support/events'
 import {
   chartEditorOverlay,
   chartSeriesColorId,
   closeChartEditor,
   openChartEditor,
   setChartSeriesColor,
-} from '../../../e2e/support/charts'
+} from '../../support/charts'
 import { nextMutation } from '../../support/mutations'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
-import { editorPath, openEditor } from '../../support/session'
 
 /** A chart, added to the page's paragraphs field. */
 const CHART = { bundle: 'chart', fieldName: 'field_paragraphs' }

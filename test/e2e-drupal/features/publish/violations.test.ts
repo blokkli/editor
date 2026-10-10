@@ -6,15 +6,16 @@ import {
   appMenuButton,
   closeAppMenu,
   openAppMenu,
-} from '../../../e2e/support/menu'
+} from '../../support/menu'
+import { dialog, dialogSubmit, dismissMessages } from '../../support/overlays'
+import { addBlock } from '../../support/blocks'
 import {
-  dialog,
-  dialogSubmit,
-  dismissMessages,
-} from '../../../e2e/support/overlays'
-import { addBlock } from '../../../e2e/support/blocks'
-import { withApp } from '../../../e2e/support/session'
-import { emitEvent } from '../../../e2e/support/events'
+  withApp,
+  editorPath,
+  openEditor,
+  revertAllChanges,
+} from '../../support/session'
+import { emitEvent } from '../../support/events'
 import { nextMutation } from '../../support/mutations'
 import {
   resetSandbox,
@@ -22,7 +23,6 @@ import {
   seedUuid,
   workerSandbox,
 } from '../../support/sandbox'
-import { editorPath, openEditor, revertAllChanges } from '../../support/session'
 
 /** The gallery of the page "Faulty", which holds a title and a text. */
 const GALLERY = seedUuid('paragraph', 'faulty-gallery')

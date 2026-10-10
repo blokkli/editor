@@ -1,14 +1,11 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { selectBlock, selectBlocks } from '../../../e2e/support/blocks'
-import {
-  clickItemAction,
-  itemActionDisabled,
-} from '../../../e2e/support/itemActions'
-import { emitEvent, nextEvent } from '../../../e2e/support/events'
-import { closeFormOverlay, formOverlay } from '../../../e2e/support/overlays'
-import { pressShortcut } from '../../../e2e/support/keyboard'
+import { selectBlock, selectBlocks } from '../../support/blocks'
+import { clickItemAction, itemActionDisabled } from '../../support/itemActions'
+import { emitEvent, nextEvent } from '../../support/events'
+import { closeFormOverlay, formOverlay } from '../../support/overlays'
+import { pressShortcut } from '../../support/keyboard'
 import {
   resetSandbox,
   sandboxHost,

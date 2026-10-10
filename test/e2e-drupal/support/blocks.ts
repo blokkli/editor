@@ -3,7 +3,7 @@ import { withApp } from './session'
 import { emitEvent } from './events'
 // Pull the dragging-overlay's event-bus augmentation into the e2e TS program so
 // `dragging:moveToDropTarget` is known here — feature files under `src/runtime`
-// aren't otherwise part of the playground-rooted e2e scope. Type-only side
+// aren't otherwise part of the sandbox frontend's TS program. Type-only side
 // effect (the module has no runtime code).
 import '../../../src/runtime/editor/features/dragging-overlay/types'
 
@@ -81,7 +81,7 @@ export async function isBlockMuted(page: Page, uuid: string): Promise<boolean> {
  * produces a genuine mutation + history entry — without the canvas drag, the
  * add-list, or the editable-overlay that a real drop opens.
  *
- * Defaults to a `text` block in the host entity's `content` field. To nest a
+ * Defaults to a `text` block in the host entity's `field_paragraphs` field. To nest a
  * block inside another block's field, pass `hostUuid` (the parent block's uuid)
  * + the parent's `fieldName` — the host entity type/uuid are resolved from the
  * registered field, so this works at any nesting level. For testing the drag
@@ -127,7 +127,7 @@ export function addBlock(
     },
     {
       bundle: opts.bundle ?? 'text',
-      fieldName: opts.fieldName ?? 'content',
+      fieldName: opts.fieldName ?? 'field_paragraphs',
       hostUuid: opts.hostUuid,
     },
   )
@@ -147,7 +147,7 @@ export type BlockTreeNode = {
 }
 
 /**
- * Read the host entity's block tree under `rootField` (defaults to `content`)
+ * Read the host entity's block tree under `rootField` (defaults to `field_paragraphs`)
  * and return a stable, JSON-serialisable shape suitable for inline snapshots.
  * Each node carries its bundle, non-empty props, and any child fields that
  * have blocks in them (empty child fields are omitted to keep snapshots
@@ -219,99 +219,10 @@ export function pageStructure(
       return (root?.list ?? []).map((i) => describe(i.uuid))
     },
     {
-      rootField: opts.rootField ?? 'content',
+      rootField: opts.rootField ?? 'field_paragraphs',
       entityUuid: opts.entityUuid ?? '',
     },
   ) as Promise<BlockTreeNode[]>
-}
-
-/**
- * A block to add via `addBlocks`. `uuid` is caller-provided (so the test knows
- * each block's id up front); `children` nests blocks keyed by the parent's
- * block-field name (e.g. `header`, `blocks`), recursively.
- */
-export type NewBlockTree = {
-  bundle: string
-  uuid: string
-  children?: Record<string, NewBlockTree[]>
-}
-
-/**
- * Add a whole tree of blocks in a single mutation — the same `adapter.addNewBlocks`
- * call the agent's `add_paragraphs` tool uses, which inserts nested structures
- * (and several top-level blocks) at once. Unlike `addBlock`, the caller supplies
- * each block's `uuid`, so the resulting document layout is fully known to the
- * test. Adds to the host entity's `content` field by default; pass `hostUuid` +
- * `fieldName` to target another entity's field.
- */
-export function addBlocks(
-  page: Page,
-  blocks: NewBlockTree[],
-  opts: {
-    fieldName?: string
-    hostUuid?: string
-    afterUuid?: string | null
-  } = {},
-): Promise<void> {
-  return page.evaluate(
-    async ({ blocks, fieldName, hostUuid, afterUuid }) => {
-      const app = window.__BLOKKLI__!.app!
-
-      type EventBlock = {
-        bundle: string
-        blockUuid: string
-        children?: Record<string, EventBlock[]>
-      }
-      const toEventBlocks = (nodes: typeof blocks): EventBlock[] =>
-        nodes.map((node) => ({
-          bundle: node.bundle,
-          blockUuid: node.uuid,
-          children: node.children
-            ? Object.fromEntries(
-                Object.entries(node.children).map(([field, children]) => [
-                  field,
-                  toEventBlocks(children),
-                ]),
-              )
-            : undefined,
-        }))
-
-      let host: { type: string; uuid: string; fieldName: string }
-      if (hostUuid) {
-        const field = app.fields.find(hostUuid, fieldName)
-        if (!field) {
-          throw new Error(
-            `Field "${fieldName}" not registered on block ${hostUuid}`,
-          )
-        }
-        host = {
-          type: field.hostEntityType,
-          uuid: field.hostEntityUuid,
-          fieldName,
-        }
-      } else {
-        host = {
-          type: app.context.value.entityType,
-          uuid: app.context.value.entityUuid,
-          fieldName,
-        }
-      }
-
-      await app.state.mutateWithLoadingState(() =>
-        app.adapter.addNewBlocks!({
-          blocks: toEventBlocks(blocks),
-          host,
-          afterUuid: afterUuid ?? null,
-        }),
-      )
-    },
-    {
-      blocks,
-      fieldName: opts.fieldName ?? 'content',
-      hostUuid: opts.hostUuid,
-      afterUuid: opts.afterUuid ?? null,
-    },
-  )
 }
 
 /**
@@ -322,7 +233,7 @@ export function addBlocks(
  * never hardcoded), and the add-list's `defineDropHandler('action')` runs its
  * `callback(ActionPlacedData)` — typically opening the action's form overlay.
  *
- * Defaults to the host entity's `content` field at the start (`preceedingUuid`
+ * Defaults to the host entity's `field_paragraphs` field at the start (`preceedingUuid`
  * null); pass `preceedingUuid` to insert after an existing block, or `fieldName`
  * to target another field.
  */
@@ -370,7 +281,7 @@ export function dropAddAction(
     },
     {
       actionId,
-      fieldName: opts.fieldName ?? 'content',
+      fieldName: opts.fieldName ?? 'field_paragraphs',
       preceedingUuid: opts.preceedingUuid ?? null,
     },
   )
@@ -389,7 +300,7 @@ function nextFrames(page: Page): Promise<void> {
 
 /**
  * Where to drop a dragged block. Defaults to the start of the host entity's
- * `content` field; pass `fieldName`/`entityUuid` to target another field, or
+ * `field_paragraphs` field; pass `fieldName`/`entityUuid` to target another field, or
  * `block`/`position` to insert relative to an existing block.
  */
 export type DropTarget = {
@@ -401,7 +312,7 @@ export type DropTarget = {
 
 /**
  * Drag a new block of `bundle` from the add-list onto a drop slot via real
- * pointer input. Defaults to the start of the host entity's `content` field.
+ * pointer input. Defaults to the start of the host entity's `field_paragraphs` field.
  *
  * The drop slots are WebGL-rendered and live in artboard coordinates, so
  * chasing their on-screen position is fragile — a slot anchored on a block
@@ -457,7 +368,7 @@ export async function dragNewBlockIntoPage(
           ? { block, position: position ?? 'before' }
           : {
               host: entityUuid ?? app.context.value.entityUuid,
-              fieldName: fieldName ?? 'content',
+              fieldName: fieldName ?? 'field_paragraphs',
             },
       )
       const v = app.ui.viewport.value

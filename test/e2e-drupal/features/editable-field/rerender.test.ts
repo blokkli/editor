@@ -8,11 +8,11 @@ import {
   editableFrame,
   setFrameValue,
   saveByClickAway,
-} from '../../../e2e/support/editable'
-import { undo } from '../../../e2e/support/toolbar'
-import { openSidebar } from '../../../e2e/support/sidebar'
-import { runComponentTool } from '../../../e2e/support/agent'
-import { applyDiff } from '../../../e2e/support/diff'
+} from '../../support/editable'
+import { undo } from '../../support/toolbar'
+import { openSidebar } from '../../support/sidebar'
+import { runComponentTool } from '../../support/agent'
+import { applyDiff } from '../../support/diff'
 import { nextMutation } from '../../support/mutations'
 import {
   resetSandbox,

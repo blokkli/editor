@@ -5,16 +5,19 @@ import {
   openAgentPanel,
   submitAgentPrompt,
   waitForAgentReply,
-} from '../e2e/support/agent'
-import { applyDiff } from '../e2e/support/diff'
-import { waitForEditorReady } from '../e2e/support/session'
+} from './support/agent'
+import { applyDiff } from './support/diff'
+import {
+  waitForEditorReady,
+  BLOCKS_EDITOR_PATH,
+  openEditor,
+} from './support/session'
 import {
   resetSandbox,
   sandboxHost,
   seedUuid,
   workerSandbox,
 } from './support/sandbox'
-import { BLOCKS_EDITOR_PATH, openEditor } from './support/session'
 
 describe('The agent', async () => {
   const sandbox = workerSandbox()

@@ -1,10 +1,15 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import type { Page } from 'playwright-core'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { runAgentTool } from '../e2e/support/agent'
-import { addBlock, blockCount } from '../e2e/support/blocks'
-import { waitForEditorReady } from '../e2e/support/session'
-import { openSidebar } from '../e2e/support/sidebar'
+import { runAgentTool } from './support/agent'
+import { addBlock, blockCount } from './support/blocks'
+import {
+  waitForEditorReady,
+  BLOCKS_EDITOR_PATH,
+  openEditor,
+  revertAllChanges,
+} from './support/session'
+import { openSidebar } from './support/sidebar'
 import { nextMutation } from './support/mutations'
 import {
   resetSandbox,
@@ -12,11 +17,6 @@ import {
   seedUuid,
   workerSandbox,
 } from './support/sandbox'
-import {
-  BLOCKS_EDITOR_PATH,
-  openEditor,
-  revertAllChanges,
-} from './support/session'
 
 describe('The E2E sandbox', async () => {
   const sandbox = workerSandbox()

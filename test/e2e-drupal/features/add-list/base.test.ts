@@ -1,15 +1,14 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { withApp } from '../../../e2e/support/session'
-import { selectBlock } from '../../../e2e/support/blocks'
+import { withApp, editorPath, openEditor } from '../../support/session'
+import { selectBlock } from '../../support/blocks'
 import {
   resetSandbox,
   sandboxHost,
   seedUuid,
   workerSandbox,
 } from '../../support/sandbox'
-import { editorPath, openEditor } from '../../support/session'
 
 /**
  * The add list (left toolbar) renders one item per available block bundle plus

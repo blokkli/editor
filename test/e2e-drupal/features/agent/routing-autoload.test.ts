@@ -6,7 +6,7 @@ import {
   openAgentPanel,
   submitAgentPrompt,
   waitForAgentReply,
-} from '../../../e2e/support/agent'
+} from '../../support/agent'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 

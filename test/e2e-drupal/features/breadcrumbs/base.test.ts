@@ -1,9 +1,9 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { selectedUuids } from '../../../e2e/support/selection'
-import { emitEvent } from '../../../e2e/support/events'
-import { openEditableField } from '../../../e2e/support/editable'
+import { selectedUuids } from '../../support/selection'
+import { emitEvent } from '../../support/events'
+import { openEditableField } from '../../support/editable'
 import {
   resetSandbox,
   sandboxHost,

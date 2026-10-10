@@ -1,7 +1,7 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { withApp } from '../../../e2e/support/session'
+import { withApp, editorPath, openEditor } from '../../support/session'
 import {
   discardEditable,
   editableOverlay,
@@ -9,9 +9,9 @@ import {
   plaintextEditor,
   saveByClickAway,
   storedFieldValue,
-} from '../../../e2e/support/editable'
-import { openSidebar } from '../../../e2e/support/sidebar'
-import { runAgentTool } from '../../../e2e/support/agent'
+} from '../../support/editable'
+import { openSidebar } from '../../support/sidebar'
+import { runAgentTool } from '../../support/agent'
 import { nextMutation } from '../../support/mutations'
 import {
   resetSandbox,
@@ -19,7 +19,6 @@ import {
   seedUuid,
   workerSandbox,
 } from '../../support/sandbox'
-import { editorPath, openEditor } from '../../support/session'
 
 // The page "Widgets" (content/nodes/widgets.yml).
 const LINK = seedUuid('paragraph', 'widgets-link')

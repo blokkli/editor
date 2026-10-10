@@ -6,8 +6,8 @@ import {
   openAgentPanel,
   submitAgentPrompt,
   waitForAgentReply,
-} from '../../../e2e/support/agent'
-import { openSidebar } from '../../../e2e/support/sidebar'
+} from '../../support/agent'
+import { openSidebar } from '../../support/sidebar'
 import { nextMutation } from '../../support/mutations'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 import { editorPath, openEditor } from '../../support/session'

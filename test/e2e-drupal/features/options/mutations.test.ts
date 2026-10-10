@@ -1,11 +1,7 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import {
-  addBlock,
-  selectBlock,
-  selectBlocks,
-} from '../../../e2e/support/blocks'
+import { addBlock, selectBlock, selectBlocks } from '../../support/blocks'
 import {
   blockOption,
   blockOptionControl,
@@ -23,7 +19,7 @@ import {
   toggleCheckboxOption,
   widgetOptionValue,
   widgetTextColorAttr,
-} from '../../../e2e/support/options'
+} from '../../support/options'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 import { editorPath, openEditor } from '../../support/session'
 

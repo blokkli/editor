@@ -1,10 +1,10 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { withApp } from '../../../e2e/support/session'
-import { blockRendered, dropAddAction } from '../../../e2e/support/blocks'
-import { closeFormOverlay, formOverlay } from '../../../e2e/support/overlays'
-import { emitEvent } from '../../../e2e/support/events'
+import { withApp, editorPath, openEditor } from '../../support/session'
+import { blockRendered, dropAddAction } from '../../support/blocks'
+import { closeFormOverlay, formOverlay } from '../../support/overlays'
+import { emitEvent } from '../../support/events'
 import { countMutations, nextMutation } from '../../support/mutations'
 import {
   resetSandbox,
@@ -12,7 +12,6 @@ import {
   seedUuid,
   workerSandbox,
 } from '../../support/sandbox'
-import { editorPath, openEditor } from '../../support/session'
 
 /**
  * The fragments feature (`features/fragments/index.vue`) registers a `fragment`

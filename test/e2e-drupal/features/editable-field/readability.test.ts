@@ -7,7 +7,7 @@ import {
   editableOverlay,
   readabilityState,
   saveByClickAway,
-} from '../../../e2e/support/editable'
+} from '../../support/editable'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 

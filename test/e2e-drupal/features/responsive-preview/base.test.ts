@@ -1,12 +1,12 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Frame, Page } from 'playwright-core'
-import { openSidebar } from '../../../e2e/support/sidebar'
-import { addBlock, selectBlock } from '../../../e2e/support/blocks'
-import { getPreviewFrame } from '../../../e2e/support/preview'
-import { toggleCheckboxOption } from '../../../e2e/support/options'
-import { clickItemAction } from '../../../e2e/support/itemActions'
-import { emitEvent } from '../../../e2e/support/events'
+import { openSidebar } from '../../support/sidebar'
+import { addBlock, selectBlock } from '../../support/blocks'
+import { getPreviewFrame } from '../../support/preview'
+import { toggleCheckboxOption } from '../../support/options'
+import { clickItemAction } from '../../support/itemActions'
+import { emitEvent } from '../../support/events'
 import { nextMutation } from '../../support/mutations'
 import {
   resetSandbox,

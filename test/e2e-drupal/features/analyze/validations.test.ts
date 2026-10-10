@@ -1,25 +1,25 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { dismissMessages } from '../../../e2e/support/overlays'
-import { withApp } from '../../../e2e/support/session'
+import { dismissMessages } from '../../support/overlays'
+import {
+  withApp,
+  BLOCKS_EDITOR_PATH,
+  editorPath,
+  openEditor,
+} from '../../support/session'
 import {
   analyzeResults,
   expandAnalyzeNodes,
   openSidebar,
-} from '../../../e2e/support/sidebar'
-import { emitEvent } from '../../../e2e/support/events'
+} from '../../support/sidebar'
+import { emitEvent } from '../../support/events'
 import {
   resetSandbox,
   sandboxHost,
   seedUuid,
   workerSandbox,
 } from '../../support/sandbox'
-import {
-  BLOCKS_EDITOR_PATH,
-  editorPath,
-  openEditor,
-} from '../../support/session'
 
 /** The gallery of the page "Faulty", which holds a title and a text. */
 const GALLERY = seedUuid('paragraph', 'faulty-gallery')

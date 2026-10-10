@@ -6,14 +6,14 @@ import {
   blockCount,
   blockExists,
   selectBlock,
-} from '../../../e2e/support/blocks'
+} from '../../support/blocks'
 import {
   clickItemAction,
   itemAction,
   itemActionDisabled,
-} from '../../../e2e/support/itemActions'
-import { pressShortcut } from '../../../e2e/support/keyboard'
-import { emitEvent } from '../../../e2e/support/events'
+} from '../../support/itemActions'
+import { pressShortcut } from '../../support/keyboard'
+import { emitEvent } from '../../support/events'
 import {
   resetSandbox,
   sandboxHost,

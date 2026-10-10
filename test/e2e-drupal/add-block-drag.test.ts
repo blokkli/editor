@@ -1,21 +1,16 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { withApp } from '../e2e/support/session'
-import {
-  blockCount,
-  blockState,
-  dragNewBlockIntoPage,
-} from '../e2e/support/blocks'
+import { withApp, BLOCKS_EDITOR_PATH, openEditor } from './support/session'
+import { blockCount, blockState, dragNewBlockIntoPage } from './support/blocks'
 import {
   editableOverlay,
   nextEditableOpen,
   plaintextEditor,
   saveByClickAway,
-} from '../e2e/support/editable'
+} from './support/editable'
 import { nextMutation } from './support/mutations'
 import { resetSandbox, sandboxHost, workerSandbox } from './support/sandbox'
-import { BLOCKS_EDITOR_PATH, openEditor } from './support/session'
 
 /**
  * Real drag-and-drop: drag blocks from the add-list into the page's

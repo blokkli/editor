@@ -350,8 +350,7 @@ export function widgetTextColorAttr(
 }
 
 /**
- * Add a Widget block to `fieldName` of the page (the mock's `content`, or
- * Drupal's `field_paragraphs`) and select it. Waits until the options
+ * Add a Widget block to `fieldName` of the page and select it. Waits until the options
  * toolbar's form has actually rendered (`Padding` group is one of the
  * always-present elements on the Widget's options).
  *
@@ -362,14 +361,14 @@ export function widgetTextColorAttr(
  */
 export async function setupWidget(
   page: Page,
-  fieldName = 'content',
+  fieldName = 'field_paragraphs',
 ): Promise<string> {
   const uuid = await addBlock(page, { bundle: 'widget', fieldName })
   if (!uuid) {
     throw new Error('Failed to add widget')
   }
   await selectBlock(page, uuid)
-  // The block is appended at the end of `content` — typically off-screen on a
+  // The block is appended at the end of the field — typically off-screen on a
   // multi-block page. Explicitly centring it ensures the toolbar that tracks
   // it is also in view (`useStickyToolbar`).
   await page.evaluate((u) => {

@@ -1,16 +1,20 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { withApp } from '../../../e2e/support/session'
+import {
+  withApp,
+  claimEditState,
+  editorPath,
+  openEditor,
+} from '../../support/session'
 import {
   getAgentTranscript,
   openAgentPanel,
   submitAgentPrompt,
   waitForAgentReply,
-} from '../../../e2e/support/agent'
+} from '../../support/agent'
 import type { Transcript } from '#blokkli/agent/shared/types'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
-import { claimEditState, editorPath, openEditor } from '../../support/session'
 
 const EMPTY_PATH = editorPath('/en/empty', 'empty')
 

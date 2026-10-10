@@ -4,9 +4,9 @@ import type { Page } from 'playwright-core'
 import {
   captureDownload,
   openCsvExportDialog,
-} from '../../../e2e/support/translations'
-import { emitEvent } from '../../../e2e/support/events'
-import { dialog } from '../../../e2e/support/overlays'
+} from '../../support/translations'
+import { emitEvent } from '../../support/events'
+import { dialog } from '../../support/overlays'
 import { parseCsv } from '../../../../src/runtime/editor/features/translations/CsvDialog/csv'
 import { parsePo } from '../../../../src/runtime/editor/features/translations/CsvDialog/po'
 import {

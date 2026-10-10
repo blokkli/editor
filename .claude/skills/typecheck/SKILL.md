@@ -33,8 +33,7 @@ Pick based on the files you modified:
   typecheck:build`
 - **`playground/**`**, **`test/e2e/**`** → `bun run typecheck:playground`
 - **`sandbox/frontend/**`**, **`test/e2e-drupal/**`** →
-  `bun run typecheck:sandbox-frontend` (`test/e2e/support/` helpers it imports:
-  both)
+  `bun run typecheck:sandbox-frontend`
 - **`sandbox/control/**`** → `bun run typecheck:sandbox-control`
 - **Multiple areas** → `bun run typecheck`
 

@@ -1,13 +1,14 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { withApp, getHostContext } from '../../../e2e/support/session'
 import {
-  blockCount,
-  blockState,
-  selectBlock,
-} from '../../../e2e/support/blocks'
-import { topLevelBlockUuids } from '../../../e2e/support/selection'
+  withApp,
+  getHostContext,
+  BLOCKS_EDITOR_PATH,
+  openEditor,
+} from '../../support/session'
+import { blockCount, blockState, selectBlock } from '../../support/blocks'
+import { topLevelBlockUuids } from '../../support/selection'
 import {
   copySelection,
   captureClipboard,
@@ -15,9 +16,8 @@ import {
   pasteText,
   dispatchPaste,
   dropDragInto,
-} from '../../../e2e/support/clipboard'
+} from '../../support/clipboard'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
-import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 
 /**
  * Copy/paste of existing blocks. `Cmd/Ctrl+C` serialises the selection into a

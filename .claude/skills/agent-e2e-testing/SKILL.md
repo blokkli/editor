@@ -31,7 +31,7 @@ involved, no WebSocket, no scripting. Asserts the tool's return shape and any
 side effects on the page state.
 
 ```ts
-import { runAgentTool } from '../../../../e2e/support/agent'
+import { runAgentTool } from '../../../support/agent'
 
 const result = await runAgentTool(page, 'get_page_text', {})
 expect(result.text).toMatchInlineSnapshot(...)
@@ -62,7 +62,7 @@ import {
   openAgentPanel,
   submitAgentPrompt,
   waitForAgentReply,
-} from '../../../e2e/support/agent'
+} from '../../support/agent'
 import { editorPath, openEditor } from '../../support/session'
 
 const page = await openEditor(
@@ -250,7 +250,7 @@ After the real tool relay lands, the mock plays the second `agent` turn.
 `?testing=true` is unrelated to the mock — it gates the adapter recorder.
 Mock-script tests don't depend on it.
 
-## Support helpers (`test/e2e/support/agent.ts`)
+## Support helpers (`test/e2e-drupal/support/agent.ts`)
 
 | Helper                                     | What it does                                                                                                   |
 | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
@@ -322,7 +322,7 @@ still real, so auth code stays exercised in tests.
 
 ```ts
 // tools/ pattern
-import { runAgentTool } from '../../../../e2e/support/agent'
+import { runAgentTool } from '../../../support/agent'
 const result = await runAgentTool(page, 'tool_name', { ...params })
 
 // full-flow pattern
@@ -330,7 +330,7 @@ import {
   openAgentPanel,
   submitAgentPrompt,
   waitForAgentReply,
-} from '../../../e2e/support/agent'
+} from '../../support/agent'
 
 const page = await openEditor(sandbox, 'Anna Keller', path, {
   mockScript: script,

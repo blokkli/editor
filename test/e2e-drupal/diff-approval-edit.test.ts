@@ -1,8 +1,8 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { getHostContext } from '../e2e/support/session'
-import { addBlock } from '../e2e/support/blocks'
+import { getHostContext, editorPath, openEditor } from './support/session'
+import { addBlock } from './support/blocks'
 import {
   editableState,
   editableText,
@@ -14,7 +14,7 @@ import {
   saveByClickAway,
   discardEditable,
   blockHost,
-} from '../e2e/support/editable'
+} from './support/editable'
 import {
   applyFieldDiff,
   applyChunkFieldDiff,
@@ -22,13 +22,12 @@ import {
   applyDiff,
   editDiff,
   editDiffFromHighlight,
-} from '../e2e/support/diff'
-import { undo } from '../e2e/support/toolbar'
-import { openSidebar } from '../e2e/support/sidebar'
+} from './support/diff'
+import { undo } from './support/toolbar'
+import { openSidebar } from './support/sidebar'
 import type { EntityContext } from '../../src/runtime/types'
 import { nextMutation } from './support/mutations'
 import { resetSandbox, sandboxHost, workerSandbox } from './support/sandbox'
-import { editorPath, openEditor } from './support/session'
 
 /**
  * E2E for the DiffApproval "Edit" action: manually revising a suggested value

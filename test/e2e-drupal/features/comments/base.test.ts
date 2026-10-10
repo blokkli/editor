@@ -1,15 +1,14 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { withApp } from '../../../e2e/support/session'
-import { selectBlock } from '../../../e2e/support/blocks'
-import { topLevelBlockUuids } from '../../../e2e/support/selection'
-import { itemAction } from '../../../e2e/support/itemActions'
-import { openSidebar } from '../../../e2e/support/sidebar'
-import { dialog, dialogSubmit } from '../../../e2e/support/overlays'
-import { emitEvent } from '../../../e2e/support/events'
+import { withApp, editorPath, openEditor } from '../../support/session'
+import { selectBlock } from '../../support/blocks'
+import { topLevelBlockUuids } from '../../support/selection'
+import { itemAction } from '../../support/itemActions'
+import { openSidebar } from '../../support/sidebar'
+import { dialog, dialogSubmit } from '../../support/overlays'
+import { emitEvent } from '../../support/events'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
-import { editorPath, openEditor } from '../../support/session'
 
 /**
  * The comments feature has three parts; we cover the **item action** (attach a

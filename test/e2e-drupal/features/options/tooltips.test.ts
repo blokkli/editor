@@ -7,7 +7,7 @@ import {
   openOptionGroup,
   resolveOptionText,
   setupWidget,
-} from '../../../e2e/support/options'
+} from '../../support/options'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 import { editorPath, openEditor } from '../../support/session'
 

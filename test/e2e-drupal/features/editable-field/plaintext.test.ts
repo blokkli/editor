@@ -1,7 +1,7 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { addBlock } from '../../../e2e/support/blocks'
+import { addBlock } from '../../support/blocks'
 import {
   openEditableField,
   plaintextEditor,
@@ -15,7 +15,7 @@ import {
   saveByClickAway,
   nextEditableOpen,
   storedFieldValue,
-} from '../../../e2e/support/editable'
+} from '../../support/editable'
 import { countMutations, nextMutation } from '../../support/mutations'
 import {
   resetSandbox,

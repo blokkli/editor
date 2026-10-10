@@ -13,14 +13,15 @@ live editor. Catches what unit tests can't: canvas, pointer gestures,
 frame-timed drop logic, DOM lifecycle.
 
 - Specs: `test/e2e/*.test.ts`, feature specs under `test/e2e/features/*/`.
-- Helpers: `test/e2e/support/` (no barrel — import direct from each module).
-  Modules: `session`, `blocks`, `editable`, `diff`, `events`, `toolbar`, `menu`,
-  `sidebar`, `overlays`, `options`, `preview`, `recorder`, `schedule`,
-  `selection`, `clipboard`, `bundleSelector`, `history`, `itemActions`,
-  `keyboard`, `translations`, `setup`, `agent`.
+- Helpers: `test/e2e-drupal/support/` (no barrel — import direct from each
+  module). Modules: `session`, `sandbox`, `mutations`, `blocks`, `editable`,
+  `diff`, `events`, `toolbar`, `menu`, `sidebar`, `overlays`, `options`,
+  `preview`, `schedule`, `selection`, `clipboard`, `bundleSelector`, `history`,
+  `itemActions`, `keyboard`, `translations`, `agent`, `charts`,
+  `complexOptions`.
 
 Most of this skill is about the mock playground suite. The Drupal suite
-(`test/e2e-drupal/`) shares its helpers: see "The Drupal suite" below.
+(`test/e2e-drupal/`) has the helpers: see "The Drupal suite" below.
 
 For the agent's tests (`features/agent/`) see `/agent-e2e-testing` — covers the
 `tools/` (call one tool, no LLM) vs full-flow (drive the loop via the mock LLM
@@ -333,9 +334,10 @@ describe('Something', async () => {
 - **Each spec file resets its sandbox in `beforeAll`.** Between the tests of a
   file, state carries over, as in the mock suite. A reset ends the session:
   close the page before it and open a new one after it.
-- **From `test/e2e/support/`:** `withApp`, `waitForEditorReady`, `addBlock`, the
-  agent and diff helpers, and anything else that drives the editor's UI or
-  `window.__BLOKKLI__.app`.
+- **The other helpers in `support/`:** `withApp`, `waitForEditorReady`,
+  `addBlock`, the agent and diff helpers, and anything else that drives the
+  editor's UI or `window.__BLOKKLI__.app`. Where they take a field, it defaults
+  to `field_paragraphs`.
 - **What Drupal stored:** `nextMutation(page, 'pbUpdateParagraphOption')`
   (`support/mutations.ts`) waits for the next request of that mutation and
   returns its variables, typed by the GraphQL operations; an optional filter
@@ -403,5 +405,4 @@ the generated types), so each suite typechecks with the app it runs against:
 - **`test/e2e-drupal/`:** references `sandbox/frontend/.nuxt/tsconfig.app.json`;
   `sandbox/frontend/nuxt.config.ts` includes `../blokkli/features/**/*` and
   `../../../test/e2e-drupal/**/*`. Covered by
-  `bun run typecheck:sandbox-frontend`. The helpers it imports from
-  `test/e2e/support/` compile in both apps, so they may only use what both have.
+  `bun run typecheck:sandbox-frontend`.

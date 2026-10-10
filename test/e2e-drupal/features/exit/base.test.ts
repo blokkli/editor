@@ -1,15 +1,19 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { withApp, getHostContext } from '../../../e2e/support/session'
+import {
+  withApp,
+  getHostContext,
+  BLOCKS_EDITOR_PATH,
+  openEditor,
+} from '../../support/session'
 import {
   appMenu,
   appMenuButton,
   closeAppMenu,
   openAppMenu,
-} from '../../../e2e/support/menu'
+} from '../../support/menu'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
-import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 
 /**
  * The exit feature (`features/exit/index.vue`) adds a single app-menu button that

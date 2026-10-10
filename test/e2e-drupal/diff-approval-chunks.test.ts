@@ -1,14 +1,10 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page, Locator } from 'playwright-core'
-import { addBlock } from '../e2e/support/blocks'
-import { applyChunkFieldDiff, applyDiff, cancelDiff } from '../e2e/support/diff'
-import { openSidebar } from '../e2e/support/sidebar'
-import {
-  editableState,
-  blockHost,
-  storedFieldValue,
-} from '../e2e/support/editable'
+import { addBlock } from './support/blocks'
+import { applyChunkFieldDiff, applyDiff, cancelDiff } from './support/diff'
+import { openSidebar } from './support/sidebar'
+import { editableState, blockHost, storedFieldValue } from './support/editable'
 import { nextMutation } from './support/mutations'
 import { resetSandbox, sandboxHost, workerSandbox } from './support/sandbox'
 import { editorPath, openEditor } from './support/session'

@@ -1,12 +1,11 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { dismissMessages } from '../../../e2e/support/overlays'
-import { withApp } from '../../../e2e/support/session'
-import { openSidebar } from '../../../e2e/support/sidebar'
-import { emitEvent } from '../../../e2e/support/events'
+import { dismissMessages } from '../../support/overlays'
+import { withApp, editorPath, openEditor } from '../../support/session'
+import { openSidebar } from '../../support/sidebar'
+import { emitEvent } from '../../support/events'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
-import { editorPath, openEditor } from '../../support/session'
 
 /** The page "Faulty" (content/nodes/faulty.yml): two stored violations. */
 const FAULTY_PATH = editorPath('/en/faulty', 'faulty')

@@ -1,15 +1,14 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { withApp } from '../../../e2e/support/session'
-import { toolbarButton } from '../../../e2e/support/toolbar'
+import { withApp, BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
+import { toolbarButton } from '../../support/toolbar'
 import {
   resetSandbox,
   sandboxHost,
   seedUuid,
   workerSandbox,
 } from '../../support/sandbox'
-import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 
 /**
  * The notifications feature adds a toolbar button (id `notifications`) with an

@@ -1,7 +1,7 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { openTranslateDialog } from '../../../e2e/support/translations'
+import { openTranslateDialog } from '../../support/translations'
 import {
   resetSandbox,
   sandboxHost,

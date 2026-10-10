@@ -34,12 +34,12 @@ export async function runAgentTool<T extends AgentToolName>(
 }
 
 /**
- * Open the agent sidebar and clear any auto-restored conversation. The
- * playground's mock adapter persists conversations server-side, so re-opening
- * the panel pulls the previous session back. For mock-script tests, the mock
- * provider derives its turn index from the assistant-message count in the
- * history Session sees — a restored turn pushes our reply past turn 0. Clear
- * unconditionally: if there's nothing to clear, the button never appears.
+ * Open the agent sidebar and clear any conversation it still shows: one from
+ * an earlier test on the same page, or a restored one (a script with a
+ * `restore` entry). The mock provider derives its turn index from the
+ * assistant-message count in the history Session sees — an earlier turn
+ * pushes our reply past turn 0. Clear unconditionally: if there's nothing to
+ * clear, the button never appears.
  */
 export async function openAgentPanel(page: Page): Promise<void> {
   await openSidebar(page, 'agent')

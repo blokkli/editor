@@ -1,12 +1,12 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import type { Page } from 'playwright-core'
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
-import { addBlock, blockExists, selectBlock } from '../e2e/support/blocks'
-import { emitEvent } from '../e2e/support/events'
-import { clickItemAction } from '../e2e/support/itemActions'
-import { appMenuButton, openAppMenu } from '../e2e/support/menu'
-import { dialog, dialogSubmit } from '../e2e/support/overlays'
-import { withApp } from '../e2e/support/session'
+import { addBlock, blockExists, selectBlock } from './support/blocks'
+import { emitEvent } from './support/events'
+import { clickItemAction } from './support/itemActions'
+import { appMenuButton, openAppMenu } from './support/menu'
+import { dialog, dialogSubmit } from './support/overlays'
+import { withApp, editorPath, openEditor } from './support/session'
 import { nextMutation } from './support/mutations'
 import {
   resetSandbox,
@@ -14,7 +14,6 @@ import {
   seedUuid,
   workerSandbox,
 } from './support/sandbox'
-import { editorPath, openEditor } from './support/session'
 
 // The page "Broken" (content/nodes/broken.yml): a title in a gallery, which
 // only allows images.

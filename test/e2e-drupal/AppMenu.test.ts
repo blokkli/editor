@@ -1,16 +1,20 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { withApp } from '../e2e/support/session'
+import {
+  withApp,
+  BLOCKS_EDITOR_PATH,
+  editorPath,
+  openEditor,
+} from './support/session'
 import {
   openAppMenu,
   closeAppMenu,
   appMenu,
   appMenuButton,
-} from '../e2e/support/menu'
-import { addBlock } from '../e2e/support/blocks'
+} from './support/menu'
+import { addBlock } from './support/blocks'
 import { resetSandbox, sandboxHost, workerSandbox } from './support/sandbox'
-import { BLOCKS_EDITOR_PATH, editorPath, openEditor } from './support/session'
 
 /**
  * Assert an app-menu button's enabled/disabled state. `toBeDisabled` /

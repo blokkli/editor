@@ -6,19 +6,17 @@ import {
   appMenuButton,
   closeAppMenu,
   openAppMenu,
-} from '../../../e2e/support/menu'
-import {
-  dialog,
-  dialogSubmit,
-  dismissMessages,
-} from '../../../e2e/support/overlays'
-import { addBlock } from '../../../e2e/support/blocks'
+} from '../../support/menu'
+import { dialog, dialogSubmit, dismissMessages } from '../../support/overlays'
+import { addBlock } from '../../support/blocks'
 import {
   setFixedTime,
   waitForEditorReady,
   withApp,
-} from '../../../e2e/support/session'
-import { emitEvent } from '../../../e2e/support/events'
+  editorPath,
+  openEditor,
+} from '../../support/session'
+import { emitEvent } from '../../support/events'
 import {
   scheduleDate,
   scheduleTime,
@@ -29,10 +27,9 @@ import {
   isScheduleTimeInvalid,
   pickScheduleDay,
   setScheduleTime,
-} from '../../../e2e/support/schedule'
+} from '../../support/schedule'
 import { nextMutation } from '../../support/mutations'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
-import { editorPath, openEditor } from '../../support/session'
 
 // Two unpublished pages (content/nodes/draft.yml, announcement.yml).
 const DRAFT_PATH = editorPath('/en/draft', 'draft')

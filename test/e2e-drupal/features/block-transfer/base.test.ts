@@ -1,16 +1,12 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { withApp } from '../../../e2e/support/session'
-import { selectBlock, blockCount } from '../../../e2e/support/blocks'
-import { clickItemDropdownAction } from '../../../e2e/support/itemActions'
-import {
-  dialog,
-  dialogSubmit,
-  dismissMessages,
-} from '../../../e2e/support/overlays'
-import { emitEvent } from '../../../e2e/support/events'
-import { captureClipboard, copiedText } from '../../../e2e/support/clipboard'
+import { withApp, BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
+import { selectBlock, blockCount } from '../../support/blocks'
+import { clickItemDropdownAction } from '../../support/itemActions'
+import { dialog, dialogSubmit, dismissMessages } from '../../support/overlays'
+import { emitEvent } from '../../support/events'
+import { captureClipboard, copiedText } from '../../support/clipboard'
 import { countMutations, nextMutation } from '../../support/mutations'
 import {
   resetSandbox,
@@ -18,7 +14,6 @@ import {
   seedUuid,
   workerSandbox,
 } from '../../support/sandbox'
-import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 
 /**
  * The block-transfer feature: export the selected blocks to a portable

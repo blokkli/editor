@@ -1,15 +1,15 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openSidebar } from '../../../../e2e/support/sidebar'
-import { runAgentTool, runComponentTool } from '../../../../e2e/support/agent'
+import { openSidebar } from '../../../support/sidebar'
+import { runAgentTool, runComponentTool } from '../../../support/agent'
 import {
   editableOverlay,
   openEditableField,
   plaintextEditor,
   storedFieldValue,
-} from '../../../../e2e/support/editable'
-import { applyDiff } from '../../../../e2e/support/diff'
+} from '../../../support/editable'
+import { applyDiff } from '../../../support/diff'
 import {
   resetSandbox,
   sandboxHost,

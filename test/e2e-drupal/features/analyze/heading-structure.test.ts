@@ -1,16 +1,16 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { addBlock } from '../../../e2e/support/blocks'
-import { dismissMessages } from '../../../e2e/support/overlays'
+import { addBlock } from '../../support/blocks'
+import { dismissMessages } from '../../support/overlays'
 import {
   analyzeResult,
   analyzeResults,
   expandAnalyzeNodes,
   openAnalyzeSection,
   openSidebar,
-} from '../../../e2e/support/sidebar'
-import { emitEvent } from '../../../e2e/support/events'
+} from '../../support/sidebar'
+import { emitEvent } from '../../support/events'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 import { editorPath, openEditor, revertAllChanges } from '../../support/session'
 

@@ -1,20 +1,16 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { withApp } from '../../../e2e/support/session'
-import { selectBlock } from '../../../e2e/support/blocks'
-import {
-  selectedUuids,
-  topLevelBlockUuids,
-} from '../../../e2e/support/selection'
-import { emitEvent } from '../../../e2e/support/events'
+import { withApp, editorPath, openEditor } from '../../support/session'
+import { selectBlock } from '../../support/blocks'
+import { selectedUuids, topLevelBlockUuids } from '../../support/selection'
+import { emitEvent } from '../../support/events'
 import {
   resetSandbox,
   sandboxHost,
   seedUuid,
   workerSandbox,
 } from '../../support/sandbox'
-import { editorPath, openEditor } from '../../support/session'
 
 /**
  * The `selection` feature owns the editor's block-selection keyboard shortcuts

@@ -1,7 +1,12 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { waitForEditorReady, withApp } from '../../../e2e/support/session'
+import {
+  waitForEditorReady,
+  withApp,
+  editorPath,
+  openEditor,
+} from '../../support/session'
 import { nextMutation } from '../../support/mutations'
 import {
   resetSandbox,
@@ -9,7 +14,6 @@ import {
   seedUuid,
   workerSandbox,
 } from '../../support/sandbox'
-import { editorPath, openEditor } from '../../support/session'
 
 /** The text of the page "Waste collection", whose German is outdated. */
 const OUTDATED_TEXT = seedUuid('paragraph', 'waste-collection-text')

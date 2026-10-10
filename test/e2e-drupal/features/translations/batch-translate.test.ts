@@ -6,9 +6,9 @@ import {
   editableState,
   editableFrame,
   setFrameValue,
-} from '../../../e2e/support/editable'
-import { dialog } from '../../../e2e/support/overlays'
-import { openTranslateDialog } from '../../../e2e/support/translations'
+} from '../../support/editable'
+import { dialog } from '../../support/overlays'
+import { openTranslateDialog } from '../../support/translations'
 import { nextMutation } from '../../support/mutations'
 import {
   resetSandbox,

@@ -1,12 +1,12 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { captureClipboard, copiedText } from '../../../e2e/support/clipboard'
+import { captureClipboard, copiedText } from '../../support/clipboard'
 import {
   closeViewOptions,
   openViewOptions,
   viewOption,
-} from '../../../e2e/support/toolbar'
+} from '../../support/toolbar'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 import { editorPath, openEditor, revertAllChanges } from '../../support/session'
 

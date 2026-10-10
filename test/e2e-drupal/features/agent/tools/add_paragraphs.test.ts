@@ -1,16 +1,15 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { withApp } from '../../../../e2e/support/session'
-import { openSidebar } from '../../../../e2e/support/sidebar'
-import { runAgentTool } from '../../../../e2e/support/agent'
+import { withApp, editorPath, openEditor } from '../../../support/session'
+import { openSidebar } from '../../../support/sidebar'
+import { runAgentTool } from '../../../support/agent'
 import type { MutationToolResult } from '#blokkli/agent/app/types'
 import {
   resetSandbox,
   sandboxHost,
   workerSandbox,
 } from '../../../support/sandbox'
-import { editorPath, openEditor } from '../../../support/session'
 
 /**
  * The tool's *declared* result schema is the prepare-phase mutation action

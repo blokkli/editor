@@ -1,14 +1,10 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import {
-  applyDiff,
-  cancelDiff,
-  runFieldsDiffApproval,
-} from '../e2e/support/diff'
-import { openSidebar } from '../e2e/support/sidebar'
-import { runComponentTool } from '../e2e/support/agent'
-import { storedFieldValue } from '../e2e/support/editable'
+import { applyDiff, cancelDiff, runFieldsDiffApproval } from './support/diff'
+import { openSidebar } from './support/sidebar'
+import { runComponentTool } from './support/agent'
+import { storedFieldValue } from './support/editable'
 import { countMutations, nextMutation } from './support/mutations'
 import {
   resetSandbox,

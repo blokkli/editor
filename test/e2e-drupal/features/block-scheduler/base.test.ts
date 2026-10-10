@@ -1,27 +1,18 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { setFixedTime } from '../../../e2e/support/session'
-import {
-  addBlock,
-  selectBlock,
-  isBlockMuted,
-} from '../../../e2e/support/blocks'
-import { itemAction } from '../../../e2e/support/itemActions'
-import {
-  dialog,
-  dialogSubmit,
-  dismissMessages,
-} from '../../../e2e/support/overlays'
-import { emitEvent } from '../../../e2e/support/events'
+import { setFixedTime, editorPath, openEditor } from '../../support/session'
+import { addBlock, selectBlock, isBlockMuted } from '../../support/blocks'
+import { itemAction } from '../../support/itemActions'
+import { dialog, dialogSubmit, dismissMessages } from '../../support/overlays'
+import { emitEvent } from '../../support/events'
 import {
   scheduleDate,
   pickScheduleDay,
   setScheduleTime,
-} from '../../../e2e/support/schedule'
+} from '../../support/schedule'
 import { nextMutation } from '../../support/mutations'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
-import { editorPath, openEditor } from '../../support/session'
 
 /**
  * The block-scheduler feature: a block-actions item action (id `block-scheduler`)

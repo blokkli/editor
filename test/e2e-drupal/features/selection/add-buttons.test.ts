@@ -1,15 +1,15 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { blockCount, selectBlock } from '../../../e2e/support/blocks'
-import { emitEvent } from '../../../e2e/support/events'
-import { closeFormOverlay, formOverlay } from '../../../e2e/support/overlays'
+import { blockCount, selectBlock } from '../../support/blocks'
+import { emitEvent } from '../../support/events'
+import { closeFormOverlay, formOverlay } from '../../support/overlays'
 import {
   bundleSelector,
   bundleSelectorItemIds,
   bundleSelectorSearch,
   pickBundle,
-} from '../../../e2e/support/bundleSelector'
+} from '../../support/bundleSelector'
 import {
   resetSandbox,
   sandboxHost,

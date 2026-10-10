@@ -6,7 +6,7 @@ import {
   openAgentPanel,
   submitAgentPrompt,
   waitForAgentReply,
-} from '../../../e2e/support/agent'
+} from '../../support/agent'
 import type { MockScript, Transcript } from '#blokkli/agent/shared/types'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 import { editorPath, openEditor } from '../../support/session'

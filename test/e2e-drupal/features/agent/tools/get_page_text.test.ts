@@ -1,8 +1,8 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { openSidebar } from '../../../../e2e/support/sidebar'
-import { runAgentTool } from '../../../../e2e/support/agent'
+import { openSidebar } from '../../../support/sidebar'
+import { runAgentTool } from '../../../support/agent'
 import {
   resetSandbox,
   sandboxHost,

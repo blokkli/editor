@@ -1,16 +1,21 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
-import { withApp } from '../../../e2e/support/session'
+import {
+  withApp,
+  editorPath,
+  openEditor,
+  revertAllChanges,
+} from '../../support/session'
 import {
   blockExists,
   blockState,
   selectBlock,
   selectBlocks,
-} from '../../../e2e/support/blocks'
-import { storedFieldValue } from '../../../e2e/support/editable'
-import { clickItemDropdownAction } from '../../../e2e/support/itemActions'
-import { emitEvent } from '../../../e2e/support/events'
+} from '../../support/blocks'
+import { storedFieldValue } from '../../support/editable'
+import { clickItemDropdownAction } from '../../support/itemActions'
+import { emitEvent } from '../../support/events'
 import { nextMutation } from '../../support/mutations'
 import {
   resetSandbox,
@@ -18,7 +23,6 @@ import {
   seedUuid,
   workerSandbox,
 } from '../../support/sandbox'
-import { editorPath, openEditor, revertAllChanges } from '../../support/session'
 
 // The paragraphs of the page "Conversions" (content/nodes/conversions.yml).
 const FIRST_TITLE = seedUuid('paragraph', 'conversions-first-title')

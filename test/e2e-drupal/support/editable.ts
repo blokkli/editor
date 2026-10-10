@@ -62,12 +62,12 @@ export function editableState(
  * Read a field's *stored* value — the raw, unprocessed value the adapter
  * supplies via mapped state, which is what would be persisted.
  *
- * Deliberately not a DOM read: the mock (like a real CMS) renders a *processed*
- * value, so `editableState().html` and this can legitimately differ. Use this
- * whenever the assertion is about what ends up in the backend rather than what
- * the user sees.
+ * Deliberately not a DOM read: Drupal renders a *processed* value (through the
+ * text format), so `editableState().html` and this can legitimately differ. Use
+ * this whenever the assertion is about what ends up in the backend rather than
+ * what the user sees.
  *
- * Returns null when the field has no entry (the mock omits empty fields).
+ * Returns null when the field has no entry.
  */
 export function storedFieldValue(
   page: Page,

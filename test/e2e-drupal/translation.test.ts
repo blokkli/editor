@@ -1,9 +1,8 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import type { Page } from 'playwright-core'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { withApp } from '../e2e/support/session'
+import { withApp, BLOCKS_EDITOR_PATH, openEditor } from './support/session'
 import { resetSandbox, sandboxHost, workerSandbox } from './support/sandbox'
-import { BLOCKS_EDITOR_PATH, openEditor } from './support/session'
 
 describe('Translations', async () => {
   const sandbox = workerSandbox()
