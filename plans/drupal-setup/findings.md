@@ -768,6 +768,9 @@ From chunk 04 (2026-09-26):
 - **Fix idea:** a publish permission of its own, a review mode that publishes,
   and an "approved" notification (the editor already has the type
   `edit-state:approved`).
+- **Test:** the mock suite's last spec checked that an approval links to the
+  page without a `blokkliComment` param. It was deleted on 2026-10-10; recreate
+  it in `test/e2e-drupal/features/notifications/` with the notification.
 
 ## F45: "Replace" fails on link fields
 
