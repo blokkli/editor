@@ -50,7 +50,11 @@
       </div>
     </div>
 
-    <SidebarAddForm @submit="$emit('add', $event)" @start="onStartNewComment" />
+    <SidebarAddForm
+      v-if="canPost"
+      @submit="$emit('add', $event)"
+      @start="onStartNewComment"
+    />
   </div>
 </template>
 
@@ -61,7 +65,9 @@ import CommentThread from '../Thread/index.vue'
 import SidebarAddForm from './AddForm/index.vue'
 import type { CommentItem } from '../types'
 
-const { $t } = useBlokkli()
+const { $t, permissions } = useBlokkli()
+
+const canPost = permissions.hasPermission('create_comments')
 
 const props = defineProps<{
   comments: CommentItem[]

@@ -1,0 +1,32 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - paragraphs
+    - paragraphs_blokkli
+    - paragraphs_blokkli_agent
+    - paragraphs_blokkli_comment
+    - scheduler
+    - system
+    - toolbar
+    - view_unpublished
+id: comment_reader
+label: 'Comment reader'
+weight: 10
+is_admin: false
+# The reviewer's permissions, without 'post blokkli comments'.
+permissions:
+  - 'access content overview'
+  - 'access toolbar'
+  - 'load id and name of blokkli users'
+  - 'review paragraphs blokkli edit state'
+  - 'use paragraphs blokkli agent'
+  - 'view all revisions'
+  - 'view any unpublished content'
+  - 'view blokkli comments'
+  - 'view paragraphs blokkli edit state'
+  - 'view scheduled content'
+  - 'view scheduled paragraph'
+  - 'view the administration theme'
+  - 'view unpublished paragraphs'

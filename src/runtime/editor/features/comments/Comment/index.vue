@@ -101,7 +101,7 @@ import CommentEditForm from './EditForm/index.vue'
 import RichTextRenderer from '#blokkli/editor/components/RichText/Renderer/index.vue'
 import type { CommentItem } from '../types'
 
-const { $t, adapter, user } = useBlokkli()
+const { $t, adapter, user, permissions } = useBlokkli()
 
 const props = defineProps<{
   comment: CommentItem
@@ -156,19 +156,32 @@ const isOwn = computed(() =>
   props.comment.user ? user.isCurrent(props.comment.user.id) : false,
 )
 
-const canEdit = computed(() => isOwn.value && !!adapter.editComment)
+// Changing a comment, even one's own, needs the permission to post comments.
+const canPost = permissions.hasPermission('create_comments')
 
-const canDelete = computed(() => isOwn.value && !!adapter.deleteComment)
+const canEdit = computed(() => canPost && isOwn.value && !!adapter.editComment)
+
+const canDelete = computed(
+  () => canPost && isOwn.value && !!adapter.deleteComment,
+)
 
 const canResolve = computed(
-  () => !props.isReply && !props.comment.resolved && !!adapter.resolveComment,
+  () =>
+    canPost &&
+    !props.isReply &&
+    !props.comment.resolved &&
+    !!adapter.resolveComment,
 )
 
 const canUnresolve = computed(
-  () => !props.isReply && props.comment.resolved && !!adapter.unresolveComment,
+  () =>
+    canPost &&
+    !props.isReply &&
+    props.comment.resolved &&
+    !!adapter.unresolveComment,
 )
 
-const canToggleTasks = computed(() => !!adapter.toggleCommentTask)
+const canToggleTasks = computed(() => canPost && !!adapter.toggleCommentTask)
 
 function onStartEdit() {
   isEditing.value = true

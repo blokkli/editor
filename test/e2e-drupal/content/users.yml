@@ -43,6 +43,16 @@
   preferred_admin_langcode: en
   status: true
 
+# A reviewer who may read comments but not post them. The role comes from the
+# test module blokkli_playground_test.
+- key: sara
+  name: Sara Gerber
+  mail: sara.gerber@example.com
+  roles: [comment_reader]
+  preferred_langcode: en
+  preferred_admin_langcode: en
+  status: true
+
 # Her account is deleted after seeding: her comment on the page "Feedback"
 # (comments.yml) has no author.
 - key: nora

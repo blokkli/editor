@@ -42,7 +42,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F36 | [The `translations` option ignores English](#f36-the-translations-option-ignores-english)                                               | `@blokkli/editor`    | low      | workaround |
 | F37 | [The iframe height editor isn't translated](#f37-the-iframe-height-editor-isnt-translated)                                              | `@blokkli/editor`    | low      | open       |
 | F38 | [Editors can't view paragraph types](#f38-editors-cant-view-paragraph-types)                                                            | `paragraphs_blokkli` | high     | workaround |
-| F39 | [The editor ignores `create_comments`](#f39-the-editor-ignores-create_comments)                                                         | `@blokkli/editor`    | low      | open       |
 | F40 | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                 | `paragraphs_blokkli` | low      | open       |
 | F41 | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                                             | `paragraphs_blokkli` | low      | open       |
 | F42 | [Uploads skip media create access](#f42-uploads-skip-media-create-access)                                                               | `paragraphs_blokkli` | medium   | open       |
@@ -693,20 +692,6 @@ From chunk 04 (2026-09-26):
   docs and the skills.
 - **Fix idea:** the same hook in paragraphs_blokkli, or the types from a data
   producer of its own that checks blökkli's permission.
-
-## F39: The editor ignores `create_comments`
-
-- **Found:** 2026-09-28, 13h, reading the code.
-- **Reproduced:** 2026-10-10, in a sandbox, as the reviewer without
-  `post blokkli comments`.
-- **Symptom:** a user with `view blokkli comments` but without
-  `post blokkli comments` gets the add and reply forms. Posting fails without a
-  message: `pbAddComment` returns `action: null`, the form closes as if it had
-  worked, and the comment is lost.
-- **Cause:** the adapter loads `create_comments`
-  (`src/modules/drupal/graphql/base/query.pbConfig.graphql`, in this
-  repository), but nothing in `src/runtime/editor/features/comments` checks it.
-- **Fix idea:** hide the forms and the "Add comment" action without it.
 
 ## F40: A new comment without a mention notifies nobody
 

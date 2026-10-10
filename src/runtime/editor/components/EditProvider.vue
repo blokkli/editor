@@ -41,6 +41,7 @@
             id="view-only"
             scheme="yellow"
             data-test="view-only-banner"
+            :data-test-mode="viewOnlyBanner.mode"
           >
             <BannerInner
               :icon="viewOnlyBanner.icon"
@@ -456,41 +457,48 @@ const stateNotAvailableText = computed(() => {
   )
 })
 
-const viewOnlyBanner = computed<{ text: string; icon: BlokkliIcon } | null>(
-  () => {
-    if (props.permissions.includes('edit')) {
-      return null
-    }
-
-    if (props.permissions.includes('review')) {
-      // User can only review the changes (e.g. add/view comments).
-      return {
-        text: textWithHighlight(
-          $t('viewBannerReviewTitle', 'You are in review mode.'),
-          $t(
-            'viewBannerReviewText',
-            'You can view and add comments but cannot edit content.',
-          ),
-        ),
-        icon: 'bk_mdi_comment',
-      }
-    } else if (props.permissions.includes('view')) {
-      // User can only view the changes (e.g. only view comments, not add).
-      return {
-        text: textWithHighlight(
-          $t('viewBannerViewTitle', 'You are in view-only mode.'),
-          $t(
-            'viewBannerViewText',
-            'You can view comments but cannot edit content.',
-          ),
-        ),
-        icon: 'bk_mdi_visibility',
-      }
-    }
-
+const viewOnlyBanner = computed<{
+  mode: 'review' | 'view'
+  text: string
+  icon: BlokkliIcon
+} | null>(() => {
+  if (props.permissions.includes('edit')) {
     return null
-  },
-)
+  }
+
+  if (
+    props.permissions.includes('review') &&
+    permissionsInstance.hasPermission('create_comments')
+  ) {
+    // User can only review the changes (e.g. add/view comments).
+    return {
+      mode: 'review',
+      text: textWithHighlight(
+        $t('viewBannerReviewTitle', 'You are in review mode.'),
+        $t(
+          'viewBannerReviewText',
+          'You can view and add comments but cannot edit content.',
+        ),
+      ),
+      icon: 'bk_mdi_comment',
+    }
+  } else if (props.permissions.includes('view')) {
+    // User can only view the changes (e.g. only view comments, not add).
+    return {
+      mode: 'view',
+      text: textWithHighlight(
+        $t('viewBannerViewTitle', 'You are in view-only mode.'),
+        $t(
+          'viewBannerViewText',
+          'You can view comments but cannot edit content.',
+        ),
+      ),
+      icon: 'bk_mdi_visibility',
+    }
+  }
+
+  return null
+})
 
 const isProxyMode = computed(() => ui.isProxyMode.value)
 provide(INJECT_GLOBAL_PROXY_MODE, isProxyMode)

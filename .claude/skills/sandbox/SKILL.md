@@ -200,7 +200,9 @@ Traefik sends every hostname to the web container's nginx on port 80.
   included) and `Query.search(text, offset, limit)`.
 - Moves the config pages' canonical route to `/blokkli/config-page/{id}`.
 - `tests/modules/blokkli_playground_test`, only in E2E sandboxes (`bake-e2e`
-  installs it): allows the widget on pages, and fakes YouTube and Vimeo.
+  installs it): allows the widget on pages, fakes YouTube and Vimeo, and adds
+  the role `comment_reader` (a reviewer who may read comments but not post
+  them).
 
 ## Sandboxes
 

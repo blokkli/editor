@@ -34,6 +34,7 @@
   </PluginSidebar>
 
   <PluginItemAction
+    v-if="canPost"
     id="add_comment"
     :title="$t('addComment', 'Add Comment', { more: true })"
     :description="
@@ -107,7 +108,9 @@ const { adapter } = defineBlokkliFeature({
   screenshot: 'feature-comments.jpg',
 })
 
-const { $t, selection, ui, storage, eventBus } = useBlokkli()
+const { $t, selection, ui, storage, eventBus, permissions } = useBlokkli()
+
+const canPost = permissions.hasPermission('create_comments')
 const route = useRoute()
 
 const showResolved = storage.useWithContextPrefix('commentsShowResolved', false)

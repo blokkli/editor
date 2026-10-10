@@ -73,7 +73,7 @@ import Comment from '../Comment/index.vue'
 import CommentReplyForm from './ReplyForm/index.vue'
 import type { CommentItem } from '../types'
 
-const { adapter, eventBus } = useBlokkli()
+const { adapter, eventBus, permissions } = useBlokkli()
 
 const props = defineProps<{
   root: CommentItem
@@ -96,7 +96,10 @@ defineEmits<{
   (e: 'resolve' | 'unresolve' | 'dismissHighlight'): void
 }>()
 
-const canReply = computed(() => !!adapter.replyToComment)
+const canReply = computed(
+  () =>
+    !!adapter.replyToComment && permissions.hasPermission('create_comments'),
+)
 
 const hasHighlightedComment = computed(() => {
   if (!props.highlightUuid) {
