@@ -26,3 +26,6 @@ msgstr "Convertir un titre en texte"
 
 msgid "Convert a link to a text"
 msgstr "Convertir un lien en texte"
+
+msgid "(opens in a new tab)"
+msgstr "(s’ouvre dans un nouvel onglet)"

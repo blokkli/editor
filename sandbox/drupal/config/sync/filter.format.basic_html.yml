@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   module:
+    - blokkli_playground
     - paragraphs_blokkli_comment
 _core:
   default_config_hash: eIDWIfsLsdl3jonHlltHlTqya40ny9Inb9QS9SuytlU
@@ -15,6 +16,12 @@ filters:
     provider: paragraphs_blokkli_comment
     status: false
     weight: -10
+    settings: {  }
+  blokkli_playground_external_links:
+    id: blokkli_playground_external_links
+    provider: blokkli_playground
+    status: true
+    weight: 10
     settings: {  }
   filter_html:
     id: filter_html

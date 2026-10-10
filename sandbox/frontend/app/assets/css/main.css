@@ -275,6 +275,12 @@
       }
     }
 
+    /* The "(opens in a new tab)" after an external link, for screen readers
+       (blokkli_playground's filter). */
+    .visually-hidden {
+      @apply sr-only;
+    }
+
     strong {
       @apply font-bold;
     }
