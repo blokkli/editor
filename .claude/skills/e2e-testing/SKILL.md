@@ -350,6 +350,26 @@ describe('Something', async () => {
   and the permission overrides. Test permissions with users of other roles.
 - **Drupal's names:** fields are `field_paragraphs`, `field_text`, …; bundles
   are the paragraph types.
+- **Waiting:** a change goes through Drupal, so `expect.poll`'s default second
+  can be too short: wait for its mutation (`nextMutation`) before asserting.
+  Options are stored when the paragraph is deselected (or an action runs); the
+  editor and the preview have them before.
+- **Harmless choices:** a test that would run "whatever comes first" (the
+  palette's first command, …) picks one by its ID: Drupal publishes or discards
+  as readily as anything else.
+- **Pinned dates** must be in the future: Drupal rejects a schedule less than 2
+  minutes after its own time.
+- **The content model:** a `page` allows neither `section` nor `call_to_action`,
+  an `editorial` node does; only editorial and office nodes allow fragments (the
+  front page, `home`, is editorial). While editing, a `page` always shows an H2
+  ("Related topics"). Text fields are `frame`, string fields `plain`; a
+  paragraph's `field_title` holds 255 characters at most. A converted paragraph
+  gets a new UUID.
+- **Media:** numeric IDs follow the order of creation; don't rely on them.
+  Adding one through the adapter needs its ID: find it in the media library by
+  its name (`mediaLibraryGetResults`, see `features/analyze/alt-text`).
+- **A mock spec that stays** (the mock can do what Drupal can't, or does
+  differently) says why in its docblock and names its Drupal counterpart.
 - **Fixtures:** add what a spec needs to `test/e2e-drupal/content` when the spec
   comes, in the seed format (`sandbox/drupal/content/README.md`); the next run
   rebakes. Reuse a node whose content fits; changing one means running the specs
