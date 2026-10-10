@@ -6,6 +6,7 @@
       <div
         v-if="errors.length"
         class="bk bk-fatal-error-overlay"
+        data-test="fatal-error-overlay"
         @wheel.capture.passive.stop
         @click.stop
         @mousedown.stop

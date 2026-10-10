@@ -108,12 +108,14 @@ export type FieldValueProvider = {
   /**
    * Get all text field values from the page.
    * Reads from mapped state if available, falls back to reading from directive system.
+   * Returns an empty array without a state.
    */
   getTextFieldValues: () => TextFieldValue[]
 
   /**
    * Get all droppable field values (item counts) from the mapped state.
-   * Returns an empty array when the adapter hasn't populated this.
+   * Returns an empty array without a state, or when the adapter hasn't
+   * populated this.
    */
   getDroppableFieldValues: () => DroppableFieldValue[]
 
@@ -367,6 +369,11 @@ export default function fieldValueProvider(
   }
 
   function getTextFieldValues(): TextFieldValue[] {
+    // Without a state (it couldn't be loaded), there are no values.
+    if (!state.stateAvailable.value) {
+      return []
+    }
+
     // Read from mapped state if available (provided by adapter's mapState).
     const mappedState = state.getMappedState()
     if (mappedState.textFieldValues) {
@@ -406,8 +413,10 @@ export default function fieldValueProvider(
   }
 
   function getDroppableFieldValues(): DroppableFieldValue[] {
-    const mappedState = state.getMappedState()
-    return mappedState.droppableFieldValues ?? []
+    if (!state.stateAvailable.value) {
+      return []
+    }
+    return state.getMappedState().droppableFieldValues ?? []
   }
 
   function getDroppableFieldIds(

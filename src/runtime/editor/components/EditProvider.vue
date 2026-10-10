@@ -29,13 +29,19 @@
             v-if="!state.stateAvailable.value"
             id="state-unavailable"
             scheme="red"
+            data-test="state-unavailable-banner"
           >
             <BannerInner
               icon="bk_mdi_sentiment_dissatisfied"
               :text="stateNotAvailableText"
             />
           </Banner>
-          <Banner v-else-if="viewOnlyBanner" id="view-only" scheme="yellow">
+          <Banner
+            v-else-if="viewOnlyBanner"
+            id="view-only"
+            scheme="yellow"
+            data-test="view-only-banner"
+          >
             <BannerInner
               :icon="viewOnlyBanner.icon"
               :text="viewOnlyBanner.text"
