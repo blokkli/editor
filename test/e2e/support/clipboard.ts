@@ -24,26 +24,38 @@ import { withApp } from './session'
 
 /**
  * Dispatch a synthetic `paste` `ClipboardEvent` on `document` carrying `text` as
- * `text/plain` (Chromium reflects `clipboardData` set from the constructor).
+ * `text/plain`, and `html` as `text/html` if given, as when copying from a web
+ * page (Chromium reflects `clipboardData` set from the constructor).
  * Low-level: does not wait for anything — use it when asserting that a paste is
  * *ignored* (no drag should start).
  */
-export function dispatchPaste(page: Page, text: string): Promise<void> {
-  return page.evaluate((pasted) => {
-    const dt = new DataTransfer()
-    dt.setData('text/plain', pasted)
-    document.dispatchEvent(
-      new ClipboardEvent('paste', {
-        clipboardData: dt,
-        bubbles: true,
-        cancelable: true,
-      }),
-    )
-  }, text)
+export function dispatchPaste(
+  page: Page,
+  text: string,
+  html?: string,
+): Promise<void> {
+  return page.evaluate(
+    ({ text, html }) => {
+      const dt = new DataTransfer()
+      dt.setData('text/plain', text)
+      if (html) {
+        dt.setData('text/html', html)
+      }
+      document.dispatchEvent(
+        new ClipboardEvent('paste', {
+          clipboardData: dt,
+          bubbles: true,
+          cancelable: true,
+        }),
+      )
+    },
+    { text, html },
+  )
 }
 
 /**
- * Paste `text` and resolve once detection has produced a drag — i.e. the
+ * Paste `text` (with `html` as its `text/html`, if given) and resolve once
+ * detection has produced a drag — i.e. the
  * clipboard feature emitted `dragging:start` and `selection.dragItems` is
  * populated. Detection is async (it awaits `getVideoId`), hence the poll. Also
  * used to paste a copied-selection envelope (JSON `text` is routed by `onPaste`
@@ -52,8 +64,12 @@ export function dispatchPaste(page: Page, text: string): Promise<void> {
  * NOTE: only one paste per page — a second is swallowed by `onPaste`'s
  * `isDragging`/`isLoading` guard. Use a fresh `openEditor` per test.
  */
-export async function pasteText(page: Page, text: string): Promise<void> {
-  await dispatchPaste(page, text)
+export async function pasteText(
+  page: Page,
+  text: string,
+  html?: string,
+): Promise<void> {
+  await dispatchPaste(page, text, html)
   await waitForDrag(page, `paste did not start a drag for: ${text}`)
 }
 

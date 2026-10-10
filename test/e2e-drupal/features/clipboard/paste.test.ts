@@ -11,6 +11,7 @@ import {
   dropDragInto,
 } from '../../../e2e/support/clipboard'
 import { bundleSelector } from '../../../e2e/support/bundleSelector'
+import { storedFieldValue } from '../../../e2e/support/editable'
 import { nextMutation } from '../../support/mutations'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
@@ -103,6 +104,26 @@ describe('The clipboard feature', async () => {
     expect(await bundleSelector(page).count()).toBe(0)
     // The media's name is the video fake's oEmbed title.
     expect(info.props?.video?.name).toBe('A video on YouTube')
+  })
+
+  test('pasted HTML is stored without what the text format adds', async () => {
+    // Copied from a web page: a link to another site, which basic_html renders
+    // with target="_blank" and "(opens in a new tab)" after it. Drupal must
+    // store the link as pasted, or every render adds the hint again.
+    const html = '<p>Read <a href="https://www.example.com">more</a></p>'
+    await pasteText(page, 'Read more', html)
+
+    const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
+    await dropDragInto(page, { fieldName: 'field_paragraphs' })
+
+    const uuid = await addedSince(uuidsBefore)
+    await expect
+      .poll(() => storedFieldValue(page, uuid, 'field_text'))
+      .toBe(html)
+    // Rendered, the hint is there.
+    expect((await blockState(page, uuid)).props?.text).toContain(
+      '(opens in a new tab)',
+    )
   })
 
   test('the drop inserts the block at the chosen position', async () => {
