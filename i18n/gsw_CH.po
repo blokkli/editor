@@ -2131,9 +2131,9 @@ msgctxt "clipboardPasteShortcutHelp"
 msgid "Paste text, image or copied blocks"
 msgstr "Teggscht, Bild oder kopierti Blöck iifüege"
 
-msgctxt "clipboardUnsupportedFileType"
-msgid "This file type is not supported."
-msgstr "Dr Dateityp würd nid unterstützt."
+msgctxt "clipboardUnsupportedFile"
+msgid "The type or size of \"@name\" is not supported."
+msgstr "Dr Typ oder d'Grössi vo «@name» würd nid unterstützt."
 
 msgctxt "close"
 msgid "Close"

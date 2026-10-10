@@ -255,7 +255,7 @@ the schema dump, then the frontend.
   without values, a failing item, refused items, an unknown language).
   `UploadTestTrait` creates the uploads.
 
-### 5. Drupal: the clipboard config and the token (done, not committed)
+### 5. Drupal: the clipboard config and the token (done)
 
 - `ParagraphsBlokkliSupportedClipboardImage` and `…File` have `canUpload`: the
   user has the upload route's access (the edit permission and the media type's
@@ -284,31 +284,42 @@ the schema dump, then the frontend.
   (the file's ID), the form, and the media created, its file permanent in
   `public://media/images`. Deleted afterwards, with the session.
 
-### 6. blökkli: drops of several file types
+### 6. blökkli: drops of several file types (done, not committed)
 
-- `clipboardMapBundle`'s file events get an optional `fileName`. The Drupal
-  adapter checks `maxFileSize` and `fileExtensions` (from the name), and skips a
-  check when the name or size is unknown (during `dragenter`, the browser gives
-  neither). Both paths profit.
-- The native drag's `buildMapBundleEvent` maps every file, not only the last one
-  (`clipboard/helpers.ts:55`).
-- On the upload path, the bundles are grouped per file type instead of
-  intersected (`handleFiles`, and the native drop's `resolveBundles`): per type,
-  the field's allowed bundles ∩ the mapped ones ∩ the permitted ones; no drop
-  when a type has none. The groups are stored on the drag item (as `item.files`
-  is), and `resolveBundles` returns one bundle so the dispatcher skips the
-  bundle selector; `execute` uses the groups. The base64 path keeps the
-  intersection: it passes one bundle for every file.
-- Drop targets: an optional `itemBundleGroups` on the native drop item; a field
-  lights up for a new item when every group has an allowed and permitted bundle
-  (`helpers/dropTargets/index.ts`). One group behaves as today.
-- Several files count as several items for the field's cardinality
-  (`dragging-overlay/Renderer/index.vue:727`).
-- On the upload path, a paste keeps the `File` objects instead of reading them
-  as data URLs.
-- Unit tests (Vitest): the drop target groups, the extension and size checks.
+- `clipboardMapBundle`'s file events have an optional `fileName`; `fileSize` is
+  0 while a file is dragged. The paste, the native drop and its `execute` build
+  the events from the `File` (`buildFileMapEvent`).
+- The Drupal adapter checks `maxFileSize` and `fileExtensions` as Drupal does
+  (`isFileAccepted`: the end of the name, ignoring case; no extensions or a
+  maximum of 0 allow any), and skips a check when the name or size is unknown
+  (during `dragenter`, the browser gives neither). Both paths profit: a file
+  Drupal would refuse is refused before it's sent, with a message that names it
+  ("The type or size of "@name" is not supported.", replacing "This file type is
+  not supported."; translated for `de` and `gsw_CH`, which had the old one). A
+  refusal at the drop, where a real drag first gives the size, was silent.
+- The native drag maps every file (`buildMapBundleEvents`), not only the last
+  one. On the base64 path, a drag of files without a bundle in common doesn't
+  start (an image and a PDF in the sandbox: `image` and `link`); its drop falls
+  back to the paste's handling, which says so.
+- Several files count as several blocks for the field's cardinality: the native
+  drop item's `blockCount`, summed by `getDraggingBlockCount()` in the dragging
+  overlay.
+- Drop targets per group: the native drop item's optional `itemBundleGroups`;
+  for new items, a field lights up when every group has a bundle it allows and
+  the user may add (`determineCanAddChildren()`, `getDraggingBundleGroups()`).
+  One group behaves as today. Nothing sets the groups yet.
+- Moved to step 7, which defines the upload path through its adapter methods:
+  the grouping per file type, and the paste keeping the `File` objects. Without
+  the dialog, a drop on the upload path would have nothing to do.
+- Unit tests (Vitest): `isFileAccepted`, `determineCanAddChildren` with groups
+  and counts, the two dragging helpers, `buildMapBundleEvents` and
+  `buildFileMapEvent`. E2E (`test/e2e-drupal/features/clipboard/files.test.ts`):
+  a pasted image too large or of a refused format, refused by its name; pasted
+  and dragged-in images adding a block each; an image too large at the drop; an
+  image and a PDF dragged in starting no drag. The overlay passing the count and
+  the groups isn't covered: the E2E tests don't drive its drop targets.
 
-### 7. blökkli: the upload dialog
+### 7. blökkli: the upload path and its dialog
 
 - New optional adapter methods in the clipboard feature's types:
   - `uploadFile({ file, type, onProgress, signal })`: a temporary upload or an
@@ -320,6 +331,16 @@ the schema dump, then the frontend.
 - With all four, the clipboard drop handler's `execute` opens the dialog and
   waits for it (as `showBundleSelector`'s promise does); without them it keeps
   the base64 path (`addBlockFromClipboardItem`).
+- On the upload path, the bundles are grouped per file type instead of
+  intersected (`handleFiles`, the native drag, and the native drop's
+  `resolveBundles`): per type, the field's allowed bundles ∩ the mapped ones ∩
+  the permitted ones; no drop when a type has none. The groups go on the drag
+  item (`itemBundleGroups`, step 6, as `item.files` is), and `resolveBundles`
+  returns one bundle so the dispatcher skips the bundle selector; `execute` uses
+  the groups. The base64 path keeps the intersection: it passes one bundle for
+  every file.
+- On the upload path, a paste keeps the `File` objects instead of reading them
+  as data URLs.
 - The dialog: `DialogModal`, a row per file as in the flow above, the fields
   through `PluginConfigForm` with the errors at each field, object URLs for the
   thumbnails (revoked on close), two uploads at a time, "Cancel" aborts them,

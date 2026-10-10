@@ -50,6 +50,7 @@ import type { CommentItem } from '#blokkli/editor/features/comments/types'
 import { toValidNotificationType } from '#blokkli/editor/features/notifications/types'
 import type { BlokkliUser } from '#blokkli/editor/types/user'
 import type { BlockTransferImportSummary } from '#blokkli/editor/features/block-transfer/types'
+import { isFileAccepted } from '../helpers/clipboard'
 
 type DrupalAdapter = FullBlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 
@@ -1495,13 +1496,25 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             })
             .map((v) => v.bundle)
         } else if (e.type === 'image') {
-          return config.clipboard.find((v) => {
-            return v?.__typename === 'ParagraphsBlokkliSupportedClipboardImage'
-          })?.possibleParagraphBundles
+          const image = config.clipboard.find(
+            (v) => v?.__typename === 'ParagraphsBlokkliSupportedClipboardImage',
+          )
+          if (
+            image?.__typename === 'ParagraphsBlokkliSupportedClipboardImage' &&
+            isFileAccepted(e, image)
+          ) {
+            return image.possibleParagraphBundles
+          }
         } else if (e.type === 'file') {
-          return config.clipboard.find((v) => {
-            return v?.__typename === 'ParagraphsBlokkliSupportedClipboardFile'
-          })?.possibleParagraphBundles
+          const file = config.clipboard.find(
+            (v) => v?.__typename === 'ParagraphsBlokkliSupportedClipboardFile',
+          )
+          if (
+            file?.__typename === 'ParagraphsBlokkliSupportedClipboardFile' &&
+            isFileAccepted(e, file)
+          ) {
+            return file.possibleParagraphBundles
+          }
         }
       }
     }

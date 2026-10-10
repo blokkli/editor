@@ -33,7 +33,12 @@ import {
   onBlokkliEvent,
 } from '#blokkli/editor/composables'
 import type { BlokkliClipboardItem, DraggableNativeDropItem } from './types'
-import { buildMapBundleEvent, sanitizeHtml } from './helpers'
+import {
+  buildFileMapEvent,
+  buildMapBundleEvents,
+  getFileType,
+  sanitizeHtml,
+} from './helpers'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 import type { DraggableExistingBlock } from '#blokkli/editor/types/draggable'
 import { parseClipboardEnvelope } from '#blokkli/editor/types/clipboard'
@@ -142,8 +147,9 @@ function startClipboardDrag(
   nativeDropItem = {
     itemType: 'native_drop',
     itemBundles,
+    blockCount: items.length,
     dataTransfer: null,
-    clipboardItems: allItems || [item],
+    clipboardItems: items,
     element: () => el,
   }
 
@@ -169,24 +175,29 @@ function tryStartDirectDrop(e: DragEvent): boolean {
     return false
   }
 
-  const mapEvent = buildMapBundleEvent(e)
-  if (!mapEvent) {
+  const mapEvents = buildMapBundleEvents(e)
+  if (!mapEvents.length) {
     return false
   }
 
-  const bundles = normalizeBundles(adapter.clipboardMapBundle(mapEvent))
-  if (!bundles) {
+  // Every dragged file is added with the same bundle.
+  let bundles: string[] | null = null
+  for (const mapEvent of mapEvents) {
+    const mapped = normalizeBundles(adapter.clipboardMapBundle(mapEvent))
+    if (!mapped) {
+      return false
+    }
+    bundles = bundles ? bundles.filter((b) => mapped.includes(b)) : mapped
+  }
+  if (!bundles?.length) {
     return false
   }
-
-  const itemType = mapEvent.type === 'plaintext' ? 'text' : mapEvent.type
-  const fileCount = mapEvent.fileCount || 1
 
   directDropBundles.value = bundles
   // During native drag we only know the type and maybe file name — no data yet.
-  dropItems.value = Array.from({ length: fileCount }, () => ({
-    type: itemType as DropElementItem['type'],
-    fileName: mapEvent.fileName,
+  dropItems.value = mapEvents.map((mapEvent) => ({
+    type: mapEvent.type === 'plaintext' ? 'text' : mapEvent.type,
+    fileName: 'fileName' in mapEvent ? mapEvent.fileName : undefined,
   }))
   positionDropElement(e.clientX, e.clientY)
 
@@ -195,6 +206,7 @@ function tryStartDirectDrop(e: DragEvent): boolean {
   nativeDropItem = {
     itemType: 'native_drop',
     itemBundles: bundles,
+    blockCount: mapEvents.length,
     dataTransfer: null,
     element: () => el,
   }
@@ -371,20 +383,11 @@ async function handleFiles(data: DataTransfer | FileList) {
   // Map each file to its bundles and intersect to find common bundles.
   let commonBundles: string[] | null = null
   for (const file of files) {
-    const type: 'image' | 'file' = file.type.startsWith('image/')
-      ? 'image'
-      : 'file'
     const fileBundles = normalizeBundles(
-      adapter.clipboardMapBundle({
-        type,
-        fileType: file.type,
-        fileSize: file.size,
-      }),
+      adapter.clipboardMapBundle(buildFileMapEvent(file)),
     )
     if (!fileBundles) {
-      emitPasteError(
-        $t('clipboardUnsupportedFileType', 'This file type is not supported.'),
-      )
+      emitUnsupportedFile(file)
       return
     }
     if (commonBundles === null) {
@@ -414,11 +417,8 @@ async function handleFiles(data: DataTransfer | FileList) {
   for (let i = 0; i < files.length; i++) {
     const file = files[i]!
     const result = results[i]!
-    const type: 'image' | 'file' = file.type.startsWith('image/')
-      ? 'image'
-      : 'file'
     items.push({
-      type,
+      type: getFileType(file.type),
       itemBundle: commonBundles[0]!,
       id: generateUUID(),
       data: result,
@@ -449,6 +449,15 @@ function onDropFallback(data: DataTransfer) {
 function emitPasteError(message: string) {
   const prefix = $t('clipboardPasteError', 'Failed to paste:')
   emitMessage(`${prefix} ${message}`, 'error')
+}
+
+function emitUnsupportedFile(file: File) {
+  emitPasteError(
+    $t(
+      'clipboardUnsupportedFile',
+      'The type or size of "@name" is not supported.',
+    ).replace('@name', file.name),
+  )
 }
 
 function startCopyDrag(existingBlocks: RenderedFieldListItem[]) {
@@ -637,17 +646,11 @@ defineDropHandler('native_drop', {
       }
       let possibleBundles: string[] | null = null
       for (const file of item.files) {
-        const type: 'image' | 'file' = file.type.startsWith('image/')
-          ? 'image'
-          : 'file'
         const mapped = normalizeBundles(
-          adapter.clipboardMapBundle({
-            type,
-            fileType: file.type,
-            fileSize: file.size,
-          }),
+          adapter.clipboardMapBundle(buildFileMapEvent(file)),
         )
         if (!mapped) {
+          emitUnsupportedFile(file)
           return []
         }
         if (possibleBundles === null) {
@@ -775,16 +778,8 @@ defineDropHandler('native_drop', {
       // Re-validate each file's bundle with actual file size.
       if (adapter.clipboardMapBundle) {
         for (const file of files) {
-          const type: 'image' | 'file' = file.type.startsWith('image/')
-            ? 'image'
-            : 'file'
-          const mapped = adapter.clipboardMapBundle({
-            type,
-            fileType: file.type,
-            fileSize: file.size,
-          })
-          if (!mapped) {
-            emitMessage('This file type or size is not supported.', 'error')
+          if (!adapter.clipboardMapBundle(buildFileMapEvent(file))) {
+            emitUnsupportedFile(file)
             return
           }
         }
@@ -798,11 +793,8 @@ defineDropHandler('native_drop', {
       }
 
       const clipboardItems: BlokkliClipboardItem[] = files.map((file, i) => {
-        const type: 'image' | 'file' = file.type.startsWith('image/')
-          ? 'image'
-          : 'file'
         return {
-          type,
+          type: getFileType(file.type),
           id: generateUUID(),
           itemBundle: bundle,
           data: results[i]!,

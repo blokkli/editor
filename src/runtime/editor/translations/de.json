@@ -490,7 +490,7 @@
   "clipboardPasteDescription": "Blöcke aus Zwischenablage einfügen",
   "clipboardPasteError": "Einfügen fehlgeschlagen:",
   "clipboardPasteShortcutHelp": "Text, Bild oder kopierte Blöcke einfügen",
-  "clipboardUnsupportedFileType": "Dieser Dateityp wird nicht unterstützt.",
+  "clipboardUnsupportedFile": "Der Typ oder die Grösse von «@name» wird nicht unterstützt.",
   "close": "Schliessen",
   "commandGroup.add": "Hinzufügen",
   "commandGroup.misc": "Diverse",

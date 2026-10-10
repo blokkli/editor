@@ -1,4 +1,5 @@
 import type { BlokkliFieldElement } from '#blokkli/editor/types/field'
+import type { DraggableItem } from '#blokkli/editor/types/draggable'
 
 export type Orientation = 'horizontal' | 'vertical'
 
@@ -65,6 +66,29 @@ export function getChildrenOrientation(element: HTMLElement): Orientation {
   return 'vertical'
 }
 
+/**
+ * The number of blocks the dragged items add: an item can add several, such as
+ * dropped files.
+ */
+export function getDraggingBlockCount(items: DraggableItem[]): number {
+  return items.reduce(
+    (count, item) => count + (('blockCount' in item && item.blockCount) || 1),
+    0,
+  )
+}
+
+/**
+ * The bundle groups of dragged items that add a block per group, such as
+ * dropped files of several types.
+ */
+export function getDraggingBundleGroups(items: DraggableItem[]): string[][] {
+  return items.flatMap((item) =>
+    'itemBundleGroups' in item && item.itemBundleGroups
+      ? item.itemBundleGroups
+      : [],
+  )
+}
+
 export function determineCanAddChildren(
   field: BlokkliFieldElement,
   children: HTMLElement[],
@@ -74,6 +98,7 @@ export function determineCanAddChildren(
   draggingBundles?: string[],
   draggingFragments?: string[],
   isBundlePermitted?: (bundle: string) => boolean,
+  draggingBundleGroups?: string[][],
 ): boolean {
   // Check cardinality of field.
   if (field.cardinality !== -1) {
@@ -91,6 +116,16 @@ export function determineCanAddChildren(
     }
   }
 
+  const canAddBundle = (bundle: string) =>
+    field.allowedBundles.includes(bundle) &&
+    (!isBundlePermitted || isBundlePermitted(bundle))
+
+  // New items that add a block per group of bundles, such as dropped files of
+  // several types: every group needs a bundle that can be added.
+  if (!uuids.length && draggingBundleGroups?.length) {
+    return draggingBundleGroups.every((group) => group.some(canAddBundle))
+  }
+
   if (!draggingBundles?.length) {
     return true
   }
@@ -101,11 +136,7 @@ export function determineCanAddChildren(
   // any bundle is allowed. The dragging overlay will display a selector to pick
   // which bundle should be created in this case.
   if (!uuids.length) {
-    return draggingBundles.some(
-      (bundle) =>
-        field.allowedBundles.includes(bundle) &&
-        (!isBundlePermitted || isBundlePermitted(bundle)),
-    )
+    return draggingBundles.some(canAddBundle)
   }
 
   // Handle dragging existing blocks. In this case, all the dragging bundles

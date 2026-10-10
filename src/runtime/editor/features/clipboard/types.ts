@@ -69,13 +69,29 @@ export type ClipboardMapBundleEventPlaintext = {
 export type ClipboardMapBundleEventImage = {
   type: 'image'
   fileType: string
+  /**
+   * The file's size in bytes, or 0 while it's dragged: browsers only give it
+   * when the file is dropped.
+   */
   fileSize: number
+  /**
+   * The file's name, unknown while it's dragged.
+   */
+  fileName?: string
 }
 
 export type ClipboardMapBundleEventFile = {
   type: 'file'
   fileType: string
+  /**
+   * The file's size in bytes, or 0 while it's dragged: browsers only give it
+   * when the file is dropped.
+   */
   fileSize: number
+  /**
+   * The file's name, unknown while it's dragged.
+   */
+  fileName?: string
 }
 
 export type ClipboardMapBundleEventVideo = {
@@ -108,6 +124,16 @@ export interface DraggableNativeDropItem {
   itemType: 'native_drop'
   element: () => HTMLElement
   itemBundles: string[]
+  /**
+   * Bundles of which each group needs one the field allows, such as dropped
+   * files of several types, each type added with its own bundle. Without
+   * groups, the field needs one of the item's bundles.
+   */
+  itemBundleGroups?: string[][]
+  /**
+   * The number of blocks the item adds, one per file. Defaults to 1.
+   */
+  blockCount?: number
   dataTransfer: DataTransfer | null
   clipboardItems?: BlokkliClipboardItem[]
   /**

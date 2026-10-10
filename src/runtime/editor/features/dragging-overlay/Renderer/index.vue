@@ -24,6 +24,8 @@ import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
 import {
   determineCanAddChildren,
+  getDraggingBlockCount,
+  getDraggingBundleGroups,
   getChildrenOrientation,
   getGapSize,
   MIN_GAP,
@@ -340,6 +342,14 @@ const draggingBundles = computed<string[]>(() =>
     })
     .filter(falsy)
     .filter(onlyUnique),
+)
+
+const draggingBundleGroups = computed<string[][]>(() =>
+  getDraggingBundleGroups(props.items),
+)
+
+const draggingBlockCount = computed<number>(() =>
+  getDraggingBlockCount(props.items),
 )
 
 /**
@@ -724,12 +734,13 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
     childElements,
     selectionUuids.value,
     currentCount,
-    props.items.length,
+    draggingBlockCount.value,
     draggingBundles.value,
     draggingFragments.value,
     isDraggingExisting.value
       ? undefined
       : (bundle) => permissions.checkBlockBundlePermission(bundle, 'add'),
+    draggingBundleGroups.value,
   )
   const orientation =
     field.dropAlignment || getChildrenOrientation(field.element)
