@@ -7597,6 +7597,12 @@ type ParagraphsBlokkliSupportedClipboardImage implements ParagraphsBlokkliSuppor
   maxFileSize: Int!
 
   """
+  The media type of the uploaded files, and of the existing media found for
+  them.
+  """
+  mediaBundle: String!
+
+  """
   Whether the user can upload images and create their media in the editor: they
   can create media of the type, and its form is complete (see
   ParagraphsBlokkliUploadForm).
@@ -7614,6 +7620,12 @@ type ParagraphsBlokkliSupportedClipboardFile implements ParagraphsBlokkliSupport
 
   ""
   maxFileSize: Int!
+
+  """
+  The media type of the uploaded files, and of the existing media found for
+  them.
+  """
+  mediaBundle: String!
 
   """
   Whether the user can upload files and create their media in the editor: they

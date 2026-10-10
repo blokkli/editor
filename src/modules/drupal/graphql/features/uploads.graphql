@@ -1,0 +1,25 @@
+query pbGetUploadForm($type: ParagraphsBlokkliUploadType!, $fileId: String!) {
+  form: pbGetUploadForm(type: $type, fileId: $fileId) {
+    complete
+    inputs {
+      ...paragraphsBlokkliConfigInput
+    }
+  }
+}
+
+mutation pbCreateMediaFromUploads(
+  $langcode: String!
+  $items: [ParagraphsBlokkliUploadMediaInput!]!
+) {
+  results: pbCreateMediaFromUploads(langcode: $langcode, items: $items) {
+    mediaId
+    errors {
+      name
+      message
+    }
+  }
+}
+
+mutation pbUploadToken {
+  token: pbUploadToken
+}

@@ -463,6 +463,41 @@ fragment blokkliClipboardRichText on ParagraphsBlokkliSupportedClipboardRichText
 `,
     )
 
+    // Older versions of the module can't upload files in the editor: they
+    // don't say whether the user can, or which media type the files get.
+    const clipboardImageFields = getTypeFields(
+      'ParagraphsBlokkliSupportedClipboardImage',
+    )
+    const clipboardFileFields = [
+      'possibleParagraphBundles',
+      'maxFileSize',
+      'fileExtensions',
+      ...['canUpload', 'mediaBundle'].filter((field) =>
+        clipboardImageFields.has(field),
+      ),
+    ]
+    for (const type of ['Image', 'File']) {
+      graphql.addDocument(
+        `blokkli:clipboard${type}`,
+        `
+fragment blokkliClipboard${type} on ParagraphsBlokkliSupportedClipboard${type} {
+  ${clipboardFileFields.join('\n  ')}
+}
+`,
+      )
+    }
+
+    // Feature: uploading pasted and dropped files.
+    if (
+      queryFields.has('pbGetUploadForm') &&
+      mutationFields.has('pbCreateMediaFromUploads') &&
+      mutationFields.has('pbUploadToken') &&
+      clipboardImageFields.has('canUpload') &&
+      clipboardImageFields.has('mediaBundle')
+    ) {
+      addGraphqlDocument('features/uploads.graphql')
+    }
+
     // Build the fragment for the "ParagraphsBlokkliParagraphEditContext" type.
     const paragraphsBlokkliEditContextFields = [
       ...getTypeFields('ParagraphsBlokkliParagraphEditContext').keys(),

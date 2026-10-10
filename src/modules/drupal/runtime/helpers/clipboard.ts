@@ -1,11 +1,8 @@
 /**
  * Whether Drupal accepts a file for a media type's source field, as far as the
  * file is known: its extension is allowed, and it isn't too large. While a file
- * is dragged, its name and size are unknown, and aren't checked.
- *
- * @param file - The file's name, if known, and its size in bytes, 0 if unknown.
- * @param field - The allowed extensions (none: any) and the maximum size in
- * bytes (0: no limit).
+ * is dragged, its name is unknown and its size 0, and neither is checked. A
+ * field without extensions allows any, one with a maximum size of 0 any size.
  */
 export function isFileAccepted(
   file: { fileName?: string; fileSize: number },

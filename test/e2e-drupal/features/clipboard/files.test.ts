@@ -10,11 +10,12 @@ import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 
 /**
  * Pasting files, or dragging them in from the OS: what's checked before a drag
- * starts. The image field takes PNG, GIF, JPEG and WebP files of up to 10 MB
- * (its config); images become `image` paragraphs, documents `link` ones. The
- * files are built in the page, of zeros: nothing is dropped, so nothing is read
- * or uploaded. Messages are matched by the file name they name, never by their
- * translated text.
+ * starts, and before the upload dialog opens. The image field takes PNG, GIF,
+ * JPEG and WebP files of up to 10 MB (its config); images become `image`
+ * paragraphs, documents `link` ones, each type with its own. The files are
+ * built in the page, of zeros: none is uploaded (see `upload.test.ts`).
+ * Messages are matched by the file name they name, never by their translated
+ * text.
  */
 
 /** A file to paste or drag in. */
@@ -53,6 +54,16 @@ function dispatchFiles(
 
 function isDragging(page: Page): Promise<boolean> {
   return withApp(page, (app) => app.selection.isDragging.value)
+}
+
+/** The bundle groups of the in-flight drag: one per type of file. */
+function draggedBundleGroups(page: Page): Promise<string[][] | undefined> {
+  return withApp(page, (app) => {
+    const item = app.selection.dragItems.value[0]
+    return item && 'itemBundleGroups' in item
+      ? item.itemBundleGroups
+      : undefined
+  })
 }
 
 /** The number of blocks the in-flight drag adds. */
@@ -127,7 +138,6 @@ describe('Pasting and dragging in files', async () => {
       { name: 'second.png', ...PNG },
     ])
 
-    // The files are read before the drag starts.
     await expect.poll(() => isDragging(page)).toBe(true)
     expect(await draggedBundles(page)).toEqual(['image'])
     expect(await draggedBlockCount(page)).toBe(2)
@@ -164,12 +174,13 @@ describe('Pasting and dragging in files', async () => {
     expect(await blockCount(page)).toBe(before)
   })
 
-  test('an image and a PDF dragged in start no drag: no type takes both', async () => {
+  test('an image and a PDF dragged in start a drag, a block type for each', async () => {
     await dispatchFiles(page, 'dragenter', [
       { name: 'photo.png', ...PNG },
       { name: 'report.pdf', type: 'application/pdf', size: 100 },
     ])
 
-    expect(await isDragging(page)).toBe(false)
+    expect(await draggedBundleGroups(page)).toEqual([['image'], ['link']])
+    expect(await draggedBlockCount(page)).toBe(2)
   })
 })

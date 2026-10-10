@@ -110,15 +110,11 @@ fragment paragraphsBlokkliAvailableFeatures on ParagraphsBlokkliAvailableFeature
 fragment paragraphsBlokkliSupportedClipboard on ParagraphsBlokkliSupportedClipboard {
   __typename
   ... on ParagraphsBlokkliSupportedClipboardImage {
-    possibleParagraphBundles
-    maxFileSize
-    fileExtensions
+    ...blokkliClipboardImage
   }
 
   ... on ParagraphsBlokkliSupportedClipboardFile {
-    possibleParagraphBundles
-    maxFileSize
-    fileExtensions
+    ...blokkliClipboardFile
   }
 
   ... on ParagraphsBlokkliSupportedClipboardRichText {

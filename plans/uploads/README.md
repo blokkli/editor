@@ -284,7 +284,7 @@ the schema dump, then the frontend.
   (the file's ID), the form, and the media created, its file permanent in
   `public://media/images`. Deleted afterwards, with the session.
 
-### 6. blökkli: drops of several file types (done, not committed)
+### 6. blökkli: drops of several file types (done)
 
 - `clipboardMapBundle`'s file events have an optional `fileName`; `fileSize` is
   0 while a file is dragged. The paste, the native drop and its `execute` build
@@ -319,60 +319,74 @@ the schema dump, then the frontend.
   image and a PDF dragged in starting no drag. The overlay passing the count and
   the groups isn't covered: the E2E tests don't drive its drop targets.
 
-### 7. blökkli: the upload path and its dialog
+### 7. blökkli: the upload path and its dialog (done)
 
-- New optional adapter methods in the clipboard feature's types:
-  - `uploadFile({ file, type, onProgress, signal })`: a temporary upload or an
-    existing media;
-  - `getUploadForm({ upload })`: the config inputs and `complete`;
-  - `createMediaFromUploads({ items })`: per item a media or errors;
-  - `addBlocksFromUploads({ items, host, afterUuid })`, each item with its
-    paragraph type: one mutation.
-- With all four, the clipboard drop handler's `execute` opens the dialog and
-  waits for it (as `showBundleSelector`'s promise does); without them it keeps
-  the base64 path (`addBlockFromClipboardItem`).
-- On the upload path, the bundles are grouped per file type instead of
-  intersected (`handleFiles`, the native drag, and the native drop's
-  `resolveBundles`): per type, the field's allowed bundles ∩ the mapped ones ∩
-  the permitted ones; no drop when a type has none. The groups go on the drag
-  item (`itemBundleGroups`, step 6, as `item.files` is), and `resolveBundles`
-  returns one bundle so the dispatcher skips the bundle selector; `execute` uses
-  the groups. The base64 path keeps the intersection: it passes one bundle for
-  every file.
-- On the upload path, a paste keeps the `File` objects instead of reading them
-  as data URLs.
-- The dialog: `DialogModal`, a row per file as in the flow above, the fields
-  through `PluginConfigForm` with the errors at each field, object URLs for the
-  thumbnails (revoked on close), two uploads at a time, "Cancel" aborts them,
-  "Retry" for failed uploads.
-- No paste while a dialog is open (`onPaste` doesn't check `ui.hasDialogOpen`).
-- New strings through `bun run texts`, translated for every language the editor
-  ships.
+- Four optional adapter methods in the clipboard feature's types: `uploadFile`
+  (a temporary upload or an existing media), `getUploadForm`,
+  `createMediaFromUploads` (per item a media or errors) and
+  `addBlocksFromUploads`, whose items carry their upload type: the Drupal
+  adapter needs it for the media type.
+- With all four (`canUploadFiles()`), files take the upload path; without, the
+  base64 path (the mock playground), which keeps the intersection.
+- The upload path groups the bundles per file type (`groupFileBundles()`): the
+  paste and the native drag set `itemBundleGroups`. The native drop's
+  `resolveBundles` narrows the groups to the bundles the field allows and the
+  user may add (`narrowFileGroups()`), and returns one, so the dispatcher skips
+  the bundle selector. `execute` opens the dialog and waits for it (a promise,
+  as `showBundleSelector`'s), then adds the blocks with `addBlocksFromUploads`
+  under the loading state.
+- The paste keeps the `File` objects; the drag preview shows the images through
+  object URLs, revoked with the next drag.
+- The dialog (`UploadDialog`): a `DialogModal` with a `PanelSection` per file,
+  titled with its name, with a `StatusIcon` and the size beside it. Inside: the
+  thumbnail, a progress bar while it uploads, a red `InfoBox` with "Try again"
+  when it failed, the existing media's label for a duplicate, or the form
+  through `ConfigForm`, with the errors at their fields and the others below. A
+  section to pick the block type per file type, only when a type has several
+  (`FormRadioTabs`). New markup: the thumbnail's box and the progress bar; no
+  new CSS.
+- Its state (`UploadDialog/uploads.ts`): two uploads at a time, retry, abort (no
+  upload starts after it, even when a form arrives late), the forms' default
+  values, "Add" once every file is uploaded and its required fields are filled
+  in, media created only for the files without, errors at their fields.
+- `ConfigForm` shows errors at its fields (`errors`), and its inputs' ids are
+  unique per form (`useId()`): the dialog shows forms with the same names.
+- No paste while a dialog is open. The drop element calls files of several types
+  "File".
+- New strings through `bun run texts`, translated for `de` and `gsw_CH`; `fr`
+  and `it` lack the strings around them too.
 
-### 8. The Drupal adapter
+### 8. The Drupal adapter (done, not committed)
 
-- Register the four methods only when the schema has the query, the mutations
-  and the clipboard's new field (`getTypeFields`, as for the rich text's
-  `paragraphs`), plus a runtime check of the field's value.
-- `uploadFile`: `XMLHttpRequest` with the token, `upload.onprogress`, aborted
-  through the signal.
-- `getUploadForm`: the query, mapped with `mapPluginConfigInputs`.
-- `createMediaFromUploads`: the mutation, in the language being edited.
-- `addBlocksFromUploads`: `pbAddEntityReferenceMultiple`.
-- `clipboardMapBundle` leaves out media types that can't be uploaded.
+- Drupal (`paragraphs_blokkli`): the image and file clipboard entries name their
+  media type (`mediaBundle`): `pbAddEntityReferenceMultiple` needs each
+  reference's, which the frontend doesn't know.
+- The module's build: the image and file clipboard fragments get `canUpload` and
+  `mediaBundle` when the schema has them; `features/uploads.graphql` (the form
+  query, the media mutation, the token mutation) when it has all of them.
+- The adapter registers the four methods when those operations and
+  `pbAddEntityReferenceMultiple` are there; `clipboardMapBundle` then leaves out
+  a type the user can't upload to (`canUpload`).
+- `uploadFile`: `XMLHttpRequest` to `/paragraphs_blokkli/upload/{type}`, with
+  the language prefix and `_format=json`, the name percent-encoded, the token
+  requested with the first upload and again after a 403, the progress, aborted
+  through the signal, and the route's `{ message }` as the error.
+- `getUploadForm` (mapped with `mapPluginConfigInputs`),
+  `createMediaFromUploads` in the language being edited, `addBlocksFromUploads`
+  with the media type from the clipboard config.
 
 ### 9. Tests
 
-- The kernel tests from steps 1 to 4, and the unit tests from step 6.
-- E2E (`test/e2e-drupal/features/clipboard/upload.test.ts`), pasting files (a
-  `File` in the paste event's `DataTransfer`):
-  - an image shows the form's fields; filling them adds the block, and its image
-    has the alt text;
-  - an image and a PDF add an image and a document paragraph;
-  - a file that's too large is refused before uploading;
-  - an error shows at its field;
-  - "Cancel" adds nothing;
-  - an upload without the CSRF token is refused.
+- Done with steps 6 to 8: the unit tests (the clipboard helpers, the drop
+  targets, the dialog's state), `files.test.ts` (refused files named before
+  uploading, the groups of an image and a PDF) and `upload.test.ts` (an image
+  added with its alt text, its name with a character a header can't carry; an
+  image and a PDF added as an image and a link, after the paragraph they were
+  dropped after; "Cancel" adds nothing, and nothing is pasted while the dialog
+  is open; no upload without the token).
+- Open: an error shows at its field; a user who can't create media (the
+  translator) can't paste files, which covers `canUpload` in
+  `clipboardMapBundle`.
 - The sandbox: add `name` to the image and document types' `media_library` form
   displays, so the dialog asks for a name.
 
