@@ -2207,6 +2207,10 @@ msgctxt "clipboardUploadFiles"
 msgid "Files"
 msgstr "Dateien"
 
+msgctxt "clipboardUploadFocalPoint"
+msgid "Click the image to set its focal point."
+msgstr "Ein Klick ins Bild setzt den Fokuspunkt."
+
 msgctxt "clipboardUploadImages"
 msgid "Images"
 msgstr "Bilder"

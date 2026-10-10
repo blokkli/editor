@@ -9,7 +9,7 @@ dependencies:
     - image.style.thumbnail
     - media.type.image
   module:
-    - image
+    - focal_point
 _core:
   default_config_hash: BMLrK4zKp8-FFnMseBdT_6h6YipUsKRfbDf_3WUB5HA
 id: media.image.media_library
@@ -26,12 +26,14 @@ content:
       placeholder: ''
     third_party_settings: {  }
   field_media_image:
-    type: image_image
+    type: image_focal_point
     weight: 1
     region: content
     settings:
       progress_indicator: throbber
       preview_image_style: thumbnail
+      preview_link: true
+      offsets: '50,50'
     third_party_settings: {  }
   langcode:
     type: language_select

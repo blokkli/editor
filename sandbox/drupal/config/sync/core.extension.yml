@@ -11,6 +11,7 @@ module:
   ckeditor5: 0
   config: 0
   contextual: 0
+  crop: 0
   datetime: 0
   datetime_range: 0
   dblog: 0
@@ -23,6 +24,7 @@ module:
   field_ui: 0
   file: 0
   filter: 0
+  focal_point: 0
   frontend_routing: 0
   gin_toolbar: 0
   graphql: 0

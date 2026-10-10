@@ -424,6 +424,41 @@ the schema dump, then the frontend.
   URI gets the suffix ("image_0.png"), so the media's default name is the file's
   (`MediaUploader::storeFile()`, `UploadControllerTest::testSameName()`).
 
+### 11. Focal points (done)
+
+The user's idea (2026-10-10): set an image's focal point in the dialog.
+
+- **Drupal:** the Focal Point module's widget (`image_focal_point`) adds a text
+  field, "x,y" in whole percent, which it validates
+  (`FocalPointImageWidget::validateFocalPoint`) and saves as a crop of the
+  media's file after the save. `FormDescription` describes that text field as a
+  `FocalPointInput` (type `focal_point`), GraphQL
+  `ParagraphsBlokkliConfigInputFocalPoint`; its value is submitted as any other,
+  and the crop belongs to the moved file. `drupal/focal_point` is a dev
+  dependency of the module. Kernel tests (`MediaUploadFocalPointTest`):
+  described with the widget's default, saved as the moved file's crop, the
+  default without a value, an invalid value refused at its input.
+- **The sandbox:** `drupal/focal_point` (and `crop`); the image media's
+  `default` and `media_library` form displays use its widget.
+  `blokkli_playground`: `FieldItemTypeImage.focalPoint` reads the file's crop,
+  in percent (cached with `crop_list`); `Media/Image` crops around it
+  (`object-position`).
+- **blökkli:** `PluginConfigInputFocalPoint` (`focalPoint`), which
+  `PluginConfigForm` leaves out. The Drupal module's build adds it to the input
+  fragment when the schema has the type, so the fragment is built in `index.ts`
+  now. The dialog shows it on the image's preview once the form has one, until
+  the media is created (`UploadDialog/FocalPoint`): a click or a drag sets it,
+  the arrow keys move it by one percent (ten with Shift), with "Click the image
+  to set its focal point." below. The image keeps the previews' size; the point
+  is placed on the image, not on the space around it. Its errors are shown with
+  the form's other messages. The dialog's focus trap includes elements with a
+  `tabindex` (`useFocusTrap`): it only cycled through form elements.
+- Tests: unit tests (`focalPoint.spec.ts`; the error in `uploads.spec.ts`), and
+  `upload.test.ts`: set by a click and a key, and saved with the media (the
+  block's `focalPoint`).
+- Docs: `configuration.md` ("Uploads"), `getUploadForm.md`, the feature's
+  `docs.md`, the setup skill and the sandbox skill.
+
 ## Later
 
 - Starting the uploads while the user places the files.
@@ -431,6 +466,7 @@ the schema dump, then the frontend.
 - Suggested alt texts (Rokka's descriptions, the agent).
 - An "Upload" button in the media library sidebar.
 - Replacing a block's media by dropping a file on it (`replace_media`).
+- Setting the focal point of an existing image, such as a block's.
 - Rendering a node's fields with the same descriptions, saved through
   `update_host_entity_field_value`.
 - More widgets: formatted text, entity references.

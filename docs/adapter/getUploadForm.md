@@ -43,6 +43,11 @@ Called for each file once it's uploaded. The dialog shows the fields below the
 file (text fields, checkboxes and options), filled with their default values.
 The user can add the files once each required field has a value.
 
+An image's form can have a focal point, the point that crops keep: an input of
+the type `focalPoint`, whose value is `"x,y"`, the point's offsets from the
+image's left and top edges in whole percent. The dialog shows it on the image's
+preview, where a click or a drag sets it. Its errors are shown below the form.
+
 If `complete` is `false`, the media needs a field the dialog can't show, and no
 media can be created from the file. The dialog says so.
 
@@ -67,6 +72,13 @@ getUploadForm: async ({ upload }) => {
           name: 'credit',
           label: 'Credit',
           required: false,
+        },
+        {
+          type: 'focalPoint',
+          name: 'focal_point',
+          label: 'Focal point',
+          required: false,
+          defaultValue: '50,50',
         },
       ],
       complete: true,

@@ -15,6 +15,7 @@ query_complexity: 0
 schema_configuration:
   core_composable:
     extensions:
+      blokkli_playground_focal_point: blokkli_playground_focal_point
       blokkli_playground_search: blokkli_playground_search
       blokkli_playground_swiss_spelling: blokkli_playground_swiss_spelling
       blokkli_sandbox: blokkli_sandbox

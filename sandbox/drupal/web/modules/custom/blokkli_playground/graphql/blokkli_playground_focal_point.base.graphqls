@@ -1,0 +1,14 @@
+"""
+The point of an image that crops keep in view, set by its editors.
+"""
+type ImageFocalPoint {
+  """
+  The point's offset from the image's left edge, in percent.
+  """
+  x: Int!
+
+  """
+  The point's offset from the image's top edge, in percent.
+  """
+  y: Int!
+}

@@ -226,7 +226,11 @@ export function createUploads(
       })
       pending.forEach((item, i) => {
         const result = results[i]
-        const names = item.form?.inputs.map((input) => input.name) ?? []
+        // A focal point is set on its image, which shows no error.
+        const names =
+          item.form?.inputs
+            .filter((input) => input.type !== 'focalPoint')
+            .map((input) => input.name) ?? []
         item.mediaId = result?.mediaId ?? null
         item.errors = {}
         item.messages = []

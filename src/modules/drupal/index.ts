@@ -178,7 +178,6 @@ export declare const templateEditRouteName: string|null
       'fragment.paragraphsBlokkliMutationItem.graphql',
       'fragment.paragraphsBlokkliMutationResult.graphql',
       'fragment.paragraphsBlokkliViolation.graphql',
-      'fragment.ParagraphsBlokkliConfigInput.graphql',
       'fragment.blokkliProps.graphql',
       'fragment.paragraphsFieldItem.graphql',
       'query.pbConfig.graphql',
@@ -189,6 +188,54 @@ export declare const templateEditRouteName: string|null
     base.forEach((fileName) => {
       addGraphqlDocument('base/' + fileName)
     })
+
+    // Older versions of the module have no focal points.
+    const configInputFocalPoint = graphql.schemaGetType(
+      'ParagraphsBlokkliConfigInputFocalPoint',
+    )
+      ? `
+  ... on ParagraphsBlokkliConfigInputFocalPoint {
+    defaultValueFocalPoint: defaultValue
+  }`
+      : ''
+
+    graphql.addDocument(
+      'blokkli:paragraphsBlokkliConfigInput',
+      `
+fragment paragraphsBlokkliConfigInput on ParagraphsBlokkliConfigInput {
+  __typename
+  name
+  label
+  description
+  required
+
+  ... on ParagraphsBlokkliConfigInputText {
+    defaultValueText: defaultValue
+    minLength
+    maxLength
+    placeholder
+    pattern
+    multiline
+    rows
+  }
+
+  ... on ParagraphsBlokkliConfigInputCheckbox {
+    checkboxLabel
+    defaultValueCheckbox: defaultValue
+  }
+
+  ... on ParagraphsBlokkliConfigInputOptions {
+    defaultValueOptions: defaultValue
+    variant
+    options {
+      value
+      label
+    }
+  }
+${configInputFocalPoint}
+}
+`,
+    )
 
     if (queryFields.has('paragraphsBlokkliGetUsers')) {
       addGraphqlDocument('base/query.pbUsers.graphql')

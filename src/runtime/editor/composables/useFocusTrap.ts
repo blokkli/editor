@@ -1,11 +1,11 @@
 import { useBlokkli, onMounted, type Ref } from '#imports'
 import { modulo } from '#blokkli/editor/helpers/math'
 
-type FocusableElement =
-  | HTMLInputElement
-  | HTMLSelectElement
-  | HTMLButtonElement
-  | HTMLTextAreaElement
+/**
+ * A form element, or another element in the tab order, such as a custom
+ * control.
+ */
+type FocusableElement = HTMLElement & { disabled?: boolean }
 
 export type UseFocusTrapOptions = {
   /**
@@ -21,9 +21,10 @@ export type UseFocusTrapOptions = {
   autoFocus?: boolean
 
   /**
-   * Element selector for focusable elements.
+   * Element selector for focusable elements. Elements with a tabindex of -1
+   * are skipped.
    *
-   * @default 'input,select,button,textarea'
+   * @default 'input,select,button,textarea,[tabindex]'
    */
   selector?: string
 
@@ -62,7 +63,7 @@ export function useFocusTrap(options: UseFocusTrapOptions) {
   const {
     container,
     autoFocus = true,
-    selector = 'input,select,button,textarea',
+    selector = 'input,select,button,textarea,[tabindex]',
     debugLabel = 'useFocusTrap',
   } = options
 

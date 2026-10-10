@@ -129,7 +129,9 @@ Watch out for:
 - **The upload dialog's fields:** the media type's `media_library` form display
   decides them. Put the name and the alt text there. The dialog shows text
   fields, text areas, checkboxes, selects and radios; a visible required field
-  of another widget means no uploads of that media type.
+  of another widget means no uploads of that media type. With the Focal Point
+  module's widget (`image_focal_point`) on the image field, the focal point is
+  set on the image's preview.
 - **Text formats:** pasting text into a text field without allowed formats
   fails. Set its allowed formats.
 - **Link fields that a mapping targets:** blökkli sets the link title to the

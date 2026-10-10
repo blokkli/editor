@@ -208,6 +208,17 @@ function mapPluginConfigInputs(
           description: input.description,
           required: input.required,
         }
+      } else if (
+        input.__typename === 'ParagraphsBlokkliConfigInputFocalPoint'
+      ) {
+        return {
+          type: 'focalPoint',
+          name: input.name,
+          label: input.label,
+          description: input.description,
+          required: input.required,
+          defaultValue: input.defaultValueFocalPoint,
+        }
       }
 
       return null

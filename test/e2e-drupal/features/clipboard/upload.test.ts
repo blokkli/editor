@@ -148,6 +148,34 @@ describe('Uploading pasted files', async () => {
     expect(info.props?.media?.image?.alt).toBe('A cat')
   })
 
+  test("the image's focal point is set on its preview, and saved with the media", async () => {
+    const before = await withApp(page, (app) => app.state.getAllUuids())
+    await pasteAndDrop(page, [{ name: 'focus.png', type: 'image/png' }])
+
+    const focalPoint = uploadDialog(page).locator(
+      '[data-test="clipboard-upload-focal-point"]',
+    )
+    await focalPoint.waitFor()
+    expect(await focalPoint.getAttribute('data-test-value')).toBe('50,50')
+    const box = (await focalPoint.boundingBox())!
+    await focalPoint.click({
+      position: { x: box.width * 0.25, y: box.height * 0.6 },
+    })
+    expect(await focalPoint.getAttribute('data-test-value')).toBe('25,60')
+    await page.keyboard.press('Shift+ArrowRight')
+    expect(await focalPoint.getAttribute('data-test-value')).toBe('35,60')
+    await dialogSubmit(page).click()
+    await uploadDialog(page).waitFor({ state: 'detached' })
+
+    await expect.poll(() => blockCount(page)).toBe(before.length + 1)
+    const uuid = (await withApp(page, (app) => app.state.getAllUuids())).find(
+      (uuid) => !before.includes(uuid),
+    )!
+    // Drupal keeps it in pixels: the image is 40 by 30, so these survive.
+    const info = await blockState(page, uuid)
+    expect(info.props?.media?.image?.focalPoint).toEqual({ x: 35, y: 60 })
+  })
+
   test("Drupal's error shows at its field, and the file is added once it's fixed", async () => {
     const before = await blockCount(page)
     await pasteAndDrop(page, [{ name: 'credit.png', type: 'image/png' }])

@@ -35,8 +35,15 @@
           data-test="clipboard-upload-item"
           :data-test-status="item.status"
         >
+          <FocalPoint
+            v-if="thumbnails.get(item.file) && getFocalPoint(item)"
+            v-model="item.values[getFocalPoint(item)!.name]"
+            :src="thumbnails.get(item.file)!"
+            :label="getFocalPoint(item)!.label"
+            @error="thumbnails.delete(item.file)"
+          />
           <img
-            v-if="thumbnails.get(item.file)"
+            v-else-if="thumbnails.get(item.file)"
             :src="thumbnails.get(item.file)"
             alt=""
             class="w-[160px] h-120 shrink-0 object-contain bg-mono-200"
@@ -131,7 +138,7 @@
                 }}
               </InfoBox>
               <ConfigForm
-                v-if="item.form.inputs.length"
+                v-if="hasFields(item.form)"
                 v-model="item.values"
                 :config="item.form.inputs"
                 :errors="item.errors"
@@ -139,7 +146,7 @@
                 class="mt-8"
               />
               <p
-                v-else-if="item.form.complete"
+                v-else-if="item.form.complete && !getFocalPoint(item)"
                 class="mt-8 text-sm text-mono-500"
               >
                 {{ $t('clipboardUploadNoFields', 'Nothing to fill in.') }}
@@ -174,11 +181,14 @@ import {
 } from '#blokkli/editor/components'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import { emitMessage } from '#blokkli/editor/events'
+import type { PluginConfigInputFocalPoint } from '#blokkli/editor/types/pluginConfig'
 import type {
   AddBlocksFromUploadsEvent,
   ClipboardFileGroup,
+  ClipboardUploadForm,
   ClipboardUploadType,
 } from '../types'
+import FocalPoint from './FocalPoint/index.vue'
 import { createUploads, type UploadItem, type UploadMethods } from './uploads'
 
 const props = defineProps<{
@@ -246,6 +256,29 @@ const choices = computed(() =>
       })),
     })),
 )
+
+/**
+ * The focal point of an image, set on its preview: once its form is loaded,
+ * until its media is created.
+ */
+function getFocalPoint(
+  item: UploadItem,
+): PluginConfigInputFocalPoint | undefined {
+  if (item.mediaId) {
+    return undefined
+  }
+  return item.form?.inputs.find(
+    (input): input is PluginConfigInputFocalPoint =>
+      input.type === 'focalPoint',
+  )
+}
+
+/**
+ * Whether a form has fields to fill in, besides a focal point.
+ */
+function hasFields(form: ClipboardUploadForm): boolean {
+  return form.inputs.some((input) => input.type !== 'focalPoint')
+}
 
 function getStatus(
   item: UploadItem,

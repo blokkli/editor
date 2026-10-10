@@ -59,8 +59,9 @@ const props = defineProps<{
 // The fields' names repeat when several forms are shown.
 const idPrefix = useId() + '-'
 
+// A focal point is set on its image, which the form doesn't show.
 const renderedConfig = computed(() =>
-  props.config.filter((v) => v.type !== 'seed'),
+  props.config.filter((v) => v.type !== 'seed' && v.type !== 'focalPoint'),
 )
 
 const value = defineModel<Record<string, any>>({

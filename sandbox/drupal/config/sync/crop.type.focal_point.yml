@@ -1,0 +1,14 @@
+uuid: 31ca5d0f-c8b0-4926-900d-b31da07ef9d5
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: flCi9IdafdLXlJqvoHguutUOiC05-aynK4niYN4YZ3o
+label: 'Focal point'
+id: focal_point
+description: 'Crop type used by Focal point module.'
+aspect_ratio: ''
+soft_limit_width: null
+soft_limit_height: null
+hard_limit_width: null
+hard_limit_height: null

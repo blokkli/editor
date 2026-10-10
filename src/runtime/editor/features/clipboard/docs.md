@@ -31,6 +31,8 @@ the files opens a dialog:
   uploaded again or removed.
 - Each file's media fields (its name, its alternative text, …) are shown below
   it, and filled in while the other files upload.
+- An image's focal point, if its form has one, is set on its preview: a click or
+  a drag, or the arrow keys.
 - When files of a type can become blocks of several bundles, the dialog asks
   which.
 - "Add" creates the media, then adds the blocks with one mutation.

@@ -1,0 +1,6 @@
+extend type FieldItemTypeImage {
+  """
+  The image's focal point, or null if it has none.
+  """
+  focalPoint: ImageFocalPoint
+}

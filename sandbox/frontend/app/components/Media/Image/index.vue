@@ -7,6 +7,7 @@
       :height="image.derivative.height ?? undefined"
       :alt="image.alt ?? ''"
       :class="imgClass"
+      :style="objectPosition"
       loading="lazy"
     />
     <span
@@ -21,7 +22,7 @@
 <script lang="ts" setup>
 import type { MediaImageFragment } from '#graphql-operations'
 
-withDefaults(
+const props = withDefaults(
   defineProps<
     MediaImageFragment & {
       // Classes for the <img>; the component's own classes size the wrapper.
@@ -33,4 +34,10 @@ withDefaults(
     imgClass: 'h-auto w-full',
   },
 )
+
+// A cropped image (object-cover) keeps its focal point in view.
+const objectPosition = computed(() => {
+  const point = props.image?.focalPoint
+  return point ? { objectPosition: `${point.x}% ${point.y}%` } : undefined
+})
 </script>

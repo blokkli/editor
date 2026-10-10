@@ -498,6 +498,7 @@
   "clipboardUploadFailed": "Die Datei konnte nicht hochgeladen werden.",
   "clipboardUploadFileCount": "@count Dateien",
   "clipboardUploadFiles": "Dateien",
+  "clipboardUploadFocalPoint": "Ein Klick ins Bild setzt den Fokuspunkt.",
   "clipboardUploadImages": "Bilder",
   "clipboardUploadIncomplete": "Das Medium benötigt ein Feld, das hier nicht ausgefüllt werden kann.",
   "clipboardUploadNoFields": "Keine Angaben nötig.",

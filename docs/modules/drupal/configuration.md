@@ -162,6 +162,12 @@ areas, checkboxes, single-value selects and radios are shown; other widgets keep
 their default values. A media type whose form has a visible required field the
 dialog can't show isn't offered for uploads.
 
+With the [Focal Point](https://www.drupal.org/project/focal_point) module's
+widget (`image_focal_point`) on the image's source field, the dialog shows the
+focal point on the image's preview: a click or a drag sets it, and the arrow
+keys move it. It's saved as the widget's own form saves it, as a crop of the
+image's file.
+
 The form is a media entity form with the form ID
 `media_<type>_paragraphs_blokkli_upload_form` and the base form ID `media_form`.
 Hooks for `media_form` and `hook_form_alter()` apply, and so does the form's

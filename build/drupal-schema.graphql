@@ -416,6 +416,9 @@ type FieldItemTypeImage implements FieldItemType {
   "True if this item is considered empty."
   isEmpty: Boolean!
 
+  "The image's focal point, or null if it has none."
+  focalPoint: ImageFocalPoint
+
   derivative(style: ImageStyleId!): ImageResource
 }
 
@@ -6185,6 +6188,15 @@ type DefaultUrl implements Url {
   path: String
 }
 
+"The point of an image that crops keep in view, set by its editors."
+type ImageFocalPoint {
+  "The point's offset from the image's left edge, in percent."
+  x: Int!
+
+  "The point's offset from the image's top edge, in percent."
+  y: Int!
+}
+
 "A page of the site search's results."
 type SearchResult {
   "The number of results, of all pages."
@@ -7861,6 +7873,30 @@ type ParagraphsBlokkliConfigInputHost implements ParagraphsBlokkliConfigInput {
 
   ""
   required: Boolean!
+}
+
+"""
+The point of an image that crops keep, such as the focal point of the
+focal_point module's image widget. The editor shows it on the image.
+"""
+type ParagraphsBlokkliConfigInputFocalPoint implements ParagraphsBlokkliConfigInput {
+  ""
+  name: String!
+
+  ""
+  label: String!
+
+  ""
+  description: String
+
+  ""
+  required: Boolean!
+
+  """
+  The point as "x,y": its offsets from the image's left and top edges, in whole
+  percent.
+  """
+  defaultValue: String
 }
 
 "The form of a media created from a file uploaded in the editor."

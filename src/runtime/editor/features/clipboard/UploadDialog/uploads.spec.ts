@@ -289,4 +289,47 @@ describe('createUploads', () => {
     expect(state.items.map((item) => item.mediaId)).toEqual(['5', '6', '7'])
     expect(state.items[2]!.errors).toEqual({})
   })
+
+  test('sends the focal point, whose error belongs to no field', async () => {
+    const { adapter, uploads } = buildAdapter({
+      inputs: [
+        {
+          type: 'focalPoint',
+          name: 'focal_point',
+          label: 'Focal point',
+          required: false,
+          defaultValue: '50,50',
+        },
+      ],
+      complete: true,
+    })
+    const state = createUploads([buildFile('a.png')], adapter)
+    state.start()
+    uploads[0]!.result.resolve({ fileId: '1' })
+    await flush()
+
+    // Not required, and set to the image's centre.
+    expect(state.isReady.value).toBe(true)
+    state.items[0]!.values.focal_point = '25,75'
+    const create = vi.mocked(adapter.createMediaFromUploads)
+    create.mockResolvedValueOnce([
+      {
+        mediaId: null,
+        errors: [{ name: 'focal_point', message: 'The focal point is wrong.' }],
+      },
+    ])
+    await state.createMedia()
+    expect(create).toHaveBeenLastCalledWith({
+      items: [
+        {
+          upload: { type: 'image', fileId: '1' },
+          values: { focal_point: '25,75' },
+        },
+      ],
+    })
+    expect(state.items[0]).toMatchObject({
+      errors: {},
+      messages: ['The focal point is wrong.'],
+    })
+  })
 })
