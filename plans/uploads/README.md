@@ -337,26 +337,29 @@ the schema dump, then the frontend.
   under the loading state.
 - The paste keeps the `File` objects; the drag preview shows the images through
   object URLs, revoked with the next drag.
-- The dialog (`UploadDialog`): a `DialogModal` with a `PanelSection` per file,
-  titled with its name, with a `StatusIcon` and the size beside it. Inside: the
-  thumbnail, a progress bar while it uploads, a red `InfoBox` with "Try again"
-  when it failed, the existing media's label for a duplicate, or the form
-  through `ConfigForm`, with the errors at their fields and the others below. A
-  section to pick the block type per file type, only when a type has several
-  (`FormRadioTabs`). New markup: the thumbnail's box and the progress bar; no
-  new CSS.
+- The dialog (`UploadDialog`): a `DialogModal` with one `PanelSection` that
+  lists the files, titled with their number, in rows divided by lines. A row: a
+  160×120 preview (the image, or an icon with the extension), the name, size and
+  a `StatusIcon` on one line, then a progress bar while it uploads, the error
+  with "Try again" when it failed, the existing media's label for a duplicate,
+  "Nothing to fill in" for a form without fields, or the form through
+  `ConfigForm` (stacked), with the errors at their fields and the others below.
+  A section to pick the block type per file type, only when a type has several
+  (`FormRadioTabs`). New markup: the rows, the preview and the progress bar; the
+  only new CSS is `ConfigForm`'s stacked layout.
 - Its state (`UploadDialog/uploads.ts`): two uploads at a time, retry, abort (no
   upload starts after it, even when a form arrives late), the forms' default
   values, "Add" once every file is uploaded and its required fields are filled
   in, media created only for the files without, errors at their fields.
 - `ConfigForm` shows errors at its fields (`errors`), and its inputs' ids are
-  unique per form (`useId()`): the dialog shows forms with the same names.
+  unique per form (`useId()`): the dialog shows forms with the same names. It
+  can stack its fields (`stacked`).
 - No paste while a dialog is open. The drop element calls files of several types
   "File".
 - New strings through `bun run texts`, translated for `de` and `gsw_CH`; `fr`
   and `it` lack the strings around them too.
 
-### 8. The Drupal adapter (done, not committed)
+### 8. The Drupal adapter (done)
 
 - Drupal (`paragraphs_blokkli`): the image and file clipboard entries name their
   media type (`mediaBundle`): `pbAddEntityReferenceMultiple` needs each
@@ -389,6 +392,9 @@ the schema dump, then the frontend.
   `clipboardMapBundle`.
 - The sandbox: add `name` to the image and document types' `media_library` form
   displays, so the dialog asks for a name.
+- The dialog: a "Remove" button on a failed row. A file Drupal refuses fails
+  again on every retry, and keeps "Add" disabled until the whole dialog is
+  cancelled.
 
 ### 10. Docs and skills
 

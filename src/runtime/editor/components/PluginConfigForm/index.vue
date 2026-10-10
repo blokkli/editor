@@ -1,5 +1,5 @@
 <template>
-  <ol class="bk-plugin-config-form">
+  <ol class="bk-plugin-config-form" :class="{ 'bk-is-stacked': stacked }">
     <slot name="before" />
     <li
       v-for="item in renderedConfig"
@@ -46,6 +46,10 @@ const props = defineProps<{
    * Errors to show at the fields, keyed by their names.
    */
   errors?: Record<string, string>
+  /**
+   * Show the fields one below the other, instead of side by side.
+   */
+  stacked?: boolean
 }>()
 
 // The fields' names repeat when several forms are shown.
@@ -87,6 +91,9 @@ defineExpose({
 <style lang="postcss">
 .bk .bk-plugin-config-form {
   @apply flex flex-wrap gap-10 items-end;
+  &.bk-is-stacked {
+    @apply flex-col items-stretch;
+  }
   > li {
     @apply flex-1 shrink;
 

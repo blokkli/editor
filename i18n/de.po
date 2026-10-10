@@ -2199,6 +2199,10 @@ msgctxt "clipboardUploadFailed"
 msgid "The file couldn't be uploaded."
 msgstr "Die Datei konnte nicht hochgeladen werden."
 
+msgctxt "clipboardUploadFileCount"
+msgid "@count files"
+msgstr "@count Dateien"
+
 msgctxt "clipboardUploadFiles"
 msgid "Files"
 msgstr "Dateien"
@@ -2210,6 +2214,14 @@ msgstr "Bilder"
 msgctxt "clipboardUploadIncomplete"
 msgid "The media needs a field that can't be filled in here."
 msgstr "Das Medium benötigt ein Feld, das hier nicht ausgefüllt werden kann."
+
+msgctxt "clipboardUploadNoFields"
+msgid "Nothing to fill in."
+msgstr "Keine Angaben nötig."
+
+msgctxt "clipboardUploadOneFile"
+msgid "1 file"
+msgstr "1 Datei"
 
 msgctxt "clipboardUploadRetry"
 msgid "Try again"

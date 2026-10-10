@@ -26,106 +26,130 @@
         />
       </div>
     </PanelSection>
-    <PanelSection
-      v-for="(item, index) in uploads.items"
-      :key="index"
-      :title="item.file.name"
-      padded
-      data-test="clipboard-upload-item"
-      :data-test-status="item.status"
-    >
-      <template #post-title>
-        <StatusIcon :status="getStatus(item)" />
-        <span class="text-sm text-mono-500">
-          {{ formatSize(item.file.size) }}
-        </span>
-      </template>
-      <div class="flex gap-15">
-        <img
-          v-if="thumbnails[index]"
-          :src="thumbnails[index]"
-          alt=""
-          class="size-80 shrink-0 object-contain bg-mono-100"
-        />
-        <div
-          v-else
-          class="size-80 shrink-0 flex items-center justify-center bg-mono-100 text-mono-400"
+    <PanelSection :title="filesTitle">
+      <ul>
+        <li
+          v-for="(item, index) in uploads.items"
+          :key="index"
+          class="flex gap-15 p-panel-gap border-b border-b-mono-300 last:border-b-0"
+          data-test="clipboard-upload-item"
+          :data-test-status="item.status"
         >
-          <Icon name="bk_mdi_attach_file" class="size-30" />
-        </div>
-        <div class="flex-1 min-w-0">
+          <img
+            v-if="thumbnails[index]"
+            :src="thumbnails[index]"
+            alt=""
+            class="w-[160px] h-120 shrink-0 object-contain bg-mono-200"
+            @error="thumbnails[index] = null"
+          />
           <div
-            v-if="item.status === 'queued' || item.status === 'uploading'"
-            class="h-5 mt-10 bg-mono-200 rounded-full overflow-hidden"
+            v-else
+            class="w-[160px] h-120 shrink-0 flex flex-col items-center justify-center gap-5 bg-mono-200 text-mono-500"
           >
-            <div
-              class="h-full bg-accent-700"
-              :style="{ width: item.progress * 100 + '%' }"
-            />
-          </div>
-          <InfoBox
-            v-else-if="item.status === 'failed'"
-            color="red"
-            icon="bk_mdi_error"
-            small
-          >
-            <p>
-              {{
-                item.error ||
-                $t('clipboardUploadFailed', "The file couldn't be uploaded.")
-              }}
-            </p>
-            <button
-              class="bk-button bk-is-small mt-10"
-              @click="uploads.retry(item)"
+            <Icon name="bk_mdi_docs" class="size-40" />
+            <span
+              class="text-xs font-bold uppercase tracking-wide text-mono-600"
             >
-              {{ $t('clipboardUploadRetry', 'Try again') }}
-            </button>
-          </InfoBox>
-          <p v-else-if="item.duplicate !== null">
-            {{
-              $t(
-                'clipboardUploadDuplicate',
-                'The file exists as the media "@label", which is added.',
-              ).replace('@label', item.duplicate)
-            }}
-          </p>
-          <p v-else-if="item.mediaId">
-            {{ $t('clipboardUploadCreated', 'The media is created.') }}
-          </p>
-          <template v-else-if="item.form">
-            <InfoBox
-              v-if="!item.form.complete"
-              color="red"
-              icon="bk_mdi_error"
-              small
-              class="mb-10"
+              {{ getExtension(item.file) }}
+            </span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-10">
+              <span class="font-semibold truncate">{{ item.file.name }}</span>
+              <span class="text-sm text-mono-500 whitespace-nowrap">
+                {{ formatSize(item.file.size) }}
+              </span>
+              <StatusIcon :status="getStatus(item)" class="ml-auto" />
+            </div>
+            <div
+              v-if="item.status === 'queued' || item.status === 'uploading'"
+              class="flex items-center gap-10 mt-8"
+            >
+              <div class="flex-1 h-5 bg-mono-200 rounded-full overflow-hidden">
+                <div
+                  class="h-full bg-accent-700"
+                  :style="{ width: item.progress * 100 + '%' }"
+                />
+              </div>
+              <span class="text-sm text-mono-500 tabular-nums">
+                {{ formatProgress(item.progress) }}
+              </span>
+            </div>
+            <div
+              v-else-if="item.status === 'failed'"
+              class="flex items-center gap-10 mt-8 text-sm text-red-dark"
+            >
+              <span>
+                {{
+                  item.error ||
+                  $t('clipboardUploadFailed', "The file couldn't be uploaded.")
+                }}
+              </span>
+              <button
+                type="button"
+                class="bk-button bk-scheme-mono bk-is-light bk-is-small ml-auto shrink-0"
+                @click="uploads.retry(item)"
+              >
+                {{ $t('clipboardUploadRetry', 'Try again') }}
+              </button>
+            </div>
+            <p
+              v-else-if="item.duplicate !== null"
+              class="mt-8 text-sm text-mono-700"
             >
               {{
                 $t(
-                  'clipboardUploadIncomplete',
-                  "The media needs a field that can't be filled in here.",
-                )
+                  'clipboardUploadDuplicate',
+                  'The file exists as the media "@label", which is added.',
+                ).replace('@label', item.duplicate)
               }}
-            </InfoBox>
-            <ConfigForm
-              v-model="item.values"
-              :config="item.form.inputs"
-              :errors="item.errors"
-            />
-            <InfoBox
-              v-for="(message, i) in item.messages"
-              :key="i"
-              color="red"
-              icon="bk_mdi_error"
-              small
-              class="mt-10"
-            >
-              {{ message }}
-            </InfoBox>
-          </template>
-        </div>
-      </div>
+            </p>
+            <p v-else-if="item.mediaId" class="mt-8 text-sm text-mono-700">
+              {{ $t('clipboardUploadCreated', 'The media is created.') }}
+            </p>
+            <template v-else-if="item.form">
+              <InfoBox
+                v-if="!item.form.complete"
+                color="red"
+                icon="bk_mdi_error"
+                small
+                class="mt-8"
+              >
+                {{
+                  $t(
+                    'clipboardUploadIncomplete',
+                    "The media needs a field that can't be filled in here.",
+                  )
+                }}
+              </InfoBox>
+              <ConfigForm
+                v-if="item.form.inputs.length"
+                v-model="item.values"
+                :config="item.form.inputs"
+                :errors="item.errors"
+                stacked
+                class="mt-8"
+              />
+              <p
+                v-else-if="item.form.complete"
+                class="mt-8 text-sm text-mono-500"
+              >
+                {{ $t('clipboardUploadNoFields', 'Nothing to fill in.') }}
+              </p>
+              <InfoBox
+                v-for="(message, i) in item.messages"
+                :key="i"
+                color="red"
+                icon="bk_mdi_error"
+                small
+                class="mt-10"
+              >
+                {{ message }}
+              </InfoBox>
+            </template>
+          </div>
+        </li>
+      </ul>
     </PanelSection>
   </DialogModal>
 </template>
@@ -172,9 +196,12 @@ const uploads = createUploads(props.files, adapter as UploadMethods)
 uploads.start()
 
 // The images' thumbnails, while the dialog is shown.
-const thumbnails = props.files.map((file) =>
+const thumbnailUrls = props.files.map((file) =>
   file.type.startsWith('image/') ? URL.createObjectURL(file) : null,
 )
+
+// A file that can't be shown as an image gets the icon instead.
+const thumbnails = ref(thumbnailUrls.slice())
 
 const isCreating = ref(false)
 
@@ -224,8 +251,31 @@ function getStatus(
   return 'pending'
 }
 
+const filesTitle = computed(() =>
+  uploads.items.length === 1
+    ? $t('clipboardUploadOneFile', '1 file')
+    : $t('clipboardUploadFileCount', '@count files').replace(
+        '@count',
+        uploads.items.length.toString(),
+      ),
+)
+
+function getExtension(file: File): string {
+  const parts = file.name.split('.')
+  return parts.length > 1 ? parts.pop()! : ''
+}
+
+function formatProgress(progress: number): string {
+  return ui.formatNumber(progress, {
+    style: 'percent',
+    maximumFractionDigits: 0,
+  })
+}
+
 function formatSize(bytes: number): string {
-  if (bytes < 1024 * 1024) {
+  if (bytes < 1024) {
+    return ui.formatNumber(bytes, { style: 'unit', unit: 'byte' })
+  } else if (bytes < 1024 * 1024) {
     return ui.formatNumber(bytes / 1024, {
       style: 'unit',
       unit: 'kilobyte',
@@ -273,6 +323,6 @@ function onCancel() {
 
 onBeforeUnmount(() => {
   uploads.abort()
-  thumbnails.forEach((url) => url && URL.revokeObjectURL(url))
+  thumbnailUrls.forEach((url) => url && URL.revokeObjectURL(url))
 })
 </script>
