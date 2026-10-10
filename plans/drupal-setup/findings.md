@@ -55,7 +55,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F52 | [A comment's label throws](#f52-a-comments-label-throws)                                                                | `paragraphs_blokkli` | low      | open       |
 | F53 | [Violations while editing come from the stored structure](#f53-violations-while-editing-come-from-the-stored-structure) | `paragraphs_blokkli` | medium   | open       |
 | F54 | [`datetime-local` options render as text fields](#f54-datetime-local-options-render-as-text-fields)                     | `paragraphs_blokkli` | low      | to verify  |
-| F55 | [The options form ignores a type's edit permission](#f55-the-options-form-ignores-a-types-edit-permission)              | `@blokkli/editor`    | medium   | to verify  |
 | F56 | [Option group labels can't be translated](#f56-option-group-labels-cant-be-translated)                                  | `@blokkli/editor`    | low      | to verify  |
 | F57 | [A failed publish shows no message](#f57-a-failed-publish-shows-no-message)                                             | both                 | medium   | to verify  |
 | F58 | [Translation rows include untranslatable fields](#f58-translation-rows-include-untranslatable-fields)                   | both                 | medium   | to verify  |
@@ -885,20 +884,6 @@ From chunk 04 (2026-09-26):
 - **Fix idea:** a `#pre_render` after the textfield's that restores the type, or
   core's `datetime` element with a value conversion; a test on the rendered
   output.
-
-## F55: The options form ignores a type's edit permission
-
-- **Found:** 2026-10-08, reading the code for chunk 16 (not reproduced).
-- **Symptom:** a user without update access to a paragraph type (e.g. a chart)
-  still sees working option controls and the chart editor for it. Drupal rejects
-  the change (`UpdateBehaviorSetting.php:67` in `paragraphs_blokkli`), so the
-  controls fail when used.
-- **Cause:** the options form's `isDisabled` only checks `state.canEdit`
-  (`src/runtime/editor/features/options/Form/index.vue:302`), and so does the
-  complex option's button (`Form/ComplexType/index.vue:34`). The edit feature
-  checks the block's `edit` permission (`features/edit/index.vue:96`).
-- **Fix idea:** disable the options of a block without the `edit` permission.
-  Needed before the demo's `restricted_editor` loses update on charts (16).
 
 ## F56: Option group labels can't be translated
 

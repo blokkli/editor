@@ -34,6 +34,7 @@
         :class="{
           'bk-is-disabled': isDisabled(plugin),
         }"
+        :data-test-disabled="isDisabled(plugin)"
         is-grouped
         @keydown.stop
         @update="setOptionValue(plugin.property, $event)"
@@ -96,6 +97,7 @@ const {
   definitions,
   blocks,
   ui,
+  permissions,
 } = useBlokkli()
 
 const props = defineProps<{
@@ -299,8 +301,31 @@ const visibleOptions = computed<OptionItem[]>(() => {
     .filter(filterInternal)
 })
 
+/**
+ * Whether the user may edit every selected block. The backend rejects option
+ * changes to a block whose type, or an ancestor's, lacks the edit permission.
+ */
+const mayEditBlocks = computed(() => {
+  if (!Array.isArray(props.uuids)) {
+    return true
+  }
+
+  return props.uuids.every((uuid) => {
+    const block = blocks.getBlock(uuid)
+    return (
+      !!block &&
+      permissions.checkBlockBundlePermission(block.bundle, 'edit') &&
+      !permissions.blockHasRestrictedAncestor(uuid)
+    )
+  })
+})
+
 function isDisabled(plugin: OptionItem) {
-  if (!state.canEdit.value || state.editMode.value === 'readonly') {
+  if (
+    !state.canEdit.value ||
+    state.editMode.value === 'readonly' ||
+    !mayEditBlocks.value
+  ) {
     return true
   }
 
