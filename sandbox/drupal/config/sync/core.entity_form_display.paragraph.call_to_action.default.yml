@@ -51,6 +51,11 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  scheduler_settings:
+    weight: 50
+    region: content
+    settings: {  }
+    third_party_settings: {  }
 hidden:
   created: true
   publish_on: true
