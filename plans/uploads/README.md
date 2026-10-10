@@ -150,7 +150,7 @@ the schema dump, then the frontend.
   prefix. A test with a real session (log in, get the token, upload) comes with
   step 5's token.
 
-### 3. Drupal: the form (done, not committed)
+### 3. Drupal: the form (done)
 
 - `MediaUploadForm` (`src/Form/MediaUploadForm.php`), a `ContentEntityForm`
   (core's `MediaForm` is internal, and adds only the author's details and a
@@ -209,24 +209,50 @@ the schema dump, then the frontend.
   describes the image type's form as complete, with the credit and the alt text;
   the name is hidden in its `media_library` form display until step 9.
 
-### 4. Drupal: creating the media
+### 4. Drupal: creating the media (done, not committed)
 
-- A GraphQL mutation, not an edit state mutation: media is shared between pages
-  and saved straight away. It takes a list of `{ fileId, values }` and the
-  language, and returns per item the media's ID or the errors
-  (`{ name, message }`).
-- Checks per item: the file is temporary and owned by the current user, and the
-  user has the media type's create access. The file is checked against the
-  source field again: its settings may have changed since the upload, and core's
-  `ImageWidget::errorElement()` (since
-  [drupal#3508822](https://www.drupal.org/project/drupal/issues/3508822)) fails
-  on a violation of the whole item, such as one of `FileValidation`.
-- Per item: `MediaUploadFormBuilder::submit()` with the language being edited
-  (the media's language). `MediaUploadForm::save()` moves the file to the
-  field's directory (`getUploadLocation()`), then saves, so an invalid item
-  moves and saves nothing.
-- Kernel tests: values set, the file moved and permanent, errors returned per
-  element, someone else's or a permanent file refused, no access refused.
+- The GraphQL mutation `pbCreateMediaFromUploads(langcode, items)`, not an edit
+  state mutation: media is shared between pages and saved straight away. An item
+  (`ParagraphsBlokkliUploadMediaInput`) is `{ type, fileId, values }`, `values`
+  keyed by the inputs' names (`MapData`), so a drop can mix images and files. It
+  returns `ParagraphsBlokkliUploadMediaResult { mediaId, errors }` per item, in
+  the same order (errors as `{ name, message }`), or null for a language the
+  site doesn't have.
+- Checks per item, shared with the query (`UploadProducerBase`): the edit
+  permission and the media type's create access ("You can't create media of this
+  type."), and a temporary file of the user ("The file is no longer available.
+  Upload it again.": cron deletes temporary files after six hours).
+- Per item, `MediaUploadFormBuilder::submit()` with the language being edited:
+  the media is created in it. It first checks the file again
+  (`MediaUploader::checkFile()`: the MIME type and the validators, as at the
+  upload). The field's allowed extensions may have changed since, and the form's
+  own check (`FileValidation`) fails in core's `ImageWidget::errorElement()`
+  (since
+  [drupal#3508822](https://www.drupal.org/project/drupal/issues/3508822)). Core
+  11.4 checks the size limit only for new files, so a changed limit doesn't
+  apply.
+- `MediaUploadForm::save()` moves the file to the field's directory
+  (`MediaUploader::moveFile()`, keeping its name), sets the moved file on the
+  media (its thumbnail and metadata read it), then saves: an invalid item moves
+  nothing. The save makes the file permanent; if it fails, the moved file stays
+  temporary and cron deletes it.
+- An item whose save fails with an exception gets "The media couldn't be
+  created.", and the exception is logged; the other items are still created. The
+  messages of the submission are removed even then.
+- The builder builds and submits the form in its own render context. Replacing
+  the upload directory's tokens (core's default is
+  `[date:custom:Y]-[date:custom:m]`) rendered max-age 0 into the GraphQL
+  controller's context, which a cacheable response refuses with a
+  `LogicException`. This fixes step 3's query too. The dev site's image
+  directory has no tokens (`media/images`), so it didn't show there.
+- `MediaUploader`'s own messages ("The extension is not allowed.") are
+  translatable.
+- Kernel tests: `MediaUploadFormTest` (the file moved and permanent, the
+  thumbnail is the moved file, a file the field no longer allows, nothing
+  rendered into the caller's render context, a failing save) and
+  `CreateMediaFromUploadsTest` (the media's language, errors per item, an item
+  without values, a failing item, refused items, an unknown language).
+  `UploadTestTrait` creates the uploads.
 
 ### 5. Drupal: the clipboard config and the token
 
@@ -294,6 +320,7 @@ the schema dump, then the frontend.
 - `uploadFile`: `XMLHttpRequest` with the token, `upload.onprogress`, aborted
   through the signal.
 - `getUploadForm`: the query, mapped with `mapPluginConfigInputs`.
+- `createMediaFromUploads`: the mutation, in the language being edited.
 - `addBlocksFromUploads`: `pbAddEntityReferenceMultiple`.
 - `clipboardMapBundle` leaves out media types that can't be uploaded.
 
