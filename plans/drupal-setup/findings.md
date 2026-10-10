@@ -37,12 +37,12 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F31 | [The "add translation" dialog has no language](#f31-the-add-translation-dialog-has-no-language)                         | `@blokkli/editor`    | low      | open       |
 | F32 | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                     | `paragraphs_blokkli` | medium   | open       |
 | F33 | [Transform plugins don't get the language](#f33-transform-plugins-dont-get-the-language)                                | both                 | low      | workaround |
-| F34 | [The table of contents links to hidden nested headings](#f34-the-table-of-contents-links-to-hidden-nested-headings)     | `@blokkli/editor`    | low      | to verify  |
+| F34 | [The table of contents links to hidden nested headings](#f34-the-table-of-contents-links-to-hidden-nested-headings)     | `@blokkli/editor`    | low      | open       |
 | F35 | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)    | `@blokkli/editor`    | low      | open       |
 | F36 | [The `translations` option ignores English](#f36-the-translations-option-ignores-english)                               | `@blokkli/editor`    | low      | workaround |
 | F37 | [The iframe height editor isn't translated](#f37-the-iframe-height-editor-isnt-translated)                              | `@blokkli/editor`    | low      | open       |
 | F38 | [Editors can't view paragraph types](#f38-editors-cant-view-paragraph-types)                                            | `paragraphs_blokkli` | high     | workaround |
-| F39 | [The editor ignores `create_comments`](#f39-the-editor-ignores-create_comments)                                         | `@blokkli/editor`    | low      | to verify  |
+| F39 | [The editor ignores `create_comments`](#f39-the-editor-ignores-create_comments)                                         | `@blokkli/editor`    | low      | open       |
 | F40 | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                 | `paragraphs_blokkli` | low      | open       |
 | F41 | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                             | `paragraphs_blokkli` | low      | open       |
 | F42 | [Uploads skip media create access](#f42-uploads-skip-media-create-access)                                               | `paragraphs_blokkli` | medium   | open       |
@@ -54,9 +54,11 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                     | `texts`              | low      | open       |
 | F52 | [A comment's label throws](#f52-a-comments-label-throws)                                                                | `paragraphs_blokkli` | low      | open       |
 | F53 | [Violations while editing come from the stored structure](#f53-violations-while-editing-come-from-the-stored-structure) | `paragraphs_blokkli` | medium   | open       |
-| F54 | [`datetime-local` options render as text fields](#f54-datetime-local-options-render-as-text-fields)                     | `paragraphs_blokkli` | low      | to verify  |
-| F56 | [Option group labels can't be translated](#f56-option-group-labels-cant-be-translated)                                  | `@blokkli/editor`    | low      | to verify  |
-| F57 | [A failed publish shows no message](#f57-a-failed-publish-shows-no-message)                                             | both                 | medium   | to verify  |
+| F54 | [`datetime-local` options render as text fields](#f54-datetime-local-options-render-as-text-fields)                     | `paragraphs_blokkli` | low      | open       |
+| F56 | [Option group labels can't be translated](#f56-option-group-labels-cant-be-translated)                                  | `@blokkli/editor`    | low      | workaround |
+| F57 | [A failed publish shows no message](#f57-a-failed-publish-shows-no-message)                                             | both                 | medium   | open       |
+| F59 | [A reviewer keeps getting no edit state](#f59-a-reviewer-keeps-getting-no-edit-state)                                   | `paragraphs_blokkli` | medium   | open       |
+| F60 | [Without an edit state, the editor stops working](#f60-without-an-edit-state-the-editor-stops-working)                  | `@blokkli/editor`    | medium   | open       |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -607,8 +609,10 @@ From chunk 04 (2026-09-26):
 ## F34: The table of contents links to hidden nested headings
 
 - **Found:** 2026-09-27, 13i, reading the code while building the table of
-  contents. Not reproduced in the browser: the demo has no nested title limited
-  to some languages.
+  contents.
+- **Reproduced:** 2026-10-10, in a sandbox. On the English "Tax return", a title
+  limited to German and a German-only title in the columns are both in the
+  sidebar's table of contents; neither is rendered.
 - **Symptom:** a title inside a section, limited to German with "Visible
   languages", still gets a link in the English table of contents. The title
   isn't rendered, so the link leads nowhere.
@@ -693,11 +697,13 @@ From chunk 04 (2026-09-26):
 
 ## F39: The editor ignores `create_comments`
 
-- **Found:** 2026-09-28, 13h, reading the code. Not reproduced: every demo role
-  that sees comments may post them.
+- **Found:** 2026-09-28, 13h, reading the code.
+- **Reproduced:** 2026-10-10, in a sandbox, as the reviewer without
+  `post blokkli comments`.
 - **Symptom:** a user with `view blokkli comments` but without
-  `post blokkli comments` gets the add and reply forms; posting fails without a
-  message.
+  `post blokkli comments` gets the add and reply forms. Posting fails without a
+  message: `pbAddComment` returns `action: null`, the form closes as if it had
+  worked, and the comment is lost.
 - **Cause:** the adapter loads `create_comments`
   (`src/modules/drupal/graphql/base/query.pbConfig.graphql`, in this
   repository), but nothing in `src/runtime/editor/features/comments` checks it.
@@ -872,7 +878,10 @@ From chunk 04 (2026-09-26):
 
 ## F54: `datetime-local` options render as text fields
 
-- **Found:** 2026-10-08, reading the code for chunk 16 (not reproduced).
+- **Found:** 2026-10-08, reading the code for chunk 16.
+- **Reproduced:** 2026-10-10: the call to action's behavior form, rendered in a
+  sandbox, has `<input type="text" name="date" size="60" maxlength="128">` for
+  the option "Date".
 - **Symptom:** in Drupal's paragraph form (the Behavior tab), a `datetime-local`
   option is a plain text field: no picker, its min and max are ignored, and its
   format isn't validated.
@@ -890,6 +899,9 @@ From chunk 04 (2026-09-26):
 ## F56: Option group labels can't be translated
 
 - **Found:** 2026-10-08, reading the code for chunk 16.
+- **Checked:** 2026-10-10. Its type is `group?: string`, while `label` is a
+  `DefinitionString` (`src/global/types/blockOptions.ts`, in this repository);
+  nothing translates it on the way to the form.
 - **Symptom:** an option's `group` is shown as written, in every language.
 - **Cause:** `group` is a plain string, used as the group's key and its label
   (`src/runtime/editor/features/options/Form/index.vue` `optionGroups`,
@@ -902,7 +914,10 @@ From chunk 04 (2026-09-26):
 
 ## F57: A failed publish shows no message
 
-- **Found:** 2026-10-08, reading the code for chunk 16 (not reproduced).
+- **Found:** 2026-10-08, reading the code for chunk 16.
+- **Reproduced:** 2026-10-10, in a sandbox, publishing while a drush process
+  held the edit state's lock. Drupal logged the `LockAcquiringException` and
+  answered `errors: ["Internal server error"]` with `action: null`.
 - **Symptom:** when publishing fails for any reason other than validation (e.g.
   the entity can't be saved, or the lock can't be acquired), the publish dialog
   shows "Cannot publish: validation errors" without an item.
@@ -913,7 +928,43 @@ From chunk 04 (2026-09-26):
     at `3f07f6e`); every other exception becomes a GraphQL error.
   - nuxt-graphql-middleware returns `{ data, errors }` without rejecting, and
     the Drupal adapter's `mapMutation` ignores `errors`
-    (`src/modules/drupal/runtime/adapter/index.ts:476-488`). Only a failed
+    (`src/modules/drupal/runtime/adapter/index.ts:486-498`). Only a failed
     request reaches the dialog's catch ("An unexpected error happened.").
 - **Fix idea:** the producer returns other exceptions' messages in `errors`, and
   the adapter turns GraphQL errors into a failed result.
+
+## F59: A reviewer keeps getting no edit state
+
+- **Found:** 2026-10-10, in a sandbox, while verifying F39.
+- **Symptom:** a user who can't create edit states (the reviewer) opens the
+  editor of a page that has none, and gets no state, as expected. Once someone
+  who can edit opens the page and so creates the edit state, the reviewer still
+  gets `state: null`, until the caches are cleared (then F60).
+- **Cause:** `LoadEditState::resolve()`
+  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/LoadEditState.php`
+  at `308bf53`) caches the `NULL` with the host's tag
+  (`paragraphs_blokkli_host:<uuid>`) and the create access. Creating an edit
+  state doesn't invalidate that tag: core invalidates
+  `getCacheTagsToInvalidate()`, which has it, only on an update
+  (`EntityBase::invalidateTagsOnSave()`); a new entity invalidates its list
+  tags.
+- **Fix idea:** add the edit state's list cache tag to the `NULL` result, or
+  invalidate the host's tag when an edit state is created.
+
+## F60: Without an edit state, the editor stops working
+
+- **Found:** 2026-10-10, in a sandbox, while verifying F39.
+- **Symptom:** when `pbEditState` returns `state: null` (e.g. the reviewer on a
+  page nobody has edited, or F59), the editor shows "blökkli has stopped
+  working": "Called getMappedState() before a state is available."
+- **Cause:** the analyze feature's continuous run (`runContinuous()` in
+  `src/runtime/editor/features/analyze/Main.vue`, in this repository) runs the
+  readability analyzer, which calls `fieldValue.getTextFieldValues()`
+  (`src/runtime/editor/providers/readability.ts:145`). That calls
+  `state.getMappedState()` without a guard
+  (`src/runtime/editor/providers/fieldValue.ts:371`), which throws without a
+  state (`src/runtime/editor/providers/state.ts:839`). `getRawFieldValues()` in
+  the same provider catches this case.
+- **Fix idea:** don't run the analyzers before a state has loaded, and let
+  `getTextFieldValues()` return nothing without a state, like
+  `getRawFieldValues()`.
