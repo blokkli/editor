@@ -175,6 +175,11 @@ describe('DiffApproval grouping', async () => {
       .textContent()
     expect(toolbarText).toContain('1 / 1')
 
+    // The teaser previews both values through its props mapping.
+    const teaser = page.locator(`[data-bk-uuid="${TEASER}"]`)
+    await expect.poll(() => teaser.textContent()).toContain('Merged title')
+    expect(await teaser.textContent()).toContain('Merged lead')
+
     // The scenario stores the fields one after the other.
     const lead = nextMutation(
       page,

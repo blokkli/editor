@@ -11,7 +11,7 @@ field_paragraphs:
   - type: text
     key: reading-text
     field_text: '<p>A paragraph of text.</p>'
-  # Its title and lead aren't editable in the page: no directive, no props
+  # Its title and lead have no element in the page (no directive), only a props
   # mapping.
   - type: teaser
     key: reading-teaser

@@ -53,6 +53,14 @@ const block = defineBlokkli({
       },
     },
   },
+  // NodeTeaser renders the title and lead, without an element for each, so a
+  // change to them previews through the props.
+  propsFieldMapping: {
+    title: { type: 'editable', name: 'field_title' },
+    lead: { type: 'editable', name: 'field_lead' },
+    image: { type: 'droppable', name: 'field_media' },
+    link: { type: 'droppable', name: 'field_link' },
+  },
   editor: {
     icon: 'bk_mdi_article',
     editTitle: (el) => el.querySelector('h3')?.textContent,

@@ -24,9 +24,10 @@ const TEASER = seedUuid('paragraph', 'reading-teaser')
  * fields without an inline editable surface.
  *
  * The teaser of the page "Reading" (content/nodes/reading.yml) is the fixture:
- * it renders its `field_title` and `field_lead` without the directive and
- * without `propsFieldMapping`. Discovery goes through `editableFieldConfig`,
- * and Drupal provides the raw values, so both must reach the tool.
+ * it renders its `field_title` and `field_lead` without the directive (they're
+ * only mapped to props, which registers no editable). Discovery goes through
+ * `editableFieldConfig`, and Drupal provides the raw values, so both must reach
+ * the tool.
  */
 describe('agent: get_all_page_content', async () => {
   const sandbox = workerSandbox()

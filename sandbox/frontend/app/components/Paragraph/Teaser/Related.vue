@@ -27,6 +27,13 @@ defineBlokkli({
   bundle: 'teaser',
   renderFor: [{ fieldListType: 'related' }],
   globalOptions: ['bkVisibleLanguages'],
+  // As in index.vue.
+  propsFieldMapping: {
+    title: { type: 'editable', name: 'field_title' },
+    lead: { type: 'editable', name: 'field_lead' },
+    image: { type: 'droppable', name: 'field_media' },
+    link: { type: 'droppable', name: 'field_link' },
+  },
   editor: {
     icon: 'bk_mdi_article',
     editTitle: (el) => el.querySelector('a > span')?.textContent,
