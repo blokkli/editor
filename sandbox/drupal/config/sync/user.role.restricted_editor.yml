@@ -142,7 +142,6 @@ permissions:
   - 'update paragraph content banner'
   - 'update paragraph content blokkli_fragment'
   - 'update paragraph content call_to_action'
-  - 'update paragraph content chart'
   - 'update paragraph content columns'
   - 'update paragraph content contact'
   - 'update paragraph content embed'

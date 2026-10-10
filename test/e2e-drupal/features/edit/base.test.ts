@@ -23,6 +23,9 @@ const CALL_TO_ACTION = seedUuid('paragraph', 'home-call-to-action')
 const COLUMNS = seedUuid('paragraph', 'home-columns')
 const FRAGMENT = seedUuid('paragraph', 'home-fragment')
 
+/** The chart of the page "Statistics", which Jonas may not edit. */
+const CHART = seedUuid('paragraph', 'statistics-chart')
+
 /**
  * The edit feature (`features/edit/index.vue`) decides whether the selected
  * paragraph can be edited and, on activation (click, Cmd/Ctrl+E, or
@@ -36,9 +39,8 @@ const FRAGMENT = seedUuid('paragraph', 'home-fragment')
  * We assert on the `item:edit` payload (the feature's actual output, captured
  * with `nextEvent`), the `form-overlay-edit-form` data-test, and the native
  * `disabled` state via `itemActionDisabled` — never translated copy.
- *
- * The case without edit permission stays with the mock
- * (`test/e2e/features/edit/base`) until a test user lacks one.
+ * Permissions come from the adapter's `getAllBundles()`, per user: Jonas, a
+ * `restricted_editor`, may not edit charts.
  */
 
 /**
@@ -56,30 +58,43 @@ function doubleClickBlock(page: Page, uuid: string): Promise<void> {
 }
 
 /**
- * Page lifecycle: one editor page on the front page; nothing is changed, so
- * the tests share its seeded paragraphs. `afterEach` closes the edit-form
- * overlay (test 1 leaves it open) and deselects.
+ * Page lifecycle: two editor pages, opened in parallel: Anna on the front page
+ * (`page`) and Jonas on the page "Statistics" (`denyPage`, for the test
+ * without edit permission). Nothing is changed, so the tests share their
+ * seeded paragraphs. `afterEach` closes the edit-form overlay (test 1 leaves it
+ * open) and deselects on both pages.
  */
 describe('The edit feature', async () => {
   const sandbox = workerSandbox()
   await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
+  let denyPage: Page
 
   beforeAll(async () => {
     resetSandbox(sandbox)
-    page = await openEditor(sandbox, 'Anna Keller', editorPath('/en', 'home'))
+    ;[page, denyPage] = await Promise.all([
+      openEditor(sandbox, 'Anna Keller', editorPath('/en', 'home')),
+      openEditor(
+        sandbox,
+        'Jonas Weber',
+        editorPath('/en/statistics', 'statistics'),
+      ),
+    ])
   })
 
   afterAll(async () => {
-    await page.close()
+    await Promise.all([page.close(), denyPage.close()])
   })
 
   afterEach(async () => {
     if (await formOverlay(page, 'edit-form').isVisible()) {
       await closeFormOverlay(page, 'edit-form')
     }
-    await emitEvent(page, 'select:unselect')
+    await Promise.all([
+      emitEvent(page, 'select:unselect'),
+      emitEvent(denyPage, 'select:unselect'),
+    ])
   })
 
   test('clicking edit on an editable block emits item:edit and opens the form', async () => {
@@ -111,6 +126,12 @@ describe('The edit feature', async () => {
     // selecting more than one disables it.
     await selectBlocks(page, [TEXT, CALL_TO_ACTION])
     await expect.poll(() => itemActionDisabled(page, 'edit')).toBe(true)
+  })
+
+  test('without edit permission, editing is disabled', async () => {
+    // The chart's editor is its complex option, which editing would open.
+    await selectBlock(denyPage, CHART)
+    await expect.poll(() => itemActionDisabled(denyPage, 'edit')).toBe(true)
   })
 
   test('a block type with disableEdit is not editable', async () => {

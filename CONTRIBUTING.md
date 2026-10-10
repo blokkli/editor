@@ -48,9 +48,10 @@ bun run dev          # http://localhost:3000
 5. `ddev drush uli` prints a login link for the admin. The test users log in
    with `ddev drush uli --name="Anna Keller"` (editor), `Marc Brunner` (head of
    department, reviews), `Élodie Favre` (French translator) and `Jonas Weber`
-   (restricted editor). Logged in, a page shows Drupal's toolbar and its tabs
-   (Edit, Translate…) above it; Drupal renders everything with Gin, also the
-   pages that aren't admin pages (the login, a user's page).
+   (restricted editor: no new sections, and he may not add, change or delete
+   charts). Logged in, a page shows Drupal's toolbar and its tabs (Edit,
+   Translate…) above it; Drupal renders everything with Gin, also the pages that
+   aren't admin pages (the login, a user's page).
 6. Visitors who aren't logged in get "This sandbox is private", on the dev site
    as in a sandbox. The link of "Preview (with smartphone)" lets them see that
    page. Only for them does Nuxt render on the server: to see real pages
