@@ -121,6 +121,10 @@ Traefik sends every hostname to the web container's nginx on port 80.
   `editorial` (editorial page), `page` (detail page), `news`, `event`, `office`,
   `publication`, and the config pages `footer` and `site`
   (`translatable_config_pages`). The front page is `/node/1`, an editorial page.
+- **Pasted text** (`paragraphs_blokkli.settings`, `clipboard_text_paragraphs`)
+  becomes a text or a title. The editor offers only the types whose field can
+  hold it: a text longer than a title's 255 characters becomes a text without
+  asking.
 - **Block options** are validated against
   `sandbox/drupal/blokkli-options-schema.json` (`schema_file`), which the
   frontend's build writes (`schemaOptionsPath`). After changing a block's

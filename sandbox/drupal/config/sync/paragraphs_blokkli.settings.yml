@@ -18,9 +18,11 @@ enabled_types:
   translatable_config_pages:
     - footer
     - site
-clipboard_text_paragraph:
-  bundle: text
-  field: field_text
+clipboard_text_paragraphs:
+  - bundle: text
+    field: field_text
+  - bundle: title
+    field: field_title
 hide_unpublished_paragraphs: true
 restrict_fields: false
 enabled_fields: {  }
