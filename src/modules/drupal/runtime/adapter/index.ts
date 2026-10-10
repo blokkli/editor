@@ -206,6 +206,16 @@ function mapPluginConfigInputs(
     .filter(falsy)
 }
 
+/**
+ * The length of pasted text without its markup, in characters. Parsed into an
+ * inert document, so nothing in the markup runs or loads.
+ */
+function plainTextLength(html: string): number {
+  const text = new DOMParser().parseFromString(html, 'text/html').body
+    .textContent
+  return [...text.replace(/[ \t\n\f\r]+/g, ' ').trim()].length
+}
+
 export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
   async (providedContext) => {
     if (import.meta.dev) {
@@ -1447,11 +1457,35 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             return false
           })?.possibleParagraphBundles
         } else if (e.type === 'plaintext') {
-          return config.clipboard.find((v) => {
-            return (
-              v?.__typename === 'ParagraphsBlokkliSupportedClipboardRichText'
-            )
-          })?.possibleParagraphBundles
+          const richText = config.clipboard.find(
+            (v) =>
+              v?.__typename === 'ParagraphsBlokkliSupportedClipboardRichText',
+          )
+          if (
+            richText?.__typename !==
+            'ParagraphsBlokkliSupportedClipboardRichText'
+          ) {
+            return
+          }
+          // Older versions of the module don't name the fields: every type.
+          if (!richText.paragraphs) {
+            return richText.possibleParagraphBundles
+          }
+          // The types whose field can hold the text, as a plain field gets it.
+          // A field without a maximum length holds any.
+          const length = plainTextLength(e.text)
+          return richText.paragraphs
+            .filter(({ bundle, field }) => {
+              const maxLength =
+                config.editableFieldConfig.find(
+                  (v) =>
+                    v.entityType === 'paragraph' &&
+                    v.entityBundle === bundle &&
+                    v.name === field,
+                )?.maxLength ?? -1
+              return maxLength < 0 || length <= maxLength
+            })
+            .map((v) => v.bundle)
         } else if (e.type === 'image') {
           return config.clipboard.find((v) => {
             return v?.__typename === 'ParagraphsBlokkliSupportedClipboardImage'
@@ -1473,6 +1507,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           hostUuid: e.host.uuid,
           hostFieldName: e.host.fieldName,
           afterUuid: e.afterUuid,
+          bundle: e.blockBundle,
         }).then(mapMutation)
       } else if (e.item.type === 'image' && hasMutation('pbAddImage')) {
         return useGraphqlMutation('pbAddImage', {

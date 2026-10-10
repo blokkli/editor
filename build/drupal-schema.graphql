@@ -6507,7 +6507,7 @@ type ParagraphsBlokkliTranslationResult {
 
 ""
 type ParagraphsEditMutationState {
-  "Adds a new text paragraph."
+  "Adds a new paragraph with the pasted text."
   add_clipboard_text(
     "The text."
     text: String!
@@ -6523,6 +6523,9 @@ type ParagraphsEditMutationState {
 
     "The UUID of the paragraph after which to add this one."
     afterUuid: String
+
+    "The paragraph bundle to add, one of those configured for pasted text."
+    bundle: String
   ): ParagraphsBlokkliMutationResult
 
   "Copies all paragraphs from an existing entity."
@@ -7589,6 +7592,21 @@ type ParagraphsBlokkliSupportedClipboardFile implements ParagraphsBlokkliSupport
 type ParagraphsBlokkliSupportedClipboardRichText implements ParagraphsBlokkliSupportedClipboard {
   ""
   possibleParagraphBundles: [String!]!
+
+  """
+  The paragraph bundles for pasted text, each with the field for the text. A
+  client can offer only those whose field can hold the pasted text.
+  """
+  paragraphs: [ParagraphsBlokkliClipboardTextParagraph!]!
+}
+
+"A paragraph bundle for pasted text, and the field the text is added in."
+type ParagraphsBlokkliClipboardTextParagraph {
+  ""
+  bundle: String!
+
+  ""
+  field: String!
 }
 
 ""

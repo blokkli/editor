@@ -92,8 +92,10 @@ Configure at `/admin/config/content/blokkli`:
   blökkli
 - **Media bundle for images** — Which media type to use for pasted images
 - **Media bundle for remote video** — Which media type for YouTube/Vimeo links
-- **Clipboard text paragraph** — Which paragraph type to create when pasting
-  plain text
+- **Clipboard text paragraphs** — Which paragraph types to create when pasting
+  text, each with the field for the text. The editor offers those whose field
+  can hold the pasted text, so a long text never becomes a title. A plain text
+  field gets the text without markup.
 - **Hide unpublished paragraphs** — Whether to hide unpublished paragraphs in
   view mode
 

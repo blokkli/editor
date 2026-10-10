@@ -198,7 +198,16 @@ export declare const templateEditRouteName: string|null
     addMutation('add')
     addMutation('swap')
     addMutation('rearrange')
-    addMutation('add_clipboard_text')
+    // Older versions of the module can't add a chosen paragraph type.
+    if (
+      editMutationStateFields
+        .get('add_clipboard_text')
+        ?.args.some((arg) => arg.name === 'bundle')
+    ) {
+      addGraphqlDocument('mutations/add_clipboard_text_bundle.graphql')
+    } else {
+      addMutation('add_clipboard_text')
+    }
     addMutation('add_entity_reference')
     addMutation('add_entity_reference_multiple')
     addMutation('add_file')
@@ -433,6 +442,26 @@ fragment paragraphsBlokkliPublishOptions on ParagraphsBlokkliPublishOptions {
     } else {
       addGraphqlDocument('features/publish.graphql')
     }
+
+    // Older versions of the module don't name the field of each paragraph type
+    // for pasted text.
+    const clipboardRichTextFields = [
+      'possibleParagraphBundles',
+      ...(getTypeFields('ParagraphsBlokkliSupportedClipboardRichText').has(
+        'paragraphs',
+      )
+        ? ['paragraphs { bundle field }']
+        : []),
+    ]
+
+    graphql.addDocument(
+      'blokkli:clipboardRichText',
+      `
+fragment blokkliClipboardRichText on ParagraphsBlokkliSupportedClipboardRichText {
+  ${clipboardRichTextFields.join('\n  ')}
+}
+`,
+    )
 
     // Build the fragment for the "ParagraphsBlokkliParagraphEditContext" type.
     const paragraphsBlokkliEditContextFields = [

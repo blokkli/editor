@@ -121,7 +121,7 @@ fragment paragraphsBlokkliSupportedClipboard on ParagraphsBlokkliSupportedClipbo
   }
 
   ... on ParagraphsBlokkliSupportedClipboardRichText {
-    possibleParagraphBundles
+    ...blokkliClipboardRichText
   }
 
   ... on ParagraphsBlokkliSupportedClipboardRemoteVideo {
