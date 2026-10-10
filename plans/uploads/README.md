@@ -111,7 +111,7 @@ the schema dump, then the frontend.
 - Kernel tests (`FileUploadMutationTest`): with and without the media type's
   create access, and a duplicate found by filehash.
 
-### 2. Drupal: the upload route (done, not committed)
+### 2. Drupal: the upload route (done)
 
 - `POST /paragraphs_blokkli/upload/{type}?_format=json`, `type` being `image` or
   `file`, which is also the source the media type must use.
@@ -150,36 +150,64 @@ the schema dump, then the frontend.
   prefix. A test with a real session (log in, get the token, upload) comes with
   step 5's token.
 
-### 3. Drupal: the form
+### 3. Drupal: the form (done, not committed)
 
-- A subclass of core's `MediaForm`, registered as a form handler of the media
-  entity type for an operation of its own. It uses the `media_library` form
-  display (`ContentEntityForm::init()` takes the operation as the form mode, so
-  the subclass sets the display itself), and its `save()` adds no message and no
-  redirect. Its form ID is `media_<type>_<operation>_form`, its base form ID
-  `media_form`: hooks for `media_form` and `hook_form_alter()` apply, hooks for
-  another form ID (`media_image_edit_form`) don't.
-- The entity: an unsaved media of the type, with the temporary file in its
-  source field and the name set to the source's default name (the file name), as
-  core's `AddFormBase` does. `name` is required, and an empty one fails
-  validation before `prepareSave()` would fill it in.
-- **Describing:** the form is built and processed, so `#process` and
-  `#after_build` callbacks and alter hooks run (the image widget adds its alt
-  and title only with a file). Each visible element becomes a config input:
-  `textfield` → `Text`, `textarea` → `Text` (multiline), `checkbox` →
-  `Checkbox`, `select` and `radios` → `Options`. The name is the element's
-  `#parents`, so values go back to the same place. Labels come in the page's
-  language, as other labels from Drupal. `complete` is FALSE when a visible
-  required element can't be described.
-- **Submitting:** the values are submitted through the same form
-  (`FormBuilder::submitForm()`), so `#required`, `#element_validate` (the image
-  widget's required alt text is only enforced there), hooks' validators and the
-  entity's constraints run. Errors come back per element name.
-- A GraphQL query returns the description for a temporary file (only the user's
-  own) and the media type: the config inputs and `complete`. The existing
-  `ParagraphsBlokkliConfigInput` types get no changes.
-- Kernel tests, with media types in a test module: the mapping, a required alt
-  text, someone else's file refused, no messages left in the messenger.
+- `MediaUploadForm` (`src/Form/MediaUploadForm.php`), a `ContentEntityForm`
+  (core's `MediaForm` is internal, and adds only the author's details and a
+  message), is the media entity type's form for the operation
+  `paragraphs_blokkli_upload` (`MediaUploadHooks`, `hook_entity_type_build()`).
+  `init()` sets the `media_library` form display (`ContentEntityForm::init()`
+  takes the operation as the form mode), and `form()` hides the revision log as
+  the media library does. Its form ID is
+  `media_<type>_paragraphs_blokkli_upload_form`, its base form ID `media_form`:
+  hooks for `media_form` and `hook_form_alter()` apply, hooks for another form
+  ID (`media_image_edit_form`) don't.
+- `MediaUploadFormBuilder` (service
+  `paragraphs_blokkli.media_upload_form_builder`) creates an unsaved media with
+  the temporary file in its source field and the file name as its name, as
+  core's `AddFormBase` does: an empty name fails validation before
+  `prepareSave()` would fill it in. `describe()` builds the form without input,
+  so `#process` and `#after_build` callbacks and alter hooks run (the image
+  widget adds its alt and title only with a file). Without a file (step 5), the
+  fields that come with the file are missing.
+- **Describing** (`src/Form/FormDescription.php`): each shown element (`#access`
+  and not `#disabled`) becomes a config input: `textfield` → `Text`, `textarea`
+  → `Text` (multiline), `checkbox` → `Checkbox`, `select` (one value) and
+  `radios` → `Options`. The name is the element's HTML name
+  (`field_media_image[0][alt]`). Labels, descriptions and messages become plain
+  text, in the page's language. Other input elements and formatted texts keep
+  their default values; of a file element, the children are described (alt text,
+  title, description). `complete` is FALSE when a shown required element that
+  isn't described is empty (the source field's file comes from the upload), or
+  when the form has no submit button.
+- **Submitting:** `submit()` submits the values through the same form
+  (`FormBuilder::submitForm()`) with the Save button's value, as a browser does,
+  so the button's submit handlers run (hooks add theirs there) and the form's
+  `save()` saves the media. `#required`, `#element_validate`, hooks' validators
+  and the entity's constraints run. The values also carry the file elements'
+  file IDs, which a browser sends in a hidden field. Elements the user can't see
+  keep their default values (`setProgrammedBypassAccessCheck(FALSE)`), so a
+  field a hook hides and requires doesn't fail. An error belongs to the input of
+  its element or of an element below it (a field's violations are set on the
+  widget); an error of an element that isn't described (the file) has no input.
+  The messages the submission adds, such as the errors, are removed: the user
+  would see them on their next page in Drupal.
+- The GraphQL query
+  `pbGetUploadForm(type: ParagraphsBlokkliUploadType!, fileId: String!)` returns
+  `ParagraphsBlokkliUploadForm { inputs, complete }` for one of the user's
+  temporary files, with the upload route's access (the edit permission and the
+  media type's create access). It's never cached. The existing
+  `ParagraphsBlokkliConfigInput` types are unchanged.
+- Kernel tests: `MediaUploadFormTest`, with the test module
+  `paragraphs_blokkli_upload_test`, which alters media forms as a site might
+  (hides and requires a field, disables one, requires one and validates it): the
+  mapping, incomplete forms, values saved, errors at their inputs, no messages
+  left. `UploadFormDataProducerTest`: someone else's or a permanent file
+  refused, no access refused. `TemporaryDirectoryTrait` gives each test its own
+  `temporary://`.
+- On the dev site, the query (through the GraphQL server, as an editor)
+  describes the image type's form as complete, with the credit and the alt text;
+  the name is hidden in its `media_library` form display until step 9.
 
 ### 4. Drupal: creating the media
 
@@ -188,10 +216,15 @@ the schema dump, then the frontend.
   language, and returns per item the media's ID or the errors
   (`{ name, message }`).
 - Checks per item: the file is temporary and owned by the current user, and the
-  user has the media type's create access.
-- Per item: submit the form from step 3; when it's valid, move the file to the
-  field's directory (`getUploadLocation()`), and save the media in the language
-  being edited. An invalid item saves nothing.
+  user has the media type's create access. The file is checked against the
+  source field again: its settings may have changed since the upload, and core's
+  `ImageWidget::errorElement()` (since
+  [drupal#3508822](https://www.drupal.org/project/drupal/issues/3508822)) fails
+  on a violation of the whole item, such as one of `FileValidation`.
+- Per item: `MediaUploadFormBuilder::submit()` with the language being edited
+  (the media's language). `MediaUploadForm::save()` moves the file to the
+  field's directory (`getUploadLocation()`), then saves, so an invalid item
+  moves and saves nothing.
 - Kernel tests: values set, the file moved and permanent, errors returned per
   element, someone else's or a permanent file refused, no access refused.
 
