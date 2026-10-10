@@ -23,8 +23,9 @@ import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
  * (video/URL/plaintext) — the branch a paste's pre-built items skip.
  *
  * At `dragenter` the browser exposes only the *kind* (string vs file), so a text
- * drag always maps to plaintext (`['text']` in Drupal) regardless of the
- * eventual string — the YouTube detection happens at drop. A video's oEmbed
+ * drag always maps to plaintext (`text` and `title` in Drupal) regardless of the
+ * eventual string — the YouTube detection, and which types the text fits,
+ * happen at drop. A video's oEmbed
  * requests are answered by the E2E sandboxes' video fake
  * (`blokkli_playground_test`). Assertions are locale-independent. See
  * `support/clipboard.ts` for why the drop is emitted directly rather than via
@@ -32,6 +33,8 @@ import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
  */
 
 const YOUTUBE_URL = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+/** Longer than a title's 255 characters: only a text can hold it. */
+const LONG_TEXT = `dragged text ${'A sentence of a long text. '.repeat(10)}`
 
 /**
  * Page lifecycle: one editor page shared, on the page "Blocks". Each test
@@ -83,15 +86,16 @@ describe('Native (OS) drag and drop', async () => {
   })
 
   test('dropping dragged text adds a text', async () => {
-    await nativeDragEnterText(page, 'dragged text')
+    await nativeDragEnterText(page, LONG_TEXT)
 
     // The drag knows only that it's text → the plaintext bundles.
-    expect(await draggedBundles(page)).toEqual(['text'])
+    expect(await draggedBundles(page)).toEqual(['text', 'title'])
 
     const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
+    // The drop reads the text: too long for a title, so no choice.
     await dropNativeDrag(page, {
       fieldName: 'field_paragraphs',
-      text: 'dragged text',
+      text: LONG_TEXT,
     })
 
     // Find the new paragraph by diffing uuids — selection isn't reliably
@@ -106,8 +110,8 @@ describe('Native (OS) drag and drop', async () => {
   test('dropping a dragged YouTube URL adds a video block directly (no selector)', async () => {
     await nativeDragEnterText(page, YOUTUBE_URL)
 
-    // Still just "text" at drag-enter — the URL hasn't been read yet.
-    expect(await draggedBundles(page)).toEqual(['text'])
+    // Still just text at drag-enter — the URL hasn't been read yet.
+    expect(await draggedBundles(page)).toEqual(['text', 'title'])
 
     const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
     const added = nextMutation(page, 'pbAddVideoRemote')

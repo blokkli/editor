@@ -10,7 +10,11 @@ import {
   draggedBundles,
   dropDragInto,
 } from '../../../e2e/support/clipboard'
-import { bundleSelector } from '../../../e2e/support/bundleSelector'
+import {
+  bundleSelector,
+  bundleSelectorItemIds,
+  pickBundle,
+} from '../../../e2e/support/bundleSelector'
 import { storedFieldValue } from '../../../e2e/support/editable'
 import { nextMutation } from '../../support/mutations'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
@@ -28,8 +32,10 @@ import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
  * pointer drag is covered by `add-block-drag.test.ts`, and the WebGL hit-test
  * can't be driven deterministically). See `support/clipboard.ts`.
  *
- * Drupal maps plain text to `text` only (no selector), and a YouTube URL to
- * `video`: it creates a remote video media, whose oEmbed requests the E2E
+ * Pasted text becomes a `text` or a `title` (`clipboard_text_paragraphs`): the
+ * Drupal adapter offers the types whose field can hold it, so a short text
+ * opens the selector and a long one becomes a text. A YouTube URL becomes a
+ * `video`: Drupal creates a remote video media, whose oEmbed requests the E2E
  * sandboxes' video fake answers (`blokkli_playground_test`). Assertions are
  * locale-independent (bundle machine-names, stored values, document order;
  * never translated labels). Only one paste per test: a second is swallowed by
@@ -37,13 +43,17 @@ import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
  */
 
 const MARKER = 'UNIQUE_PASTE_MARKER_123'
+/** Longer than a title's 255 characters. */
+const LONG_TEXT = `${MARKER} ${'A sentence of a long text. '.repeat(10)}`
 const YOUTUBE_URL = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
 
 /**
  * Page lifecycle: one editor page shared, on the page "Blocks". Each test
  * pastes once, waits for Drupal to add the paragraph, and finds it via
  * uuid-diff rather than `selectedUuids[0]` (a prior test's paragraph can still
- * be selected). `afterEach` emits `dragging:end` defensively.
+ * be selected). `afterEach` cancels a lingering bundle selector via Escape
+ * (which the `ArtboardTooltip` listens for via `keyPressed`) and emits
+ * `dragging:end` defensively.
  */
 describe('The clipboard feature', async () => {
   const sandbox = workerSandbox()
@@ -69,14 +79,50 @@ describe('The clipboard feature', async () => {
   })
 
   afterEach(async () => {
+    if (await bundleSelector(page).isVisible()) {
+      await page.keyboard.press('Escape')
+      await bundleSelector(page).waitFor({ state: 'hidden' })
+    }
     if (await withApp(page, (app) => app.selection.isDragging.value)) {
       await emitEvent(page, 'dragging:end')
     }
   })
 
-  test('pasting plain text adds a text carrying the pasted content', async () => {
+  test('pasting a short text opens a bundle selector with text and title', async () => {
     await pasteText(page, MARKER)
-    // Drupal maps plain text to one paragraph type: nothing to choose.
+
+    const before = await blockCount(page)
+    await dropDragInto(page, { fieldName: 'field_paragraphs' })
+
+    // Both fields can hold it, so the user is asked to choose — nothing is
+    // added until they do.
+    await bundleSelector(page).waitFor({ state: 'visible' })
+    expect((await bundleSelectorItemIds(page)).sort()).toEqual([
+      'text',
+      'title',
+    ])
+    expect(await blockCount(page)).toBe(before)
+  })
+
+  test('picking "title" creates a title carrying the pasted text', async () => {
+    await pasteText(page, MARKER)
+    const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
+    await dropDragInto(page, { fieldName: 'field_paragraphs' })
+    await bundleSelector(page).waitFor({ state: 'visible' })
+
+    const added = nextMutation(page, 'pbAddClipboardText')
+    await pickBundle(page, 'title')
+
+    // The chosen bundle drives which paragraph type is created.
+    expect(await added).toMatchObject({ bundle: 'title' })
+    const info = await blockState(page, await addedSince(uuidsBefore))
+    expect(info.bundle).toBe('title')
+    expect(info.props?.title).toBe(MARKER)
+  })
+
+  test('pasting a long text adds a text without asking', async () => {
+    await pasteText(page, LONG_TEXT)
+    // Too long for a title: only the text is offered.
     expect(await draggedBundles(page)).toEqual(['text'])
 
     const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
@@ -115,6 +161,8 @@ describe('The clipboard feature', async () => {
 
     const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
     await dropDragInto(page, { fieldName: 'field_paragraphs' })
+    await bundleSelector(page).waitFor({ state: 'visible' })
+    await pickBundle(page, 'text')
 
     const uuid = await addedSince(uuidsBefore)
     await expect
@@ -130,7 +178,7 @@ describe('The clipboard feature', async () => {
     const topBefore = await topLevelBlockUuids(page)
     const first = topBefore[0]!
 
-    await pasteText(page, MARKER)
+    await pasteText(page, LONG_TEXT)
     const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
     await dropDragInto(page, {
       fieldName: 'field_paragraphs',
