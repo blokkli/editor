@@ -157,12 +157,16 @@ const isOwn = computed(() =>
 )
 
 // Changing a comment, even one's own, needs the permission to post comments.
+// Who administers comments may change anyone's.
 const canPost = permissions.hasPermission('create_comments')
+const canAdminister = permissions.hasPermission('administer_comments')
 
-const canEdit = computed(() => canPost && isOwn.value && !!adapter.editComment)
+const canEdit = computed(
+  () => canPost && (isOwn.value || canAdminister) && !!adapter.editComment,
+)
 
 const canDelete = computed(
-  () => canPost && isOwn.value && !!adapter.deleteComment,
+  () => canPost && (isOwn.value || canAdminister) && !!adapter.deleteComment,
 )
 
 const canResolve = computed(

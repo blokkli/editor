@@ -195,8 +195,8 @@ For machine translation, see
 | `load id and name of blokkli users` | Mention other users in comments                          |
 | `transfer blokkli paragraphs`       | Copy and paste paragraphs between pages                  |
 
-Commenting needs an edit state: a user with only the review permission can
-comment on a page with pending changes, but can't create an edit state.
+A user with only the review permission comments on the changes, or on the entity
+as it is where nobody has made changes yet.
 
 ### Paragraph Types
 
@@ -223,12 +223,12 @@ the others, and the mutations refuse them. Every user who sees pages also needs
 
 ### Admin Permissions
 
-| Permission                                 | Description                       |
-| ------------------------------------------ | --------------------------------- |
-| `administer blokkli settings`              | Configure module settings         |
-| `administer paragraphs blokkli edit state` | Full admin access to edit states  |
-| `administer blokkli_comment`               | Edit and delete any comment       |
-| `administer blokkli notifications`         | Access every user's notifications |
+| Permission                                 | Description                                                               |
+| ------------------------------------------ | ------------------------------------------------------------------------- |
+| `administer blokkli settings`              | Configure module settings                                                 |
+| `administer paragraphs blokkli edit state` | Full admin access to edit states                                          |
+| `administer blokkli_comment`               | Everything with comments: see, post, resolve, edit and delete any comment |
+| `administer blokkli notifications`         | Access every user's notifications                                         |
 
 ## Drupal Submodules
 

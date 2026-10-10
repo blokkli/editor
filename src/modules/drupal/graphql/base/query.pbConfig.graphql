@@ -18,6 +18,7 @@ fragment paragraphsBlokkliCurrentUser on ParagraphsBlokkliUser {
 
   create_comments: hasPermission(permission: "post blokkli comments")
   view_comments: hasPermission(permission: "view blokkli comments")
+  administer_comments: hasPermission(permission: "administer blokkli_comment")
   use_agent: hasPermission(permission: "use paragraphs blokkli agent")
   manage_agent_conversations: hasPermission(
     permission: "manage all blokkli agent conversations"

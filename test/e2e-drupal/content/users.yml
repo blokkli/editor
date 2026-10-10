@@ -53,6 +53,16 @@
   preferred_admin_langcode: en
   status: true
 
+# A reviewer whose only comment permission is to administer them. The role comes
+# from the test module blokkli_playground_test.
+- key: david
+  name: David Meier
+  mail: david.meier@example.com
+  roles: [comment_administrator]
+  preferred_langcode: en
+  preferred_admin_langcode: en
+  status: true
+
 # Her account is deleted after seeding: her comment on the page "Feedback"
 # (comments.yml) has no author.
 - key: nora

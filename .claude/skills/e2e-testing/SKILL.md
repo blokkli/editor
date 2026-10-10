@@ -244,10 +244,12 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
 - **Users** (`content/users.yml`, typed as `TestUser`): Anna Keller and Lea
   Steiner (`content_editor`), Marc Brunner (`reviewer`), Élodie Favre
   (`translator`), Jonas Weber (`restricted_editor`), Sara Gerber
-  (`comment_reader`: a reviewer who may read comments but not post them; the
-  role comes from the test module), all with an English UI. Whoever opens a
-  node's editor first owns its edit state; another user gets a read-only editor.
-  Test permissions with users of other roles: there are no permission overrides.
+  (`comment_reader`: a reviewer who may read comments but not post them) and
+  David Meier (`comment_administrator`: a reviewer who administers comments,
+  without the permissions to view or post them); these two roles come from the
+  test module. All have an English UI. Whoever opens a node's editor first owns
+  its edit state; another user gets a read-only editor. Test permissions with
+  users of other roles: there are no permission overrides.
 - **Drupal's names:** fields are `field_paragraphs`, `field_text`, …; bundles
   are the paragraph types.
 - **Harmless choices:** a test that would run "whatever comes first" (the

@@ -104,6 +104,7 @@ const PERMISSION_FIELDS: Record<
   edit_library_item: 'edit_library_item',
   create_comments: 'create_comments',
   view_comments: 'view_comments',
+  administer_comments: 'administer_comments',
   use_agent: 'use_agent',
   manage_agent_conversations: 'manage_agent_conversations',
   list_users: 'list_users',
@@ -113,7 +114,7 @@ const PERMISSION_FIELDS: Record<
 function mapUserPermissions(
   user: ParagraphsBlokkliCurrentUserFragment,
 ): UserPermissions[] {
-  return (
+  const permissions = (
     Object.entries(PERMISSION_FIELDS) as [
       UserPermissions,
       keyof ParagraphsBlokkliCurrentUserFragment,
@@ -121,6 +122,13 @@ function mapUserPermissions(
   )
     .filter(([, field]) => user[field] === true)
     .map(([permission]) => permission)
+
+  // Drupal's "administer blokkli_comment" allows everything with comments.
+  if (permissions.includes('administer_comments')) {
+    permissions.push('view_comments', 'create_comments')
+  }
+
+  return [...new Set(permissions)]
 }
 
 function valueToFilterString(v: unknown): string {

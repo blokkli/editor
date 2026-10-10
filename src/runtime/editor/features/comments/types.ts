@@ -78,5 +78,6 @@ declare module '#blokkli/editor/types/permissions' {
   interface UserPermissionMap {
     create_comments: 'Post comments.'
     view_comments: 'Access comments.'
+    administer_comments: 'Edit and delete any comment.'
   }
 }
