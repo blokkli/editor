@@ -37,7 +37,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F31 | [The "add translation" dialog has no language](#f31-the-add-translation-dialog-has-no-language)                                         | `@blokkli/editor`    | low      | open       |
 | F32 | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                                     | `paragraphs_blokkli` | medium   | open       |
 | F33 | [Transform plugins don't get the language](#f33-transform-plugins-dont-get-the-language)                                                | both                 | low      | workaround |
-| F34 | [The table of contents links to hidden nested headings](#f34-the-table-of-contents-links-to-hidden-nested-headings)                     | `@blokkli/editor`    | low      | open       |
 | F35 | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)                    | `@blokkli/editor`    | low      | open       |
 | F36 | [The `translations` option ignores English](#f36-the-translations-option-ignores-english)                                               | `@blokkli/editor`    | low      | workaround |
 | F37 | [The iframe height editor isn't translated](#f37-the-iframe-height-editor-isnt-translated)                                              | `@blokkli/editor`    | low      | open       |
@@ -603,30 +602,6 @@ From chunk 04 (2026-09-26):
   content language from the request, which has the language's prefix.
 - **Fix idea:** a `langcode` argument on the `transform` field, passed to
   `transform()` (or set on the mutation context).
-
-## F34: The table of contents links to hidden nested headings
-
-- **Found:** 2026-09-27, 13i, reading the code while building the table of
-  contents.
-- **Reproduced:** 2026-10-10, in a sandbox. On the English "Tax return", a title
-  limited to German and a German-only title in the columns are both in the
-  sidebar's table of contents; neither is rendered.
-- **Symptom:** a title inside a section, limited to German with "Visible
-  languages", still gets a link in the English table of contents. The title
-  isn't rendered, so the link leads nowhere.
-- **Cause:** `queryBlocks()` starts from the field's list, which `BlokkliField`
-  filters by visibility (`src/runtime/components/BlokkliField.vue:282`, in this
-  repository), but walks nested paragraphs from their raw props
-  (`src/runtime/composables/useBlokkliHelper.ts:105`). `BlokkliTableOfContents`
-  then only skips "Hidden globally"
-  (`src/modules/table-of-contents/runtime/components/BlokkliTableOfContents/index.vue:67`).
-- **With a passed list** (`queryBlocks()`'s second argument,
-  `BlokkliTableOfContents`'s `list` prop, as in the detail page's sidebar), the
-  top-level blocks aren't filtered either, and while editing they're the saved
-  ones. See the TODO in `BlokkliTableOfContents`.
-- **Fix idea:** check `isVisibleByOptions()` with the provider's language, and
-  `isVisible`, for nested paragraphs in `walkBlocks()`, so that every
-  `queryBlocks()` caller gets what's rendered.
 
 ## F35: A data source's colour overrides apply to one language
 

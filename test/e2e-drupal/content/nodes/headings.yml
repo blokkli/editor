@@ -1,0 +1,26 @@
+# Titles for the detail page's table of contents, at /en/headings and
+# /de/titel. In document order: a title for everyone, one limited to German
+# ("Visible languages"), then the columns: a title for everyone on the left,
+# one limited to German on the right.
+key: headings
+type: page
+title: { en: Headings, de: Titel }
+field_paragraphs:
+  - type: title
+    field_title: { en: For everyone, de: Für alle }
+  - type: title
+    options: { bkVisibleLanguages: de }
+    field_title: { en: Only in German, de: Nur auf Deutsch }
+  - type: columns
+    field_left:
+      - type: title
+        field_title:
+          { en: For everyone in the columns, de: Für alle in den Spalten }
+    field_right:
+      - type: title
+        options: { bkVisibleLanguages: de }
+        field_title:
+          {
+            en: Only in German in the columns,
+            de: Nur auf Deutsch in den Spalten,
+          }

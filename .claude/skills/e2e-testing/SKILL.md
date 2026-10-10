@@ -186,6 +186,8 @@ matches either; assert exact: `getAttribute === 'true'`.
   — logs the user in, pre-dismisses the `agent`/`tour` popups, always gives the
   agent a mock script (default `[]`; `[{ type: 'restore' }]` to test the restore
   of a conversation), waits for the editor.
+- `openPage(sandbox, user, path)` — logs the user in and opens the path outside
+  the editor, e.g. to check what visitors see.
 - `editorPath('/en/blocks', 'blocks')` — a seeded node's path in the editor;
   `BLOCKS_EDITOR_PATH` is that one. `support/sandbox.ts` has the reset, the
   login path and `seedUuid()`.

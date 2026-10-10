@@ -10,6 +10,7 @@
       v-if="withContact(links).length > 1"
       :aria-label="label"
       class="flex flex-col"
+      data-test="table-of-contents"
     >
       <h2 class="border-b border-ink pb-2.5 text-label text-muted uppercase">
         {{ label }}
@@ -19,6 +20,7 @@
           <a
             :href="`#${link.id}`"
             class="block py-2 text-ink hover:text-primary"
+            data-test="table-of-contents-link"
           >
             {{ link.label }}
           </a>
@@ -38,9 +40,10 @@ import type { NodePageFragment } from '#graphql-operations'
 // of the title paragraphs in its main field, nested ones included, unless
 // their option "In the table of contents" is off, and to the contact after
 // them; from two links. The headings get their ids from their anchor option or
-// title (anchorId()).
+// title (anchorId()). Headings hidden in the page's language aren't linked.
 // The sidebar is another field, so the page passes the main field's list:
-// while editing, it shows the saved headings (see BlokkliTableOfContents).
+// while editing, it shows the saved top-level headings (see
+// BlokkliTableOfContents).
 const props = defineProps<{
   list: NodePageFragment['paragraphs']
   contact?: BlokkliTableOfContentsLink | null

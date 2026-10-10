@@ -14,9 +14,12 @@ import type { fromLibraryBlockBundle } from '#blokkli-build/config'
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import type { FieldListItem } from '#blokkli/types'
 import { falsy } from '#blokkli/helpers'
-import { getRuntimeOptions } from '#blokkli/helpers/runtimeHelpers'
-import { computed, useBlokkliHelper } from '#imports'
-import { BK_HIDDEN_GLOBALLY } from './../../../../../global/constants'
+import {
+  getRuntimeOptions,
+  isVisibleByOptions,
+} from '#blokkli/helpers/runtimeHelpers'
+import { INJECT_PROVIDER_CONTEXT } from '#blokkli/helpers/injections'
+import { computed, inject, useBlokkliHelper } from '#imports'
 import type { BlokkliTableOfContentsLink } from './../../types'
 
 const props = defineProps<{
@@ -53,12 +56,12 @@ defineSlots<{
 }>()
 
 const { queryBlocks } = useBlokkliHelper()
+const providerEntity = inject(INJECT_PROVIDER_CONTEXT, null)
 
 // @todo: A passed list is what the page received, not what <BlokkliField>
 // renders: while editing, the edit state's changes to the field's top-level
-// blocks are missing, and its hidden top-level blocks (e.g. with "Visible
-// languages") are included. Take a field name instead, and resolve that
-// field's list from the provider the way <BlokkliField> does.
+// blocks are missing. Take a field name instead, and resolve that field's list
+// from the provider the way <BlokkliField> does.
 const items = queryBlocks(
   props.bundles,
   () => props.list as FieldListItemTyped[] | undefined,
@@ -80,12 +83,9 @@ const links = computed<BlokkliTableOfContentsLink[]>(() => {
           }
         }
 
-        const hiddenGlobally = (options as any)[BK_HIDDEN_GLOBALLY]
-        if (hiddenGlobally) {
-          return false
-        }
-
-        return true
+        // Skip blocks hidden globally or in the language, also while editing,
+        // where they're rendered muted.
+        return isVisibleByOptions(item, providerEntity?.value.language)
       }
     })
     .map(props.mapItem)

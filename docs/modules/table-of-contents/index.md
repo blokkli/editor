@@ -115,9 +115,8 @@ field's list:
 </template>
 ```
 
-The list is used as it is. While editing, the table of contents doesn't show the
-changes to the field's top-level blocks until they're published, and top-level
-blocks hidden in the current language ("Visible languages") are included.
+While editing, the table of contents doesn't show the changes to the field's
+top-level blocks until they're published.
 
 ## Slot
 
@@ -132,7 +131,9 @@ blocks hidden in the current language ("Visible languages") are included.
 - With `optionName` set, only blocks whose corresponding option is truthy are
   included — letting editors opt individual blocks in or out (e.g. a
   `showInMenu` checkbox option on the block).
-- Globally hidden blocks are always excluded.
+- Hidden blocks are always excluded: hidden globally, or not visible in the
+  page's language ("Visible languages"), nested ones included. Also while
+  editing, where the editor shows them muted.
 - Blocks where `mapItem` returns `null` are dropped.
 
 The type alias `#blokkli/table-of-contents` exports `BlokkliTableOfContentsLink`

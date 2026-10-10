@@ -76,6 +76,17 @@ export async function openEditor(
   return page
 }
 
+/** Logs the user into the sandbox, then opens the path outside the editor. */
+export async function openPage(
+  sandbox: string,
+  user: TestUser,
+  path: string,
+): Promise<Page> {
+  const page = await createPage(undefined, { ignoreHTTPSErrors: true })
+  await page.goto(url(loginPath(sandbox, user, path)))
+  return page
+}
+
 /**
  * Wait until the editor is mounted and the full-screen init/loading overlay
  * (`data-test="init-overlay"`) has detached. `openEditor` already does this

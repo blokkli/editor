@@ -2,6 +2,7 @@ import {
   INJECT_EDIT_CONTEXT,
   INJECT_MUTATED_FIELDS_MAP,
   INJECT_PROVIDER_BLOCKS,
+  INJECT_PROVIDER_CONTEXT,
 } from '#blokkli/helpers/injections'
 import {
   inject,
@@ -14,7 +15,10 @@ import {
 import type { MaybeRefOrGetter } from 'vue'
 import { FIELD_MAPPING } from '#blokkli-build/runtime-options'
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
-import { getActualBlock } from '#blokkli/helpers/runtimeHelpers'
+import {
+  getActualBlock,
+  isVisibleByOptions,
+} from '#blokkli/helpers/runtimeHelpers'
 import type { MutatedField } from '#blokkli/editor/types/state'
 import type { fromLibraryBlockBundle } from '#blokkli-build/config'
 
@@ -50,6 +54,10 @@ type UseBlokkliHelper = {
  * Walks an array of field list items and pushes the ones that match the
  * callback into matches.
  *
+ * Outside the editor, it skips the blocks <BlokkliField> doesn't render
+ * (unpublished, hidden globally, not visible in the language). While editing,
+ * <BlokkliField> renders them all.
+ *
  * @param matches - The items that match the callback.
  * @param callback - The method called for every item. If it returns false, its not included and its children are ignored.
  */
@@ -57,6 +65,7 @@ function walkBlocks(
   matches: FieldListItemTyped[],
   callback: (item: FieldListItemTyped) => CallbackResult,
   mutatedOptions: Record<string, any>,
+  language: string | undefined,
   mutatedFieldsMap?: Record<string, MutatedField | undefined> | null,
   list?: Array<
     FieldListItemTyped | null | undefined | object | string | number | boolean
@@ -72,6 +81,13 @@ function walkBlocks(
 
     // Make sure we're actually dealing with the correct object type, in case field mapping is wrong.
     if (!('bundle' in item) || !('uuid' in item)) continue
+
+    if (
+      !mutatedFieldsMap &&
+      !(item.isVisible && isVisibleByOptions(item, language))
+    ) {
+      continue
+    }
 
     // This handles 'from_library' blocks and returns the reusable block with
     // its options merged.
@@ -121,6 +137,7 @@ function walkBlocks(
         matches,
         callback,
         mutatedOptions,
+        language,
         mutatedFieldsMap,
         valueAsArray,
       )
@@ -130,6 +147,7 @@ function walkBlocks(
 
 export function useBlokkliHelper(): UseBlokkliHelper {
   const rootBlocks = inject(INJECT_PROVIDER_BLOCKS, null)
+  const providerEntity = inject(INJECT_PROVIDER_CONTEXT, null)
 
   const editContext = inject(INJECT_EDIT_CONTEXT, null)
   const mutatedOptions = ref<Record<string, any>>({})
@@ -179,7 +197,14 @@ export function useBlokkliHelper(): UseBlokkliHelper {
         return []
       }
 
-      walkBlocks(matches, callback, mutatedOptions.value, mutatedFields, list)
+      walkBlocks(
+        matches,
+        callback,
+        mutatedOptions.value,
+        providerEntity?.value.language,
+        mutatedFields,
+        list,
+      )
 
       return matches
     })
