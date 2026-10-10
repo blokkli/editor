@@ -92,7 +92,7 @@ form's validation applies; the `#states` condition isn't described (see
 Drupal first (`sandbox/drupal/paragraphs_blokkli`, committed by the user), then
 the schema dump, then the frontend.
 
-### 1. Drupal: the groundwork (done, not committed)
+### 1. Drupal: the groundwork (done)
 
 - `MediaUploader` (`src/MediaUploader.php`) holds what `FileUploadMutationBase`
   did with the file: the source field check, the duplicate search (filehash,
@@ -111,33 +111,44 @@ the schema dump, then the frontend.
 - Kernel tests (`FileUploadMutationTest`): with and without the media type's
   create access, and a duplicate found by filehash.
 
-### 2. Drupal: the upload route
+### 2. Drupal: the upload route (done, not committed)
 
-- `POST /paragraphs_blokkli/upload/{type}`, `type` being `image` or `file`; the
-  server resolves the media type from blökkli's settings
-  (`getMediaBundleImage()`, `getMediaBundleFile()`). The adapter builds the URL
-  with the language prefix, as `buildFormUrl` does.
-- Access: `edit paragraphs blokkli edit state`, the media type's create access,
-  and a CSRF token in the `X-CSRF-Token` header (`_csrf_request_header_token`,
-  token key `CsrfRequestHeaderAccessCheck::TOKEN_KEY`). `/session/token` isn't
-  routed to Drupal, so GraphQL hands out the token (step 5).
+- `POST /paragraphs_blokkli/upload/{type}?_format=json`, `type` being `image` or
+  `file`, which is also the source the media type must use.
+  `ParagraphsBlokkliConfig::getUploadMediaBundle()` resolves the media type from
+  blökkli's settings. The adapter builds the URL with the language prefix, as
+  `buildFormUrl` does. With `_format: json`, errors come back as JSON
+  (`{ message }`).
+- Access: `edit paragraphs blokkli edit state`, the media type's create access
+  (a type without a media type is a 403), and a CSRF token in the `X-CSRF-Token`
+  header (`_csrf_request_header_token`, token key
+  `CsrfRequestHeaderAccessCheck::TOKEN_KEY`). `/session/token` isn't routed to
+  Drupal, so GraphQL hands out the token (step 5).
 - The body: the raw file, `Content-Type: application/octet-stream`, the name in
   `Content-Disposition: file; filename="…"`, percent-encoded (an
   `XMLHttpRequest` header can't carry most non-Latin-1 characters, and core's
   parser rejects `filename*`), decoded after
   `ContentDispositionFilenameParser::parseFilename()`.
-- `InputStreamFileWriter` writes the body to a temporary file; the duplicate
-  search runs on it; then `FileUploadHandler` validates it and creates a
-  temporary file entity owned by the user, in `temporary://`.
-- The response is JSON: `{ fileId }`, or `{ media: { id, label } }` for a
-  duplicate; errors are 403, 404, and 422 with the validation messages.
+- `UploadController` copies the body (`$request->getContent(TRUE)`, not
+  `InputStreamFileWriter`, which only reads `php://input`) to a temporary file.
+  A body shorter than its `Content-Length` is a 413: PHP discards a body larger
+  than `post_max_size`. The duplicate search runs on the file; a duplicate the
+  user can view is returned instead. Otherwise `MediaUploader::storeFile()`
+  checks it and creates a temporary file entity owned by the user, in
+  `temporary://paragraphs_blokkli`.
+- The response: `{ fileId }`, or `{ media: { id, label } }` for a duplicate.
+  Errors: 400 (no file name), 403, 404 (another type), 413, 422 (the validation
+  messages).
 - Limits: the raw body is bound by PHP's `post_max_size` (not
   `upload_max_filesize`) and the web server's body size (ddev's nginx: 100M);
   the field's maximum size applies through the validators.
-- Kernel tests call the controller directly, without a session cookie (the CSRF
-  check only applies with one, and cookie authentication would replace the
-  test's user): access, refused extension and size, the temporary file and its
-  owner. The CSRF token is covered by E2E.
+- Kernel tests (`UploadControllerTest`) send requests through the HTTP kernel
+  without a session cookie, so the CSRF check doesn't apply; the route's CSRF
+  requirement is asserted on the route. Each test has its own temporary
+  directory: `temporary://` is otherwise the shared system one.
+- On the dev site, nginx sends the route to Drupal, with or without a language
+  prefix. A test with a real session (log in, get the token, upload) comes with
+  step 5's token.
 
 ### 3. Drupal: the form
 
