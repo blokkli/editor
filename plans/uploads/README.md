@@ -642,8 +642,7 @@ What the code says, checked on 2026-10-11:
   whether the mutation lets anyone delete any file (2026-10-11); this was the
   one case where a file of someone else could have been reached. Still wider
   than needed: a user's own temporary files from elsewhere, such as an unsaved
-  upload in a Drupal form. Closing that needs a marker per upload (offered, not
-  built).
+  upload in a Drupal form. Step 17 closed that, with a signed upload ID.
 - A consequence: core lets a user reference a file in a public directory only
   with `access content`, so an upload to a public field needs it, as in core's
   media form. Without it, the form's validation fails on the file. The kernel
@@ -761,6 +760,30 @@ Picked by the user on 2026-10-11, from "Later".
   database backend, which counts the results in a string.
 - Tests: E2E (`media-library/upload.test.ts`: a dropped file becomes a media,
   not a block; `dropFiles` in `support/uploads.ts`).
+
+### 17. A signed upload ID (done)
+
+The user's go-ahead on 2026-10-11, after asking whether `pbDeleteUploads` lets
+anyone delete any file (step 15).
+
+- The upload route answers with `<file ID>.<signature>`: an HMAC over the file's
+  ID and its owner's, with the site's private key and hash salt, as core signs
+  an image style's URL (`MediaUploader::getUploadId()`).
+- `MediaUploader::loadUpload()` loads a file by such an ID, for a user: not for
+  an anonymous one, only while the file is temporary and the user's.
+  `UploadProducerBase::loadFile()` calls it, so the form, the media, the alt
+  text and the delete all need the ID.
+- What it closes: a temporary file of the user that no upload stored, such as
+  one of an unsaved Drupal form, could be deleted or made a media. It also makes
+  step 15's reasoning hold: a stored file's content isn't sniffed again because
+  the upload route did, and only that route's files are taken now.
+- Nothing is stored, and nothing changes for the adapter or the editor: `fileId`
+  was an opaque string already.
+- `MediaUploader` has a new constructor argument, so a site needs `drush cr`.
+  The sandbox templates need no bake for it: a sandbox made from the old ones
+  hands out signed IDs (tried).
+- Tests: `MediaUploaderUploadIdTest`, `DeleteUploadsTest::testWithoutUploadId`;
+  the other producer tests pass the signed ID.
 
 ## Later
 

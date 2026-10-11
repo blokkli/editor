@@ -168,6 +168,10 @@ field with the media's creation date ("Created").
   deleting an upload deletes its image there unless another file of the site has
   the same image. Environments that share a Rokka organisation don't know of
   each other's files.
+- **The uploaded file's ID** is the file's ID with a signature for the user. The
+  GraphQL operations only take such an ID: another temporary file of the user,
+  such as one of a form that isn't saved yet, can't be made a media or deleted
+  through them.
 - **Languages:** the media is created in the language being edited.
 - **Duplicates:** with the `filehash` module or Rokka, a file with the content
   of an existing media's file doesn't become a second media: the existing one is

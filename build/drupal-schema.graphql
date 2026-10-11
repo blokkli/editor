@@ -6003,7 +6003,7 @@ type Query {
 
   """
   Get the form of a media created from a file uploaded in the editor. Only for
-  the current user's temporary files.
+  the current user's uploads, by the ID the upload route returned.
   """
   pbGetUploadForm(type: ParagraphsBlokkliUploadType!, fileId: String!): ParagraphsBlokkliUploadForm
 
@@ -6161,15 +6161,17 @@ type Mutation {
 
   """
   Create media from files uploaded in the editor, through their forms, in the
-  given language. Only for the current user's temporary files. Returns a
-  result per item, in the same order, or null for an unknown language.
+  given language. Only for the current user's uploads, by the IDs the upload
+  route returned. Returns a result per item, in the same order, or null for an
+  unknown language.
   """
   pbCreateMediaFromUploads(langcode: String!, items: [ParagraphsBlokkliUploadMediaInput!]!): [ParagraphsBlokkliUploadMediaResult!]
 
   """
   Delete files uploaded in the editor that get no media, such as those of a
-  cancelled dialog. Only the current user's temporary files are deleted; the
-  others are left out. Returns the number of deleted files.
+  cancelled dialog. Only the current user's uploads are deleted, by the IDs the
+  upload route returned; other files are left out. Returns the number of
+  deleted files.
   """
   pbDeleteUploads(fileIds: [String!]!): Int!
 
@@ -6177,7 +6179,8 @@ type Mutation {
   Generate the alt text of an image uploaded in the editor, in the given
   language, for a form with an altTextInput. It may take a while, and the
   service that generates it may charge for it. Only for the current user's
-  temporary files. Returns null if none could be generated.
+  uploads, by the ID the upload route returned. Returns null if none could be
+  generated.
   """
   pbGenerateUploadAltText(type: ParagraphsBlokkliUploadType!, fileId: String!, langcode: String!): String
 
@@ -8795,7 +8798,7 @@ input ParagraphsBlokkliUploadMediaInput {
   "The upload's type."
   type: ParagraphsBlokkliUploadType!
 
-  "The ID of the uploaded file."
+  "The ID the upload route returned for the file."
   fileId: String!
 
   "The values of the form's inputs, keyed by their names."
