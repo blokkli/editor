@@ -2,7 +2,11 @@ import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
-import { dialogSubmit, dismissMessages } from '../../support/overlays'
+import {
+  dialogSubmit,
+  dismissMessages,
+  messageTexts,
+} from '../../support/overlays'
 import { openSidebar } from '../../support/sidebar'
 import { blockCount } from '../../support/blocks'
 import {
@@ -38,9 +42,7 @@ function libraryLabels(page: Page): Promise<string[]> {
 
 /** Whether a message names the file. */
 async function hasMessageFor(page: Page, fileName: string): Promise<boolean> {
-  const texts = await page
-    .locator('[data-test="message-close"]')
-    .allTextContents()
+  const texts = await messageTexts(page)
   return texts.some((text) => text.includes(fileName))
 }
 

@@ -55,8 +55,12 @@
       </div>
 
       <div v-else class="text-mono-500 p-20 text-center">
-        The block must be rendered on the page before iframe heights can be
-        configured.
+        {{
+          $t(
+            'iframesEditorNotRendered',
+            'The block must be rendered on the page before iframe heights can be configured.',
+          )
+        }}
       </div>
     </div>
 
@@ -80,7 +84,7 @@
             letter-spacing: 0.05em;
           "
         >
-          Presets
+          {{ $t('iframesEditorPresets', 'Presets') }}
         </div>
         <button
           v-for="(vp, key) in VIEWPORTS"
@@ -106,7 +110,7 @@
             letter-spacing: 0.05em;
           "
         >
-          Breakpoints
+          {{ $t('iframesEditorBreakpoints', 'Breakpoints') }}
         </div>
         <div
           v-for="entry in sortedEntries"
@@ -149,7 +153,7 @@ const props = defineProps<{
   optionKey: string
 }>()
 
-const { directive } = useBlokkli()
+const { directive, $t } = useBlokkli()
 
 const iframeSrc = computed(
   () => directive.getValueElement(props.uuid, 'iframe') || '',

@@ -81,6 +81,7 @@
           v-if="canTranslate"
           :disabled="isAutoTranslating"
           class="bk-artboard-tooltip-info-button bk-scheme-mono relative group/tooltip"
+          data-test="editable-translate"
           @click.prevent="autoTranslate"
         >
           <Icon name="bk_mdi_translate" class="size-15" />
@@ -150,6 +151,7 @@ import {
   useTemplateRef,
 } from '#imports'
 import { falsy } from '#blokkli/helpers'
+import { emitMessage } from '#blokkli/editor/events'
 import InputPlaintext from './Plaintext/index.vue'
 import InputContenteditable from './Contenteditable/index.vue'
 import InputFrame from './Frame/index.vue'
@@ -314,7 +316,13 @@ async function autoTranslate() {
       },
     ])
 
-    if (response.success && response.data.length) {
+    if (!response.success) {
+      emitMessage(
+        response.errors?.join(', ') ||
+          $t('translationsRequestFailed', 'Translation request failed.'),
+        'error',
+      )
+    } else if (response.data.length) {
       const translatedText = response.data[0]!.translatedText
       modelValue.value = translatedText
       // For frame fields, push the value into the iframe's editor.

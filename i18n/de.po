@@ -2833,6 +2833,22 @@ msgctxt "iframesEditTitle"
 msgid "Edit iframe size"
 msgstr "Iframe-Grösse bearbeiten"
 
+msgctxt "iframesEditorBreakpoints"
+msgid "Breakpoints"
+msgstr "Breakpoints"
+
+msgctxt "iframesEditorNotRendered"
+msgid ""
+"The block must be rendered on the page before iframe heights can be "
+"configured."
+msgstr ""
+"Der Block muss auf der Seite dargestellt sein, bevor die Iframe-Höhen "
+"eingestellt werden können."
+
+msgctxt "iframesEditorPresets"
+msgid "Presets"
+msgstr "Voreinstellungen"
+
 msgctxt "image"
 msgid "Image"
 msgstr "Bild"
@@ -4080,6 +4096,10 @@ msgstr "Markiert alle Textübersetzungen dieses Blocks als aktuell."
 msgctxt "translationsMarkUpToDateDisabled"
 msgid "No selected blocks have an outdated translation."
 msgstr "Keiner der ausgewählten Blöcke hat eine veraltete Übersetzung."
+
+msgctxt "translationsRequestFailed"
+msgid "Translation request failed."
+msgstr "Die Übersetzung ist fehlgeschlagen."
 
 msgctxt "translationsRestoreProposal"
 msgid "Restore suggestion"

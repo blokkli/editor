@@ -41,6 +41,7 @@
 import { ref, computed, useBlokkli } from '#imports'
 import { PluginItemAction } from '#blokkli/editor/plugins'
 import { DiffApproval, Icon } from '#blokkli/editor/components'
+import { emitMessage } from '#blokkli/editor/events'
 import type {
   ApprovalItem,
   DiffApplyPayload,
@@ -113,7 +114,15 @@ async function onClick() {
       })),
     )
 
-    if (!response.success || !response.data.length) {
+    if (!response.success) {
+      emitMessage(
+        response.errors?.join(', ') ||
+          $t('translationsRequestFailed', 'Translation request failed.'),
+        'error',
+      )
+      return
+    }
+    if (!response.data.length) {
       return
     }
 

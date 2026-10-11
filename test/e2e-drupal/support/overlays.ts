@@ -68,3 +68,8 @@ export async function closeNestedEditor(page: Page, id: string): Promise<void> {
 export function dismissMessages(page: Page): Promise<void> {
   return emitEvent(page, 'message:clear')
 }
+
+/** The texts of the toast messages shown. */
+export function messageTexts(page: Page): Promise<string[]> {
+  return page.locator('[data-test="message-close"]').allTextContents()
+}

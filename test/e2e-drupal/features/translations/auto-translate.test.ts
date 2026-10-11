@@ -1,10 +1,11 @@
 import { setup } from '@nuxt/test-utils/e2e'
-import { afterAll, beforeAll, describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import {
   waitForEditorReady,
   editorPath,
   openEditor,
+  withApp,
 } from '../../support/session'
 import { emitEvent } from '../../support/events'
 import { applyDiff, cancelDiff, editDiff } from '../../support/diff'
@@ -13,7 +14,10 @@ import {
   blockHost,
   plaintextEditor,
   editableOverlay,
+  openEditableField,
+  discardEditable,
 } from '../../support/editable'
+import { dismissMessages, messageTexts } from '../../support/overlays'
 import { nextMutation } from '../../support/mutations'
 import {
   resetSandbox,
@@ -128,6 +132,10 @@ describe('Auto-translate', async () => {
 
   afterAll(async () => {
     await Promise.all([page.close(), widgetPage.close()])
+  })
+
+  afterEach(async () => {
+    await dismissMessages(page)
   })
 
   test('translating a title updates the editable DOM after Apply', async () => {
@@ -311,5 +319,39 @@ describe('Auto-translate', async () => {
     expect(
       items.find((i) => i?.uuid === uuid && i.name === 'field_lead'),
     ).toMatchObject({ value: 'Hand-revised element-less text', langcode: 'de' })
+  })
+
+  test('a failed translation of a field is reported', async () => {
+    const uuid = seedUuid('paragraph', 'notices-translated-title')
+    await openEditableField(page, 'field_title', uuid)
+    // The fake fails for a text with this marker, as DeepL does without a key.
+    await plaintextEditor(page).fill('A notice [deepl-error]')
+    await page.locator('[data-test="editable-translate"]').click()
+
+    await expect.poll(async () => (await messageTexts(page)).length).toBe(1)
+
+    await discardEditable(page)
+    await editableOverlay(page).waitFor({ state: 'detached' })
+  })
+
+  test('a failed auto-translation of a block is reported', async () => {
+    // Only the next request fails. The paragraphs' stored texts have no marker
+    // for the fake, and the action translates those.
+    await withApp(page, (app) => {
+      const requestTranslation = app.adapter.requestTranslation
+      app.adapter.requestTranslation = async () => {
+        app.adapter.requestTranslation = requestTranslation
+        return { success: false, data: [], errors: ['No key is set.'] }
+      }
+    })
+    await emitEvent(page, 'select', seedUuid('paragraph', 'notices-text'))
+    await page
+      .locator('[data-test="plugin-item-action-auto-translate"]')
+      .click()
+
+    await expect.poll(() => messageTexts(page)).toEqual(['No key is set.'])
+    expect(
+      await page.locator('[data-test="diff-approval-apply"]').count(),
+    ).toBe(0)
   })
 })

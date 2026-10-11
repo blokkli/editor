@@ -85,17 +85,23 @@ const titleText = computed(() => {
 })
 
 const languageReplacement = computed(() => {
-  if (form.value && 'langcode' in form.value) {
-    const langcode = form.value.langcode
-    const language = state.translation.value.availableLanguages?.find(
-      (v) => v.id === langcode,
-    )
-    if (language) {
-      return language.name || ''
-    }
+  if (!form.value) {
+    return ''
   }
-
-  return ''
+  // An entity's translation form has the language of its translation.
+  const langcode =
+    form.value.id === 'entity:translate'
+      ? form.value.translation.id
+      : 'langcode' in form.value
+        ? form.value.langcode
+        : undefined
+  if (!langcode) {
+    return ''
+  }
+  return (
+    state.translation.value.availableLanguages?.find((v) => v.id === langcode)
+      ?.name || ''
+  )
 })
 
 const title = computed(() =>

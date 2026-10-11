@@ -466,7 +466,8 @@ async function requestTranslations() {
     const response = await adapter.requestTranslation!(items)
     if (!response.success) {
       errorMessage.value =
-        response.errors?.join(', ') || 'Translation request failed.'
+        response.errors?.join(', ') ||
+        $t('translationsRequestFailed', 'Translation request failed.')
       return
     }
     // Merge with earlier proposals so requesting more fields in a second
@@ -480,7 +481,9 @@ async function requestTranslations() {
     translations.value = map
     hasTranslated.value = true
   } catch (e: any) {
-    errorMessage.value = e?.message || 'Translation request failed.'
+    errorMessage.value =
+      e?.message ||
+      $t('translationsRequestFailed', 'Translation request failed.')
   } finally {
     isTranslating.value = false
   }

@@ -21,14 +21,20 @@ export default defineCodeTemplate(
     const mod = await import('${relativePath}')
     return ${body}
   }`
-    }).join(',\n')
+    })
+
+    // The English texts are the defaults in the code: only the project's own
+    // ones are loaded.
+    if (userTranslations?.en && Object.keys(userTranslations.en).length) {
+      loaderEntries.unshift(`  'en': async () => userTranslations['en']`)
+    }
 
     const preamble = hasUserTranslations
       ? `import { defu } from 'defu'\n\nconst userTranslations = ${JSON.stringify(userTranslations)}\n\n`
       : ''
 
     return `${preamble}export const translationLoaders = {
-${loaderEntries}
+${loaderEntries.join(',\n')}
 }
 `
   },

@@ -29,16 +29,12 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F24 | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                                       | `paragraphs_blokkli` | medium   | open       |
 | F25 | [An empty change description keeps the old log](#f25-an-empty-change-description-keeps-the-old-log)                                     | `paragraphs_blokkli` | low      | open       |
 | F26 | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation)                 | `paragraphs_blokkli` | medium   | open       |
-| F27 | [Machine translation fails silently](#f27-machine-translation-fails-silently)                                                           | `@blokkli/editor`    | low      | open       |
 | F28 | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                                  | `@blokkli/editor`    | low      | workaround |
 | F29 | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                                            | `paragraphs_blokkli` | low      | workaround |
 | F30 | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                                           | `paragraphs_blokkli` | low      | open       |
-| F31 | [The "add translation" dialog has no language](#f31-the-add-translation-dialog-has-no-language)                                         | `@blokkli/editor`    | low      | open       |
 | F32 | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                                     | `paragraphs_blokkli` | medium   | open       |
 | F33 | [Transform plugins don't get the language](#f33-transform-plugins-dont-get-the-language)                                                | both                 | low      | workaround |
 | F35 | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)                    | `@blokkli/editor`    | low      | open       |
-| F36 | [The `translations` option ignores English](#f36-the-translations-option-ignores-english)                                               | `@blokkli/editor`    | low      | workaround |
-| F37 | [The iframe height editor isn't translated](#f37-the-iframe-height-editor-isnt-translated)                                              | `@blokkli/editor`    | low      | open       |
 | F38 | [Editors can't view paragraph types](#f38-editors-cant-view-paragraph-types)                                                            | `paragraphs_blokkli` | high     | workaround |
 | F40 | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                 | `paragraphs_blokkli` | low      | open       |
 | F41 | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                                             | `paragraphs_blokkli` | low      | open       |
@@ -486,19 +482,6 @@ From chunk 04 (2026-09-26):
   publish the source by accident.
 - **Fix idea:** publish the translation of the edit's language.
 
-## F27: Machine translation fails silently
-
-- **Found:** 2026-09-27, 13f.
-- **Symptom:** without a DeepL key (or on any DeepL error), "Translate texts"
-  shows the error, but "Auto-translate" on a block and a field's "Translate"
-  button do nothing.
-- **Cause:** both return on `!response.success` without showing
-  `response.errors`
-  (`src/runtime/editor/features/translations/AutoTranslate/index.vue:116`,
-  `src/runtime/editor/features/editable-field/Overlay/index.vue:317`, in this
-  repository).
-- **Fix idea:** show the errors as the dialog does, e.g. as a notification.
-
 ## F28: Labels that can't be translated
 
 - **Found:** 2026-09-27, 13f.
@@ -541,16 +524,6 @@ From chunk 04 (2026-09-26):
   `EditParagraphForm` extends `ParagraphsBlokkliFormBase`, a plain form.
 - **Fix idea:** hide untranslatable fields in the translation form, or mark
   them.
-
-## F31: The "add translation" dialog has no language
-
-- **Found:** 2026-09-27, 13f.
-- **Symptom:** a greyed-out language in the switcher opens a dialog titled
-  `Translate "…" ()`.
-- **Cause:** the title takes the language from the form's `langcode`, which the
-  `entity:translate` form doesn't have; its language is `translation.id`
-  (`src/runtime/editor/features/edit-form/index.vue:86-96`, in this repository).
-- **Fix idea:** read `translation.id` for `entity:translate`.
 
 ## F32: Content search results in the source language
 
@@ -596,35 +569,6 @@ From chunk 04 (2026-09-26):
   slices at most).
 - **Fix idea:** an optional stable `key` per category and series in
   `ChartDataSourcePayload`, used for the overrides when present.
-
-## F36: The `translations` option ignores English
-
-- **Found:** 2026-09-28, 13i, reading the code for the analyzer's strings.
-- **Symptom:** `blokkli.translations.en` has no effect, although the docs
-  (`docs/configuration.md`, `docs/editor/translations.md`) use it to override
-  English texts.
-- **Cause:** the template only builds loaders for `TRANSLATION_LANGUAGES` (`de`,
-  `fr`, `it`, `gsw_CH`) (`src/build/templates/definitions/translations.ts:13`,
-  in this repository), and the text provider falls back to the default in the
-  code when a language has no loader
-  (`src/runtime/editor/providers/texts.ts:69`).
-- **Workaround:** English texts go in the code, as `$t()`'s default.
-- **Fix idea:** a loader for `en` that returns `userTranslations.en` when it's
-  set.
-
-## F37: The iframe height editor isn't translated
-
-- **Found:** 2026-09-28, 13i, with the embed paragraph type.
-- **Symptom:** in the German and French editor, the height editor
-  ("Iframe-Grösse bearbeiten") shows "Presets", "Breakpoints" and "The block
-  must be rendered on the page before iframe heights can be configured." in
-  English.
-- **Cause:** the strings are literals in the template
-  (`src/modules/iframes/runtime/features/iframes/Editor/index.vue:57-109`, in
-  this repository), not `$t()` calls.
-- **Workaround:** none; the labels are short and the presets show their widths.
-- **Fix idea:** `$t()` with keys, then `bun run texts` and the DE and FR
-  translations (`/translations` skill).
 
 ## F38: Editors can't view paragraph types
 

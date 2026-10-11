@@ -2710,6 +2710,22 @@ msgctxt "iframesEditTitle"
 msgid "Edit iframe size"
 msgstr ""
 
+msgctxt "iframesEditorBreakpoints"
+msgid "Breakpoints"
+msgstr "Points de rupture"
+
+msgctxt "iframesEditorNotRendered"
+msgid ""
+"The block must be rendered on the page before iframe heights can be "
+"configured."
+msgstr ""
+"Le bloc doit être affiché sur la page avant de pouvoir configurer les "
+"hauteurs de l'iframe."
+
+msgctxt "iframesEditorPresets"
+msgid "Presets"
+msgstr "Préréglages"
+
 msgctxt "image"
 msgid "Image"
 msgstr ""
@@ -3914,6 +3930,10 @@ msgstr ""
 
 msgctxt "translationsMarkUpToDateDisabled"
 msgid "No selected blocks have an outdated translation."
+msgstr ""
+
+msgctxt "translationsRequestFailed"
+msgid "Translation request failed."
 msgstr ""
 
 msgctxt "translationsRestoreProposal"
