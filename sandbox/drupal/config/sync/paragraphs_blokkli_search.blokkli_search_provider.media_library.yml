@@ -9,4 +9,4 @@ search_type: media_library
 description: ''
 weight: 0
 search_plugin_configuration:
-  per_page: '32'
+  per_page: 32

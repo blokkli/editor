@@ -112,12 +112,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/ParagraphsBlokkliFieldConfig.php:84`)
   returns `allowedBundles: []`, and the editor then offers no block types. Fix:
   treat `null` as every paragraph type.
-- **Config schema gaps** (`config/schema/paragraphs_blokkli.schema.yml`):
-  - `media_bundle_file` is read and saved, but missing from the schema. Fixed in
-    `81ced3a` (2026-10-06).
-  - `enabled_types` only declares `node`, while the settings form saves any
-    entity type (e.g. `translatable_config_pages`). Both are "missing schema"
-    errors in a config schema check.
 - **The DeepL settings form stores the API key in config.** `api_key` is
   required, and the language mapping only renders once a key is present. Sites
   that inject the key from `settings.php` either export it with `drush cex` or
@@ -132,11 +126,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 
 From chunk 04 (2026-09-26):
 
-- **More config schema gaps:** `blokkli_search_provider`
-  (`modules/paragraphs_blokkli_search/config/schema/paragraphs_blokkli_search.schema.yml`)
-  lacks `weight` and `search_plugin_configuration`, so every search provider
-  fails a config schema check. The plugins' settings (`per_page`, `index_id`,
-  `field_mapping`) have no schema either.
 - **Empty `allowed_formats` means two things.**
   `ParagraphsBlokkliHelper::getUsableTextFormats()`
   (`src/ParagraphsBlokkliHelper.php:244`) treats it as "any format", but
