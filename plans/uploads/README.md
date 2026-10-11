@@ -484,7 +484,7 @@ Discussed with the user on 2026-10-11, who picked these four.
   with `canUpload` and the file checks. `entity_query_media_library` sorts by
   the newest (`created`, then the ID): it had no sort, so a new media was on the
   last page, and the pages' order was the database's. Kernel test:
-  `EntityQueryMediaLibraryTest`. The Search API plugin still has no sort.
+  `EntityQueryMediaLibraryTest`. The Search API plugin got its sort in step 16.
 - **A file dropped on a block's media replaces it:** a drag of one file (pasted
   or from the operating system, on the upload path) gets the media library's
   "Replace" drop areas (`getReplaceMediaTargets`, shared by both features), for
@@ -740,6 +740,28 @@ Docs: `configuration.md` ("Uploads"), the adapter docs (`deleteUploads`,
 `generateUploadAltText`, `getUploadForm`, `uploadFile`), the feature's
 `docs.md`, the setup skill and the sandbox skill.
 
+### 16. Drops on the media library, and the Search API library's order (done)
+
+Picked by the user on 2026-10-11, from "Later".
+
+- **Files dropped on the media library** are uploaded as picked ones are
+  (`Library/DropHandler`, the editor's `FileDropHandler` as the agent's panel
+  uses it). The library has the dialog and the check now; `Library/Upload` is
+  only the button. Without upload types there is no handler, so files dragged
+  over the library stay the page's.
+- The handler stops the drag events, which ends the page's own drag of the files
+  while they're over the library. The library is its own stacking context
+  (`isolation`), or its filters would be above the handler's overlay.
+- **`search_api_media_library` sorts by the newest** when its field mapping has
+  the new, optional "Created" field: by relevance first for a search, then the
+  date, then the ID. Without the field nothing changes. Kernel test:
+  `SearchApiMediaLibraryTest`, the submodule's first, with `drupal/search_api`
+  as a dev dependency.
+- **Fixed on the way:** the Search API library threw a `TypeError` with the
+  database backend, which counts the results in a string.
+- Tests: E2E (`media-library/upload.test.ts`: a dropped file becomes a media,
+  not a block; `dropFiles` in `support/uploads.ts`).
+
 ## Later
 
 - Setting the focal point of an existing image, such as a block's (waiting: it
@@ -749,8 +771,6 @@ Docs: `configuration.md` ("Uploads"), the adapter docs (`deleteUploads`,
   15). And generating the alt texts of all of a dialog's images at once.
 - Adding a dropped file to a multi-value media field ("Add to …", as media
   library items can).
-- Dropping files onto the media library, besides its upload button.
-- Sorting the Search API media library by the newest.
 - Rendering a node's fields with the same descriptions, saved through
   `update_host_entity_field_value`.
 - More widgets: multi-value options first, then formatted text and entity

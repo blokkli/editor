@@ -236,7 +236,7 @@ permissions yourself.
 - **Content:** editors also need the usual permissions to edit the host entity
   and to use its media, and create access to the media types of uploaded files
   (`create image media`): without it, files can't be pasted, and the media
-  library has no upload button.
+  library has no upload button and takes no dropped files.
 - Roles for editors, reviewers and translators, and per-type permissions: the
   `blokkli-setup-permissions` skill.
 

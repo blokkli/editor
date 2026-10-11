@@ -4,7 +4,9 @@ import type { Page } from 'playwright-core'
 import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 import { dialogSubmit, dismissMessages } from '../../support/overlays'
 import { openSidebar } from '../../support/sidebar'
+import { blockCount } from '../../support/blocks'
 import {
+  dropFiles,
   pickFiles,
   uploadDialog,
   uploadStatuses,
@@ -13,11 +15,11 @@ import {
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 
 /**
- * The media library's upload button: the picked files are uploaded in the
- * upload dialog (see `clipboard/upload.test.ts`), which creates their media
- * without adding blocks. The library then lists them first: Drupal sorts it by
- * the newest. That a user who may not create media has no button is in
- * `clipboard/files.test.ts`, which has such a user's page.
+ * The media library's upload button, and files dropped on the library: the
+ * files are uploaded in the upload dialog (see `clipboard/upload.test.ts`),
+ * which creates their media without adding blocks. The library then lists them
+ * first: Drupal sorts it by the newest. That a user who may not create media
+ * has no button is in `clipboard/files.test.ts`, which has such a user's page.
  */
 
 /** Pick the files with the library's upload button. */
@@ -101,5 +103,22 @@ describe('Uploading files to the media library', async () => {
       .poll(async () => (await libraryLabels(page)).slice(0, 2))
       .toEqual(['minutes.pdf', 'harbour.png'])
     expect((await libraryLabels(page))[2]).toBe(before[0])
+  })
+
+  test('files dropped on the library become media, not blocks', async () => {
+    const blocks = await blockCount(page)
+    await dropFiles(page, 'media-library', [
+      { name: 'quay.png', type: 'image/png' },
+    ])
+
+    await expect.poll(() => uploadStatuses(page)).toEqual(['uploaded'])
+    await dialogSubmit(page).click()
+    await uploadDialog(page).waitFor({ state: 'detached' })
+
+    await expect
+      .poll(async () => (await libraryLabels(page))[0])
+      .toBe('quay.png')
+    // Dropped anywhere else, the file would be the page's: a new block.
+    expect(await blockCount(page)).toBe(blocks)
   })
 })

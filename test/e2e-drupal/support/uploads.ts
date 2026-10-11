@@ -20,16 +20,17 @@ export type TestFile = {
 }
 
 /**
- * Build the files in the page and hand them over: as a synthetic `paste`, or
- * as the files picked in a file input, selected by its `data-test`.
+ * Build the files in the page and hand them over: as a synthetic `paste`, as
+ * the files picked in a file input, or as a drag from outside the browser
+ * dropped on an element. Both are selected by their `data-test`.
  */
 function provideFiles(
   page: Page,
   files: TestFile[],
-  input?: string,
+  target: { input?: string; drop?: string } = {},
 ): Promise<void> {
   return page.evaluate(
-    async ({ files, input }) => {
+    async ({ files, input, drop }) => {
       const dt = new DataTransfer()
       const randomColor = () =>
         `rgb(${[0, 1, 2].map(() => Math.floor(Math.random() * 256)).join(' ')})`
@@ -56,6 +57,22 @@ function provideFiles(
         }
         dt.items.add(new File([blob], name, { type }))
       }
+      if (drop) {
+        const element = document.querySelector(`[data-test="${drop}"]`)
+        if (!element) {
+          throw new Error(`No element "${drop}" to drop on`)
+        }
+        for (const type of ['dragenter', 'dragover', 'drop']) {
+          element.dispatchEvent(
+            new DragEvent(type, {
+              dataTransfer: dt,
+              bubbles: true,
+              cancelable: true,
+            }),
+          )
+        }
+        return
+      }
       if (!input) {
         document.dispatchEvent(
           new ClipboardEvent('paste', {
@@ -75,7 +92,7 @@ function provideFiles(
       element.files = dt.files
       element.dispatchEvent(new Event('change', { bubbles: true }))
     },
-    { files, input },
+    { files, ...target },
   )
 }
 
@@ -90,7 +107,19 @@ export function pickFiles(
   input: string,
   files: TestFile[],
 ): Promise<void> {
-  return provideFiles(page, files, input)
+  return provideFiles(page, files, { input })
+}
+
+/**
+ * Drag the files in from outside the browser and drop them on an element,
+ * selected by its `data-test`.
+ */
+export function dropFiles(
+  page: Page,
+  target: string,
+  files: TestFile[],
+): Promise<void> {
+  return provideFiles(page, files, { drop: target })
 }
 
 export function uploadDialog(page: Page): Locator {

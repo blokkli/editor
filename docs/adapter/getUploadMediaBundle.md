@@ -42,8 +42,9 @@ With `getUploadMediaBundle`, [adapter.uploadFile], [adapter.getUploadForm] and
 [adapter.createMediaFromUploads], files are uploaded in a dialog without adding
 blocks:
 
-- The media library has an upload button, if images or files can be uploaded.
-  The picked files' media are created, and the library is loaded again.
+- The media library has an upload button, if images or files can be uploaded,
+  and takes files dropped on it. The files' media are created, and the library
+  is loaded again.
 - A file dragged or pasted can be dropped on a block's media to replace it, when
   the field allows the file's media bundle. The media is then set with
   [adapter.mediaLibraryReplaceMedia] or

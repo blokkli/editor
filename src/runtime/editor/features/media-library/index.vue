@@ -12,7 +12,7 @@
     icon="bk_mdi_image"
     weight="-100"
   >
-    <Library is-sortli />
+    <Library />
   </PluginSidebar>
 </template>
 
@@ -117,6 +117,8 @@ export default {
 .bk.bk-media-library {
   @apply w-full overflow-auto h-full;
   container-type: inline-size;
+  /* Its filters would be above the overlay for files dragged over it. */
+  isolation: isolate;
 
   .bk-pagination {
     @apply sticky bottom-0 z-50 bg-white;

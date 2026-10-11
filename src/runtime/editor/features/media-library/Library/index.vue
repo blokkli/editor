@@ -1,55 +1,77 @@
 <template>
-  <div class="bk bk-media-library bk-scrollbar-light" data-test="media-library">
-    <div v-if="status === 'pending'" class="bk-loading">
-      <Icon name="loader" />
-    </div>
-    <ConfigFormInline v-model="filterValues" :filters="filters">
-      <template #before>
-        <div class="bk-media-library-filters-listview">
-          <button @click="toggleListView">
-            <Icon :name="listViewIcon" />
-          </button>
-        </div>
-        <Upload
-          v-if="uploadTypes.length"
-          :types="uploadTypes"
-          @uploaded="onUploaded"
-        />
-      </template>
-    </ConfigFormInline>
+  <DropHandler :types="uploadTypes" @drop="onFiles">
     <div
-      ref="listEl"
-      class="bk-media-library-items"
-      :class="'bk-is-' + listView"
+      class="bk bk-media-library bk-scrollbar-light"
+      data-test="media-library"
     >
-      <Sortli no-transition :get-drag-items="getDragItems" :build-item>
-        <Item
-          v-for="item in items"
-          :key="item.mediaId"
-          v-bind="item"
-          v-model="selected"
-          :class="'bk-is-' + listView"
-          :is-disabled="
-            !!firstSelectedBundle && item.mediaBundle !== firstSelectedBundle
-          "
-        />
-      </Sortli>
-    </div>
+      <div v-if="status === 'pending'" class="bk-loading">
+        <Icon name="loader" />
+      </div>
+      <ConfigFormInline v-model="filterValues" :filters="filters">
+        <template #before>
+          <div class="bk-media-library-filters-listview">
+            <button @click="toggleListView">
+              <Icon :name="listViewIcon" />
+            </button>
+          </div>
+          <Upload
+            v-if="uploadTypes.length"
+            :types="uploadTypes"
+            @pick="onFiles"
+          />
+        </template>
+      </ConfigFormInline>
+      <div
+        ref="listEl"
+        class="bk-media-library-items"
+        :class="'bk-is-' + listView"
+      >
+        <Sortli no-transition :get-drag-items="getDragItems" :build-item>
+          <Item
+            v-for="item in items"
+            :key="item.mediaId"
+            v-bind="item"
+            v-model="selected"
+            :class="'bk-is-' + listView"
+            :is-disabled="
+              !!firstSelectedBundle && item.mediaBundle !== firstSelectedBundle
+            "
+          />
+        </Sortli>
+      </div>
 
-    <div v-if="selected.length" class="bk-media-library-cancel">
-      <button class="bk-button bk-scheme-accent" @click.prevent="selected = []">
-        {{ $t('cancelSelection', 'Cancel selection') }}
-      </button>
-    </div>
+      <div v-if="selected.length" class="bk-media-library-cancel">
+        <button
+          class="bk-button bk-scheme-accent"
+          @click.prevent="selected = []"
+        >
+          {{ $t('cancelSelection', 'Cancel selection') }}
+        </button>
+      </div>
 
-    <Pagination v-model="page" :total-pages />
-  </div>
+      <Pagination v-model="page" :total-pages />
+
+      <Teleport :to="ui.mainLayoutElement.value">
+        <BlokkliTransition name="slide-up">
+          <UploadDialog
+            v-if="uploadFiles"
+            :files="uploadFiles"
+            :title="$t('mediaLibraryUpload', 'Upload files')"
+            @done="onUploaded"
+            @cancel="uploadFiles = null"
+          />
+        </BlokkliTransition>
+      </Teleport>
+    </div>
+  </DropHandler>
 </template>
 
 <script lang="ts" setup>
 import {
   ref,
+  shallowRef,
   computed,
+  defineAsyncComponent,
   useLazyAsyncData,
   useBlokkli,
   watch,
@@ -57,6 +79,7 @@ import {
   useTemplateRef,
 } from '#imports'
 import {
+  BlokkliTransition,
   Sortli,
   Icon,
   Pagination,
@@ -65,7 +88,10 @@ import {
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import Item from './Item.vue'
 import Upload from './Upload/index.vue'
+import DropHandler from './DropHandler/index.vue'
 import { falsy } from '#blokkli/helpers'
+import { emitMessage } from '#blokkli/editor/events'
+import { getUploadFileInfo } from '#blokkli/editor/helpers/uploads'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { DraggableMediaLibraryItem } from '../types'
 import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
@@ -76,7 +102,11 @@ defineProps<{
   modelValue?: string
 }>()
 
-const { adapter, storage, $t, element } = useBlokkli()
+const UploadDialog = defineAsyncComponent(
+  () => import('#blokkli/editor/components/UploadDialog/index.vue'),
+)
+
+const { adapter, storage, $t, element, ui } = useBlokkli()
 
 const selected = ref<string[]>([])
 const listEl = useTemplateRef('listEl')
@@ -178,8 +208,33 @@ const uploadTypes =
     ? UPLOAD_TYPES.filter((type) => adapter.getUploadMediaBundle?.({ type }))
     : []
 
+// The files of the upload dialog, while it's shown.
+const uploadFiles = shallowRef<File[] | null>(null)
+
+/**
+ * Upload picked or dropped files in the upload dialog, unless one of them
+ * can't be uploaded.
+ */
+function onFiles(files: File[]) {
+  const refused = files.find(
+    (file) => !adapter.getUploadMediaBundle?.(getUploadFileInfo(file)),
+  )
+  if (refused) {
+    emitMessage(
+      $t(
+        'uploadUnsupportedFile',
+        'The type or size of "@name" is not supported.',
+      ).replace('@name', refused.name),
+      'error',
+    )
+    return
+  }
+  uploadFiles.value = files
+}
+
 // Show the new media: the library's first page.
 function onUploaded() {
+  uploadFiles.value = null
   if (page.value === 0) {
     refresh()
   } else {
