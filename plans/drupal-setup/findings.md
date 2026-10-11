@@ -16,7 +16,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F11 | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                                   | `paragraphs_blokkli` | low      | open       |
 | F12 | ["Make reusable" on a container with unpublished children](#f12-make-reusable-on-a-container-with-unpublished-children)                 | `paragraphs_blokkli` | medium   | open       |
 | F14 | [The comment filter leaks into new text formats](#f14-the-comment-filter-leaks-into-new-text-formats)                                   | `paragraphs_blokkli` | low      | open       |
-| F16 | [Mutations ignore a field's allowed types](#f16-mutations-ignore-a-fields-allowed-types)                                                | `paragraphs_blokkli` | medium   | open       |
+| F16 | [Missing access checks in the template and library mutations](#f16-missing-access-checks-in-the-template-and-library-mutations)         | `paragraphs_blokkli` | medium   | to verify  |
 | F17 | [`detach_reusable` bugs](#f17-detach_reusable-bugs)                                                                                     | `paragraphs_blokkli` | medium   | open       |
 | F18 | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                                       | both                 | low      | workaround |
 | F19 | [Template and library search](#f19-template-and-library-search)                                                                         | both                 | low      | open       |
@@ -211,47 +211,26 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** make the plugin's configuration match its defaults (e.g.
   `defaultConfiguration()` or `setConfiguration()` in the plugin).
 
-## F16: Mutations ignore a field's allowed types
+## F16: Missing access checks in the template and library mutations
 
-- **Found:** 2026-09-26, checking block-transfer in 13c.
-- **Symptom:** a mutation puts a block type into a paragraphs field that doesn't
-  allow it (a text block into the page's sidebar, which allows button, contact
-  and downloads), and publishing keeps it. Drupal's entity form then refuses to
-  save the host: "This entity (paragraph: N) cannot be referenced."
-- **Fixed** (2026-10-11) for `add` (and its form), `import` and `add_reusable`:
-  they refuse a type that the target field doesn't allow, with
-  `ParagraphsBlokkliHelper::checkAllowedParagraphBundles()`. The check runs when
-  a mutation is added; stored mutations replay without it.
-  - `import` also checks the nested paragraphs against their parent's field.
-  - `add_reusable` also checks the type of the library item's paragraph, as
-    Paragraphs' own constraint does.
-  - A field that the host doesn't have is refused too: such a paragraph was
-    dropped on publish.
-- **Still open: the other mutations that place a paragraph.** None of them
-  checks the field's allowed types (by reading):
-  - a new paragraph in a named field: `add_multiple` (with its children),
-    `add_text`, `add_clipboard_text`, `add_file`, `add_image`,
-    `add_video_remote`, `add_entity_reference`, `add_entity_reference_multiple`,
-    `add_media_image_reference`, `add_media_video_reference`, `add_fragment`,
-    `add_from_template`;
-  - a paragraph that changes its field: `move`, `move_multiple`, `swap`;
-  - a new paragraph next to its source: `duplicate`, `duplicate_multiple`,
-    `detach_reusable`, `make_reusable`, the conversions.
-  - `add` doesn't check the nested paragraphs of a type's default template.
-- **Impact:**
-  - For these mutations, only the editor's UI enforces allowed types: any client
-    of the GraphQL API (or a UI bug) can break them.
-  - The nesting depth relies on them (F10), so a deeper structure can lose
-    blocks on publish.
-  - Publishing validates paragraphs (`validation_types`), not the references of
-    the host's fields.
-- **Other missing checks** (13d, by reading):
-  - `add_from_template` checks nothing: no host access, no create access, no
-    template access.
+- **Found:** 2026-09-27, 13d, by reading. What's left of "Mutations ignore a
+  field's allowed types": since 2026-10-11 every mutation that places a
+  paragraph checks the field's allowed types when it's added.
+- **Symptoms and causes:**
+  - `add_from_template` checks no access: not to the host, not to create the
+    paragraph types, not to the template.
   - `make_reusable` checks neither `create paragraph library item` nor the
     type's `allow_library_conversion` (F12 relies on it).
   - `add_reusable` loads the item with `accessCheck(FALSE)`
     (`AddReusable.php:72-76`), so unpublished items can be placed.
+- **Not checked for allowed types, on purpose:**
+  - the nested paragraphs of a duplicated or detached paragraph, and what
+    `copy_from_existing` copies: they repeat a structure that exists;
+  - a paragraph that is reordered in its field.
+- **Still true:** publishing validates paragraphs (`validation_types`), not the
+  references of the host's fields. A type that a field stopped allowing stays,
+  and Drupal's entity form then refuses to save the host: "This entity
+  (paragraph: N) cannot be referenced."
 
 ## F17: `detach_reusable` bugs
 

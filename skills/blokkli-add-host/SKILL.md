@@ -352,17 +352,18 @@ footer or a site-wide notice.
 
 ## Symptoms and causes
 
-| Symptom                                                                               | Cause                                                                                                                        |
-| ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| No edit button                                                                        | Bundle not in the enabled types, missing permissions, or `blokkliProps` not bound                                            |
-| `Unknown type "Node…"` or a `…Unexposed` type                                         | The bundle is missing from the server's `bundles`                                                                            |
-| `blokkliProps` is missing on the type                                                 | The bundle isn't in the enabled types, or the schema wasn't updated after adding it                                          |
-| A paragraphs field is empty while editing and takes no drops                          | `name` isn't the field's machine name                                                                                        |
-| An inline edit of a host field doesn't show until a reload                            | The field is missing from `pbMutatedEntity`, or the template doesn't read it from the slot's `entity`                        |
-| Hovering and dragging stop working on one bundle's pages                              | A `v-blokkli-droppable` or `v-blokkli-editable` for a field the bundle doesn't have                                          |
-| Starting the editor, switching the language or previewing leads into the admin        | The entity type's canonical URL is under `/admin`: move it (section 4)                                                       |
-| The config page renders nothing                                                       | The entity doesn't exist yet, or a null result is still cached: create it, then clear the caches                             |
-| A config page is edited in the default language on a translated page                  | The translation doesn't exist                                                                                                |
-| Dates are an hour or two off                                                          | The raw `value` of a date field has no offset; use `startDate`, `endDate` or `formatted`                                     |
-| Month names are English on a translated page                                          | The `locale` module or the interface translations are missing                                                                |
-| Saving the entity's form fails with "This entity (paragraph: N) cannot be referenced" | The field holds a paragraph type it doesn't allow (blökkli's mutations don't check allowed types; e.g. after narrowing them) |
+| Symptom                                                                               | Cause                                                                                                         |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| No edit button                                                                        | Bundle not in the enabled types, missing permissions, or `blokkliProps` not bound                             |
+| `Unknown type "Node…"` or a `…Unexposed` type                                         | The bundle is missing from the server's `bundles`                                                             |
+| `blokkliProps` is missing on the type                                                 | The bundle isn't in the enabled types, or the schema wasn't updated after adding it                           |
+| A paragraphs field is empty while editing and takes no drops                          | `name` isn't the field's machine name                                                                         |
+| An inline edit of a host field doesn't show until a reload                            | The field is missing from `pbMutatedEntity`, or the template doesn't read it from the slot's `entity`         |
+| Hovering and dragging stop working on one bundle's pages                              | A `v-blokkli-droppable` or `v-blokkli-editable` for a field the bundle doesn't have                           |
+| Starting the editor, switching the language or previewing leads into the admin        | The entity type's canonical URL is under `/admin`: move it (section 4)                                        |
+| The config page renders nothing                                                       | The entity doesn't exist yet, or a null result is still cached: create it, then clear the caches              |
+| A config page is edited in the default language on a translated page                  | The translation doesn't exist                                                                                 |
+| Dates are an hour or two off                                                          | The raw `value` of a date field has no offset; use `startDate`, `endDate` or `formatted`                      |
+| Month names are English on a translated page                                          | The `locale` module or the interface translations are missing                                                 |
+| Saving the entity's form fails with "This entity (paragraph: N) cannot be referenced" | The field holds a paragraph type it doesn't allow any more: blökkli refuses new ones, but keeps what is there |
+| A change in the editor fails: "Paragraph type '…' is not allowed in field '…'"        | The paragraphs field doesn't allow the type that was added, moved, duplicated or converted into it            |

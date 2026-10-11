@@ -78,8 +78,8 @@ Export the config (`drush cex`). The export is
 `paragraphs_blokkli_search.blokkli_search_provider.<id>.yml`.
 
 The dialog lists every template, including ones whose paragraph types the target
-field doesn't allow. Inserting such a template works, but the host's form in
-Drupal then refuses to save.
+field doesn't allow. Inserting such a template is refused: "Paragraph type '…'
+is not allowed in field '…'."
 
 ## 4. Permissions
 
@@ -180,15 +180,16 @@ columns with a text in each column.
 
 ## Symptoms and causes
 
-| Symptom                                                                              | Cause                                                                                             |
-| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
-| The "Template" dialog is empty                                                       | No search provider of type "Paragraph Templates"                                                  |
-| The dialog lists templates, but their previews are empty                             | The user lacks `view paragraph templates`                                                         |
-| No "Template" or "Create template" in the editor                                     | Templates are disabled: see the Nuxt log (a missing field on `BlokkliParagraphTemplate`)          |
-| Templates have no edit button; "templateEditRouteName … is not valid" in the console | The route name is wrong, or the route has a parameter besides `uuid`                              |
-| The template's route renders nothing                                                 | The user lacks `view paragraph templates`, or the uuid doesn't exist                              |
-| `[nuxt] Invalid layout … selected`                                                   | The page sets a layout the project doesn't have                                                   |
-| "Use as default" is disabled                                                         | Not exactly one paragraph is selected, or the user lacks `manage default paragraph templates`     |
-| New paragraphs don't get the default template                                        | They were pasted, dropped or taken from the library; or the default holds more than one paragraph |
-| New paragraphs from the agent have their children twice                              | The agent adds its own children on top of the default template's                                  |
-| Saving the host's form in Drupal fails after inserting a template                    | The template holds a paragraph type the field doesn't allow                                       |
+| Symptom                                                                              | Cause                                                                                                |
+| ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| The "Template" dialog is empty                                                       | No search provider of type "Paragraph Templates"                                                     |
+| The dialog lists templates, but their previews are empty                             | The user lacks `view paragraph templates`                                                            |
+| No "Template" or "Create template" in the editor                                     | Templates are disabled: see the Nuxt log (a missing field on `BlokkliParagraphTemplate`)             |
+| Templates have no edit button; "templateEditRouteName … is not valid" in the console | The route name is wrong, or the route has a parameter besides `uuid`                                 |
+| The template's route renders nothing                                                 | The user lacks `view paragraph templates`, or the uuid doesn't exist                                 |
+| `[nuxt] Invalid layout … selected`                                                   | The page sets a layout the project doesn't have                                                      |
+| "Use as default" is disabled                                                         | Not exactly one paragraph is selected, or the user lacks `manage default paragraph templates`        |
+| New paragraphs don't get the default template                                        | They were pasted, dropped or taken from the library; or the default holds more than one paragraph    |
+| New paragraphs from the agent have their children twice                              | The agent adds its own children on top of the default template's                                     |
+| Inserting a template fails: "Paragraph type '…' is not allowed in field '…'"         | The template holds a paragraph type that the target field, or the field of its parent, doesn't allow |
+| Adding a paragraph type fails with the same message, naming a field of the type      | The type's default template holds a nested paragraph type that the field doesn't allow               |
