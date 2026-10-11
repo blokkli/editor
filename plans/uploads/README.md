@@ -539,13 +539,58 @@ The user's case (see "Form hooks"): a field shown while a checkbox is unticked.
 - Docs: `configuration.md` ("Uploads"), `getUploadForm.md`, the setup skill, and
   the sandbox skill.
 
+### 14. Duplicates (done)
+
+The search for a media with a file of the same content had two faults since its
+first version in 2024, found on 2026-10-11 and reproduced with tests. The dialog
+added a third.
+
+- **A wrong media.** The search read the file's usages without their entity
+  type: a file that only a node used gave the media with the node's ID.
+- **Only the first file.** A first file without a media of the type (a deleted
+  media's file, or another media type's) ended the search, so every later upload
+  of that content became a new media.
+- **Identical files in one dialog** became two media: neither exists yet when
+  the other is uploaded. The old mutations ran one after the other.
+
+What changed, all in Drupal:
+
+- `MediaUploader::findDuplicate()` no longer reads file usages. It collects
+  every file of the content (every row of the rokka module's metadata with the
+  binary hash, or every permanent file with the filehash), and queries the media
+  of the type whose source field has one of them: the oldest first, and only
+  published ones, since a block with an unpublished media shows nothing (the
+  user, 2026-10-11). It returns the first one the current user can view. So the
+  old mutations check the view access too, and a media that has the file in
+  another field than its source field isn't a duplicate.
+- `CreateMediaFromUploads` searches again before an item's form is submitted.
+  The items are created in order, so the second of two identical files gets the
+  first one's media. Its file is deleted, and its values are left out, without a
+  message. This also covers a media created since the upload. The schema is
+  unchanged but for the description of `mediaId`; the frontend is unchanged.
+- `drupal/rokka` is a dev dependency of the module. The search only reads the
+  rokka module's metadata, which a kernel test creates itself: nothing reaches
+  Rokka.
+- Kernel tests: `MediaUploaderDuplicateTest` (filehash: another entity's file, a
+  later file, an unpublished media, one the user can't view),
+  `MediaUploaderRokkaDuplicateTest` (with the rokka module: found, and a later
+  file), `CreateMediaFromUploadsTest::testDuplicate`.
+- Not covered: the sandbox has neither filehash nor Rokka, so no E2E test sees a
+  duplicate, and an upload to Rokka itself has never been run here.
+- Docs: `configuration.md` ("Uploads").
+
 ## Later
 
 - Setting the focal point of an existing image, such as a block's (waiting: it
   belongs to the file, so it changes every page using the image, outside the
   edit state; better as "edit this media" with the same descriptions).
-- Suggested alt texts (deferred). Rokka's descriptions don't fit: the file only
-  reaches Rokka when its media is saved. That leaves the agent's model.
+- Suggested alt texts (open). The old mutations set Rokka's description as the
+  alt text, unseen. The dialog doesn't use it: the file only reaches Rokka when
+  its media is saved, after the user typed the alt text. To prefill the dialog's
+  field with it, an upload for a field on Rokka would be stored on Rokka
+  straight away: a cancelled one then stays there until cron deletes it, and
+  every upload waits for Rokka's description. Or the agent's model, for any
+  backend.
 - Adding a dropped file to a multi-value media field ("Add to …", as media
   library items can).
 - Dropping files onto the media library, besides its upload button.

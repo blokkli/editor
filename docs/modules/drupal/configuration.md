@@ -158,8 +158,10 @@ uploaded files are at the top of the library.
   field's directory when its media is created. Cron deletes an abandoned upload,
   after six hours by default.
 - **Languages:** the media is created in the language being edited.
-- **Duplicates:** with the `filehash` module or Rokka, a file that exists as a
-  media isn't uploaded again: the existing media is added.
+- **Duplicates:** with the `filehash` module or Rokka, a file with the content
+  of an existing media's file doesn't become a second media: the existing one is
+  used. It has to be published, of the same media type, and one the user can
+  view. Identical files in one dialog become one media too.
 
 The dialog shows the media's form in the `media_library` form mode: set the
 fields there, such as the name and the alternative text. Text fields, text

@@ -2569,7 +2569,7 @@
             "dist": {
                 "type": "path",
                 "url": "paragraphs_blokkli",
-                "reference": "d4dbefd26aca7c32d231f2c1397a193f101b2cc9"
+                "reference": "e84eefa847b46e64e417bf37860bcdb86dab7204"
             },
             "require": {
                 "drupal/core": "^11.2",
@@ -2579,7 +2579,8 @@
             },
             "require-dev": {
                 "drupal/filehash": "^3",
-                "drupal/focal_point": "^2.1"
+                "drupal/focal_point": "^2.1",
+                "drupal/rokka": "^3"
             },
             "suggest": {
                 "deeplcom/deepl-php": "Required by the paragraphs_blokkli_deepl submodule for DeepL translation integration."

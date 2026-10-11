@@ -7970,7 +7970,10 @@ type ParagraphsBlokkliUploadForm {
 
 "The media created from a file uploaded in the editor, or why it wasn't."
 type ParagraphsBlokkliUploadMediaResult {
-  "The ID of the created media."
+  """
+  The ID of the created media, or of the media that already has a file of the
+  same content.
+  """
   mediaId: String
 
   "The errors, each with the input it belongs to."
