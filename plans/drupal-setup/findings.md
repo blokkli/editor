@@ -9,7 +9,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #   | Finding                                                                                                                                 | Project              | Severity | Status     |
 | --- | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- |
-| F4  | [`clearOutdated` type mismatch](#f4-clearoutdated-type-mismatch)                                                                        | `paragraphs_blokkli` | low      | open       |
 | F5  | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                                               | Drupal core          | high     | workaround |
 | F6  | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                                | `blokkli_starterkit` | low      | open       |
 | F7  | [Undeclared dependencies and config gaps](#f7-undeclared-dependencies-and-config-gaps)                                                  | `paragraphs_blokkli` | low      | open       |
@@ -49,19 +48,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
-
-## F4: `clearOutdated` type mismatch
-
-- **Found:** 2026-09-26, SQLite spike.
-- **Symptom:** calling `bulk_translate_field_values` without `clearOutdated`
-  fails with "Argument #3 ($clearOutdated) must be of type bool, null given".
-- **Cause:** the argument is an optional `Boolean` in the GraphQL schema, but
-  `BulkTranslateFieldValues::execute()`
-  (`src/Plugin/ParagraphsBlokkli/Mutation/BulkTranslateFieldValues.php:47`)
-  takes a non-nullable `bool`.
-- **Impact:** none for the editor, since the adapter always sends a boolean. It
-  affects other API clients.
-- **Fix idea:** accept `?bool` and treat `NULL` as `FALSE`.
 
 ## F5: Twig 3.30 breaks escaping
 
