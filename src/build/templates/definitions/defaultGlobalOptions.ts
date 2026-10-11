@@ -1,5 +1,5 @@
 import { defineCodeTemplate } from '../defineTemplate'
-import { isBlock } from '../../Collector/Blocks'
+import { isBlock, isFragment } from '../../Collector/Blocks'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
@@ -24,25 +24,38 @@ export default defineCodeTemplate(
 
     const bundlesWithVisibleLanguage: string[] = []
     const bundlesWithHiddenGlobally: string[] = []
+    // Fragments are all blocks of one bundle: they're told apart by name.
+    const fragmentsWithVisibleLanguage: string[] = []
+    const fragmentsWithHiddenGlobally: string[] = []
 
     for (const file of ctx.blocks.files.values()) {
-      if (!file.definition || !isBlock(file.definition)) {
+      const definition = file.definition
+      if (!definition) {
         continue
       }
-      const usedGlobalOptions = (file.definition.globalOptions ||
-        []) as string[]
+      const usedGlobalOptions = (definition.globalOptions || []) as string[]
 
-      if (usedGlobalOptions.includes(BK_VISIBLE_LANGUAGES)) {
-        bundlesWithVisibleLanguage.push(file.definition.bundle)
-      }
-
-      if (usedGlobalOptions.includes(BK_HIDDEN_GLOBALLY)) {
-        bundlesWithHiddenGlobally.push(file.definition.bundle)
+      if (isBlock(definition)) {
+        if (usedGlobalOptions.includes(BK_VISIBLE_LANGUAGES)) {
+          bundlesWithVisibleLanguage.push(definition.bundle)
+        }
+        if (usedGlobalOptions.includes(BK_HIDDEN_GLOBALLY)) {
+          bundlesWithHiddenGlobally.push(definition.bundle)
+        }
+      } else if (isFragment(definition)) {
+        if (usedGlobalOptions.includes(BK_VISIBLE_LANGUAGES)) {
+          fragmentsWithVisibleLanguage.push(definition.name)
+        }
+        if (usedGlobalOptions.includes(BK_HIDDEN_GLOBALLY)) {
+          fragmentsWithHiddenGlobally.push(definition.name)
+        }
       }
     }
     return `
 export const bundlesWithVisibleLanguage = ${JSON.stringify(bundlesWithVisibleLanguage.sort())}
 export const bundlesWithHiddenGlobally = ${JSON.stringify(bundlesWithHiddenGlobally.sort())}
+export const fragmentsWithVisibleLanguage = ${JSON.stringify(fragmentsWithVisibleLanguage.sort())}
+export const fragmentsWithHiddenGlobally = ${JSON.stringify(fragmentsWithHiddenGlobally.sort())}
 
 export const globalOptionsDefaults = ${JSON.stringify(defaults, null, 2)}`
   },
@@ -57,6 +70,8 @@ type GlobalOptionsDefaults = {
 
 export declare const bundlesWithVisibleLanguage: string[]
 export declare const bundlesWithHiddenGlobally: string[]
+export declare const fragmentsWithVisibleLanguage: string[]
+export declare const fragmentsWithHiddenGlobally: string[]
 
 export declare const globalOptionsDefaults: Record<string, GlobalOptionsDefaults>
 `

@@ -17,7 +17,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F10 | [Paragraphs below level 5 are lost on publish](#f10-paragraphs-below-level-5-are-lost-on-publish)                                       | `paragraphs_blokkli` | medium   | workaround |
 | F11 | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                                   | `paragraphs_blokkli` | low      | open       |
 | F12 | ["Make reusable" on a container with unpublished children](#f12-make-reusable-on-a-container-with-unpublished-children)                 | `paragraphs_blokkli` | medium   | open       |
-| F13 | [`bkVisibleLanguages` on library blocks](#f13-bkvisiblelanguages-on-library-blocks)                                                     | `@blokkli/editor`    | low      | open       |
 | F14 | [The comment filter leaks into new text formats](#f14-the-comment-filter-leaks-into-new-text-formats)                                   | `paragraphs_blokkli` | low      | open       |
 | F15 | [Config pages have no label in entity lists](#f15-config-pages-have-no-label-in-entity-lists)                                           | `paragraphs_blokkli` | low      | open       |
 | F16 | [Mutations ignore a field's allowed types](#f16-mutations-ignore-a-fields-allowed-types)                                                | `paragraphs_blokkli` | medium   | open       |
@@ -267,24 +266,6 @@ From chunk 04 (2026-09-26):
   Once fixed, enable it, and add the containers to
   `Paragraph/FromLibrary/fragment.graphql` without letting them spread
   `paragraphFromLibrary` (a cycle).
-
-## F13: `bkVisibleLanguages` on library blocks
-
-- **Found:** 2026-09-26, the frontend review of 13b's plan.
-- **Symptom:** the options of a block from the library show "Visible languages",
-  but the setting has no effect.
-- **Cause:** the options form uses the reusable block's definition
-  (`src/runtime/editor/features/options/index.vue:84-86`), so the value is
-  stored on the `from_library` paragraph. `isVisibleByOptions()`
-  (`src/runtime/helpers/runtimeHelpers/index.ts:209-219`) checks whether that
-  bundle opted into the option, and the built-in FromLibrary block opts into
-  none (`src/runtime/components/Blocks/FromLibrary/index.vue:27-32`).
-- **Fix idea:** check the reusable block's definition for `from_library` items,
-  as the options form does.
-- **Fragments too** (13d, by reading): `bundlesWithVisibleLanguage` only
-  collects block definitions
-  (`src/build/templates/definitions/defaultGlobalOptions.ts:27-37`), so the
-  option has no effect on `blokkli_fragment` blocks either.
 
 ## F14: The comment filter leaks into new text formats
 

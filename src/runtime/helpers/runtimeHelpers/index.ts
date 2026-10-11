@@ -11,13 +11,18 @@ import type { RuntimeBlockOptionArray } from '../../../global/types/blockOptions
 import {
   bundlesWithVisibleLanguage,
   bundlesWithHiddenGlobally,
+  fragmentsWithVisibleLanguage,
+  fragmentsWithHiddenGlobally,
 } from '#blokkli-build/default-global-options'
 import type { FieldListItem } from '#blokkli/types'
 import {
   BK_HIDDEN_GLOBALLY,
   BK_VISIBLE_LANGUAGES,
 } from '../../../global/constants'
-import { fromLibraryBlockBundle } from '#blokkli-build/config'
+import {
+  fragmentBlockBundle,
+  fromLibraryBlockBundle,
+} from '#blokkli-build/config'
 
 /**
  * Map all kinds of truthy values for a checkbox.
@@ -198,6 +203,41 @@ export function getRuntimeOptionValue(
 }
 
 /**
+ * What says which global options an item has: its bundle and, for a fragment
+ * block, the fragment's name.
+ */
+type GlobalOptionsItem = {
+  bundle: string
+  props?: Record<string, any> | null
+}
+
+/**
+ * Whether an item's definition has a global option, given the bundles and the
+ * fragments that have it.
+ *
+ * A block from the library has the options of its reusable block: the options
+ * form shows those, and stores their values on the library block. A fragment
+ * block has the options of its fragment.
+ */
+function hasGlobalOption(
+  item: GlobalOptionsItem,
+  bundles: string[],
+  fragments: string[],
+): boolean {
+  if (item.bundle === fromLibraryBlockBundle) {
+    const block = item.props?.libraryItem?.block
+    if (block && typeof block.bundle === 'string') {
+      return hasGlobalOption(block, bundles, fragments)
+    }
+  }
+  if (item.bundle === fragmentBlockBundle) {
+    const name = item.props?.name
+    return typeof name === 'string' && fragments.includes(name)
+  }
+  return bundles.includes(item.bundle)
+}
+
+/**
  * Determines whether an item is visible.
  */
 export function isVisibleByOptions(
@@ -213,7 +253,11 @@ export function isVisibleByOptions(
   if (item.options) {
     // Hide if the "hidden globally" option is set.
     if (
-      bundlesWithHiddenGlobally.includes(item.bundle) &&
+      hasGlobalOption(
+        item,
+        bundlesWithHiddenGlobally,
+        fragmentsWithHiddenGlobally,
+      ) &&
       mapCheckboxTrue(item.options[BK_HIDDEN_GLOBALLY]) === '1'
     ) {
       return false
@@ -221,7 +265,13 @@ export function isVisibleByOptions(
 
     // Hide if the bundle has the "visible languages" option enabled and if
     // the current language is not included in the visible languages.
-    if (bundlesWithVisibleLanguage.includes(item.bundle)) {
+    if (
+      hasGlobalOption(
+        item,
+        bundlesWithVisibleLanguage,
+        fragmentsWithVisibleLanguage,
+      )
+    ) {
       const option = item.options[BK_VISIBLE_LANGUAGES]
       if (language && option && typeof option === 'string') {
         const languages = option.split(',')
