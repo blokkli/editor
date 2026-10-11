@@ -47,6 +47,23 @@ the type `focalPoint`, whose value is `"x,y"`, the point's offsets from the
 image's left and top edges in whole percent. The dialog shows it on the image's
 preview, where a click or a drag sets it. Its errors are shown below the form.
 
+An input can depend on another input of the form, a checkbox or one with
+options: with `visibleIf`, it's only shown while the other input has the given
+value, with `requiredIf` it's required while it has. An input that isn't shown
+needs no value.
+
+```typescript
+{
+  type: 'text',
+  name: 'licence',
+  label: 'Licence',
+  required: false,
+  // Shown and required while the checkbox "licensed" is ticked.
+  visibleIf: { name: 'licensed', value: true },
+  requiredIf: { name: 'licensed', value: true },
+}
+```
+
 If `complete` is `false`, the media needs a field the dialog can't show, and no
 media can be created from the file. The dialog says so.
 

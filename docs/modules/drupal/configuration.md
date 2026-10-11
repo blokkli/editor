@@ -177,7 +177,14 @@ The form is a media entity form with the form ID
 `media_<type>_paragraphs_blokkli_upload_form` and the base form ID `media_form`.
 Hooks for `media_form` and `hook_form_alter()` apply, and so does the form's
 validation; hooks for the add or edit form's ID (`media_image_add_form`) don't.
-`#states` aren't applied: a field they would hide is shown.
+
+Of a field's `#states`, the dialog applies `visible` and `required` (and
+`invisible` and `optional`) when they depend on one other field it shows: a
+checkbox that is checked or not (`checked`, `unchecked`), or a select or radios
+with a value (`value`). The other field is selected by its name, as in
+`:input[name="field_own_work[value]"]`. Any other state or condition is left
+out: a field it would hide is shown. A state changes nothing about the form's
+validation, as in Drupal's own forms.
 
 ### Options Schema
 

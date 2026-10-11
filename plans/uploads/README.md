@@ -506,10 +506,41 @@ Discussed with the user on 2026-10-11, who picked these four.
   `clipboard/files.test.ts`: no button without create access).
   `support/uploads.ts` has the files and the dialog's helpers.
 
+### 13. Simple states (done)
+
+The user's case (see "Form hooks"): a field shown while a checkbox is unticked.
+
+- **Drupal:** `FormDescription` describes an element's `#states` (its own and
+  those of the elements containing it) as conditions on another input:
+  `visibleIf` and `requiredIf`, from `visible` and `required` (and `invisible`
+  and `optional`, for a checkbox). A condition is one other described input,
+  selected by its name (`:input[name="…"]`, `input[…]`, `select[…]`,
+  `[name=…]`): a checkbox `checked` or `unchecked`, or a select or radios with a
+  `value`. Anything else (several conditions, another selector or trigger, an
+  input that isn't described) is left out, as before. An element that's required
+  anyway gets no `requiredIf`. GraphQL: `ParagraphsBlokkliConfigInputCondition`
+  (`name`, `checked`, `value`), on every config input. The form's validation is
+  unchanged.
+- **blökkli:** `PluginConfigInputCondition` (`name`, `value`: a boolean or a
+  string) as an input's `visibleIf` and `requiredIf`. `ConfigForm` leaves out an
+  input whose condition doesn't hold (unless it has an error to show) and marks
+  one required while its condition holds; the dialog needs no value for an input
+  that isn't shown (`isInputVisible`, `isInputRequired`). A hidden input's value
+  is still sent, as a browser sends it. The Drupal module's build adds the
+  conditions to the input fragment when the schema has the type.
+- Tests: unit (`FormDescriptionStatesTest`, the states that become conditions;
+  the two helpers; `uploads.spec.ts`), kernel
+  (`MediaUploadFormTest::testStates`, with the test module's hook), E2E
+  (`upload.test.ts`).
+- **The sandbox:** every site's media forms have a checkbox "Licensed", and a
+  licence shown and required while it's ticked (`blokkli_playground`'s
+  `MediaFormHooks`), so that the states can always be tried (the user,
+  2026-10-11). Neither is a field, so neither is saved; the checkbox says so.
+- Docs: `configuration.md` ("Uploads"), `getUploadForm.md`, the setup skill, and
+  the sandbox skill.
+
 ## Later
 
-- Simple `#states` conditions in the descriptions: "visible" and "required",
-  depending on one checkbox or select (next, the user, 2026-10-11).
 - Setting the focal point of an existing image, such as a block's (waiting: it
   belongs to the file, so it changes every page using the image, outside the
   edit state; better as "edit this media" with the same descriptions).

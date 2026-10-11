@@ -202,6 +202,10 @@ Traefik sends every hostname to the web container's nginx on port 80.
   widget, so the upload dialog sets the point on the image's preview.
   `FieldItemTypeImage.focalPoint` (`FocalPointExtension`) reads it from the
   file's crop, in percent; `Media/Image` crops around it (`object-position`).
+- Media forms: a checkbox "Licensed", and a licence shown and required while
+  it's ticked, through `#states` (`MediaFormHooks`). The upload dialog applies
+  such states; this is the site's example, on every site so that it can always
+  be tried. Neither is a field, so neither is saved.
 - Moves the config pages' canonical route to `/blokkli/config-page/{id}`.
 - `tests/modules/blokkli_playground_test`, only in E2E sandboxes (`bake-e2e`
   installs it): allows the widget on pages, fakes YouTube and Vimeo, and adds

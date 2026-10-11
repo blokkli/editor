@@ -7740,6 +7740,21 @@ type ParagraphsBuilderUrlPrefix {
   prefix: String!
 }
 
+"""
+A condition on another input of the same form: a checkbox that is checked or
+not, or an input with options that has a value.
+"""
+type ParagraphsBlokkliConfigInputCondition {
+  "The name of the other input."
+  name: String!
+
+  "Whether the other input, a checkbox, is checked."
+  checked: Boolean
+
+  "The value the other input, with options, has."
+  value: String
+}
+
 ""
 interface ParagraphsBlokkliConfigInput {
   ""
@@ -7753,6 +7768,12 @@ interface ParagraphsBlokkliConfigInput {
 
   ""
   required: Boolean!
+
+  "If set, the input is only shown while the condition holds."
+  visibleIf: ParagraphsBlokkliConfigInputCondition
+
+  "If set, the input is required while the condition holds."
+  requiredIf: ParagraphsBlokkliConfigInputCondition
 }
 
 ""
@@ -7768,6 +7789,12 @@ type ParagraphsBlokkliConfigInputSeed implements ParagraphsBlokkliConfigInput {
 
   ""
   required: Boolean!
+
+  ""
+  visibleIf: ParagraphsBlokkliConfigInputCondition
+
+  ""
+  requiredIf: ParagraphsBlokkliConfigInputCondition
 }
 
 ""
@@ -7783,6 +7810,12 @@ type ParagraphsBlokkliConfigInputText implements ParagraphsBlokkliConfigInput {
 
   ""
   required: Boolean!
+
+  ""
+  visibleIf: ParagraphsBlokkliConfigInputCondition
+
+  ""
+  requiredIf: ParagraphsBlokkliConfigInputCondition
 
   ""
   defaultValue: String
@@ -7821,6 +7854,12 @@ type ParagraphsBlokkliConfigInputCheckbox implements ParagraphsBlokkliConfigInpu
   required: Boolean!
 
   ""
+  visibleIf: ParagraphsBlokkliConfigInputCondition
+
+  ""
+  requiredIf: ParagraphsBlokkliConfigInputCondition
+
+  ""
   checkboxLabel: String
 
   ""
@@ -7851,6 +7890,12 @@ type ParagraphsBlokkliConfigInputOptions implements ParagraphsBlokkliConfigInput
   required: Boolean!
 
   ""
+  visibleIf: ParagraphsBlokkliConfigInputCondition
+
+  ""
+  requiredIf: ParagraphsBlokkliConfigInputCondition
+
+  ""
   variant: ParagraphsBlokkliConfigInputOptionsVariant!
 
   ""
@@ -7873,6 +7918,12 @@ type ParagraphsBlokkliConfigInputHost implements ParagraphsBlokkliConfigInput {
 
   ""
   required: Boolean!
+
+  ""
+  visibleIf: ParagraphsBlokkliConfigInputCondition
+
+  ""
+  requiredIf: ParagraphsBlokkliConfigInputCondition
 }
 
 """
@@ -7891,6 +7942,12 @@ type ParagraphsBlokkliConfigInputFocalPoint implements ParagraphsBlokkliConfigIn
 
   ""
   required: Boolean!
+
+  ""
+  visibleIf: ParagraphsBlokkliConfigInputCondition
+
+  ""
+  requiredIf: ParagraphsBlokkliConfigInputCondition
 
   """
   The point as "x,y": its offsets from the image's left and top edges, in whole

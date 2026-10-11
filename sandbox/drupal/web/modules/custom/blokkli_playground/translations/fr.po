@@ -29,3 +29,15 @@ msgstr "Convertir un lien en texte"
 
 msgid "(opens in a new tab)"
 msgstr "(s’ouvre dans un nouvel onglet)"
+
+msgid "Licensed"
+msgstr "Sous licence"
+
+msgid "Shows the licence. An example of a field that depends on another: neither is saved."
+msgstr "Affiche la licence. Un exemple de champ qui dépend d'un autre : aucun des deux n'est enregistré."
+
+msgid "Licence"
+msgstr "Licence"
+
+msgid "A licensed media needs its licence."
+msgstr "Un média sous licence a besoin de sa licence."

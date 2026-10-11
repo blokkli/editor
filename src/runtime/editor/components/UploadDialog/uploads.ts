@@ -7,6 +7,7 @@ import type {
   UploadType,
 } from '#blokkli/editor/types/uploads'
 import { getUploadType } from '#blokkli/editor/helpers/uploads'
+import { isInputRequired } from '#blokkli/editor/helpers/pluginConfig'
 
 export type UploadStatus = 'queued' | 'uploading' | 'uploaded' | 'failed'
 
@@ -67,12 +68,16 @@ export type UploadMethods = Required<
 >
 
 /**
- * Whether a field has a value, if it needs one.
+ * Whether a field has a value, if it needs one with the form's values.
  */
-function isFilled(input: PluginConfigInput, value: unknown): boolean {
-  if (!input.required) {
+function isFilled(
+  input: PluginConfigInput,
+  values: Record<string, unknown>,
+): boolean {
+  if (!isInputRequired(input, values)) {
     return true
   }
+  const value = values[input.name]
   if (input.type === 'checkbox') {
     return value === true
   }
@@ -118,9 +123,7 @@ export function createUploads(
           item.status === 'uploaded' &&
           (item.mediaId !== null ||
             (!!item.form?.complete &&
-              item.form.inputs.every((input) =>
-                isFilled(input, item.values[input.name]),
-              ))),
+              item.form.inputs.every((input) => isFilled(input, item.values)))),
       ),
   )
 

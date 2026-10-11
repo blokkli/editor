@@ -233,6 +233,32 @@ describe('Uploading pasted files', async () => {
     await expect.poll(() => blockCount(page)).toBe(before + 2)
   })
 
+  test('a field a form shows while a checkbox is ticked is required then', async () => {
+    const before = await blockCount(page)
+    await pasteAndDrop(page, [{ name: 'licensed.png', type: 'image/png' }])
+    await expect.poll(() => uploadStatuses(page)).toEqual(['uploaded'])
+
+    // The site's hook (`MediaFormHooks`) sets the licence's "#states".
+    const licence = uploadField(page, 'blokkli_playground_licence')
+    expect(await licence.count()).toBe(0)
+    expect(await dialogSubmit(page).isDisabled()).toBe(false)
+
+    await uploadDialog(page)
+      .locator(
+        '[data-test="config-form-blokkli_playground_licensed"] [data-test="form-toggle-input"]',
+      )
+      .evaluate((input: HTMLInputElement) => input.click())
+    await licence.waitFor()
+    expect(await dialogSubmit(page).isDisabled()).toBe(true)
+
+    await licence.fill('CC BY 4.0')
+    await licence.blur()
+    await expect.poll(() => dialogSubmit(page).isDisabled()).toBe(false)
+    await dialogSubmit(page).click()
+    await uploadDialog(page).waitFor({ state: 'detached' })
+    await expect.poll(() => blockCount(page)).toBe(before + 1)
+  })
+
   test("an image dropped on a block's image replaces it", async () => {
     const before = await withApp(page, (app) => app.state.getAllUuids())
     await pasteAndDrop(page, [{ name: 'old.png', type: 'image/png' }])

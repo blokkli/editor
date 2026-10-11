@@ -333,6 +333,40 @@ describe('createUploads', () => {
     })
   })
 
+  test('a field shown while a checkbox is ticked is only required then', async () => {
+    const condition = { name: 'licensed', value: true }
+    const { adapter, uploads } = buildAdapter({
+      inputs: [
+        {
+          type: 'checkbox',
+          name: 'licensed',
+          label: 'Licensed',
+          required: false,
+          defaultValue: false,
+        },
+        {
+          type: 'text',
+          name: 'licence',
+          label: 'Licence',
+          required: false,
+          visibleIf: condition,
+          requiredIf: condition,
+        },
+      ],
+      complete: true,
+    })
+    const state = createUploads([buildFile('a.png')], adapter)
+    state.start()
+    uploads[0]!.result.resolve({ fileId: '1' })
+    await flush()
+
+    expect(state.isReady.value).toBe(true)
+    state.items[0]!.values.licensed = true
+    expect(state.isReady.value).toBe(false)
+    state.items[0]!.values.licence = 'CC BY 4.0'
+    expect(state.isReady.value).toBe(true)
+  })
+
   test("a field's value is applied to the other files that have the field", async () => {
     const { adapter, uploads } = buildAdapter()
     // The third file's form has no credit.

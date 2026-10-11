@@ -19,6 +19,7 @@
         v-else-if="item.type === 'text'"
         v-bind="item"
         v-model="value[item.name]"
+        :required="isInputRequired(item, value)"
         :id-prefix
         lazy
       />
@@ -26,6 +27,7 @@
         v-else-if="item.type === 'options'"
         v-bind="item"
         v-model="value[item.name]"
+        :required="isInputRequired(item, value)"
         :id-prefix
       />
       <p
@@ -48,6 +50,10 @@ import FormCheckbox from './Checkbox/index.vue'
 import FormText from './Text/index.vue'
 import FormOptions from './Options/index.vue'
 import { computed, useId } from '#imports'
+import {
+  isInputRequired,
+  isInputVisible,
+} from '#blokkli/editor/helpers/pluginConfig'
 import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
 
 const props = defineProps<{
@@ -65,16 +71,22 @@ const props = defineProps<{
 // The fields' names repeat when several forms are shown.
 const idPrefix = useId() + '-'
 
-// A focal point is set on its image, which the form doesn't show.
-const renderedConfig = computed(() =>
-  props.config.filter((v) => v.type !== 'seed' && v.type !== 'focalPoint'),
-)
-
 const value = defineModel<Record<string, any>>({
   default: () => {
     return {}
   },
 })
+
+// A focal point is set on its image, which the form doesn't show. An input
+// whose condition doesn't hold is left out, unless it has an error to show.
+const renderedConfig = computed(() =>
+  props.config.filter(
+    (v) =>
+      v.type !== 'seed' &&
+      v.type !== 'focalPoint' &&
+      (isInputVisible(v, value.value) || !!props.errors?.[v.name]),
+  ),
+)
 
 function updateSeed() {
   props.config.forEach((config) => {

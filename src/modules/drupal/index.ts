@@ -199,6 +199,23 @@ export declare const templateEditRouteName: string|null
   }`
       : ''
 
+    // Older versions of the module have no conditions.
+    const configInputConditions = graphql.schemaGetType(
+      'ParagraphsBlokkliConfigInputCondition',
+    )
+      ? `
+  visibleIf {
+    name
+    checked
+    value
+  }
+  requiredIf {
+    name
+    checked
+    value
+  }`
+      : ''
+
     graphql.addDocument(
       'blokkli:paragraphsBlokkliConfigInput',
       `
@@ -208,6 +225,7 @@ fragment paragraphsBlokkliConfigInput on ParagraphsBlokkliConfigInput {
   label
   description
   required
+${configInputConditions}
 
   ... on ParagraphsBlokkliConfigInputText {
     defaultValueText: defaultValue

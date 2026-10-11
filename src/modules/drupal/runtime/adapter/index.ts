@@ -38,7 +38,10 @@ import type {
   GetEditStatesItem,
   PublishOptions,
 } from '#blokkli/editor/features/publish/types'
-import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
+import type {
+  PluginConfigInput,
+  PluginConfigInputCondition,
+} from '#blokkli/editor/types/pluginConfig'
 import type { TranslationState } from '#blokkli/editor/types/state'
 import type { BlockBundleDefinition } from '#blokkli/editor/types/definitions'
 import type { TemplateItem } from '#blokkli/editor/features/templates/types'
@@ -159,11 +162,29 @@ function configObjectToUserConfigInput(
   })
 }
 
+/**
+ * Map a condition on another input: a checkbox that's checked or not, or an
+ * input that has a value.
+ */
+function mapPluginConfigInputCondition(
+  condition: ParagraphsBlokkliConfigInputFragment['visibleIf'],
+): PluginConfigInputCondition | undefined {
+  if (typeof condition?.checked === 'boolean') {
+    return { name: condition.name, value: condition.checked }
+  } else if (typeof condition?.value === 'string') {
+    return { name: condition.name, value: condition.value }
+  }
+}
+
 function mapPluginConfigInputs(
   inputs: ParagraphsBlokkliConfigInputFragment[],
 ): PluginConfigInput[] {
   return inputs
     .map<PluginConfigInput | null>((input) => {
+      const conditions = {
+        visibleIf: mapPluginConfigInputCondition(input.visibleIf),
+        requiredIf: mapPluginConfigInputCondition(input.requiredIf),
+      }
       if (input.__typename === 'ParagraphsBlokkliConfigInputText') {
         return {
           type: 'text',
@@ -171,6 +192,7 @@ function mapPluginConfigInputs(
           label: input.label,
           description: input.description,
           required: input.required,
+          ...conditions,
           defaultValue: input.defaultValueText,
           minLength: input.minLength,
           maxLength: input.maxLength,
@@ -186,6 +208,7 @@ function mapPluginConfigInputs(
           label: input.label,
           description: input.description,
           required: input.required,
+          ...conditions,
           defaultValue: input.defaultValueCheckbox ?? false,
           checkboxLabel: input.checkboxLabel,
         }
@@ -196,6 +219,7 @@ function mapPluginConfigInputs(
           label: input.label,
           description: input.description,
           required: input.required,
+          ...conditions,
           defaultValue: input.defaultValueOptions ?? '',
           variant: input.variant,
           options: input.options,
@@ -207,6 +231,7 @@ function mapPluginConfigInputs(
           label: input.label,
           description: input.description,
           required: input.required,
+          ...conditions,
         }
       } else if (
         input.__typename === 'ParagraphsBlokkliConfigInputFocalPoint'
@@ -217,6 +242,7 @@ function mapPluginConfigInputs(
           label: input.label,
           description: input.description,
           required: input.required,
+          ...conditions,
           defaultValue: input.defaultValueFocalPoint,
         }
       }
