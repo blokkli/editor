@@ -397,17 +397,28 @@ module's.
 Machine translation with DeepL, for "Translate texts", "Auto-translate" and the
 agent's translation tool. It needs the `deeplcom/deepl-php` library, not TMGMT.
 
-- **The API key:** don't enter it in the settings form
-  (`/admin/config/content/blokkli/deepl`), which stores it in config, so a
-  config export would commit it. Set it from the environment in `settings.php`:
+- **The API key:** set it from the environment in `settings.php`, and store a
+  placeholder in config:
 
   ```php
   $config['paragraphs_blokkli_deepl.settings']['api_key'] = getenv('DEEPL_AUTH_KEY') ?: '';
   ```
 
+  ```bash
+  drush config:set paragraphs_blokkli_deepl.settings api_key overridden-at-runtime
+  ```
+
+  The settings form (`/admin/config/content/blokkli/deepl`) shows and stores
+  what is in config, not the key from `settings.php`. With the placeholder it
+  shows the language mapping, and a config export never holds the key. Two
+  things to keep:
+  - Don't type the key into the form: it would be stored and exported.
+  - Keep the `?: ''`. An override that is only set when the variable exists
+    would send the placeholder to DeepL.
+
 - **`language_mapping`:** the DeepL language code for each Drupal language (e.g.
-  `en: EN-GB`, `de: DE`, `fr: FR`), optionally with a DeepL style rule. Source
-  languages are reduced to their base code.
+  `en: EN-GB`, `de: DE`, `fr: FR`), optionally with a DeepL style rule. Set it
+  in the settings form. Source languages are reduced to their base code.
 - **Glossaries:** every multilingual glossary in the DeepL account is used for
   its language pair.
 

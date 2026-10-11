@@ -99,15 +99,8 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 
 ## F7: Undeclared dependencies and config gaps
 
-- **Found:** 2026-09-26, while building the base site in chunk 03.
-- **The DeepL settings form stores the API key in config.** `api_key` is
-  required, and the language mapping only renders once a key is present. Sites
-  that inject the key from `settings.php` either export it with `drush cex` or
-  can't use the form. Fix: make the field optional when an override is active,
-  and show the mapping without it.
-
-From chunk 04 (2026-09-26):
-
+- **Found:** 2026-09-26, while building the content model in chunk 04. The other
+  parts of this finding are fixed.
 - **Blocks with a required field can only be added through the form.** `add`
   validates the new paragraph
   (`src/Plugin/ParagraphsBlokkli/AddMutationBase.php:143`), and its `values`

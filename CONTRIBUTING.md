@@ -143,7 +143,8 @@ ddev dotenv set .ddev/.env.web --nuxt-blokkli-agent-api-key=…
   - `--nuxt-turnstile-secret-key` and `--nuxt-public-turnstile-site-key` add the
     captcha. Cloudflare's test keys work locally.
 - Don't enter the DeepL key in Drupal's settings form: it would end up in the
-  exported config.
+  exported config. The form shows the placeholder that the config stores
+  (`overridden-at-runtime`); the key comes from the environment.
 
 ### The agent
 

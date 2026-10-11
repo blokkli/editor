@@ -131,17 +131,26 @@ Export the config (`drush cex`).
 
 - `composer require deeplcom/deepl-php`, then enable `paragraphs_blokkli_deepl`
   and its GraphQL extension `paragraphs_blokkli_deepl`. No TMGMT.
-- **The key:** from the environment, never through the settings form, which
-  stores it in config (a config export then commits it). In `settings.php`:
+- **The key:** from the environment, with a placeholder in config. In
+  `settings.php`:
 
   ```php
   $config['paragraphs_blokkli_deepl.settings']['api_key'] = getenv('DEEPL_AUTH_KEY') ?: '';
   ```
 
+  Then
+  `drush config:set paragraphs_blokkli_deepl.settings api_key overridden-at-runtime`.
+  The settings form (`/admin/config/content/blokkli/deepl`) shows and stores
+  what is in config, not the key from `settings.php`: with the placeholder it
+  shows the language mapping, and `drush cex` never exports the key.
+  - Never type the key into the form: it would be stored and exported.
+  - Keep the `?: ''`. An override that is only set when the variable exists
+    would send the placeholder to DeepL.
+
 - **`language_mapping`** in `paragraphs_blokkli_deepl.settings`: the DeepL code
   per Drupal language (`en: EN-GB`, `de: DE`, `fr: FR`), optionally with a style
-  rule ID. Set it in the config file or with `drush config:set`, then
-  `drush cex`.
+  rule ID. Set it in the settings form, which lists DeepL's languages, or in the
+  config file; then `drush cex`.
 - **Glossaries:** every multilingual glossary of the DeepL account is used for
   its language pair; there's nothing to configure.
 - **Without a key** the editor still offers machine translation: the module's
@@ -287,7 +296,7 @@ Tell the developer who needs which; don't assign them:
 | A link changed in one language, the others kept the old one   | The link field is translatable                                                                                            |
 | Changing a field in "Edit translation" changed every language | The field is untranslatable; blökkli's form doesn't say so                                                                |
 | Nested paragraphs differ between languages                    | A paragraphs field is translatable                                                                                        |
-| "DeepL API key is not configured."                            | No key in the environment (the `settings.php` override replaces a key saved in the form)                                  |
+| "DeepL API key is not configured."                            | No key in the environment (the `settings.php` override replaces what is stored in config)                                 |
 | "Auto-translate" does nothing                                 | DeepL failed (e.g. no key); the error only shows in "Translate texts"                                                     |
 | Outdated translations aren't marked                           | Content translation is off for the paragraph type, the change was an option or media, or the translation didn't exist yet |
 | Option labels stay in English                                 | Plain string labels, or a plain radio choice given a bare map, or `forceDefaultLanguage`                                  |
