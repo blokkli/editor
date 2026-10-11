@@ -99,8 +99,9 @@ patch. Then in `composer.json`:
   Run `drush cr`, **then** `drush sch-ent-upd`. Run before the cache rebuild, it
   finds nothing to do. A site installed from config
   (`drush si --existing-config`) gets the fields without it.
-- **Enable** `scheduler` first, then `paragraphs_blokkli_scheduler`: the second
-  uses the first, but doesn't declare it.
+- **Enable** `paragraphs_blokkli_scheduler`, and `scheduler` to schedule hosts
+  and paragraphs. Pending changes are scheduled by the submodule alone. Without
+  `scheduler`, the editor offers no schedule for paragraphs.
 - **GraphQL server:** enable the extension `paragraphs_blokkli_scheduler`. It
   provides the paragraphs' dates to the editor, so no `fields` entries are
   needed for them.

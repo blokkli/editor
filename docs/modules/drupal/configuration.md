@@ -377,14 +377,15 @@ template dialog needs a search provider of the type "Paragraph Templates".
 
 ### paragraphs_blokkli_scheduler
 
-Scheduling, built on the contrib `scheduler` module, which it needs but doesn't
-declare:
+Scheduling. Pending changes need nothing else; single paragraphs need the
+contrib `scheduler` module:
 
 - **Pending changes:** the "Schedule" mode of the publish dialog stores a
   `publish_on` date on the edit state. Cron publishes the changes then.
 - **Single paragraphs:** "Manage schedule" sets scheduler's publish and
-  unpublish dates on paragraphs. scheduler has no paragraph support of its own;
-  it needs the patch from
+  unpublish dates on paragraphs. Without `scheduler`, no paragraph type can be
+  scheduled. scheduler has no paragraph support of its own; it needs the patch
+  from
   [scheduler#3312200](https://www.drupal.org/project/scheduler/issues/3312200),
   and scheduling enabled on each paragraph type.
 

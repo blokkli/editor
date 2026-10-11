@@ -100,13 +100,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 ## F7: Undeclared dependencies and config gaps
 
 - **Found:** 2026-09-26, while building the base site in chunk 03.
-- **An undeclared dependency:** `paragraphs_blokkli_scheduler` uses contrib
-  `scheduler` (`scheduler.manager` in `BundleSupportsScheduleProcess.php`,
-  `ParagraphScheduleDateValue.php` and `Mutation/SetParagraphSchedule.php`), but
-  its `.info.yml` doesn't declare it. Not declared on purpose so far (the user,
-  2026-10-11): the module also schedules edit states, which needs nothing from
-  `scheduler`. Either the submodule works without it, or the scheduling of edit
-  states moves into the main module and the submodule declares it.
 - **"All types allowed" reads as "none allowed".** For a paragraphs field with
   `target_bundles: null`, `ParagraphsBlokkliFieldConfig`
   (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/ParagraphsBlokkliFieldConfig.php:84`)
