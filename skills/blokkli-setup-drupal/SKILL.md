@@ -98,9 +98,9 @@ drush en paragraphs_blokkli paragraphs_blokkli_graphql
 - Set up paragraphs as usual: the host's paragraphs field
   (`entity_reference_revisions`) isn't translatable, the paragraph types' fields
   are.
-- **List the allowed paragraph types explicitly on every paragraphs field**,
-  nested ones included. A field that allows "all types" (no `target_bundles`) is
-  reported to the editor as allowing none, so it offers no paragraph types.
+- **A paragraphs field allows what Paragraphs allows in it**, nested ones
+  included: its selected types, every type if none is selected, or every type
+  but the selected ones ("Exclude the selected below").
 - Add `blokkli_fragment` (from `paragraphs_blokkli_fragments`) and
   `from_library` (from `paragraphs_library`) to the allowed types where those
   features should work.
@@ -432,7 +432,6 @@ export default defineBlokkliEditAdapter(async (ctx) => {
 | Symptom                                                                   | Cause                                                                                     |
 | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | No edit button                                                            | Bundle not in the enabled types, missing permissions, or `blokkliProps` not bound         |
-| The editor offers no paragraph types                                      | The paragraphs field allows "all types"; list them                                        |
 | The editor offers no paragraph types to editors, only to admins           | They can't view paragraph types (section 6)                                               |
 | `Unknown type "ParagraphXyz"`, or a `…Unexposed` type                     | The bundle is missing from the GraphQL server's `bundles`                                 |
 | A field is missing from the schema                                        | It's missing from the server's `fields`                                                   |

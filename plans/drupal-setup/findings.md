@@ -100,39 +100,15 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 ## F7: Undeclared dependencies and config gaps
 
 - **Found:** 2026-09-26, while building the base site in chunk 03.
-- **A field's allowed paragraph types are read in six places, not as Paragraphs
-  reads them.** Paragraphs (`ParagraphSelection::getSortedAllowedTypes()`)
-  allows every type when `target_bundles` is empty, and every type but the
-  selected ones with `negate`. `ParagraphsBlokkliFieldConfig`
-  (`pbGetFieldConfig`, what the editor offers) reads an empty selection as every
-  type since 2026-10-11. Still open:
-  - **`negate` is read nowhere.** Reproduced 2026-10-11: for a field that
-    excludes `image`, Paragraphs allows the 22 other types and the editor offers
-    only `image`.
-  - **An empty selection still reads as "no type"** in:
-    - `ParagraphsBlokkliManager::getAllowedParagraphTypes()`
-      (`src/ParagraphsBlokkliManager.php:209`), GraphQL's `targetBundles` of a
-      paragraphs field, and `ParagraphsBlokkliAllowedTypes`
-      (`paragraphsBlokkliAllowedTypes`). The adapter queries neither.
-    - `ConvertMutationBase`
-      (`modules/paragraphs_blokkli_conversion/src/Plugin/ConvertMutationBase.php:157`):
-      the nested paragraphs of a converted paragraph are deleted instead of
-      moved when their new field allows every type. Read in the code, not
-      reproduced.
-    - `EntityQueryTemplates::getAllowedBundles()`
-      (`modules/paragraphs_blokkli_template/src/Plugin/ParagraphsBlokkli/Search/EntityQueryTemplates.php:204`).
-      Reproduced: the template search with a `host` filter fails with "Query
-      condition 'p.type NOT IN ()' cannot be empty". The adapter doesn't send
-      that filter.
-    - `AllowedParagraphsForm` (`src/Form/AllowedParagraphsForm.php:100`): no
-      type is ticked for such a field.
-  - Fix: one lookup that asks the field's selection handler, used by all six.
-- **The editor's field config is cached without the fields.**
-  `ParagraphsBlokkliFieldConfig` adds no cacheability, and the server caches
-  results. Reproduced 2026-10-11 with a query of `pbGetFieldConfig` alone: after
-  a change of a field's allowed types, it answers the old list until a cache
-  rebuild. `ParagraphsBlokkliAllowedTypes` adds every field as a dependency.
-  Fix: the same there, and the list tag of the paragraph types.
+- **The matrix of allowed paragraph types doesn't update the ticks of the
+  field's own settings form.** `AllowedParagraphsForm`
+  (`src/Form/AllowedParagraphsForm.php`) stores `target_bundles` and `negate`.
+  Paragraphs' form takes its ticks from `target_bundles_drag_drop`
+  (`ParagraphSelection::buildConfigurationForm()`), which the matrix never
+  writes. So after a change in the matrix, the field's settings page shows the
+  old ticks, and saving it stores them again. Read in the code 2026-10-11, not
+  reproduced. Fix: set `enabled` in `target_bundles_drag_drop` along with
+  `target_bundles`.
 - **The DeepL settings form stores the API key in config.** `api_key` is
   required, and the language mapping only renders once a key is present. Sites
   that inject the key from `settings.php` either export it with `drush cex` or

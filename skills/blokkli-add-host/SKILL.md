@@ -54,8 +54,8 @@ The docs: [pages with Drupal](https://docs.blokk.li/modules/drupal/pages),
 - **Paragraphs fields:** `entity_reference_revisions` to paragraph, unlimited
   and **untranslatable**. The translations share the list, and blökkli
   translates the paragraphs, not the list.
-- **List the allowed types explicitly** on every paragraphs field. A field that
-  allows "all types" is reported to the editor as allowing none.
+- **Allowed types:** a paragraphs field allows what Paragraphs allows in it: its
+  selected types, or every type if none is selected.
 - **The other fields:** translatable if their value differs per language (text,
   often an address), untranslatable otherwise (dates, links, references, phone
   numbers).
@@ -358,7 +358,6 @@ footer or a site-wide notice.
 | `Unknown type "Node…"` or a `…Unexposed` type                                         | The bundle is missing from the server's `bundles`                                                                            |
 | `blokkliProps` is missing on the type                                                 | The bundle isn't in the enabled types, or the schema wasn't updated after adding it                                          |
 | A paragraphs field is empty while editing and takes no drops                          | `name` isn't the field's machine name                                                                                        |
-| The editor offers no paragraph types in a field                                       | The field allows "all types"; list them                                                                                      |
 | An inline edit of a host field doesn't show until a reload                            | The field is missing from `pbMutatedEntity`, or the template doesn't read it from the slot's `entity`                        |
 | Hovering and dragging stop working on one bundle's pages                              | A `v-blokkli-droppable` or `v-blokkli-editable` for a field the bundle doesn't have                                          |
 | Starting the editor, switching the language or previewing leads into the admin        | The entity type's canonical URL is under `/admin`: move it (section 4)                                                       |

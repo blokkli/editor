@@ -108,12 +108,12 @@ assign them yourself.
 
 ## 2. Where the paragraph type is allowed
 
-- **Every paragraphs field** that should accept the type lists it in
-  `handler_settings.target_bundles`, with `negate: 0`. blökkli reads
-  `target_bundles` only:
-  - A field that allows "all types" (empty `target_bundles`) is reported as
-    allowing none.
-  - `negate` is ignored.
+- **Every paragraphs field** that should accept the type has to allow it.
+  blökkli reads the field's `handler_settings` as Paragraphs does:
+  - A field with an empty `target_bundles` allows every type, the new one
+    included.
+  - A field with `negate: 1` allows every type but the ones in `target_bundles`.
+  - Any other field allows the types in `target_bundles`: add the new one.
 - **Library items** take their allowed types from `allow_library_conversion`,
   not from a field.
 - **Templates** allow every type.
@@ -483,7 +483,7 @@ so they catch none of the problems above.
 
 | Symptom                                                                     | Cause                                                                                       |
 | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| The paragraph type isn't in the add list                                    | Not in the field's `target_bundles`, or only allowed deeper than one level of nesting       |
+| The paragraph type isn't in the add list                                    | Not allowed in the field (section 2), or only allowed deeper than one level of nesting      |
 | `Unknown type "ParagraphXyz"`, or a `…Unexposed` type                       | The bundle is missing from the GraphQL server's `bundles`, or the schema is stale           |
 | A field is missing from the schema                                          | The storage is missing from the server's `fields`                                           |
 | The component gets `undefined` props                                        | The fragment isn't named `paragraph<Pascal>`, or isn't spread where the paragraph is placed |
