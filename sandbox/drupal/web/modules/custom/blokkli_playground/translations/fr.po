@@ -41,3 +41,6 @@ msgstr "Licence"
 
 msgid "A licensed media needs its licence."
 msgstr "Un média sous licence a besoin de sa licence."
+
+msgid "Placeholder for a description of \"@name\": this site has no service that describes images."
+msgstr "Texte de remplacement pour une description de « @name » : ce site n’a pas de service qui décrit les images."

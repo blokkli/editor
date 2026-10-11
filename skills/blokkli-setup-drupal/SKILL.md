@@ -126,7 +126,15 @@ Watch out for:
   library, go through core's upload handling, as in a form. The media field's
   extensions, maximum size and directory (tokens included) apply. The file is
   the request's body, so PHP's `post_max_size` and the web server's body size
-  (nginx's `client_max_body_size`) limit it too.
+  (nginx's `client_max_body_size`) limit it too. An upload is stored in the
+  field's directory (or on Rokka) straight away, as a temporary file, as in
+  core's media form; the editor deletes a cancelled one, cron the rest. For a
+  field with public files, editors need `access content`.
+- **Generated alt texts:** with the rokka module's setting "Manually fetch alt
+  tags", the upload dialog has a "Generate" button for an image on Rokka; with
+  "Autogenerate image alt tags", the alt text is filled in. For another storage,
+  the site adds a service tagged `paragraphs_blokkli.alt_text_generator`
+  (`AltTextGeneratorInterface`).
 - **The upload dialog's fields:** the media type's `media_library` form display
   decides them. Put the name and the alt text there. The dialog shows text
   fields, text areas, checkboxes, selects and radios; a visible required field

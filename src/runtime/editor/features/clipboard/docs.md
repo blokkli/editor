@@ -34,9 +34,13 @@ the files opens a dialog:
   gets "Apply to all" next to it, which sets its value for the other files.
 - An image's focal point, if its form has one, is set on its preview: a click or
   a drag, or the arrow keys.
+- An image's alt text gets a "Generate" button if the form names its field and
+  the adapter implements [adapter.generateUploadAltText].
 - When files of a type can become blocks of several bundles, the dialog asks
   which.
 - "Add" creates the media, then adds the blocks with one mutation.
+- "Cancel" aborts the uploads. With [adapter.deleteUploads], the files uploaded
+  so far are deleted.
 
 Without these methods, each file is read into memory and added with
 [adapter.addBlockFromClipboardItem].

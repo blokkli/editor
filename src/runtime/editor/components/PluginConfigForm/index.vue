@@ -139,7 +139,7 @@ defineExpose({
         grid-column: 1;
       }
       > .bk-plugin-config-form-action {
-        @apply flex items-center ml-10;
+        @apply flex items-center gap-5 ml-10;
         grid-column: 2;
         grid-row: 1;
         /* Below the label, and as high as the input. */

@@ -1,9 +1,6 @@
 query pbGetUploadForm($type: ParagraphsBlokkliUploadType!, $fileId: String!) {
   form: pbGetUploadForm(type: $type, fileId: $fileId) {
-    complete
-    inputs {
-      ...paragraphsBlokkliConfigInput
-    }
+    ...blokkliUploadForm
   }
 }
 

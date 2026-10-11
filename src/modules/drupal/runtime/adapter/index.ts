@@ -1613,9 +1613,26 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             ? {
                 inputs: mapPluginConfigInputs(v.data.form.inputs),
                 complete: v.data.form.complete,
+                altTextInput: v.data.form.altTextInput ?? undefined,
               }
             : null,
         )
+
+      if (hasMutation('pbDeleteUploads')) {
+        adapter.deleteUploads = (e) =>
+          useGraphqlMutation('pbDeleteUploads', {
+            fileIds: e.uploads.map((upload) => upload.fileId),
+          }).then(() => undefined)
+      }
+
+      if (hasMutation('pbGenerateUploadAltText')) {
+        adapter.generateUploadAltText = (e) =>
+          useGraphqlMutation('pbGenerateUploadAltText', {
+            type: e.upload.type,
+            fileId: e.upload.fileId,
+            langcode: ctx.value.langcode,
+          }).then((v) => v.data.text ?? null)
+      }
 
       adapter.createMediaFromUploads = (e) =>
         useGraphqlMutation('pbCreateMediaFromUploads', {

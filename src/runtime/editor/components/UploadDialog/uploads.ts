@@ -58,6 +58,10 @@ export type UploadItem = {
    * The label of the existing media with the same file.
    */
   duplicate: string | null
+  /**
+   * Whether the alt text of the file's image is being generated.
+   */
+  isGenerating: boolean
 }
 
 export type UploadMethods = Required<
@@ -65,7 +69,8 @@ export type UploadMethods = Required<
     BlokkliAdapter<unknown>,
     'uploadFile' | 'getUploadForm' | 'createMediaFromUploads'
   >
->
+> &
+  Pick<BlokkliAdapter<unknown>, 'deleteUploads' | 'generateUploadAltText'>
 
 /**
  * Whether a field has a value, if it needs one with the form's values.
@@ -107,9 +112,12 @@ export function createUploads(
       messages: [],
       mediaId: null,
       duplicate: null,
+      isGenerating: false,
     })),
   )
   const controllers = new Set<AbortController>()
+  // The uploaded files the adapter was asked to delete.
+  const deleted = new Set<string>()
 
   /**
    * Whether there are files, each uploaded and its media can be created: its
@@ -138,9 +146,28 @@ export function createUploads(
       .forEach(upload)
   }
 
+  /**
+   * Delete uploaded files that get no media. Not waited for: what the adapter
+   * can't delete, the backend deletes later.
+   */
+  function deleteUploads(uploads: (UploadedFile | null)[]) {
+    const pending = uploads.filter(
+      (upload): upload is UploadedFile =>
+        !!upload && !deleted.has(upload.fileId),
+    )
+    if (!pending.length || !adapter.deleteUploads) {
+      return
+    }
+    pending.forEach((upload) => deleted.add(upload.fileId))
+    adapter.deleteUploads({ uploads: pending }).catch(() => {})
+  }
+
   async function upload(item: UploadItem) {
     const controller = new AbortController()
     controllers.add(controller)
+    // An earlier upload of the file, whose form couldn't be loaded.
+    deleteUploads([item.upload])
+    item.upload = null
     item.status = 'uploading'
     item.progress = 0
     item.error = null
@@ -158,6 +185,11 @@ export function createUploads(
         item.duplicate = result.media.label
       } else {
         item.upload = { type: item.type, fileId: result.fileId }
+        // An upload that finished while it was aborted.
+        if (controller.signal.aborted) {
+          deleteUploads([item.upload])
+          return
+        }
         const form = await adapter.getUploadForm({ upload: item.upload })
         if (!form) {
           throw new Error()
@@ -200,6 +232,48 @@ export function createUploads(
     const index = items.indexOf(item)
     if (index !== -1) {
       items.splice(index, 1)
+      if (item.mediaId === null) {
+        deleteUploads([item.upload])
+      }
+    }
+  }
+
+  /**
+   * Whether the alt text of a file's image can be generated: its form names
+   * the field for it, and its media isn't created.
+   */
+  function canGenerateAltText(item: UploadItem): boolean {
+    return (
+      !!adapter.generateUploadAltText &&
+      !!item.upload &&
+      !!item.form?.altTextInput &&
+      item.mediaId === null
+    )
+  }
+
+  /**
+   * Generate the alt text of a file's image, as the value of its field.
+   *
+   * @returns Whether there is one.
+   */
+  async function generateAltText(item: UploadItem): Promise<boolean> {
+    const name = item.form?.altTextInput
+    if (!canGenerateAltText(item) || !name || item.isGenerating) {
+      return false
+    }
+    item.isGenerating = true
+    try {
+      const text = await adapter.generateUploadAltText!({
+        upload: item.upload!,
+      })
+      // The media may have been created while waiting.
+      if (!text || item.mediaId !== null) {
+        return false
+      }
+      item.values[name] = text
+      return true
+    } finally {
+      item.isGenerating = false
     }
   }
 
@@ -232,10 +306,14 @@ export function createUploads(
   }
 
   /**
-   * Abort the running uploads; the queued ones aren't started.
+   * Abort the running uploads; the queued ones aren't started. The uploaded
+   * files that have no media are deleted.
    */
   function abort() {
     controllers.forEach((controller) => controller.abort())
+    deleteUploads(
+      items.filter((item) => item.mediaId === null).map((item) => item.upload),
+    )
   }
 
   /**
@@ -286,5 +364,7 @@ export function createUploads(
     createMedia,
     getSharedItems,
     applyToAll,
+    canGenerateAltText,
+    generateAltText,
   }
 }

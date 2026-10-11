@@ -4138,6 +4138,10 @@ msgctxt "unexpectedMutationError"
 msgid "An unexpected error happened."
 msgstr "Ein unerwarteter Fehler ist aufgetreten"
 
+msgctxt "uploadAltTextFailed"
+msgid "No alt text could be generated."
+msgstr "Es konnte kein Alternativtext generiert werden."
+
 msgctxt "uploadApplyToAll"
 msgid "Apply to all"
 msgstr "Für alle übernehmen"
@@ -4165,6 +4169,10 @@ msgstr "@count Dateien"
 msgctxt "uploadFocalPoint"
 msgid "Click the image to set its focal point."
 msgstr "Ein Klick ins Bild setzt den Fokuspunkt."
+
+msgctxt "uploadGenerateAltText"
+msgid "Generate"
+msgstr "Generieren"
 
 msgctxt "uploadIncomplete"
 msgid "The media needs a field that can't be filled in here."

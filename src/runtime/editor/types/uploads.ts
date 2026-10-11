@@ -65,6 +65,11 @@ export type UploadForm = {
    * be filled in, and no media can be created.
    */
   complete: boolean
+  /**
+   * The name of the field for an image's alt text, if the adapter can generate
+   * it (generateUploadAltText).
+   */
+  altTextInput?: string
 }
 
 export type CreateMediaFromUploadsItem = {

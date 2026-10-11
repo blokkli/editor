@@ -146,7 +146,9 @@ uploaded files are at the top of the library.
 
 - **Access:** the `edit paragraphs blokkli edit state` permission and create
   access to the media type, such as `create image media`. Without it, the editor
-  refuses the user's files.
+  refuses the user's files. For a field with public files, the user also needs
+  `access content` ("View published content"), as in core's media form: core
+  only lets a user reference a public file with it.
 - **The route:** `POST /paragraphs_blokkli/upload/{image|file}`, under the path
   the setup already sends to Drupal. Its body is the raw file. It needs a CSRF
   token, which the editor gets through GraphQL.
@@ -154,9 +156,16 @@ uploaded files are at the top of the library.
   field's allowed extensions, maximum size and directory apply. As the file is
   the request's body, PHP's `post_max_size` (not `upload_max_filesize`) and the
   web server's body size (nginx's `client_max_body_size`) limit it too.
-- **Temporary files:** an upload is a temporary file of the user, moved to the
-  field's directory when its media is created. Cron deletes an abandoned upload,
-  after six hours by default.
+- **Where a file is stored:** in the source field's directory (or on its
+  storage, such as Rokka) as soon as it's uploaded, as a temporary file of the
+  user. Core's media form does the same. Creating the media makes it permanent.
+  A file Drupal refuses, or one that's a duplicate, doesn't get there.
+- **Cancelled uploads:** when the dialog is cancelled, the editor asks Drupal to
+  delete its uploads. Cron deletes what's left, such as the uploads of a closed
+  tab: temporary files are deleted after six hours by default. On Rokka,
+  deleting an upload deletes its image there unless another file of the site has
+  the same image. Environments that share a Rokka organisation don't know of
+  each other's files.
 - **Languages:** the media is created in the language being edited.
 - **Duplicates:** with the `filehash` module or Rokka, a file with the content
   of an existing media's file doesn't become a second media: the existing one is
@@ -174,6 +183,24 @@ widget (`image_focal_point`) on the image's source field, the dialog shows the
 focal point on the image's preview: a click or a drag sets it, and the arrow
 keys move it. It's saved as the widget's own form saves it, as a crop of the
 image's file.
+
+An image's alt text gets a "Generate" button when a generator applies to the
+media type's source field. The module has one for images on Rokka, which follows
+the [rokka](https://www.drupal.org/project/rokka) module's two settings, as that
+module's own media forms do:
+
+- "Manually fetch alt tags using OpenAI vision on existing images": the dialog
+  shows the button, which asks Rokka for a description in the language being
+  edited. Rokka only describes images for paying organisations: for another one,
+  the dialog says that no alt text could be generated.
+- "Autogenerate image alt tags with OpenAI Vision": the rokka module asks for
+  the descriptions with every upload, so the alt text is filled in already. This
+  includes uploads that are cancelled afterwards.
+
+A site can add its own generator, for any storage: a service that implements
+`\Drupal\paragraphs_blokkli\AltText\AltTextGeneratorInterface`, with the tag
+`paragraphs_blokkli.alt_text_generator`. The one with the highest priority that
+applies is used.
 
 The form is a media entity form with the form ID
 `media_<type>_paragraphs_blokkli_upload_form` and the base form ID `media_form`.

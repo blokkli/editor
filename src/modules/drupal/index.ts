@@ -560,7 +560,32 @@ fragment blokkliClipboard${type} on ParagraphsBlokkliSupportedClipboard${type} {
       clipboardImageFields.has('canUpload') &&
       clipboardImageFields.has('mediaBundle')
     ) {
+      // Older versions of the module can't generate an image's alt text.
+      const uploadFormFields = [
+        'complete',
+        'inputs { ...paragraphsBlokkliConfigInput }',
+        ...(getTypeFields('ParagraphsBlokkliUploadForm').has('altTextInput')
+          ? ['altTextInput']
+          : []),
+      ]
+      graphql.addDocument(
+        'blokkli:uploadForm',
+        `
+fragment blokkliUploadForm on ParagraphsBlokkliUploadForm {
+  ${uploadFormFields.join('\n  ')}
+}
+`,
+      )
       addGraphqlDocument('features/uploads.graphql')
+
+      // Older versions keep an upload in a temporary directory until its media
+      // is created: there's nothing to delete.
+      if (mutationFields.has('pbDeleteUploads')) {
+        addGraphqlDocument('features/uploadsDelete.graphql')
+      }
+      if (mutationFields.has('pbGenerateUploadAltText')) {
+        addGraphqlDocument('features/uploadsAltText.graphql')
+      }
     }
 
     // Build the fragment for the "ParagraphsBlokkliParagraphEditContext" type.

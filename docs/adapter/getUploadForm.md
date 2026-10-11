@@ -29,6 +29,8 @@ type UploadForm = {
   inputs: PluginConfigInput[]
   // Whether the fields are all the form needs.
   complete: boolean
+  // The name of the field for an image's alt text, if it can be generated.
+  altTextInput?: string
 }
 ```
 
@@ -66,6 +68,11 @@ needs no value.
 
 If `complete` is `false`, the media needs a field the dialog can't show, and no
 media can be created from the file. The dialog says so.
+
+With `altTextInput`, the field of that name gets a "Generate" button, which
+fills it in through [adapter.generateUploadAltText]. Name it only if an alt text
+can be generated for the file. To fill the field in without a click, give the
+input a `defaultValue` instead.
 
 The fields' names are the keys of the values that
 [adapter.createMediaFromUploads] gets, and of the errors it returns.

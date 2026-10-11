@@ -56,6 +56,9 @@ before the media are created:
 The dialog uploads two files at a time. `fetch` can't report an upload's
 progress, `XMLHttpRequest` can.
 
+Not every uploaded file gets a media: the user may cancel the dialog. With
+[adapter.deleteUploads], the dialog asks for those files to be deleted.
+
 ## Example
 
 ```typescript

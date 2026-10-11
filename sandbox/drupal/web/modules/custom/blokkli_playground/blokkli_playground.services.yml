@@ -9,3 +9,7 @@ services:
     autowire: true
     tags:
       - { name: access_policy }
+  Drupal\blokkli_playground\AltText\PlaceholderAltTextGenerator:
+    tags:
+      # After a generator of a real service.
+      - { name: paragraphs_blokkli.alt_text_generator, priority: -100 }

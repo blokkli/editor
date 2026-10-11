@@ -1,0 +1,3 @@
+mutation pbDeleteUploads($fileIds: [String!]!) {
+  deleted: pbDeleteUploads(fileIds: $fileIds)
+}

@@ -30,11 +30,13 @@ drupal-setup findings: uploads skipped the media type's create access.
   `/paragraphs_blokkli/`, which the setup already sends to Drupal (one origin is
   a requirement). The body is the raw file, as in core's REST and JSON:API file
   uploads, sent with `XMLHttpRequest` for progress and cancelling.
-- **The upload stores a temporary file in `temporary://`; the media is created
-  when the user confirms**, with the values from the dialog, and only then is
-  the file moved to the field's directory. A cancelled upload never reaches a
-  public path or Rokka, and cron deletes it after six hours. Core's media
-  library also saves the media only on "Save".
+- **The upload stores a temporary file where its field stores files; the media
+  is created when the user confirms**, with the values from the dialog. Until
+  step 15, the file stayed in `temporary://` and was moved when the media was
+  created, so that a cancelled upload never reached a public path or Rokka. It
+  changed for the generated alt texts: Rokka can only describe an image it has.
+  Core's media form stores an upload the same way, and its media library also
+  saves the media only on "Save".
 - **The fields come from the media's own form**, not from the form display's
   config: Drupal builds and processes the media entity form for a new media with
   the uploaded file, in the `media_library` form mode. It's a media entity form,
@@ -586,18 +588,165 @@ What changed, all in Drupal:
 - Not covered: an upload to Rokka itself has never been run here.
 - Docs: `configuration.md` ("Uploads"), and the sandbox skill.
 
+### 15. Uploads stored at their field, and a generated alt text (done)
+
+The user's idea (2026-10-11): a button next to an image's alt text that
+generates it. Rokka can only describe an image it has, so an upload now goes to
+where its field stores files straight away, as in core's media form and media
+library. This replaced the decision that an upload stays in `temporary://` until
+"Add".
+
+What the code says, checked on 2026-10-11:
+
+- Core's image widget stores an upload at the field's location at once, as a
+  temporary file. The media library moves it there before its fields are shown.
+  The save makes it permanent; cron deletes an abandoned one after six hours.
+- The rokka module (3.0.15) has two settings. "Manual": a button in the media
+  form and the media library asks Rokka to describe the image it has, in the
+  current language (`RokkaService::addAutoDescription()`). "Auto": every upload
+  to Rokka asks for descriptions in all the site's languages
+  (`RokkaStreamWrapper::stream_flush()`, which wants the setting to be a real
+  `TRUE`), and the forms prefill the alt text. Its form hooks name core's form
+  IDs and expect a `MediaForm`, so they don't run on `MediaUploadForm`.
+- Reading a `rokka://` file downloads it from Rokka. Its size, dimensions and
+  validity come from the module's metadata without a request (it replaces the
+  image factory). Deleting it deletes the image on Rokka, unless another file of
+  the site has the same hash.
+- Core's upload handler validates a file before it moves it, so a refused file
+  never reaches the field's location.
+
+**Storing** (Drupal)
+
+- The upload route stores the file at the source field's upload location, as a
+  temporary file of the user (`MediaUploader::storeFile()`'s default). The body
+  is still written to `temporary://` first, where the duplicate search and the
+  checks run: a duplicate or a refused file goes no further.
+- For every field, not only those on Rokka (my choice, which the user didn't
+  overrule): one path, which the sandbox's tests run. The price: a cancelled
+  upload of a public field is in the public directory until it's deleted.
+- `MediaUploadForm::save()` no longer moves the file;
+  `MediaUploader::moveFile()` and the uploader's file repository are gone. "Add"
+  sends nothing to Rokka.
+- Two reads of a stored file are gone, since each would download it from Rokka.
+  The duplicate search before an item's form is submitted
+  (`findDuplicateOfFile()`) takes the hash that the rokka module or filehash
+  stored with the file. `checkFile()` no longer checks the content's MIME type:
+  it was checked when the file was stored, and the validators still check the
+  name's extension and the size against the field's settings as they are now.
+- **A cancelled upload is deleted.** The mutation `pbDeleteUploads(fileIds)`
+  returns the number of deleted files. It needs the edit permission, and only
+  deletes temporary files of the current user, as core lets a user remove their
+  own unsaved upload; a permanent file (a media's) and someone else's stay.
+- Anonymous users are refused by all the upload producers
+  (`UploadProducerBase::loadFile()`): they share one user ID. The user asked
+  whether the mutation lets anyone delete any file (2026-10-11); this was the
+  one case where a file of someone else could have been reached. Still wider
+  than needed: a user's own temporary files from elsewhere, such as an unsaved
+  upload in a Drupal form. Closing that needs a marker per upload (offered, not
+  built).
+- A consequence: core lets a user reference a file in a public directory only
+  with `access content`, so an upload to a public field needs it, as in core's
+  media form. Without it, the form's validation fails on the file. The kernel
+  tests' users have it now.
+
+**The alt text** (Drupal)
+
+- A generator is a service tagged `paragraphs_blokkli.alt_text_generator`
+  (`AltText\AltTextGeneratorInterface`: `applies()` to a source field,
+  `generate()` on request, `getDefault()` for an alt text the image has
+  already). `AltText\AltTextGenerators` collects them; the one with the highest
+  priority that applies is used.
+- `RokkaAltTextGenerator` follows the rokka module's settings. With "manual", it
+  applies to an image field on Rokka, and returns the description the metadata
+  already has for the language, or asks Rokka for it. With "auto", the
+  description of the upload is the form's default (prefilled, as in Drupal's
+  forms; the user didn't overrule it). A failed request is logged, and there's
+  no alt text.
+- `ParagraphsBlokkliUploadForm.altTextInput`: the name of the image's alt text
+  input (`<source field>[0][alt]`), if a generator applies and the form has it.
+  The mutation `pbGenerateUploadAltText(type, fileId, langcode)` returns the
+  text, or null, with the form's access. A mutation: never cached, and it may
+  cost.
+- A default alt text only reaches the media if it's submitted, as the dialog
+  does with every field's value: an item without values has none.
+
+**blökkli**
+
+- `UploadForm.altTextInput`, and two optional adapter methods: `deleteUploads`
+  and `generateUploadAltText`.
+- The dialog's state (`uploads.ts`): `abort()` deletes the uploads without a
+  media, once (it's called when the dialog is cancelled and again when it
+  closes); so do removing a file and uploading one again. Not waited for, and
+  errors are ignored. `generateAltText()` sets the field's value.
+- The dialog shows "Generate" in the alt text's action slot, before "Apply to
+  all": the `stars` icon, a spinner while it waits. The text replaces the
+  field's value; no text or an error is a message ("No alt text could be
+  generated."). The action slot's buttons have a gap.
+- The Drupal module: the form's fragment is built in `index.ts` (with
+  `altTextInput` if the schema has it), and the two mutations are documents of
+  their own, added if the schema has them. The adapter registers the methods
+  accordingly.
+- **The sandbox** has a generator that returns a placeholder which says what it
+  is (`blokkli_playground`'s `PlaceholderAltTextGenerator`, priority -100), so
+  that the button can always be tried and tested, as with the "Licensed"
+  checkbox (the user didn't overrule it).
+
+**Tests**
+
+- Kernel: `UploadControllerTest` (the field's directory, nothing there for a
+  refused file or a duplicate), `MediaUploadFormTest` (the file stays and is
+  permanent, the alt text's input and default), `MediaUploaderDuplicateTest` and
+  `MediaUploaderRokkaDuplicateTest` (a stored file isn't read),
+  `RokkaAltTextGeneratorTest` (the rokka module's request replaced; nothing
+  reaches Rokka), `DeleteUploadsTest`, `GenerateUploadAltTextTest`. The test
+  module has a generator that a test turns on.
+- Unit (`uploads.spec.ts`): what's deleted and when, generating.
+- E2E (`clipboard/upload.test.ts`): a cancelled dialog's upload is deleted
+  (Drupal answers 1), and an image's alt text is generated and saved.
+
+**The round on Rokka** (2026-10-11, a throwaway sandbox with the user's test
+organisation; the recipe is in the sandbox skill)
+
+- An upload is stored on Rokka as a temporary file (0.34 s for a small image),
+  with its dimensions from the metadata.
+- Deleting it removes the file, the metadata and the image on Rokka.
+- "Add" creates the media in 0.28 s, without another upload; the file is
+  permanent at the same URI. The focal point is set on Rokka: its hash changes,
+  as the rokka module does with every crop.
+- The same content again is a duplicate (0.02 s, nothing sent to Rokka).
+- Two identical files in one dialog become one media. The second file's metadata
+  row stays behind, without a file: the first media's focal point replaced the
+  image they shared, so Rokka had nothing left to delete for the second. It does
+  no harm (a row without a file isn't a duplicate, and a new file of that name
+  gets a suffix). The rokka module's own forms leave the same when two files
+  share an image and one gets a crop.
+- **Not seen: a generated description.** Rokka answers the request with 403,
+  "You need to be a paying customer to use this call." The request is the right
+  one (the image's hash, the language), the failure ends as "no alt text", and
+  with "auto" the upload still works, without descriptions. A description's
+  text, and the prefilled alt text, are only covered by the kernel tests.
+- Nothing of the round is left in the organisation.
+
+**Risks that remain**
+
+- Environments that share a Rokka organisation: deleting a cancelled upload
+  deletes its image on Rokka when no other file of this site has it, even if
+  another environment does. Removing an item in core's media library does the
+  same, but uploads are cancelled more often.
+- With the "auto" setting, a cancelled upload has still asked Rokka for its
+  descriptions, as in Drupal's forms.
+
+Docs: `configuration.md` ("Uploads"), the adapter docs (`deleteUploads`,
+`generateUploadAltText`, `getUploadForm`, `uploadFile`), the feature's
+`docs.md`, the setup skill and the sandbox skill.
+
 ## Later
 
 - Setting the focal point of an existing image, such as a block's (waiting: it
   belongs to the file, so it changes every page using the image, outside the
   edit state; better as "edit this media" with the same descriptions).
-- Suggested alt texts (open). The old mutations set Rokka's description as the
-  alt text, unseen. The dialog doesn't use it: the file only reaches Rokka when
-  its media is saved, after the user typed the alt text. To prefill the dialog's
-  field with it, an upload for a field on Rokka would be stored on Rokka
-  straight away: a cancelled one then stays there until cron deletes it, and
-  every upload waits for Rokka's description. Or the agent's model, for any
-  backend.
+- Alt texts from the agent's model, for any backend: another generator (step
+  15). And generating the alt texts of all of a dialog's images at once.
 - Adding a dropped file to a multi-value media field ("Add to …", as media
   library items can).
 - Dropping files onto the media library, besides its upload button.

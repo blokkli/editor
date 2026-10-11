@@ -376,6 +376,47 @@ describe('Uploading pasted files', async () => {
     expect(await blockCount(page)).toBe(before)
   })
 
+  test('a cancelled dialog deletes its uploaded file', async () => {
+    await pasteAndDrop(page, [{ name: 'fox.png', type: 'image/png' }])
+    await expect.poll(() => uploadStatuses(page)).toEqual(['uploaded'])
+
+    // The upload is in its field's directory: Drupal is asked to delete it.
+    const deleted = page.waitForResponse((response) =>
+      response.url().includes('pbDeleteUploads'),
+    )
+    await uploadDialog(page).locator('[data-test="dialog-cancel"]').click()
+    const result = await (await deleted).json()
+    expect(result.data.deleted).toBe(1)
+    await uploadDialog(page).waitFor({ state: 'detached' })
+  })
+
+  test("an image's alt text is generated on request", async () => {
+    const before = await withApp(page, (app) => app.state.getAllUuids())
+    await pasteAndDrop(page, [
+      { name: 'heron.png', type: 'image/png' },
+      // A document has no alt text to generate.
+      { name: 'minutes.pdf', type: 'application/pdf' },
+    ])
+    await expect
+      .poll(() => uploadStatuses(page))
+      .toEqual(['uploaded', 'uploaded'])
+
+    const generate = uploadDialog(page).locator(
+      '[data-test="upload-generate-alt-text"]',
+    )
+    expect(await generate.count()).toBe(1)
+    await generate.click()
+    // The site's generator names the file in its placeholder.
+    const alt = uploadField(page, ALT)
+    await expect.poll(() => alt.inputValue()).toContain('heron.png')
+    const text = await alt.inputValue()
+    await dialogSubmit(page).click()
+    await uploadDialog(page).waitFor({ state: 'detached' })
+
+    await expect.poll(() => blockCount(page)).toBe(before.length + 2)
+    expect(await addedAlts(page, before)).toContain(text)
+  })
+
   test('the upload route refuses an upload without the token', async () => {
     const status = await page.evaluate(async () => {
       const response = await fetch(

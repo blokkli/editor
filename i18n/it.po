@@ -3969,6 +3969,10 @@ msgctxt "unexpectedMutationError"
 msgid "An unexpected error happened."
 msgstr ""
 
+msgctxt "uploadAltTextFailed"
+msgid "No alt text could be generated."
+msgstr ""
+
 msgctxt "uploadApplyToAll"
 msgid "Apply to all"
 msgstr ""
@@ -3995,6 +3999,10 @@ msgstr ""
 
 msgctxt "uploadFocalPoint"
 msgid "Click the image to set its focal point."
+msgstr ""
+
+msgctxt "uploadGenerateAltText"
+msgid "Generate"
 msgstr ""
 
 msgctxt "uploadIncomplete"

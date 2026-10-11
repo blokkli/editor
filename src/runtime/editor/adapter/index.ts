@@ -244,6 +244,19 @@ export interface BlokkliAdapter<T> {
   createMediaFromUploads?(e: {
     items: CreateMediaFromUploadsItem[]
   }): Promise<CreateMediaFromUploadsResult[]>
+
+  /**
+   * Delete uploaded files that get no media, such as those of a cancelled
+   * dialog. Without it, the backend has to delete them itself.
+   */
+  deleteUploads?(e: { uploads: UploadedFile[] }): Promise<void>
+
+  /**
+   * Generate the alt text of an uploaded image, in the language being edited:
+   * for a form that names the field for it (altTextInput). Resolves to null if
+   * none could be generated.
+   */
+  generateUploadAltText?(e: { upload: UploadedFile }): Promise<string | null>
 }
 
 /**

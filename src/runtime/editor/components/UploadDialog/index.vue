@@ -134,6 +134,24 @@
               >
                 <template #action="{ input }">
                   <button
+                    v-if="
+                      input.name === item.form.altTextInput &&
+                      uploads.canGenerateAltText(item)
+                    "
+                    type="button"
+                    class="bk-button bk-scheme-mono bk-is-light bk-is-small"
+                    :class="item.isGenerating ? 'pointer-events-none' : ''"
+                    :aria-busy="item.isGenerating"
+                    data-test="upload-generate-alt-text"
+                    @click="onGenerateAltText(item)"
+                  >
+                    <Icon
+                      :name="item.isGenerating ? 'spinner' : 'stars'"
+                      :class="item.isGenerating ? 'animate-spin' : ''"
+                    />
+                    <span>{{ $t('uploadGenerateAltText', 'Generate') }}</span>
+                  </button>
+                  <button
                     v-if="uploads.getSharedItems(item, input.name).length"
                     type="button"
                     class="bk-button bk-scheme-mono bk-is-light bk-is-small"
@@ -352,6 +370,24 @@ async function onSubmit() {
     )
   } finally {
     isCreating.value = false
+  }
+}
+
+async function onGenerateAltText(item: UploadItem) {
+  try {
+    if (await uploads.generateAltText(item)) {
+      return
+    }
+    emitMessage(
+      $t('uploadAltTextFailed', 'No alt text could be generated.'),
+      'error',
+    )
+  } catch (e) {
+    emitMessage(
+      $t('uploadAltTextFailed', 'No alt text could be generated.'),
+      'error',
+      e,
+    )
   }
 }
 

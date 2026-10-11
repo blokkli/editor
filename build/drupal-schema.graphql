@@ -6167,6 +6167,21 @@ type Mutation {
   pbCreateMediaFromUploads(langcode: String!, items: [ParagraphsBlokkliUploadMediaInput!]!): [ParagraphsBlokkliUploadMediaResult!]
 
   """
+  Delete files uploaded in the editor that get no media, such as those of a
+  cancelled dialog. Only the current user's temporary files are deleted; the
+  others are left out. Returns the number of deleted files.
+  """
+  pbDeleteUploads(fileIds: [String!]!): Int!
+
+  """
+  Generate the alt text of an image uploaded in the editor, in the given
+  language, for a form with an altTextInput. It may take a while, and the
+  service that generates it may charge for it. Only for the current user's
+  temporary files. Returns null if none could be generated.
+  """
+  pbGenerateUploadAltText(type: ParagraphsBlokkliUploadType!, fileId: String!, langcode: String!): String
+
+  """
   The token for the upload route's X-CSRF-Token header: the current session's
   token, as /session/token returns it, which a frontend may not route to
   Drupal. Returns null without the permission to edit.
@@ -7966,6 +7981,12 @@ type ParagraphsBlokkliUploadForm {
   can't be described, or the form has no submit button.
   """
   complete: Boolean!
+
+  """
+  The name of the input for an image's alt text, if pbGenerateUploadAltText can
+  generate it. Null for a form without an alt text, or if none can be generated.
+  """
+  altTextInput: String
 }
 
 "The media created from a file uploaded in the editor, or why it wasn't."

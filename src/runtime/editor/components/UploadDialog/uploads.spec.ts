@@ -413,4 +413,160 @@ describe('createUploads', () => {
       undefined,
     ])
   })
+
+  test('abort deletes the uploaded files that have no media, once', async () => {
+    const { adapter, uploads } = buildAdapter()
+    adapter.deleteUploads = vi.fn(() => Promise.resolve())
+    adapter.createMediaFromUploads = vi.fn(() =>
+      Promise.resolve([
+        { mediaId: '7', errors: [] },
+        { mediaId: null, errors: [{ name: 'alt', message: 'Too short.' }] },
+      ]),
+    )
+    const state = createUploads(
+      [
+        buildFile('a.png'),
+        buildFile('b.png'),
+        buildFile('c.png'),
+        buildFile('d.png'),
+      ],
+      adapter,
+      4,
+    )
+    state.start()
+    uploads[0]!.result.resolve({ fileId: '1' })
+    uploads[1]!.result.resolve({ fileId: '2' })
+    // An existing media's file isn't an upload.
+    uploads[2]!.result.resolve({ media: { id: '5', label: 'Dog' } })
+    await flush()
+    // The first file gets its media, the second doesn't.
+    state.items[0]!.values.alt = 'A cat'
+    state.items[1]!.values.alt = 'A'
+    state.remove(state.items[3]!)
+    await state.createMedia()
+
+    state.abort()
+    expect(adapter.deleteUploads).toHaveBeenCalledWith({
+      uploads: [{ type: 'image', fileId: '2' }],
+    })
+
+    // As when the dialog is closed after it was cancelled.
+    state.abort()
+    expect(adapter.deleteUploads).toHaveBeenCalledTimes(1)
+  })
+
+  test('an adapter that deletes no uploads is not asked to', async () => {
+    const { adapter, uploads } = buildAdapter()
+    const state = createUploads([buildFile('a.png')], adapter)
+    state.start()
+    uploads[0]!.result.resolve({ fileId: '1' })
+    await flush()
+
+    expect(() => state.abort()).not.toThrow()
+  })
+
+  test('a file uploaded again, or removed, deletes its upload', async () => {
+    const { adapter, uploads } = buildAdapter()
+    adapter.deleteUploads = vi.fn(() => Promise.reject(new Error('Gone.')))
+    // The first file's form can't be loaded.
+    vi.mocked(adapter.getUploadForm).mockResolvedValueOnce(null)
+    const state = createUploads(
+      [buildFile('a.png'), buildFile('b.png')],
+      adapter,
+    )
+    state.start()
+    uploads[0]!.result.resolve({ fileId: '1' })
+    uploads[1]!.result.resolve({ fileId: '2' })
+    await flush()
+    expect(state.items[0]!.status).toBe('failed')
+
+    state.retry(state.items[0]!)
+    expect(adapter.deleteUploads).toHaveBeenLastCalledWith({
+      uploads: [{ type: 'image', fileId: '1' }],
+    })
+    uploads[2]!.result.resolve({ fileId: '3' })
+    await flush()
+
+    state.remove(state.items[1]!)
+    expect(adapter.deleteUploads).toHaveBeenLastCalledWith({
+      uploads: [{ type: 'image', fileId: '2' }],
+    })
+    expect(adapter.deleteUploads).toHaveBeenCalledTimes(2)
+  })
+
+  test('generates the alt text of a form that names its field', async () => {
+    const { adapter, uploads } = buildAdapter()
+    const text = deferred<string | null>()
+    adapter.generateUploadAltText = vi.fn(() => text.promise)
+    vi.mocked(adapter.getUploadForm)
+      .mockResolvedValueOnce({ ...altForm, altTextInput: 'alt' })
+      .mockResolvedValueOnce(altForm)
+    const state = createUploads(
+      [buildFile('a.png'), buildFile('b.png')],
+      adapter,
+    )
+    state.start()
+    uploads[0]!.result.resolve({ fileId: '1' })
+    await flush()
+    uploads[1]!.result.resolve({ fileId: '2' })
+    await flush()
+    const [first, second] = state.items
+
+    expect(state.canGenerateAltText(first!)).toBe(true)
+    // Its form names no field.
+    expect(state.canGenerateAltText(second!)).toBe(false)
+    expect(await state.generateAltText(second!)).toBe(false)
+
+    const generated = state.generateAltText(first!)
+    expect(first!.isGenerating).toBe(true)
+    // Not twice at once.
+    expect(await state.generateAltText(first!)).toBe(false)
+    text.resolve('A cat on a sofa')
+    expect(await generated).toBe(true)
+    expect(adapter.generateUploadAltText).toHaveBeenCalledTimes(1)
+    expect(adapter.generateUploadAltText).toHaveBeenCalledWith({
+      upload: { type: 'image', fileId: '1' },
+    })
+    expect(first).toMatchObject({
+      isGenerating: false,
+      values: { alt: 'A cat on a sofa' },
+    })
+  })
+
+  test('without an alt text, the field keeps its value', async () => {
+    const { adapter, uploads } = buildAdapter({
+      ...altForm,
+      altTextInput: 'alt',
+    })
+    adapter.generateUploadAltText = vi
+      .fn()
+      .mockResolvedValueOnce(null)
+      .mockRejectedValueOnce(new Error('No service.'))
+    const state = createUploads([buildFile('a.png')], adapter)
+    state.start()
+    uploads[0]!.result.resolve({ fileId: '1' })
+    await flush()
+    const item = state.items[0]!
+    item.values.alt = 'My own'
+
+    expect(await state.generateAltText(item)).toBe(false)
+    await expect(state.generateAltText(item)).rejects.toThrow('No service.')
+    expect(item).toMatchObject({
+      isGenerating: false,
+      values: { alt: 'My own' },
+    })
+  })
+
+  test('an adapter that generates no alt texts offers none', async () => {
+    const { adapter, uploads } = buildAdapter({
+      ...altForm,
+      altTextInput: 'alt',
+    })
+    const state = createUploads([buildFile('a.png')], adapter)
+    state.start()
+    uploads[0]!.result.resolve({ fileId: '1' })
+    await flush()
+
+    expect(state.canGenerateAltText(state.items[0]!)).toBe(false)
+  })
 })

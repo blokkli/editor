@@ -1,0 +1,11 @@
+mutation pbGenerateUploadAltText(
+  $type: ParagraphsBlokkliUploadType!
+  $fileId: String!
+  $langcode: String!
+) {
+  text: pbGenerateUploadAltText(
+    type: $type
+    fileId: $fileId
+    langcode: $langcode
+  )
+}

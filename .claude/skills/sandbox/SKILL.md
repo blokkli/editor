@@ -210,6 +210,11 @@ Traefik sends every hostname to the web container's nginx on port 80.
   it's ticked, through `#states` (`MediaFormHooks`). The upload dialog applies
   such states; this is the site's example, on every site so that it can always
   be tried. Neither is a field, so neither is saved.
+- Alt texts: `PlaceholderAltTextGenerator` gives the upload dialog's "Generate"
+  button a text for every image, a placeholder that says what it is (this site
+  has no service that describes images). It's on every site, so that the button
+  can always be tried, and comes after a generator of a real service (priority
+  -100).
 - Moves the config pages' canonical route to `/blokkli/config-page/{id}`.
 - `tests/modules/blokkli_playground_test`, only in E2E sandboxes (`bake-e2e`
   installs it): allows the widget on pages, fakes YouTube and Vimeo, and adds
