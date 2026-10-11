@@ -100,15 +100,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 ## F7: Undeclared dependencies and config gaps
 
 - **Found:** 2026-09-26, while building the base site in chunk 03.
-- **The matrix of allowed paragraph types doesn't update the ticks of the
-  field's own settings form.** `AllowedParagraphsForm`
-  (`src/Form/AllowedParagraphsForm.php`) stores `target_bundles` and `negate`.
-  Paragraphs' form takes its ticks from `target_bundles_drag_drop`
-  (`ParagraphSelection::buildConfigurationForm()`), which the matrix never
-  writes. So after a change in the matrix, the field's settings page shows the
-  old ticks, and saving it stores them again. Read in the code 2026-10-11, not
-  reproduced. Fix: set `enabled` in `target_bundles_drag_drop` along with
-  `target_bundles`.
 - **The DeepL settings form stores the API key in config.** `api_key` is
   required, and the language mapping only renders once a key is present. Sites
   that inject the key from `settings.php` either export it with `drush cex` or
