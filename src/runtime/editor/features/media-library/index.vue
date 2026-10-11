@@ -23,11 +23,9 @@ import {
   defineAsyncComponent,
 } from '#imports'
 import { PluginSidebar } from '#blokkli/editor/plugins'
-import { falsy } from '#blokkli/helpers'
-import { itemEntityType } from '#blokkli-build/config'
 import { defineDropAreas, defineDropHandler } from '#blokkli/editor/composables'
 import type { DropArea } from '#blokkli/editor/types/ui'
-import type { BlokkliItemHost } from '#blokkli/editor/types/field'
+import { getReplaceMediaTargets } from './helpers'
 
 const Library = defineAsyncComponent(() => import('./Library/index.vue'))
 
@@ -40,19 +38,10 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['mediaLibraryGetResults', 'mediaLibraryAddBlock'],
 })
 
-const { $t, adapter, state, types, directive, permissions } = useBlokkli()
-
-const ERROR_MESSAGE = $t(
-  'mediaLibraryReplaceFailed',
-  'Failed to replace media.',
-)
+const app = useBlokkli()
+const { $t, adapter, state, permissions } = app
 
 defineDropAreas((dragItems) => {
-  // Not supported by adapter.
-  if (!adapter.mediaLibraryReplaceMedia) {
-    return
-  }
-
   // Only a single item is supported.
   if (dragItems.length !== 1) {
     return
@@ -65,88 +54,17 @@ defineDropAreas((dragItems) => {
     return
   }
 
-  // @TODO: Restore this behaviour.
-  // Ignore elements that are rendered inside a field that uses proxy mode, since implementations might use <BlokkliItem> to render blocks in a proxy-mode field.
-  // return !el.closest('[data-bk-in-proxy="true"]')
-
-  // Generate a drop area for every matching droppable field.
-  return directive
-    .getDroppableElements()
-    .map<DropArea | undefined>((field) => {
-      const config = types.getDroppableFieldConfig(field.fieldName, field)
-
-      // Skip multi-value fields — the droppable-field-edit feature handles those.
-      if (config.cardinality !== 1) {
-        return
-      }
-
-      const allowedBundles = config.allowed.find(
-        (v) => v.type === 'media',
-      )?.bundles
-      // @TODO: This should be provided by the adapter on the item.
-      if (!allowedBundles || !allowedBundles.includes(item.mediaBundle)) {
-        return
-      }
-
-      const isBlock = field.type === itemEntityType
-
-      // Skip blocks where the user lacks edit permission or is inside
-      // a restricted ancestor.
-      if (
-        isBlock &&
-        (!permissions.checkBlockBundlePermission(field.bundle, 'edit') ||
-          permissions.blockHasRestrictedAncestor(field.uuid))
-      ) {
-        return
-      }
-
-      const draggableHost: BlokkliItemHost = {
-        uuid: field.uuid,
-        type: field.type,
-        fieldName: field.fieldName,
-      }
-      const label = $t('replaceField', 'Replace @field').replace(
-        '@field',
-        config.label,
-      )
-
-      if (adapter.mediaLibraryReplaceMedia && isBlock) {
-        return {
-          id: `replace-media:${field.uuid}:${field.fieldName}`,
-          label,
-          element: field.element,
-          icon: 'bk_mdi_swap_horiz',
-          onDrop: () => {
-            return state.mutateWithLoadingState(
-              () =>
-                adapter.mediaLibraryReplaceMedia!({
-                  host: draggableHost,
-                  mediaId: item.mediaId,
-                }),
-              ERROR_MESSAGE,
-            )
-          },
-        }
-      } else if (adapter.mediaLibraryReplaceEntityMedia && !isBlock) {
-        return {
-          id: `replace-entity-media:${field.uuid}:${field.fieldName}`,
-          label,
-          element: field.element,
-          icon: 'bk_mdi_swap_horiz',
-          onDrop: () => {
-            return state.mutateWithLoadingState(
-              () =>
-                adapter.mediaLibraryReplaceEntityMedia!({
-                  host: draggableHost,
-                  mediaId: item.mediaId,
-                }),
-              ERROR_MESSAGE,
-            )
-          },
-        }
-      }
-    })
-    .filter(falsy)
+  // A drop area for every droppable field whose media the item can replace.
+  // @TODO: The media bundle should be provided by the adapter on the item.
+  return getReplaceMediaTargets(app, item.mediaBundle).map<DropArea>(
+    (target) => ({
+      id: target.id,
+      label: target.label,
+      element: target.element,
+      icon: 'bk_mdi_swap_horiz',
+      onDrop: () => target.replace(item.mediaId),
+    }),
+  )
 })
 
 defineDropHandler('media_library', {

@@ -1,9 +1,10 @@
+import { getUploadType } from '#blokkli/editor/helpers/uploads'
+import type { UploadType } from '#blokkli/editor/types/uploads'
 import type {
   ClipboardFileGroup,
   ClipboardMapBundleEventFile,
   ClipboardMapBundleEventImage,
   ClipboardMapBundleEventPlaintext,
-  ClipboardUploadType,
 } from './types'
 
 const ALLOWED_HTML_ATTRIBUTES = ['href']
@@ -37,20 +38,13 @@ export function sanitizeHtml(el: Element) {
 }
 
 /**
- * Whether a file of the MIME type is mapped and added as an image or a file.
- */
-export function getFileType(mimeType: string): ClipboardUploadType {
-  return mimeType.startsWith('image/') ? 'image' : 'file'
-}
-
-/**
  * Build the ClipboardMapBundleEvent of a file.
  */
 export function buildFileMapEvent(
   file: File,
 ): ClipboardMapBundleEventImage | ClipboardMapBundleEventFile {
   return {
-    type: getFileType(file.type),
+    type: getUploadType(file.type),
     fileType: file.type,
     fileSize: file.size,
     fileName: file.name,
@@ -82,7 +76,7 @@ export function buildMapBundleEvents(
       // dragenter/dragover, in which case getAsFile() returns null.
       const file = item.getAsFile()
       return {
-        type: getFileType(item.type),
+        type: getUploadType(item.type),
         fileType: item.type,
         fileSize: file?.size || 0,
         fileName: file?.name,
@@ -104,7 +98,7 @@ export function buildMapBundleEvents(
  * group without any can't be added.
  */
 export function groupFileBundles(
-  files: Array<{ type: ClipboardUploadType; bundles: string[] }>,
+  files: Array<{ type: UploadType; bundles: string[] }>,
 ): ClipboardFileGroup[] {
   const groups: ClipboardFileGroup[] = []
   for (const { type, bundles } of files) {

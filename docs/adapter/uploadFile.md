@@ -1,6 +1,6 @@
 # uploadFile
 
-Upload a pasted or dropped file, to create a media from it.
+Upload a file, to create a media from it.
 
 ## Signature
 
@@ -15,7 +15,7 @@ uploadFile?: (e: UploadFileEvent) => Promise<UploadFileResult>
 ```typescript
 type UploadFileEvent = {
   file: File
-  // How the file is added: as an image or as a file.
+  // How the file is uploaded: as an image or as a file.
   type: 'image' | 'file'
   // Called with the share of the file uploaded, from 0 to 1.
   onProgress: (progress: number) => void
@@ -34,7 +34,7 @@ type UploadFileResult =
 
 The uploaded file's ID, from which [adapter.createMediaFromUploads] creates a
 media. If a media with the same file exists, return that media instead: it's
-added as it is, without a form.
+used as it is, without a form.
 
 If the upload fails, reject with an error whose message says why: the dialog
 shows it next to the file, and the user can try again or remove the file. An
@@ -43,11 +43,15 @@ an `AbortError`.
 
 ## Description
 
-With `uploadFile`, [adapter.getUploadForm], [adapter.createMediaFromUploads] and
-[adapter.addBlocksFromUploads], pasted and dropped files are uploaded in a
-dialog, where the user fills in their media's fields before the media are
-created. Without all four, each file is read into memory and added with
-[adapter.addBlockFromClipboardItem].
+With `uploadFile`, [adapter.getUploadForm] and [adapter.createMediaFromUploads],
+files are uploaded in a dialog, where the user fills in their media's fields
+before the media are created:
+
+- With [adapter.addBlocksFromUploads] too, pasted and dropped files become
+  blocks through it. Without all four, each file is read into memory and added
+  with [adapter.addBlockFromClipboardItem].
+- With [adapter.getUploadMediaBundle] too, the media library has an upload
+  button, and a file dropped on a block's media replaces it.
 
 The dialog uploads two files at a time. `fetch` can't report an upload's
 progress, `XMLHttpRequest` can.

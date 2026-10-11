@@ -30,7 +30,8 @@ the files opens a dialog:
 - The files upload two at a time, with their progress. A file that fails can be
   uploaded again or removed.
 - Each file's media fields (its name, its alternative text, …) are shown below
-  it, and filled in while the other files upload.
+  it, and filled in while the other files upload. A field several files have
+  gets "Apply to all" next to it, which sets its value for the other files.
 - An image's focal point, if its form has one, is set on its preview: a click or
   a drag, or the arrow keys.
 - When files of a type can become blocks of several bundles, the dialog asks
@@ -39,3 +40,10 @@ the files opens a dialog:
 
 Without these methods, each file is read into memory and added with
 [adapter.addBlockFromClipboardItem].
+
+A single file can also be dropped on a block's media to replace it, as a media
+library item can: the fields whose media it can replace show a drop area. The
+file is uploaded in the same dialog, then the media is set with
+[adapter.mediaLibraryReplaceMedia] (or [adapter.mediaLibraryReplaceEntityMedia]
+for a field of the page). This needs [adapter.getUploadMediaBundle], which tells
+the media bundle a file becomes.

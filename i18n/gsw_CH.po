@@ -2131,69 +2131,21 @@ msgctxt "clipboardPasteShortcutHelp"
 msgid "Paste text, image or copied blocks"
 msgstr "Teggscht, Bild oder kopierti Blöck iifüege"
 
-msgctxt "clipboardUnsupportedFile"
-msgid "The type or size of \"@name\" is not supported."
-msgstr "Dr Typ oder d'Grössi vo «@name» würd nid unterstützt."
-
 msgctxt "clipboardUploadBundles"
 msgid "Block types"
 msgstr "Blocktype"
-
-msgctxt "clipboardUploadCreateFailed"
-msgid "The media couldn't be created."
-msgstr "S'Medium het nid chönne erstellt wärde."
-
-msgctxt "clipboardUploadCreated"
-msgid "The media is created."
-msgstr "S'Medium isch erstellt."
-
-msgctxt "clipboardUploadDuplicate"
-msgid "The file exists as the media \"@label\", which is added."
-msgstr "D'Datei gits scho als Medium «@label», das würd drzuegfüegt."
-
-msgctxt "clipboardUploadFailed"
-msgid "The file couldn't be uploaded."
-msgstr "D'Datei het nid chönne ufeglade wärde."
-
-msgctxt "clipboardUploadFileCount"
-msgid "@count files"
-msgstr "@count Dateie"
 
 msgctxt "clipboardUploadFiles"
 msgid "Files"
 msgstr "Dateie"
 
-msgctxt "clipboardUploadFocalPoint"
-msgid "Click the image to set its focal point."
-msgstr "E Klick is Bild setzt dr Fokuspunkt."
-
 msgctxt "clipboardUploadImages"
 msgid "Images"
 msgstr "Bilder"
 
-msgctxt "clipboardUploadIncomplete"
-msgid "The media needs a field that can't be filled in here."
-msgstr "S'Medium bruucht es Fäld, wo me do nid cha usfülle."
-
-msgctxt "clipboardUploadNoFields"
-msgid "Nothing to fill in."
-msgstr "Kei Aagabe nötig."
-
-msgctxt "clipboardUploadOneFile"
-msgid "1 file"
-msgstr "1 Datei"
-
-msgctxt "clipboardUploadRetry"
-msgid "Try again"
-msgstr "Nämol probiere"
-
-msgctxt "clipboardUploadSubmit"
-msgid "Add"
-msgstr "Zuefüege"
-
-msgctxt "clipboardUploadTitle"
-msgid "Add files"
-msgstr "Dateie zuefüege"
+msgctxt "clipboardUploadReplace"
+msgid "Replace"
+msgstr "Ersetze"
 
 msgctxt "close"
 msgid "Close"
@@ -3006,6 +2958,10 @@ msgstr "Medie het nid chönne ersetzt wärde."
 msgctxt "mediaLibraryTourText"
 msgid "Search for media like images and drag and drop them into the page."
 msgstr "Suech noch Medie wie Bilder und zieh si per Drag-and-Drop in d'Sitte."
+
+msgctxt "mediaLibraryUpload"
+msgid "Upload files"
+msgstr "Dateie ufelade"
 
 msgctxt "mediaSelectConfirm"
 msgid "Use selected"
@@ -4119,6 +4075,62 @@ msgstr "Rückgängig"
 msgctxt "unexpectedMutationError"
 msgid "An unexpected error happened."
 msgstr "Es isch e unerwartete Fähler ufträte."
+
+msgctxt "uploadApplyToAll"
+msgid "Apply to all"
+msgstr "Für alli übernäh"
+
+msgctxt "uploadCreateFailed"
+msgid "The media couldn't be created."
+msgstr "S'Medium het nid chönne erstellt wärde."
+
+msgctxt "uploadCreated"
+msgid "The media is created."
+msgstr "S'Medium isch erstellt."
+
+msgctxt "uploadDuplicate"
+msgid "The file exists as the media \"@label\", which is used."
+msgstr "D'Datei gits scho als Medium «@label», das würd brucht."
+
+msgctxt "uploadFailed"
+msgid "The file couldn't be uploaded."
+msgstr "D'Datei het nid chönne ufeglade wärde."
+
+msgctxt "uploadFileCount"
+msgid "@count files"
+msgstr "@count Dateie"
+
+msgctxt "uploadFocalPoint"
+msgid "Click the image to set its focal point."
+msgstr "E Klick is Bild setzt dr Fokuspunkt."
+
+msgctxt "uploadIncomplete"
+msgid "The media needs a field that can't be filled in here."
+msgstr "S'Medium bruucht es Fäld, wo me do nid cha usfülle."
+
+msgctxt "uploadNoFields"
+msgid "Nothing to fill in."
+msgstr "Kei Aagabe nötig."
+
+msgctxt "uploadOneFile"
+msgid "1 file"
+msgstr "1 Datei"
+
+msgctxt "uploadRetry"
+msgid "Try again"
+msgstr "Nämol probiere"
+
+msgctxt "uploadSubmit"
+msgid "Add"
+msgstr "Zuefüege"
+
+msgctxt "uploadTitle"
+msgid "Add files"
+msgstr "Dateie zuefüege"
+
+msgctxt "uploadUnsupportedFile"
+msgid "The type or size of \"@name\" is not supported."
+msgstr "Dr Typ oder d'Grössi vo «@name» würd nid unterstützt."
 
 msgctxt "video"
 msgid "Video"

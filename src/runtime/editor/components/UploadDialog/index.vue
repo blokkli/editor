@@ -1,38 +1,23 @@
 <template>
   <DialogModal
-    id="clipboard-upload"
-    :title="$t('clipboardUploadTitle', 'Add files')"
+    id="upload"
+    :title="title || $t('uploadTitle', 'Add files')"
     icon="bk_mdi_upload"
-    :submit-label="$t('clipboardUploadSubmit', 'Add')"
+    :submit-label="submitLabel || $t('uploadSubmit', 'Add')"
     :can-submit="uploads.isReady.value && !isCreating"
     :is-loading="isCreating"
     mono
     @submit="onSubmit"
     @cancel="onCancel"
   >
-    <PanelSection
-      v-if="choices.length"
-      :title="$t('clipboardUploadBundles', 'Block types')"
-      padded
-    >
-      <div class="flex flex-col gap-15">
-        <FormRadioTabs
-          v-for="choice in choices"
-          :id="'clipboard-upload-bundle-' + choice.type"
-          :key="choice.type"
-          v-model="bundles[choice.type]"
-          :label="choice.label"
-          :options="choice.options"
-        />
-      </div>
-    </PanelSection>
+    <slot :types />
     <PanelSection :title="filesTitle">
       <ul>
         <li
           v-for="item in uploads.items"
           :key="item.id"
           class="flex gap-15 p-panel-gap border-b border-b-mono-300 last:border-b-0"
-          data-test="clipboard-upload-item"
+          data-test="upload-item"
           :data-test-status="item.status"
         >
           <FocalPoint
@@ -89,7 +74,7 @@
               <span>
                 {{
                   item.error ||
-                  $t('clipboardUploadFailed', "The file couldn't be uploaded.")
+                  $t('uploadFailed', "The file couldn't be uploaded.")
                 }}
               </span>
               <button
@@ -97,12 +82,12 @@
                 class="bk-button bk-scheme-mono bk-is-light bk-is-small ml-auto shrink-0"
                 @click="uploads.retry(item)"
               >
-                {{ $t('clipboardUploadRetry', 'Try again') }}
+                {{ $t('uploadRetry', 'Try again') }}
               </button>
               <button
                 type="button"
                 class="bk-button bk-scheme-mono bk-is-light bk-is-small shrink-0"
-                data-test="clipboard-upload-remove"
+                data-test="upload-remove"
                 @click="onRemove(item)"
               >
                 {{ $t('remove', 'Remove') }}
@@ -114,13 +99,13 @@
             >
               {{
                 $t(
-                  'clipboardUploadDuplicate',
-                  'The file exists as the media "@label", which is added.',
+                  'uploadDuplicate',
+                  'The file exists as the media "@label", which is used.',
                 ).replace('@label', item.duplicate)
               }}
             </p>
             <p v-else-if="item.mediaId" class="mt-8 text-sm text-mono-700">
-              {{ $t('clipboardUploadCreated', 'The media is created.') }}
+              {{ $t('uploadCreated', 'The media is created.') }}
             </p>
             <template v-else-if="item.form">
               <InfoBox
@@ -132,7 +117,7 @@
               >
                 {{
                   $t(
-                    'clipboardUploadIncomplete',
+                    'uploadIncomplete',
                     "The media needs a field that can't be filled in here.",
                   )
                 }}
@@ -144,12 +129,25 @@
                 :errors="item.errors"
                 stacked
                 class="mt-8"
-              />
+              >
+                <template #action="{ input }">
+                  <button
+                    v-if="uploads.getSharedItems(item, input.name).length"
+                    type="button"
+                    class="bk-button bk-scheme-mono bk-is-light bk-is-small"
+                    :class="hasValue(item, input) ? '' : 'invisible'"
+                    data-test="upload-apply-to-all"
+                    @click="uploads.applyToAll(item, input.name)"
+                  >
+                    {{ $t('uploadApplyToAll', 'Apply to all') }}
+                  </button>
+                </template>
+              </ConfigForm>
               <p
                 v-else-if="item.form.complete && !getFocalPoint(item)"
                 class="mt-8 text-sm text-mono-500"
               >
-                {{ $t('clipboardUploadNoFields', 'Nothing to fill in.') }}
+                {{ $t('uploadNoFields', 'Nothing to fill in.') }}
               </p>
               <InfoBox
                 v-for="(message, i) in item.messages"
@@ -174,40 +172,53 @@ import { computed, onBeforeUnmount, reactive, ref, useBlokkli } from '#imports'
 import {
   ConfigForm,
   DialogModal,
-  FormRadioTabs,
   Icon,
   InfoBox,
   StatusIcon,
 } from '#blokkli/editor/components'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import { emitMessage } from '#blokkli/editor/events'
-import type { PluginConfigInputFocalPoint } from '#blokkli/editor/types/pluginConfig'
+import { onlyUnique } from '#blokkli/helpers'
 import type {
-  AddBlocksFromUploadsEvent,
-  ClipboardFileGroup,
-  ClipboardUploadForm,
-  ClipboardUploadType,
-} from '../types'
+  PluginConfigInput,
+  PluginConfigInputFocalPoint,
+} from '#blokkli/editor/types/pluginConfig'
+import type {
+  UploadedMedia,
+  UploadForm,
+  UploadType,
+} from '#blokkli/editor/types/uploads'
 import FocalPoint from './FocalPoint/index.vue'
 import { createUploads, type UploadItem, type UploadMethods } from './uploads'
 
 const props = defineProps<{
   /**
-   * The files, in the order their blocks are added.
+   * The files, in the order of their media.
    */
   files: File[]
   /**
-   * The bundles each type of file can be added with.
+   * The dialog's title. Defaults to "Add files".
    */
-  groups: ClipboardFileGroup[]
+  title?: string
+  /**
+   * The label of the button that creates the media. Defaults to "Add".
+   */
+  submitLabel?: string
 }>()
 
 const emit = defineEmits<{
-  (e: 'done', items: AddBlocksFromUploadsEvent['items']): void
+  (e: 'done', media: UploadedMedia[]): void
   (e: 'cancel'): void
 }>()
 
-const { $t, ui, types, adapter } = useBlokkli()
+defineSlots<{
+  /**
+   * Shown above the files, with the upload types the files have.
+   */
+  default(props: { types: UploadType[] }): unknown
+}>()
+
+const { $t, ui, adapter } = useBlokkli()
 
 // The dialog is only shown when the adapter can upload.
 const uploads = createUploads(props.files, adapter as UploadMethods)
@@ -225,36 +236,8 @@ const thumbnails = reactive(new Map(thumbnailUrls))
 
 const isCreating = ref(false)
 
-/**
- * The bundle of each type's blocks: the first, unless another is picked.
- */
-const bundles = ref<Partial<Record<ClipboardUploadType, string>>>(
-  Object.fromEntries(
-    props.groups.map((group) => [group.type, group.bundles[0]]),
-  ),
-)
-
-/**
- * The types whose bundle can be picked.
- */
-const choices = computed(() =>
-  props.groups
-    .filter(
-      (group) =>
-        group.bundles.length > 1 &&
-        uploads.items.some((item) => item.type === group.type),
-    )
-    .map((group) => ({
-      type: group.type,
-      label:
-        group.type === 'image'
-          ? $t('clipboardUploadImages', 'Images')
-          : $t('clipboardUploadFiles', 'Files'),
-      options: group.bundles.map((bundle) => ({
-        value: bundle,
-        label: types.getBlockBundleDefinition(bundle)?.label || bundle,
-      })),
-    })),
+const types = computed(() =>
+  uploads.items.map((item) => item.type).filter(onlyUnique),
 )
 
 /**
@@ -276,8 +259,16 @@ function getFocalPoint(
 /**
  * Whether a form has fields to fill in, besides a focal point.
  */
-function hasFields(form: ClipboardUploadForm): boolean {
+function hasFields(form: UploadForm): boolean {
   return form.inputs.some((input) => input.type !== 'focalPoint')
+}
+
+/**
+ * Whether a field has a value to apply to the other files. Without one, the
+ * action keeps its place, so that the field keeps its width.
+ */
+function hasValue(item: UploadItem, input: PluginConfigInput): boolean {
+  return input.type === 'checkbox' || !!item.values[input.name]
 }
 
 function getStatus(
@@ -300,8 +291,8 @@ function getStatus(
 
 const filesTitle = computed(() =>
   uploads.items.length === 1
-    ? $t('clipboardUploadOneFile', '1 file')
-    : $t('clipboardUploadFileCount', '@count files').replace(
+    ? $t('uploadOneFile', '1 file')
+    : $t('uploadFileCount', '@count files').replace(
         '@count',
         uploads.items.length.toString(),
       ),
@@ -348,13 +339,12 @@ async function onSubmit() {
         uploads.items.map((item) => ({
           type: item.type,
           mediaId: item.mediaId!,
-          bundle: bundles.value[item.type]!,
         })),
       )
     }
   } catch (e) {
     emitMessage(
-      $t('clipboardUploadCreateFailed', "The media couldn't be created."),
+      $t('uploadCreateFailed', "The media couldn't be created."),
       'error',
       e,
     )
@@ -370,7 +360,7 @@ function onCancel() {
 
 function onRemove(item: UploadItem) {
   uploads.remove(item)
-  // Without files, there's nothing left to add.
+  // Without files, there's nothing left to create.
   if (!uploads.items.length) {
     onCancel()
   }

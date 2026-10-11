@@ -99,13 +99,6 @@ export type CanvasDrawEvent = {
   dpi: number
 }
 
-export type DropClipboardItemEvent = {
-  id: string
-  blockBundle: string
-  host: BlokkliItemHost
-  afterUuid: string | null
-}
-
 export type AnimatorAddEvent = {
   id: string
   mode: AnimateElementMode
@@ -326,8 +319,6 @@ export interface EventbusEvents {
   'editable:save': undefined
 
   'droppable:open': DroppableFieldOpenEvent
-
-  'drop:clipboardItem': DropClipboardItemEvent
 
   /**
    * Emitted when a blökkli clipboard envelope is pasted into the editor.

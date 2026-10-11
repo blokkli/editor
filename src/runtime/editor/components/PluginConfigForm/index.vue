@@ -4,7 +4,10 @@
     <li
       v-for="item in renderedConfig"
       :key="item.name"
-      :class="['bk-is-type-' + item.type, { 'bk-form-item': stacked }]"
+      :class="[
+        'bk-is-type-' + item.type,
+        { 'bk-form-item': stacked, 'bk-has-action': $slots.action },
+      ]"
       :data-test="'config-form-' + item.name"
     >
       <FormCheckbox
@@ -32,6 +35,9 @@
       >
         {{ errors[item.name] }}
       </p>
+      <div v-if="$slots.action" class="bk-plugin-config-form-action">
+        <slot name="action" :input="item" />
+      </div>
       <slot name="after" />
     </li>
   </ol>
@@ -111,6 +117,29 @@ defineExpose({
       @apply flex-none;
       min-height: 46px;
       @apply flex items-center;
+    }
+
+    /* An action next to the field's input. */
+    &.bk-has-action {
+      @apply grid items-start;
+      grid-template-columns: minmax(0, 1fr) auto;
+      > * {
+        grid-column: 1;
+      }
+      > .bk-plugin-config-form-action {
+        @apply flex items-center ml-10;
+        grid-column: 2;
+        grid-row: 1;
+        /* Below the label, and as high as the input. */
+        margin-top: 24px;
+        min-height: 46px;
+        &:empty {
+          @apply hidden;
+        }
+      }
+      &.bk-is-type-checkbox > .bk-plugin-config-form-action {
+        @apply mt-0;
+      }
     }
   }
 }

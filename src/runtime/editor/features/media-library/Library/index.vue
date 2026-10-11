@@ -1,5 +1,5 @@
 <template>
-  <div class="bk bk-media-library bk-scrollbar-light">
+  <div class="bk bk-media-library bk-scrollbar-light" data-test="media-library">
     <div v-if="status === 'pending'" class="bk-loading">
       <Icon name="loader" />
     </div>
@@ -10,6 +10,11 @@
             <Icon :name="listViewIcon" />
           </button>
         </div>
+        <Upload
+          v-if="uploadTypes.length"
+          :types="uploadTypes"
+          @uploaded="onUploaded"
+        />
       </template>
     </ConfigFormInline>
     <div
@@ -59,11 +64,13 @@ import {
 } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import Item from './Item.vue'
+import Upload from './Upload/index.vue'
 import { falsy } from '#blokkli/helpers'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import type { DraggableMediaLibraryItem } from '../types'
 import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
 import type { DraggableItem } from '#blokkli/editor/types/draggable'
+import type { UploadType } from '#blokkli/editor/types/uploads'
 
 defineProps<{
   modelValue?: string
@@ -142,7 +149,7 @@ watch(key, () => {
   page.value = 0
 })
 
-const { data, status } = await useLazyAsyncData(
+const { data, status, refresh } = await useLazyAsyncData(
   () => {
     return adapter.mediaLibraryGetResults!({
       filters: filterValues.value,
@@ -161,6 +168,24 @@ watch(data, () => {
 })
 
 const items = computed(() => data.value?.items || [])
+
+const UPLOAD_TYPES: UploadType[] = ['image', 'file']
+
+// The upload types whose files can be uploaded to the library, in the upload
+// dialog.
+const uploadTypes =
+  adapter.uploadFile && adapter.getUploadForm && adapter.createMediaFromUploads
+    ? UPLOAD_TYPES.filter((type) => adapter.getUploadMediaBundle?.({ type }))
+    : []
+
+// Show the new media: the library's first page.
+function onUploaded() {
+  if (page.value === 0) {
+    refresh()
+  } else {
+    page.value = 0
+  }
+}
 const filters = computed<PluginConfigInput[]>(() => {
   return data.value?.filters ?? []
 })

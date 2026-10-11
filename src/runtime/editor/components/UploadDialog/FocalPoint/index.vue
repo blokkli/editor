@@ -5,7 +5,7 @@
     >
       <div
         class="relative cursor-crosshair touch-none select-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-700"
-        :class="{ invisible: !size }"
+        :class="size ? '' : 'invisible'"
         :style="
           size
             ? { width: size.width + 'px', height: size.height + 'px' }
@@ -15,7 +15,7 @@
         tabindex="0"
         :aria-label="label"
         :aria-valuetext="valueText"
-        data-test="clipboard-upload-focal-point"
+        data-test="upload-focal-point"
         :data-test-value="formatFocalPoint(point)"
         @pointerdown="onPointerDown"
         @pointermove="onPointerMove"
@@ -38,12 +38,7 @@
       </div>
     </div>
     <p class="mt-5 text-xs text-mono-500">
-      {{
-        $t(
-          'clipboardUploadFocalPoint',
-          'Click the image to set its focal point.',
-        )
-      }}
+      {{ $t('uploadFocalPoint', 'Click the image to set its focal point.') }}
     </p>
   </div>
 </template>

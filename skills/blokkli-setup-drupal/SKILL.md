@@ -122,10 +122,11 @@ use these mappings.
 
 Watch out for:
 
-- **Uploads:** pasted and dropped files go through core's upload handling, as in
-  a form. The media field's extensions, maximum size and directory (tokens
-  included) apply. The file is the request's body, so PHP's `post_max_size` and
-  the web server's body size (nginx's `client_max_body_size`) limit it too.
+- **Uploads:** pasted and dropped files, and files uploaded in the media
+  library, go through core's upload handling, as in a form. The media field's
+  extensions, maximum size and directory (tokens included) apply. The file is
+  the request's body, so PHP's `post_max_size` and the web server's body size
+  (nginx's `client_max_body_size`) limit it too.
 - **The upload dialog's fields:** the media type's `media_library` form display
   decides them. Put the name and the alt text there. The dialog shows text
   fields, text areas, checkboxes, selects and radios; a visible required field
@@ -222,8 +223,9 @@ permissions yourself.
   them, so the editor offers them none. Grant view access in a custom module
   (`hook_paragraphs_type_access()`, in the `blokkli-setup-permissions` skill).
 - **Content:** editors also need the usual permissions to edit the host entity
-  and to use its media, and create access to the media types of pasted and
-  dropped files (`create image media`).
+  and to use its media, and create access to the media types of uploaded files
+  (`create image media`): without it, files can't be pasted, and the media
+  library has no upload button.
 - Roles for editors, reviewers and translators, and per-type permissions: the
   `blokkli-setup-permissions` skill.
 

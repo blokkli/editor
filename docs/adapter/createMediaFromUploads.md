@@ -52,7 +52,9 @@ open, and the next time the user adds the files, only the items without a media
 are sent again. So create each item's media on its own: an item's errors mustn't
 prevent the others' media.
 
-Once every file has its media, [adapter.addBlocksFromUploads] adds the blocks.
+Once every file has its media, the dialog closes: [adapter.addBlocksFromUploads]
+adds the blocks of pasted and dropped files, the media library is loaded again,
+or the media replaces a block's.
 
 ## Example
 

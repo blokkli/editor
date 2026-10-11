@@ -459,18 +459,70 @@ The user's idea (2026-10-10): set an image's focal point in the dialog.
 - Docs: `configuration.md` ("Uploads"), `getUploadForm.md`, the feature's
   `docs.md`, the setup skill and the sandbox skill.
 
+### 12. The follow-ups (done)
+
+Discussed with the user on 2026-10-11, who picked these four.
+
+- **Shared code:** the dialog is `components/UploadDialog`, no longer the
+  clipboard feature's. It uploads files and creates their media; what happens
+  with the media is its caller's. The block types' choice is the clipboard
+  feature's (`UploadBundles`, in the dialog's slot). The upload types
+  (`types/uploads.ts`, without "Clipboard" in their names) and `uploadFile`,
+  `getUploadForm` and `createMediaFromUploads` are the core adapter's, with
+  `getUploadMediaBundle`: the bundle of the media a file becomes, if it can be
+  uploaded, as far as the file is known (only its upload type when asking
+  whether such files can be uploaded at all). `addBlocksFromUploads` stays the
+  clipboard feature's. The dialog's strings and test hooks are `upload…`.
+- **The media library's upload button**, next to its view toggle, if images or
+  files can be uploaded (`Library/Upload`): a file picker (images only, unless
+  files can be uploaded too), a refused file named in a message, the dialog,
+  then the library loaded again on its first page.
+- **Drupal:** the adapter registers the upload methods for the clipboard or the
+  media library; `getUploadMediaBundle` is the clipboard entry's `mediaBundle`,
+  with `canUpload` and the file checks. `entity_query_media_library` sorts by
+  the newest (`created`, then the ID): it had no sort, so a new media was on the
+  last page, and the pages' order was the database's. Kernel test:
+  `EntityQueryMediaLibraryTest`. The Search API plugin still has no sort.
+- **A file dropped on a block's media replaces it:** a drag of one file (pasted
+  or from the operating system, on the upload path) gets the media library's
+  "Replace" drop areas (`getReplaceMediaTargets`, shared by both features), for
+  the fields that allow the file's media bundle. The drop opens the dialog for
+  the one file, titled as the drop area, then calls `mediaLibraryReplaceMedia`
+  or `mediaLibraryReplaceEntityMedia`. The native drag item carries what's known
+  of its files (`uploads`): only their types until they're dropped, so the file
+  is checked again at the drop.
+- **"Apply to all"** next to a field's input, when another file whose media
+  isn't created has the field (same name and type): it sets the field's value
+  for those files. It's hidden while the field is empty, keeping its place, so
+  the inputs keep their width. `ConfigForm` has an `action` slot per field.
+- **Removed:** the `clipboard` drop handler, its drag item type and the
+  `drop:clipboardItem` event, left over from the clipboard sidebar.
+- **Fixed on the way:** `:class="{ invisible: … }"` isn't mangled (an unquoted
+  key), so the focal point's box showed before its image was measured.
+- Tests: unit (`uploads.spec.ts`: the fields files share; the upload helpers),
+  E2E (`clipboard/upload.test.ts`: a value applied to the other file, an image
+  replacing a block's, no drop area for a document;
+  `media-library/upload.test.ts`: a refused file, picked files listed first;
+  `clipboard/files.test.ts`: no button without create access).
+  `support/uploads.ts` has the files and the dialog's helpers.
+
 ## Later
 
-- Starting the uploads while the user places the files.
-- Setting a field for all files at once.
-- Suggested alt texts (Rokka's descriptions, the agent).
-- An "Upload" button in the media library sidebar.
-- Replacing a block's media by dropping a file on it (`replace_media`).
-- Setting the focal point of an existing image, such as a block's.
+- Simple `#states` conditions in the descriptions: "visible" and "required",
+  depending on one checkbox or select (next, the user, 2026-10-11).
+- Setting the focal point of an existing image, such as a block's (waiting: it
+  belongs to the file, so it changes every page using the image, outside the
+  edit state; better as "edit this media" with the same descriptions).
+- Suggested alt texts (deferred). Rokka's descriptions don't fit: the file only
+  reaches Rokka when its media is saved. That leaves the agent's model.
+- Adding a dropped file to a multi-value media field ("Add to …", as media
+  library items can).
+- Dropping files onto the media library, besides its upload button.
+- Sorting the Search API media library by the newest.
 - Rendering a node's fields with the same descriptions, saved through
   `update_host_entity_field_value`.
-- More widgets: formatted text, entity references.
-- Simple `#states` conditions in the descriptions (a field shown or required
-  depending on a checkbox), only if it turns out to be cheap.
-- The `clipboard` drop handler emits `drop:clipboardItem`, which nothing listens
-  to.
+- More widgets: multi-value options first, then formatted text and entity
+  references.
+
+Dropped: starting the uploads while the user places the files. A drag from the
+operating system gives the browser no file contents until the drop.

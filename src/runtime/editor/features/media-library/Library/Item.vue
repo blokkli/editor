@@ -8,6 +8,8 @@
     :data-item-bundle="targetBundles[0]"
     :data-media-id="mediaId"
     :data-media-bundle="mediaBundle"
+    data-test="media-library-item"
+    :data-test-label="label"
     @click="onClick"
   >
     <div class="bk-media-library-items-item-box">

@@ -14,10 +14,19 @@
       <UploadDialog
         v-if="uploadDialog"
         :files="uploadDialog.files"
-        :groups="uploadDialog.groups"
+        :title="uploadDialog.title"
+        :submit-label="uploadDialog.submitLabel"
         @done="closeUploadDialog"
         @cancel="closeUploadDialog(null)"
-      />
+      >
+        <template #default="{ types }">
+          <UploadBundles
+            v-model="uploadBundles"
+            :groups="uploadDialog.groups"
+            :types
+          />
+        </template>
+      </UploadDialog>
     </BlokkliTransition>
   </Teleport>
 </template>
@@ -42,22 +51,30 @@ import type { DropElementItem } from './DropElement/index.vue'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { emitMessage } from '#blokkli/editor/events'
 import {
+  defineDropAreas,
   defineDropHandler,
   defineItemDropdownAction,
   defineShortcut,
   onBlokkliEvent,
 } from '#blokkli/editor/composables'
+import {
+  getUploadFileInfo,
+  getUploadType,
+} from '#blokkli/editor/helpers/uploads'
+import type { UploadedMedia, UploadType } from '#blokkli/editor/types/uploads'
+import {
+  getReplaceMediaTargets,
+  type ReplaceMediaTarget,
+} from '#blokkli/editor/features/media-library/helpers'
+import UploadBundles from './UploadBundles/index.vue'
 import type {
-  AddBlocksFromUploadsEvent,
   BlokkliClipboardItem,
   ClipboardFileGroup,
-  ClipboardUploadType,
   DraggableNativeDropItem,
 } from './types'
 import {
   buildFileMapEvent,
   buildMapBundleEvents,
-  getFileType,
   groupFileBundles,
   narrowFileGroups,
   sanitizeHtml,
@@ -74,7 +91,7 @@ const DropElement = defineAsyncComponent(
 )
 
 const UploadDialog = defineAsyncComponent(
-  () => import('./UploadDialog/index.vue'),
+  () => import('#blokkli/editor/components/UploadDialog/index.vue'),
 )
 
 async function getVideoId(
@@ -94,6 +111,7 @@ const { logger } = defineBlokkliFeature({
   screenshot: 'feature-clipboard.jpg',
 })
 
+const app = useBlokkli()
 const {
   selection,
   $t,
@@ -105,7 +123,7 @@ const {
   animation,
   context,
   permissions,
-} = useBlokkli()
+} = app
 
 const selectionClipboard = ref<string[]>([])
 
@@ -159,6 +177,19 @@ function canUploadFiles(): boolean {
     adapter.getUploadForm &&
     adapter.createMediaFromUploads &&
     adapter.addBlocksFromUploads
+  )
+}
+
+/**
+ * Whether a file dropped on a block's media is uploaded in the upload dialog,
+ * to replace the media.
+ */
+function canUploadMedia(): boolean {
+  return !!(
+    adapter.getUploadMediaBundle &&
+    adapter.uploadFile &&
+    adapter.getUploadForm &&
+    adapter.createMediaFromUploads
   )
 }
 
@@ -253,9 +284,10 @@ function startUploadDrag(files: File[], groups: ClipboardFileGroup[]) {
       itemBundleGroups,
       blockCount: files.length,
       files,
+      uploads: files.map(getUploadFileInfo),
     },
     files.map((file) => {
-      const type = getFileType(file.type)
+      const type = getUploadType(file.type)
       const data = type === 'image' ? URL.createObjectURL(file) : undefined
       if (data) {
         previewUrls.push(data)
@@ -272,8 +304,8 @@ function startUploadDrag(files: File[], groups: ClipboardFileGroup[]) {
  */
 function mapFileBundles(
   files: File[],
-): Array<{ type: ClipboardUploadType; bundles: string[] }> | null {
-  const mapped: Array<{ type: ClipboardUploadType; bundles: string[] }> = []
+): Array<{ type: UploadType; bundles: string[] }> | null {
+  const mapped: Array<{ type: UploadType; bundles: string[] }> = []
   for (const file of files) {
     const bundles = normalizeBundles(
       adapter.clipboardMapBundle?.(buildFileMapEvent(file)),
@@ -282,7 +314,7 @@ function mapFileBundles(
       emitUnsupportedFile(file)
       return null
     }
-    mapped.push({ type: getFileType(file.type), bundles })
+    mapped.push({ type: getUploadType(file.type), bundles })
   }
   return mapped
 }
@@ -307,33 +339,84 @@ function getUploadGroups(
   )
 }
 
+type UploadDialogOptions = {
+  /**
+   * The bundles each type of file can be added with, if blocks are added.
+   */
+  groups?: ClipboardFileGroup[]
+  title?: string
+  submitLabel?: string
+}
+
 // The upload dialog, while files are uploaded and their media created.
-const uploadDialog = shallowRef<{
-  files: File[]
-  groups: ClipboardFileGroup[]
-} | null>(null)
-let resolveUploadDialog:
-  | ((items: AddBlocksFromUploadsEvent['items'] | null) => void)
-  | null = null
+const uploadDialog = shallowRef<
+  (UploadDialogOptions & { files: File[]; groups: ClipboardFileGroup[] }) | null
+>(null)
+
+// The bundle of each type's blocks: the first, unless another is picked.
+const uploadBundles = ref<Partial<Record<UploadType, string>>>({})
+
+let resolveUploadDialog: ((media: UploadedMedia[] | null) => void) | null = null
 
 /**
- * Show the upload dialog. Resolves with the media to add, or null if it's
+ * Show the upload dialog. Resolves with the files' media, or null if it's
  * cancelled.
  */
 function showUploadDialog(
   files: File[],
-  groups: ClipboardFileGroup[],
-): Promise<AddBlocksFromUploadsEvent['items'] | null> {
+  options: UploadDialogOptions = {},
+): Promise<UploadedMedia[] | null> {
   return new Promise((resolve) => {
+    const groups = options.groups ?? []
     resolveUploadDialog = resolve
-    uploadDialog.value = { files, groups }
+    uploadBundles.value = Object.fromEntries(
+      groups.map((group) => [group.type, group.bundles[0]]),
+    )
+    uploadDialog.value = { ...options, files, groups }
   })
 }
 
-function closeUploadDialog(items: AddBlocksFromUploadsEvent['items'] | null) {
+function closeUploadDialog(media: UploadedMedia[] | null) {
   uploadDialog.value = null
-  resolveUploadDialog?.(items)
+  resolveUploadDialog?.(media)
   resolveUploadDialog = null
+}
+
+/**
+ * The files of a drop. Read when they're dropped: the drop's DataTransfer is
+ * empty once its event is handled.
+ */
+function getDroppedFiles(item: DraggableNativeDropItem): File[] {
+  if (item.dataTransfer?.files.length) {
+    item.files = [...item.dataTransfer.files]
+  }
+  return item.files ?? []
+}
+
+/**
+ * Upload a dropped file and replace a field's media with its media.
+ */
+async function replaceMediaWithFile(
+  item: DraggableNativeDropItem,
+  mediaBundle: string,
+  target: ReplaceMediaTarget,
+) {
+  const file = getDroppedFiles(item)[0]
+  if (!file) {
+    return
+  }
+  // Checked again with the file's name and size, unknown while it's dragged.
+  if (adapter.getUploadMediaBundle?.(getUploadFileInfo(file)) !== mediaBundle) {
+    emitUnsupportedFile(file)
+    return
+  }
+  const media = await showUploadDialog([file], {
+    title: target.label,
+    submitLabel: $t('clipboardUploadReplace', 'Replace'),
+  })
+  if (media?.[0]) {
+    await target.replace(media[0].mediaId)
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -362,7 +445,10 @@ function tryStartDirectDrop(e: DragEvent): boolean {
     mapped.push(bundles)
   }
 
-  let item: Pick<DraggableNativeDropItem, 'itemBundles' | 'itemBundleGroups'>
+  let item: Pick<
+    DraggableNativeDropItem,
+    'itemBundles' | 'itemBundleGroups' | 'uploads'
+  >
   if (mapEvents[0]!.type !== 'plaintext' && canUploadFiles()) {
     // Each type of file is uploaded and added with its own bundle.
     const groups = groupFileBundles(
@@ -378,6 +464,19 @@ function tryStartDirectDrop(e: DragEvent): boolean {
     item = {
       itemBundles: itemBundleGroups.flat().filter(onlyUnique),
       itemBundleGroups,
+      // A file's name and size are only known once it's dropped.
+      uploads: mapEvents.flatMap((mapEvent) =>
+        mapEvent.type === 'plaintext'
+          ? []
+          : [
+              {
+                type: mapEvent.type,
+                fileType: mapEvent.fileType,
+                fileSize: mapEvent.fileSize || undefined,
+                fileName: mapEvent.fileName,
+              },
+            ],
+      ),
     }
   } else {
     if (!adapter.addBlockFromClipboardItem) {
@@ -604,7 +703,7 @@ async function handleFiles(data: DataTransfer | FileList) {
     const file = files[i]!
     const result = results[i]!
     items.push({
-      type: getFileType(file.type),
+      type: getUploadType(file.type),
       itemBundle: commonBundles[0]!,
       id: generateUUID(),
       data: result,
@@ -646,7 +745,7 @@ function emitNoCommonBundle() {
 function emitUnsupportedFile(file: File) {
   emitPasteError(
     $t(
-      'clipboardUnsupportedFile',
+      'uploadUnsupportedFile',
       'The type or size of "@name" is not supported.',
     ).replace('@name', file.name),
   )
@@ -807,6 +906,35 @@ function extractBareUrl(text: string): string | null {
   return null
 }
 
+// A single file can be dropped on a block's media, to replace it.
+defineDropAreas((dragItems) => {
+  const item = dragItems[0]
+  if (
+    dragItems.length !== 1 ||
+    item?.itemType !== 'native_drop' ||
+    item.uploads?.length !== 1 ||
+    !canUploadMedia()
+  ) {
+    return
+  }
+
+  const mediaBundle = adapter.getUploadMediaBundle!(item.uploads[0]!)
+  if (!mediaBundle) {
+    return
+  }
+
+  return getReplaceMediaTargets(app, mediaBundle).map((target) => ({
+    id: target.id,
+    label: target.label,
+    element: target.element,
+    icon: 'bk_mdi_swap_horiz',
+    // The drag ends with the drop, before the dialog closes.
+    onDrop: () => {
+      replaceMediaWithFile(item, mediaBundle, target)
+    },
+  }))
+})
+
 defineDropHandler('native_drop', {
   async resolveBundles({ items, field }) {
     const item = items[0]!
@@ -814,9 +942,7 @@ defineDropHandler('native_drop', {
     // Eagerly extract File objects since DataTransfer will be invalidated
     // after this synchronous handler returns (e.g. while bundle selector is
     // shown).
-    if (item.dataTransfer?.files.length) {
-      item.files = [...item.dataTransfer.files]
-    }
+    getDroppedFiles(item)
 
     // Files to upload: each type is added with a bundle of its own, picked in
     // the upload dialog. One is enough to skip the bundle selector.
@@ -948,10 +1074,17 @@ defineDropHandler('native_drop', {
       if (!groups) {
         return
       }
-      const uploads = await showUploadDialog(item.files, groups)
-      if (uploads) {
+      const media = await showUploadDialog(item.files, { groups })
+      if (media) {
         await state.mutateWithLoadingState(() =>
-          adapter.addBlocksFromUploads!({ items: uploads, host, afterUuid }),
+          adapter.addBlocksFromUploads!({
+            items: media.map((v) => ({
+              ...v,
+              bundle: uploadBundles.value[v.type]!,
+            })),
+            host,
+            afterUuid,
+          }),
         )
       }
       return
@@ -996,7 +1129,7 @@ defineDropHandler('native_drop', {
 
       const clipboardItems: BlokkliClipboardItem[] = files.map((file, i) => {
         return {
-          type: getFileType(file.type),
+          type: getUploadType(file.type),
           id: generateUUID(),
           itemBundle: bundle,
           data: results[i]!,
@@ -1020,18 +1153,6 @@ defineDropHandler('native_drop', {
         return lastResult!
       })
     }
-  },
-})
-
-defineDropHandler('clipboard', {
-  async execute({ items, host, afterUuid }) {
-    const item = items[0]!
-    eventBus.emit('drop:clipboardItem', {
-      id: item.clipboardId,
-      host,
-      blockBundle: item.itemBundle,
-      afterUuid,
-    })
   },
 })
 

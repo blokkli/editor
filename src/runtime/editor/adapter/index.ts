@@ -17,6 +17,15 @@ import type {
 import type { EditBlockEvent } from '../features/edit/types'
 import type { UserPermissions } from '../types/permissions'
 import type { BlokkliUser } from '../types/user'
+import type {
+  CreateMediaFromUploadsItem,
+  CreateMediaFromUploadsResult,
+  UploadedFile,
+  UploadFileEvent,
+  UploadFileInfo,
+  UploadFileResult,
+  UploadForm,
+} from '../types/uploads'
 
 export interface MutationResponseLike<T> {
   success: boolean
@@ -203,6 +212,38 @@ export interface BlokkliAdapter<T> {
     entityType: string,
     bundle: string,
   ) => EntityTypeBundleInfo | null
+
+  /**
+   * The bundle of the media created from a file, if the file can be uploaded.
+   * As far as the file is known: nothing but its upload type when asking
+   * whether such files can be uploaded at all.
+   *
+   * With getUploadMediaBundle, uploadFile, getUploadForm and
+   * createMediaFromUploads, files are uploaded in a dialog, where their media's
+   * fields are filled in: in the media library, and dropped on a block's media
+   * to replace it.
+   */
+  getUploadMediaBundle?(e: UploadFileInfo): string | undefined | null
+
+  /**
+   * Upload a file to create a media from. Rejects with an error whose message
+   * says why the upload failed.
+   */
+  uploadFile?(e: UploadFileEvent): Promise<UploadFileResult>
+
+  /**
+   * Get the form of the media created from an uploaded file, or null if the
+   * file is no longer available.
+   */
+  getUploadForm?(e: { upload: UploadedFile }): Promise<UploadForm | null>
+
+  /**
+   * Create the media of uploaded files, through their forms. Returns a result
+   * per item, in the same order.
+   */
+  createMediaFromUploads?(e: {
+    items: CreateMediaFromUploadsItem[]
+  }): Promise<CreateMediaFromUploadsResult[]>
 }
 
 /**

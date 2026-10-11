@@ -58,7 +58,7 @@ For example:
 - If `pbGetUploadForm`, `pbCreateMediaFromUploads`, `pbUploadToken` or the
   clipboard's `canUpload` and `mediaBundle` don't exist (an older
   `paragraphs_blokkli`) → pasted and dropped files are added without the upload
-  dialog
+  dialog, and the media library has no upload button
 
 This means you only need to enable Drupal submodules — the Nuxt side adapts
 automatically.
@@ -138,6 +138,11 @@ media type for images, other files the one for files (see
 [Main Settings](#main-settings)), and the media type's entity mappings decide
 the paragraph types a file can become. Without a mapping, the type's files are
 refused.
+
+The same dialog uploads files in two other places: the media library has an
+upload button, and a file dropped on a paragraph's media replaces it. The
+`entity_query_media_library` search plugin lists the newest media first, so
+uploaded files are at the top of the library.
 
 - **Access:** the `edit paragraphs blokkli edit state` permission and create
   access to the media type, such as `create image media`. Without it, the editor

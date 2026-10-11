@@ -65,6 +65,11 @@ styles. A build-time mangling system renames them (e.g., `flex` → `_bk_flex`) 
 they never collide with host project styles. See the **styles** skill for the
 available Tailwind config (custom spacing, colors, etc.).
 
+In a `:class` binding, the mangling only renames string literals: write
+`:class="isHidden ? 'invisible' : ''"` or `:class="{ 'invisible': isHidden }"`.
+An unquoted object key (`{ invisible: isHidden }`) stays as it is, and the class
+silently doesn't apply.
+
 ### `<style lang="postcss">` blocks
 
 Use `<style lang="postcss">` for CSS that can't be expressed as utility classes:

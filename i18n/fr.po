@@ -2082,68 +2082,20 @@ msgctxt "clipboardPasteShortcutHelp"
 msgid "Paste text, image or copied blocks"
 msgstr ""
 
-msgctxt "clipboardUnsupportedFile"
-msgid "The type or size of \"@name\" is not supported."
-msgstr ""
-
 msgctxt "clipboardUploadBundles"
 msgid "Block types"
-msgstr ""
-
-msgctxt "clipboardUploadCreateFailed"
-msgid "The media couldn't be created."
-msgstr ""
-
-msgctxt "clipboardUploadCreated"
-msgid "The media is created."
-msgstr ""
-
-msgctxt "clipboardUploadDuplicate"
-msgid "The file exists as the media \"@label\", which is added."
-msgstr ""
-
-msgctxt "clipboardUploadFailed"
-msgid "The file couldn't be uploaded."
-msgstr ""
-
-msgctxt "clipboardUploadFileCount"
-msgid "@count files"
 msgstr ""
 
 msgctxt "clipboardUploadFiles"
 msgid "Files"
 msgstr ""
 
-msgctxt "clipboardUploadFocalPoint"
-msgid "Click the image to set its focal point."
-msgstr ""
-
 msgctxt "clipboardUploadImages"
 msgid "Images"
 msgstr ""
 
-msgctxt "clipboardUploadIncomplete"
-msgid "The media needs a field that can't be filled in here."
-msgstr ""
-
-msgctxt "clipboardUploadNoFields"
-msgid "Nothing to fill in."
-msgstr ""
-
-msgctxt "clipboardUploadOneFile"
-msgid "1 file"
-msgstr ""
-
-msgctxt "clipboardUploadRetry"
-msgid "Try again"
-msgstr ""
-
-msgctxt "clipboardUploadSubmit"
-msgid "Add"
-msgstr ""
-
-msgctxt "clipboardUploadTitle"
-msgid "Add files"
+msgctxt "clipboardUploadReplace"
+msgid "Replace"
 msgstr ""
 
 msgctxt "close"
@@ -2936,6 +2888,10 @@ msgstr ""
 
 msgctxt "mediaLibraryTourText"
 msgid "Search for media like images and drag and drop them into the page."
+msgstr ""
+
+msgctxt "mediaLibraryUpload"
+msgid "Upload files"
 msgstr ""
 
 msgctxt "mediaSelectConfirm"
@@ -4011,6 +3967,62 @@ msgstr ""
 
 msgctxt "unexpectedMutationError"
 msgid "An unexpected error happened."
+msgstr ""
+
+msgctxt "uploadApplyToAll"
+msgid "Apply to all"
+msgstr ""
+
+msgctxt "uploadCreateFailed"
+msgid "The media couldn't be created."
+msgstr ""
+
+msgctxt "uploadCreated"
+msgid "The media is created."
+msgstr ""
+
+msgctxt "uploadDuplicate"
+msgid "The file exists as the media \"@label\", which is used."
+msgstr ""
+
+msgctxt "uploadFailed"
+msgid "The file couldn't be uploaded."
+msgstr ""
+
+msgctxt "uploadFileCount"
+msgid "@count files"
+msgstr ""
+
+msgctxt "uploadFocalPoint"
+msgid "Click the image to set its focal point."
+msgstr ""
+
+msgctxt "uploadIncomplete"
+msgid "The media needs a field that can't be filled in here."
+msgstr ""
+
+msgctxt "uploadNoFields"
+msgid "Nothing to fill in."
+msgstr ""
+
+msgctxt "uploadOneFile"
+msgid "1 file"
+msgstr ""
+
+msgctxt "uploadRetry"
+msgid "Try again"
+msgstr ""
+
+msgctxt "uploadSubmit"
+msgid "Add"
+msgstr ""
+
+msgctxt "uploadTitle"
+msgid "Add files"
+msgstr ""
+
+msgctxt "uploadUnsupportedFile"
+msgid "The type or size of \"@name\" is not supported."
 msgstr ""
 
 msgctxt "video"

@@ -1,9 +1,9 @@
 import { describe, expect, test, vi } from 'vitest'
 import type {
-  ClipboardUploadForm,
   UploadFileEvent,
   UploadFileResult,
-} from '../types'
+  UploadForm,
+} from '#blokkli/editor/types/uploads'
 import { createUploads, type UploadMethods } from './uploads'
 
 function buildFile(name: string, type = 'image/png'): File {
@@ -24,7 +24,7 @@ function flush(): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, 0))
 }
 
-const altForm: ClipboardUploadForm = {
+const altForm: UploadForm = {
   inputs: [
     { type: 'text', name: 'alt', label: 'Alt', required: true },
     {
@@ -41,7 +41,7 @@ const altForm: ClipboardUploadForm = {
 /**
  * An adapter whose uploads wait until the test settles them.
  */
-function buildAdapter(form: ClipboardUploadForm | null = altForm) {
+function buildAdapter(form: UploadForm | null = altForm) {
   const uploads: Array<{
     event: UploadFileEvent
     result: ReturnType<typeof deferred<UploadFileResult>>
@@ -163,7 +163,7 @@ describe('createUploads', () => {
 
   test('a form that loads after the abort starts no other upload', async () => {
     const { adapter, uploads } = buildAdapter()
-    const form = deferred<ClipboardUploadForm | null>()
+    const form = deferred<UploadForm | null>()
     adapter.getUploadForm = () => form.promise
     const state = createUploads(
       [buildFile('a.png'), buildFile('b.png'), buildFile('c.png')],
@@ -331,5 +331,52 @@ describe('createUploads', () => {
       errors: {},
       messages: ['The focal point is wrong.'],
     })
+  })
+
+  test("a field's value is applied to the other files that have the field", async () => {
+    const { adapter, uploads } = buildAdapter()
+    // The third file's form has no credit.
+    vi.mocked(adapter.getUploadForm)
+      .mockResolvedValueOnce(altForm)
+      .mockResolvedValueOnce(altForm)
+      .mockResolvedValueOnce({
+        inputs: [{ type: 'text', name: 'alt', label: 'Alt', required: true }],
+        complete: true,
+      })
+    const state = createUploads(
+      [
+        buildFile('a.png'),
+        buildFile('b.png'),
+        buildFile('c.pdf', 'application/pdf'),
+        buildFile('d.png'),
+      ],
+      adapter,
+      4,
+    )
+    state.start()
+    for (const id of ['1', '2', '3']) {
+      uploads[Number(id) - 1]!.result.resolve({ fileId: id })
+      await flush()
+    }
+    // An existing media has no fields to set.
+    uploads[3]!.result.resolve({ media: { id: '5', label: 'Dog' } })
+    await flush()
+
+    const [first, , third] = state.items
+    const getIds = (name: string) =>
+      state.getSharedItems(first!, name).map((item) => item.id)
+    expect(getIds('alt')).toEqual([1, 2])
+    expect(getIds('credit')).toEqual([1])
+    expect(getIds('other')).toEqual([])
+    expect(state.getSharedItems(third!, 'alt').length).toBe(2)
+
+    first!.values.credit = 'Jane Doe'
+    state.applyToAll(first!, 'credit')
+    expect(state.items.map((item) => item.values.credit)).toEqual([
+      'Jane Doe',
+      'Jane Doe',
+      undefined,
+      undefined,
+    ])
   })
 })

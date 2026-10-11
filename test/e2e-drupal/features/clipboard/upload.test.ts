@@ -5,7 +5,16 @@ import { withApp, BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 import { blockCount, blockState } from '../../support/blocks'
 import { emitEvent } from '../../support/events'
 import { dispatchPaste, dropDragInto } from '../../support/clipboard'
-import { dialog, dialogSubmit, dismissMessages } from '../../support/overlays'
+import { dialogSubmit, dismissMessages } from '../../support/overlays'
+import {
+  dropAreaIds,
+  dropOnArea,
+  pasteFiles,
+  uploadDialog,
+  uploadField,
+  uploadStatuses,
+  type TestFile,
+} from '../../support/uploads'
 import { topLevelBlockUuids } from '../../support/selection'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 
@@ -14,48 +23,8 @@ import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
  * in: Drupal's upload route (with the session's token), the media's form
  * (described by Drupal), the media created in one request, then the blocks
  * added in one mutation. Images become `image` paragraphs, documents `link`
- * ones. The files are built in the page: images drawn on a canvas, so Drupal
- * takes them as images, each of another colour, so none is a duplicate. A
- * broken one is zeros, which Drupal refuses.
+ * ones. The files are built in the page (`support/uploads.ts`).
  */
-
-/** A file to paste. */
-type TestFile = { name: string; type: string; broken?: boolean }
-
-/**
- * Dispatch a synthetic `paste` carrying files built in the page.
- */
-function pasteFiles(page: Page, files: TestFile[]): Promise<void> {
-  return page.evaluate(async (files) => {
-    const dt = new DataTransfer()
-    for (const { name, type, broken } of files) {
-      let blob: Blob
-      if (broken) {
-        blob = new Blob([new Uint8Array(64)], { type })
-      } else if (type.startsWith('image/')) {
-        const canvas = document.createElement('canvas')
-        canvas.width = 40
-        canvas.height = 30
-        const context = canvas.getContext('2d')!
-        context.fillStyle = `hsl(${Math.random() * 360} 80% 50%)`
-        context.fillRect(0, 0, 40, 30)
-        blob = await new Promise<Blob>((resolve) =>
-          canvas.toBlob((v) => resolve(v!), type),
-        )
-      } else {
-        blob = new Blob([`%PDF-1.4 ${Math.random()}`], { type })
-      }
-      dt.items.add(new File([blob], name, { type }))
-    }
-    document.dispatchEvent(
-      new ClipboardEvent('paste', {
-        clipboardData: dt,
-        bubbles: true,
-        cancelable: true,
-      }),
-    )
-  }, files)
-}
 
 /**
  * Paste the files and drop them in the page's paragraphs, as a pointer does:
@@ -76,18 +45,9 @@ function isDragging(page: Page): Promise<boolean> {
   return withApp(page, (app) => app.selection.isDragging.value)
 }
 
-function uploadDialog(page: Page) {
-  return dialog(page, 'clipboard-upload')
-}
-
-/** The status of each file in the dialog. */
-function uploadStatuses(page: Page): Promise<string[]> {
-  return uploadDialog(page)
-    .locator('[data-test="clipboard-upload-item"]')
-    .evaluateAll((items) =>
-      items.map((item) => item.getAttribute('data-test-status') ?? ''),
-    )
-}
+/** The image media's alt text and credit, in the dialog's forms. */
+const ALT = 'field_media_image[0][alt]'
+const CREDIT = 'field_credit[0][value]'
 
 /**
  * Page lifecycle: one editor page shared, on the page "Blocks". Each test
@@ -127,13 +87,9 @@ describe('Uploading pasted files', async () => {
 
     await expect.poll(() => uploadStatuses(page)).toEqual(['uploaded'])
     // The media's name, its file's name unless changed.
-    const name = uploadDialog(page).locator(
-      '[data-test="config-form-name[0][value]"] [data-test="form-text-input"]',
-    )
+    const name = uploadField(page, 'name[0][value]')
     expect(await name.inputValue()).toBe('Mačka.png')
-    const alt = uploadDialog(page).locator(
-      '[data-test="config-form-field_media_image[0][alt]"] [data-test="form-text-input"]',
-    )
+    const alt = uploadField(page, ALT)
     await alt.fill('A cat')
     await alt.blur()
     await dialogSubmit(page).click()
@@ -153,7 +109,7 @@ describe('Uploading pasted files', async () => {
     await pasteAndDrop(page, [{ name: 'focus.png', type: 'image/png' }])
 
     const focalPoint = uploadDialog(page).locator(
-      '[data-test="clipboard-upload-focal-point"]',
+      '[data-test="upload-focal-point"]',
     )
     await focalPoint.waitFor()
     expect(await focalPoint.getAttribute('data-test-value')).toBe('50,50')
@@ -213,9 +169,7 @@ describe('Uploading pasted files', async () => {
       .poll(() => uploadStatuses(page))
       .toEqual(['uploaded', 'failed'])
     expect(await dialogSubmit(page).isDisabled()).toBe(true)
-    await uploadDialog(page)
-      .locator('[data-test="clipboard-upload-remove"]')
-      .click()
+    await uploadDialog(page).locator('[data-test="upload-remove"]').click()
     expect(await uploadStatuses(page)).toEqual(['uploaded'])
 
     await dialogSubmit(page).click()
@@ -250,6 +204,71 @@ describe('Uploading pasted files', async () => {
         .map(async (uuid) => (await blockState(page, uuid)).bundle),
     )
     expect(bundles).toEqual(['image', 'link'])
+  })
+
+  test("a field's value is applied to the other files", async () => {
+    const before = await blockCount(page)
+    await pasteAndDrop(page, [
+      { name: 'one.png', type: 'image/png' },
+      { name: 'two.png', type: 'image/png' },
+    ])
+
+    await expect
+      .poll(() => uploadStatuses(page))
+      .toEqual(['uploaded', 'uploaded'])
+    const apply = uploadDialog(page)
+      .locator(`[data-test="config-form-${CREDIT}"]`)
+      .first()
+      .locator('[data-test="upload-apply-to-all"]')
+    // Without a value, there's nothing to apply.
+    expect(await apply.isVisible()).toBe(false)
+    const credits = uploadField(page, CREDIT)
+    await credits.first().fill('Jane Doe')
+    await credits.first().blur()
+    await apply.click()
+    expect(await credits.nth(1).inputValue()).toBe('Jane Doe')
+
+    await dialogSubmit(page).click()
+    await uploadDialog(page).waitFor({ state: 'detached' })
+    await expect.poll(() => blockCount(page)).toBe(before + 2)
+  })
+
+  test("an image dropped on a block's image replaces it", async () => {
+    const before = await withApp(page, (app) => app.state.getAllUuids())
+    await pasteAndDrop(page, [{ name: 'old.png', type: 'image/png' }])
+    await expect.poll(() => uploadStatuses(page)).toEqual(['uploaded'])
+    await uploadField(page, ALT).fill('Old')
+    await uploadField(page, ALT).blur()
+    await dialogSubmit(page).click()
+    await uploadDialog(page).waitFor({ state: 'detached' })
+    await expect.poll(() => blockCount(page)).toBe(before.length + 1)
+    const uuid = (await withApp(page, (app) => app.state.getAllUuids())).find(
+      (uuid) => !before.includes(uuid),
+    )!
+    const area = `replace-media:${uuid}:field_media`
+
+    // A document can't replace an image.
+    await pasteFiles(page, [{ name: 'report.pdf', type: 'application/pdf' }])
+    await expect.poll(() => isDragging(page)).toBe(true)
+    expect(await dropAreaIds(page)).not.toContain(area)
+    await emitEvent(page, 'dragging:end')
+
+    await pasteFiles(page, [{ name: 'new.png', type: 'image/png' }])
+    await expect.poll(() => isDragging(page)).toBe(true)
+    expect(await dropAreaIds(page)).toContain(area)
+    await dropOnArea(page, area)
+    await emitEvent(page, 'dragging:end')
+
+    await expect.poll(() => uploadStatuses(page)).toEqual(['uploaded'])
+    await uploadField(page, ALT).fill('New')
+    await uploadField(page, ALT).blur()
+    await dialogSubmit(page).click()
+    await uploadDialog(page).waitFor({ state: 'detached' })
+
+    await expect
+      .poll(async () => (await blockState(page, uuid)).props?.media?.image?.alt)
+      .toBe('New')
+    expect(await blockCount(page)).toBe(before.length + 1)
   })
 
   test('cancelling adds nothing', async () => {

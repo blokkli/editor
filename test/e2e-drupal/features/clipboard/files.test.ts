@@ -11,6 +11,7 @@ import { emitEvent } from '../../support/events'
 import { blockCount } from '../../support/blocks'
 import { draggedBundles, dropDragInto } from '../../support/clipboard'
 import { dismissMessages } from '../../support/overlays'
+import { openSidebar } from '../../support/sidebar'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 
 /**
@@ -159,6 +160,21 @@ describe('Pasting and dragging in files', async () => {
       .poll(() => hasMessageFor(translatorPage, 'photo.png'))
       .toBe(true)
     expect(await isDragging(translatorPage)).toBe(false)
+  })
+
+  test('a user who may not create media cannot upload to the media library', async () => {
+    await Promise.all([
+      openSidebar(page, 'media_library'),
+      openSidebar(translatorPage, 'media_library'),
+    ])
+    await Promise.all([
+      page.locator('[data-test="media-library"]').waitFor(),
+      translatorPage.locator('[data-test="media-library"]').waitFor(),
+    ])
+
+    const upload = '[data-test="media-library-upload"]'
+    expect(await page.locator(upload).count()).toBe(1)
+    expect(await translatorPage.locator(upload).count()).toBe(0)
   })
 
   test('pasted images start a drag adding a block for each', async () => {

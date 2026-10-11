@@ -1455,29 +1455,165 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }
     }
 
-    if (availableFeatureIds.has('clipboard')) {
-      // Pasted and dropped files are uploaded in a dialog, where their media's
-      // fields are filled in, if the module can.
-      const canUpload =
-        hasQuery('pbGetUploadForm') &&
-        hasMutation('pbCreateMediaFromUploads') &&
-        hasMutation('pbUploadToken') &&
-        hasMutation('pbAddEntityReferenceMultiple')
+    // Files are uploaded in a dialog, where their media's fields are filled in,
+    // if the module can.
+    const canUpload =
+      hasQuery('pbGetUploadForm') &&
+      hasMutation('pbCreateMediaFromUploads') &&
+      hasMutation('pbUploadToken')
 
-      /**
-       * The clipboard config of images or files.
-       */
-      const getFileClipboard = (type: 'image' | 'file') => {
-        const typename =
-          type === 'image'
-            ? 'ParagraphsBlokkliSupportedClipboardImage'
-            : 'ParagraphsBlokkliSupportedClipboardFile'
-        const clipboard = config.clipboard.find(
-          (v) => v?.__typename === typename,
-        )
-        return clipboard && 'maxFileSize' in clipboard ? clipboard : undefined
+    // Pasted and dropped files are added as blocks through their uploads.
+    const canAddUploads =
+      canUpload && hasMutation('pbAddEntityReferenceMultiple')
+
+    /**
+     * The clipboard config of images or files.
+     */
+    const getFileClipboard = (type: 'image' | 'file') => {
+      const typename =
+        type === 'image'
+          ? 'ParagraphsBlokkliSupportedClipboardImage'
+          : 'ParagraphsBlokkliSupportedClipboardFile'
+      const clipboard = config.clipboard.find((v) => v?.__typename === typename)
+      return clipboard && 'maxFileSize' in clipboard ? clipboard : undefined
+    }
+
+    if (
+      canUpload &&
+      (availableFeatureIds.has('clipboard') ||
+        availableFeatureIds.has('media-library'))
+    ) {
+      // The media type the user can upload to, if Drupal accepts the file.
+      adapter.getUploadMediaBundle = (e) => {
+        const clipboard = getFileClipboard(e.type)
+        if (
+          clipboard?.canUpload &&
+          isFileAccepted(
+            { fileName: e.fileName, fileSize: e.fileSize ?? 0 },
+            clipboard,
+          )
+        ) {
+          return clipboard.mediaBundle
+        }
       }
 
+      let uploadToken: Promise<string> | null = null
+
+      /**
+       * The token for the upload route's X-CSRF-Token header: requested for
+       * the first upload, and again after the route refused it.
+       */
+      const getUploadToken = (): Promise<string> => {
+        uploadToken ??= useGraphqlMutation('pbUploadToken').then((v) => {
+          if (!v.data.token) {
+            throw new Error('Missing permission to upload files.')
+          }
+          return v.data.token
+        })
+        uploadToken.catch(() => {
+          uploadToken = null
+        })
+        return uploadToken
+      }
+
+      adapter.uploadFile = async (e) => {
+        const token = await getUploadToken()
+        const prefix = config.urlPrefixes[ctx.value.langcode] ?? ''
+        return new Promise((resolve, reject) => {
+          if (e.signal.aborted) {
+            reject(new DOMException('The upload was aborted.', 'AbortError'))
+            return
+          }
+          const xhr = new XMLHttpRequest()
+          xhr.open(
+            'POST',
+            `${prefix}/paragraphs_blokkli/upload/${e.type}?_format=json`,
+          )
+          xhr.setRequestHeader('Content-Type', 'application/octet-stream')
+          // A header can't carry most characters: Drupal decodes the name.
+          xhr.setRequestHeader(
+            'Content-Disposition',
+            `file; filename="${encodeURIComponent(e.file.name)}"`,
+          )
+          xhr.setRequestHeader('X-CSRF-Token', token)
+          xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) {
+              e.onProgress(event.loaded / event.total)
+            }
+          }
+          xhr.onload = () => {
+            let data: any = null
+            try {
+              data = JSON.parse(xhr.responseText)
+            } catch {
+              // Not JSON, such as the web server's error page.
+            }
+            if (xhr.status >= 200 && xhr.status < 300 && data) {
+              resolve(
+                data.media
+                  ? {
+                      media: {
+                        id: String(data.media.id),
+                        label: String(data.media.label),
+                      },
+                    }
+                  : { fileId: String(data.fileId) },
+              )
+              return
+            }
+            if (xhr.status === 403) {
+              uploadToken = null
+            }
+            reject(
+              new Error(typeof data?.message === 'string' ? data.message : ''),
+            )
+          }
+          xhr.onerror = () => reject(new Error(''))
+          xhr.onabort = () =>
+            reject(new DOMException('The upload was aborted.', 'AbortError'))
+          e.signal.addEventListener('abort', () => xhr.abort(), {
+            once: true,
+          })
+          xhr.send(e.file)
+        })
+      }
+
+      adapter.getUploadForm = (e) =>
+        useGraphqlQuery('pbGetUploadForm', {
+          type: e.upload.type,
+          fileId: e.upload.fileId,
+        }).then((v) =>
+          v.data.form
+            ? {
+                inputs: mapPluginConfigInputs(v.data.form.inputs),
+                complete: v.data.form.complete,
+              }
+            : null,
+        )
+
+      adapter.createMediaFromUploads = (e) =>
+        useGraphqlMutation('pbCreateMediaFromUploads', {
+          langcode: ctx.value.langcode,
+          items: e.items.map((item) => ({
+            type: item.upload.type,
+            fileId: item.upload.fileId,
+            values: item.values,
+          })),
+        }).then((v) => {
+          if (!v.data.results) {
+            throw new Error('Unknown language for media: ' + ctx.value.langcode)
+          }
+          return v.data.results.map((result) => ({
+            mediaId: result.mediaId ?? null,
+            errors: result.errors.map((error) => ({
+              name: error.name ?? null,
+              message: error.message,
+            })),
+          }))
+        })
+    }
+
+    if (availableFeatureIds.has('clipboard')) {
       adapter.clipboardMapBundle = (e) => {
         if (e.type === 'video') {
           return config.clipboard.find((v) => {
@@ -1533,7 +1669,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           const clipboard = getFileClipboard(e.type)
           if (
             clipboard &&
-            (!canUpload || clipboard.canUpload) &&
+            (!canAddUploads || clipboard.canUpload) &&
             isFileAccepted(e, clipboard)
           ) {
             return clipboard.possibleParagraphBundles
@@ -1541,126 +1677,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         }
       }
 
-      if (canUpload) {
-        let uploadToken: Promise<string> | null = null
-
-        /**
-         * The token for the upload route's X-CSRF-Token header: requested for
-         * the first upload, and again after the route refused it.
-         */
-        const getUploadToken = (): Promise<string> => {
-          uploadToken ??= useGraphqlMutation('pbUploadToken').then((v) => {
-            if (!v.data.token) {
-              throw new Error('Missing permission to upload files.')
-            }
-            return v.data.token
-          })
-          uploadToken.catch(() => {
-            uploadToken = null
-          })
-          return uploadToken
-        }
-
-        adapter.uploadFile = async (e) => {
-          const token = await getUploadToken()
-          const prefix = config.urlPrefixes[ctx.value.langcode] ?? ''
-          return new Promise((resolve, reject) => {
-            if (e.signal.aborted) {
-              reject(new DOMException('The upload was aborted.', 'AbortError'))
-              return
-            }
-            const xhr = new XMLHttpRequest()
-            xhr.open(
-              'POST',
-              `${prefix}/paragraphs_blokkli/upload/${e.type}?_format=json`,
-            )
-            xhr.setRequestHeader('Content-Type', 'application/octet-stream')
-            // A header can't carry most characters: Drupal decodes the name.
-            xhr.setRequestHeader(
-              'Content-Disposition',
-              `file; filename="${encodeURIComponent(e.file.name)}"`,
-            )
-            xhr.setRequestHeader('X-CSRF-Token', token)
-            xhr.upload.onprogress = (event) => {
-              if (event.lengthComputable) {
-                e.onProgress(event.loaded / event.total)
-              }
-            }
-            xhr.onload = () => {
-              let data: any = null
-              try {
-                data = JSON.parse(xhr.responseText)
-              } catch {
-                // Not JSON, such as the web server's error page.
-              }
-              if (xhr.status >= 200 && xhr.status < 300 && data) {
-                resolve(
-                  data.media
-                    ? {
-                        media: {
-                          id: String(data.media.id),
-                          label: String(data.media.label),
-                        },
-                      }
-                    : { fileId: String(data.fileId) },
-                )
-                return
-              }
-              if (xhr.status === 403) {
-                uploadToken = null
-              }
-              reject(
-                new Error(
-                  typeof data?.message === 'string' ? data.message : '',
-                ),
-              )
-            }
-            xhr.onerror = () => reject(new Error(''))
-            xhr.onabort = () =>
-              reject(new DOMException('The upload was aborted.', 'AbortError'))
-            e.signal.addEventListener('abort', () => xhr.abort(), {
-              once: true,
-            })
-            xhr.send(e.file)
-          })
-        }
-
-        adapter.getUploadForm = (e) =>
-          useGraphqlQuery('pbGetUploadForm', {
-            type: e.upload.type,
-            fileId: e.upload.fileId,
-          }).then((v) =>
-            v.data.form
-              ? {
-                  inputs: mapPluginConfigInputs(v.data.form.inputs),
-                  complete: v.data.form.complete,
-                }
-              : null,
-          )
-
-        adapter.createMediaFromUploads = (e) =>
-          useGraphqlMutation('pbCreateMediaFromUploads', {
-            langcode: ctx.value.langcode,
-            items: e.items.map((item) => ({
-              type: item.upload.type,
-              fileId: item.upload.fileId,
-              values: item.values,
-            })),
-          }).then((v) => {
-            if (!v.data.results) {
-              throw new Error(
-                'Unknown language for media: ' + ctx.value.langcode,
-              )
-            }
-            return v.data.results.map((result) => ({
-              mediaId: result.mediaId ?? null,
-              errors: result.errors.map((error) => ({
-                name: error.name ?? null,
-                message: error.message,
-              })),
-            }))
-          })
-
+      if (canAddUploads) {
         adapter.addBlocksFromUploads = (e) =>
           useGraphqlMutation('pbAddEntityReferenceMultiple', {
             ...ctx.value,

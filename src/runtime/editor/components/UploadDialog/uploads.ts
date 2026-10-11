@@ -2,11 +2,11 @@ import { computed, markRaw, reactive } from '#imports'
 import type { BlokkliAdapter } from '#blokkli/editor/adapter'
 import type { PluginConfigInput } from '#blokkli/editor/types/pluginConfig'
 import type {
-  ClipboardUpload,
-  ClipboardUploadForm,
-  ClipboardUploadType,
-} from '../types'
-import { getFileType } from '../helpers'
+  UploadedFile,
+  UploadForm,
+  UploadType,
+} from '#blokkli/editor/types/uploads'
+import { getUploadType } from '#blokkli/editor/helpers/uploads'
 
 export type UploadStatus = 'queued' | 'uploading' | 'uploaded' | 'failed'
 
@@ -19,7 +19,7 @@ export type UploadItem = {
    */
   id: number
   file: File
-  type: ClipboardUploadType
+  type: UploadType
   status: UploadStatus
   /**
    * The share of the file uploaded, from 0 to 1.
@@ -32,11 +32,11 @@ export type UploadItem = {
   /**
    * The uploaded file, from which a media is created.
    */
-  upload: ClipboardUpload | null
+  upload: UploadedFile | null
   /**
    * The form of the media created from the uploaded file.
    */
-  form: ClipboardUploadForm | null
+  form: UploadForm | null
   /**
    * The values of the form's fields, keyed by their names.
    */
@@ -91,7 +91,7 @@ export function createUploads(
     files.map((file, id) => ({
       id,
       file: markRaw(file),
-      type: getFileType(file.type),
+      type: getUploadType(file.type),
       status: 'queued',
       progress: 0,
       error: null,
@@ -191,13 +191,40 @@ export function createUploads(
   }
 
   /**
-   * Leave a file out, e.g. one that can't be uploaded: no block is added for
-   * it.
+   * Leave a file out, e.g. one that can't be uploaded: it gets no media.
    */
   function remove(item: UploadItem) {
     const index = items.indexOf(item)
     if (index !== -1) {
       items.splice(index, 1)
+    }
+  }
+
+  /**
+   * The other files that have a file's field, and whose media isn't created:
+   * the field's value can be set for all of them at once.
+   */
+  function getSharedItems(item: UploadItem, name: string): UploadItem[] {
+    const input = item.form?.inputs.find((v) => v.name === name)
+    if (!input) {
+      return []
+    }
+    return items.filter(
+      (other) =>
+        other !== item &&
+        other.mediaId === null &&
+        other.form?.inputs.some(
+          (v) => v.name === name && v.type === input.type,
+        ),
+    )
+  }
+
+  /**
+   * Set the value of a file's field for the other files that have it.
+   */
+  function applyToAll(item: UploadItem, name: string) {
+    for (const other of getSharedItems(item, name)) {
+      other.values[name] = item.values[name]
     }
   }
 
@@ -246,5 +273,15 @@ export function createUploads(
     return items.every((item) => item.mediaId !== null)
   }
 
-  return { items, isReady, start, retry, remove, abort, createMedia }
+  return {
+    items,
+    isReady,
+    start,
+    retry,
+    remove,
+    abort,
+    createMedia,
+    getSharedItems,
+    applyToAll,
+  }
 }

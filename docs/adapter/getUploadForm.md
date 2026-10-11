@@ -5,9 +5,7 @@ Get the form of the media created from an uploaded file.
 ## Signature
 
 ```typescript
-getUploadForm?: (e: {
-  upload: ClipboardUpload
-}) => Promise<ClipboardUploadForm | null>
+getUploadForm?: (e: { upload: UploadedFile }) => Promise<UploadForm | null>
 ```
 
 ## Parameters
@@ -17,7 +15,7 @@ getUploadForm?: (e: {
 The file returned by [adapter.uploadFile].
 
 ```typescript
-type ClipboardUpload = {
+type UploadedFile = {
   type: 'image' | 'file'
   fileId: string
 }
@@ -26,7 +24,7 @@ type ClipboardUpload = {
 ## Returns
 
 ```typescript
-type ClipboardUploadForm = {
+type UploadForm = {
   // The form's fields.
   inputs: PluginConfigInput[]
   // Whether the fields are all the form needs.
@@ -41,7 +39,8 @@ failed.
 
 Called for each file once it's uploaded. The dialog shows the fields below the
 file (text fields, checkboxes and options), filled with their default values.
-The user can add the files once each required field has a value.
+The user can add the files once each required field has a value. When several
+files have a field, its value can be applied to all of them.
 
 An image's form can have a focal point, the point that crops keep: an input of
 the type `focalPoint`, whose value is `"x,y"`, the point's offsets from the
