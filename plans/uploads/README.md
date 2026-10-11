@@ -790,8 +790,10 @@ anyone delete any file (step 15).
 - Setting the focal point of an existing image, such as a block's (waiting: it
   belongs to the file, so it changes every page using the image, outside the
   edit state; better as "edit this media" with the same descriptions).
-- Alt texts from the agent's model, for any backend: another generator (step
-  15). And generating the alt texts of all of a dialog's images at once.
+- Alt texts from the agent's model, for any backend (parked by the user,
+  2026-10-11: it belongs to a bigger feature, images for the agent, such as
+  uploading them in the chat). And generating the alt texts of all of a dialog's
+  images at once.
 - Adding a dropped file to a multi-value media field ("Add to …", as media
   library items can).
 - Rendering a node's fields with the same descriptions, saved through
