@@ -214,37 +214,44 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 ## F16: Mutations ignore a field's allowed types
 
 - **Found:** 2026-09-26, checking block-transfer in 13c.
-- **Symptom:** `add` and `import` put a block type into a paragraphs field that
-  doesn't allow it (a text block into the page's sidebar, which allows button,
-  contact and downloads), and publishing keeps it. Drupal's entity form then
-  refuses to save the host: "This entity (paragraph: N) cannot be referenced."
-- **Cause:**
-  - `AddMutationBase::createAndAddParagraph()`
-    (`src/Plugin/ParagraphsBlokkli/AddMutationBase.php:109`) validates the new
-    paragraph, but not the host field's `target_bundles`.
-  - `Import` (`src/Plugin/ParagraphsBlokkli/Mutation/Import.php:170-178`) only
-    checks create access per bundle.
-  - Publishing validates paragraphs (`validation_types`), not the references of
-    the host's fields.
+- **Symptom:** a mutation puts a block type into a paragraphs field that doesn't
+  allow it (a text block into the page's sidebar, which allows button, contact
+  and downloads), and publishing keeps it. Drupal's entity form then refuses to
+  save the host: "This entity (paragraph: N) cannot be referenced."
+- **Fixed** (2026-10-11) for `add` (and its form), `import` and `add_reusable`:
+  they refuse a type that the target field doesn't allow, with
+  `ParagraphsBlokkliHelper::checkAllowedParagraphBundles()`. The check runs when
+  a mutation is added; stored mutations replay without it.
+  - `import` also checks the nested paragraphs against their parent's field.
+  - `add_reusable` also checks the type of the library item's paragraph, as
+    Paragraphs' own constraint does.
+  - A field that the host doesn't have is refused too: such a paragraph was
+    dropped on publish.
+- **Still open: the other mutations that place a paragraph.** None of them
+  checks the field's allowed types (by reading):
+  - a new paragraph in a named field: `add_multiple` (with its children),
+    `add_text`, `add_clipboard_text`, `add_file`, `add_image`,
+    `add_video_remote`, `add_entity_reference`, `add_entity_reference_multiple`,
+    `add_media_image_reference`, `add_media_video_reference`, `add_fragment`,
+    `add_from_template`;
+  - a paragraph that changes its field: `move`, `move_multiple`, `swap`;
+  - a new paragraph next to its source: `duplicate`, `duplicate_multiple`,
+    `detach_reusable`, `make_reusable`, the conversions.
+  - `add` doesn't check the nested paragraphs of a type's default template.
 - **Impact:**
-  - Only the editor's UI enforces allowed types: any client of the GraphQL API
-    (or a UI bug) can break them.
+  - For these mutations, only the editor's UI enforces allowed types: any client
+    of the GraphQL API (or a UI bug) can break them.
   - The nesting depth relies on them (F10), so a deeper structure can lose
     blocks on publish.
-- **More mutations** (13d):
-  - `add_reusable` put a text library block into the sidebar. The node form then
-    refused to save: "The Reusable paragraph field cannot contain a Text
-    paragraph, because the parent Sidebar field disallows it."
+  - Publishing validates paragraphs (`validation_types`), not the references of
+    the host's fields.
+- **Other missing checks** (13d, by reading):
   - `add_from_template` checks nothing: no host access, no create access, no
-    template access, no allowed types (by reading).
+    template access.
   - `make_reusable` checks neither `create paragraph library item` nor the
-    type's `allow_library_conversion` (by reading; F12 relies on it).
+    type's `allow_library_conversion` (F12 relies on it).
   - `add_reusable` loads the item with `accessCheck(FALSE)`
-    (`AddReusable.php:72-76`), so unpublished items can be placed (by reading).
-- **Fix idea:** check the target field's allowed bundles wherever a mutation
-  places a paragraph into a field (checked here: `add` and `import`; the other
-  mutations are likely the same), or validate the host's reference fields on
-  publish.
+    (`AddReusable.php:72-76`), so unpublished items can be placed.
 
 ## F17: `detach_reusable` bugs
 
