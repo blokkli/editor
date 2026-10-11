@@ -2,8 +2,8 @@
 
 Pasting or dropping images and files into the editor: a real upload with
 progress, and the media's name, alt text and other fields filled in before the
-media is saved. Planned with the user on 2026-10-10. It also fixes
-[F42](../drupal-setup/findings.md#f42-uploads-skip-media-create-access).
+media is saved. Planned with the user on 2026-10-10. It also fixed F42 of the
+drupal-setup findings: uploads skipped the media type's create access.
 
 ## Today
 

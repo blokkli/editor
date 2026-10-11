@@ -43,7 +43,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F38 | [Editors can't view paragraph types](#f38-editors-cant-view-paragraph-types)                                                            | `paragraphs_blokkli` | high     | workaround |
 | F40 | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                 | `paragraphs_blokkli` | low      | open       |
 | F41 | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                                             | `paragraphs_blokkli` | low      | open       |
-| F42 | [Uploads skip media create access](#f42-uploads-skip-media-create-access)                                                               | `paragraphs_blokkli` | medium   | open       |
 | F43 | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                                          | both                 | low      | open       |
 | F44 | [No approval step](#f44-no-approval-step)                                                                                               | both                 | low      | open       |
 | F45 | ["Replace" fails on link fields](#f45-replace-fails-on-link-fields)                                                                     | `paragraphs_blokkli` | medium   | open       |
@@ -682,25 +681,6 @@ From chunk 04 (2026-09-26):
   exists, and it's set on every save
   (`modules/paragraphs_blokkli_comment/src/Plugin/GraphQL/SchemaExtension/ParagraphsBlokkliCommentExtension.php:174-180`).
 - **Fix idea:** return `NULL` while `changed` equals `created`.
-
-## F42: Uploads skip media create access
-
-- **Found:** 2026-09-28, 13h. Reproduced: the translator, without
-  `create image media`, pasted an image and got a media entity.
-- **Symptom:** any user who may add a paragraph to the page can create media by
-  pasting or dropping images and files, whatever their media permissions.
-- **Cause:** `FileUploadMutationBase` checks paragraph create access and host
-  update access
-  (`src/Plugin/ParagraphsBlokkli/FileUploadMutationBase.php:174-175`), then
-  creates and saves the media (`:337`, `:372`) without the media type's create
-  access.
-- **Workaround:** none; the permissions skill says media permissions don't
-  prevent uploads.
-- **Fix idea:** check the media type's create access before creating it, and
-  offer the clipboard only when the user has it.
-- **Fixed in part** (the uploads plan, step 1): `add_image` and `add_file` check
-  the media type's create access. The editor still offers pasting files to a
-  user without it; [the uploads plan](../uploads/README.md) changes that.
 
 ## F43: Translators can't be limited to translating
 
