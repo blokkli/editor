@@ -165,6 +165,18 @@ See
 [Configuration — Drupal Submodules](/modules/drupal/configuration#drupal-submodules)
 for the full list.
 
+## Adding a block fails unless its form opens
+
+A block with [`addBehaviour`](/define-blokkli/editor#addbehaviour) `'no-form'`
+or `'editable:…'` is added without its form, so it only has the default values
+of its fields. Drupal validates the new paragraph, and a required field without
+a value fails. That's how it's meant to work: the paragraph type and the block
+don't fit together. Either:
+
+1. Give every required field of the paragraph type a default value
+2. Remove the `addBehaviour` from the block, so that its form opens (the
+   default, `'form'`)
+
 ## Pasted or dropped files are refused
 
 The editor names a file it won't add in a message. Check, for the media type set

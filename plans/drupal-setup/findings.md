@@ -11,7 +11,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | --- | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- |
 | F5  | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                                               | Drupal core          | high     | workaround |
 | F6  | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                                | `blokkli_starterkit` | low      | open       |
-| F7  | [Undeclared dependencies and config gaps](#f7-undeclared-dependencies-and-config-gaps)                                                  | `paragraphs_blokkli` | low      | open       |
 | F9  | [Link titles from entity mappings](#f9-link-titles-from-entity-mappings)                                                                | `paragraphs_blokkli` | medium   | workaround |
 | F10 | [Paragraphs below level 5 are lost on publish](#f10-paragraphs-below-level-5-are-lost-on-publish)                                       | `paragraphs_blokkli` | medium   | workaround |
 | F11 | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                                   | `paragraphs_blokkli` | low      | open       |
@@ -96,19 +95,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
     `.ddev/nginx_full/nginx-site.conf` does all three.
   - `location ~ ^/sites/[^/]+/files/.*\.php$ { deny all; }` before the other
     locations of files, as in this repo since chunk 10.
-
-## F7: Undeclared dependencies and config gaps
-
-- **Found:** 2026-09-26, while building the content model in chunk 04. The other
-  parts of this finding are fixed.
-- **Blocks with a required field can only be added through the form.** `add`
-  validates the new paragraph
-  (`src/Plugin/ParagraphsBlokkli/AddMutationBase.php:143`), and its `values`
-  context isn't exposed in GraphQL: `map` arguments are only mapped for a list
-  of mutations
-  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/SchemaExtension/EditExtension.php:152`).
-  So `addBehaviour: 'no-form'` or `'editable:…'` fails for such a block. If
-  that's intended, document it with `addBehaviour`.
 
 ## F9: Link titles from entity mappings
 

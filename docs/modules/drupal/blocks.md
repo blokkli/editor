@@ -46,6 +46,10 @@ Key points:
 - **`v-blokkli-editable:field_text`** enables inline editing for the
   `field_text` Drupal field
 - **`export type Props`** is used by `getBundlePropsType` for type generation
+- **`addBehaviour: 'no-form'`** adds the paragraph without opening its form.
+  Drupal validates the new paragraph, so every required field of the paragraph
+  type needs a default value. The same goes for `'editable:…'`. Without default
+  values, keep the default behaviour, `'form'`.
 
 ## Block with Media
 
