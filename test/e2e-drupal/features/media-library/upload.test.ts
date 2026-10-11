@@ -57,6 +57,8 @@ describe('Uploading files to the media library', async () => {
     page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH)
     await openSidebar(page, 'media_library')
     await page.locator('[data-test="media-library"]').waitFor()
+    // The seeded media: the library loads them after it opened.
+    await page.locator('[data-test="media-library-item"]').first().waitFor()
   })
 
   afterAll(async () => {
