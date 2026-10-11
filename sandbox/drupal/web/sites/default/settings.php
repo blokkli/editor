@@ -137,6 +137,10 @@ $config['paragraphs_blokkli_agent.settings']['auth_secret'] = $agent ? (getenv('
 // Never in an E2E sandbox: without its fake, a translation fails there instead
 // of reaching DeepL.
 $config['paragraphs_blokkli_deepl.settings']['api_key'] = $e2e ? '' : (getenv('DEEPL_AUTH_KEY') ?: '');
+// Rokka is only for trying uploads to it (see the sandbox skill): the module
+// isn't enabled by the site's config. Never in an E2E sandbox.
+$config['rokka.settings']['api_key'] = $e2e ? '' : (getenv('ROKKA_API_KEY') ?: '');
+$config['rokka.settings']['organization_name'] = $e2e ? '' : (getenv('ROKKA_ORG') ?: '');
 
 if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
   include $app_root . '/' . $site_path . '/settings.local.php';

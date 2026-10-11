@@ -160,6 +160,24 @@ Traefik sends every hostname to the web container's nginx on port 80.
   upload with the content of a media's file gets that media
   (`MediaUploader::findDuplicate()` in `paragraphs_blokkli`). filehash's own
   check (`dedupe`) stays off: it would refuse the file.
+- **Rokka** is only there to try uploads to it. `drupal/rokka` is installed but
+  not enabled, and settings.php gives it `ROKKA_API_KEY` and `ROKKA_ORG` (never
+  in an E2E sandbox). Try it in a throwaway sandbox, never on the dev site,
+  whose config would be exported:
+
+  ```bash
+  ddev drush blokkli-sandbox:create rokka1
+  ddev drush --uri=https://rokka1.blokkli.ddev.site en rokka -y
+  ddev drush --uri=https://rokka1.blokkli.ddev.site cset field.storage.media.field_media_image settings.uri_scheme rokka -y
+  ddev drush --uri=https://rokka1.blokkli.ddev.site cset rokka.settings enable_manual_alt_tag true --input-format=yaml -y
+  ddev drush --uri=https://rokka1.blokkli.ddev.site cr
+  ```
+
+  New images then go to Rokka; the seeded ones stay where they are. Delete the
+  media and their files before the sandbox: deleting a sandbox leaves its images
+  on Rokka. Rokka only describes images (the alt texts) for paying
+  organisations; the others get a 403, and the dialog says that no alt text
+  could be generated.
 
 ### blokkli_sandbox
 
@@ -474,6 +492,7 @@ host, with ddev running: `bun run test:e2e-drupal` or
 | `NUXT_BLOKKLI_AGENT_AUTH_SECRET`                              | settings.php (dev site, premium sandboxes), the frontend | no agent                                        |
 | `NUXT_BLOKKLI_AGENT_API_KEY`                                  | the frontend                                             | the agent only replays mock scripts             |
 | `DEEPL_AUTH_KEY`                                              | settings.php (not in E2E sandboxes)                      | no DeepL translation                            |
+| `ROKKA_API_KEY`, `ROKKA_ORG`                                  | settings.php (not in E2E sandboxes)                      | no uploads to Rokka in a sandbox set up for it  |
 | `NUXT_ADMIN_PASSWORD`                                         | the control app                                          | `/admin` open locally, 503 when hosted          |
 | `NUXT_TURNSTILE_SECRET_KEY`, `NUXT_PUBLIC_TURNSTILE_SITE_KEY` | the control app                                          | no captcha                                      |
 | `IS_DDEV_HOSTED`                                              | settings.php, the control app, the frontend's SSR rule   | local behaviour                                 |
