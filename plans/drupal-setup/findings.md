@@ -108,13 +108,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 
 From chunk 04 (2026-09-26):
 
-- **Empty `allowed_formats` means two things.**
-  `ParagraphsBlokkliHelper::getUsableTextFormats()`
-  (`src/ParagraphsBlokkliHelper.php:244`) treats it as "any format", but
-  `AddClipboardText`
-  (`src/Plugin/ParagraphsBlokkli/Mutation/AddClipboardText.php:149`) throws, so
-  pasting text fails on a text field without allowed formats. Fix: fall back to
-  the user's first usable format there too.
 - **Blocks with a required field can only be added through the form.** `add`
   validates the new paragraph
   (`src/Plugin/ParagraphsBlokkli/AddMutationBase.php:143`), and its `values`

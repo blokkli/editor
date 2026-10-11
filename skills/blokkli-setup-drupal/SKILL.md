@@ -144,8 +144,10 @@ Watch out for:
   apply when they depend on one checkbox or select the dialog shows
   (`:input[name="…"]` with `checked` or `value`); any other state is left out,
   so the field is shown.
-- **Text formats:** pasting text into a text field without allowed formats
-  fails. Set its allowed formats.
+- **Text formats:** a text that comes without a format (pasted text, the first
+  text of an empty field) gets the first of the field's allowed formats that the
+  editor may use. A field without allowed formats takes the editor's first
+  format, so set them to decide it.
 - **Link fields that a mapping targets:** blökkli sets the link title to the
   paragraph's label and overwrites titles on replace. Turn the link title off
   and put the text in its own field.
@@ -440,7 +442,6 @@ export default defineBlokkliEditAdapter(async (ctx) => {
 | A host field's edit is lost on reload                                     | The field is missing from `pbMutatedEntity`                                               |
 | A feature is missing in the editor                                        | Its submodule or GraphQL extension isn't enabled, or the schema in Nuxt is stale          |
 | Adding a paragraph fails unless it opens the form                         | The paragraph type has a required field: blökkli can't set values when adding it directly |
-| Pasted text fails                                                         | The text field has no allowed formats                                                     |
 | A pasted file is refused                                                  | The media field's allowed extensions or maximum size                                      |
 | SSR renders as anonymous, or everything is a 500                          | Cookies or `X-Forwarded-*` not forwarded, or `onServerError` swallows Drupal's status     |
 | The dev server hangs on "continue with the previously downloaded schema?" | The schema download failed; fix access or use a dumped schema                             |
