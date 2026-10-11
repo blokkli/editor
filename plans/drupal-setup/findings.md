@@ -25,7 +25,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F18 | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                                       | both                 | low      | workaround |
 | F19 | [Template and library search](#f19-template-and-library-search)                                                                         | both                 | low      | open       |
 | F20 | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                                       | `paragraphs_blokkli` | low      | open       |
-| F21 | ["Add to library" needs two clicks](#f21-add-to-library-needs-two-clicks)                                                               | `@blokkli/editor`    | low      | open       |
 | F23 | [A past unpublish date blocks publishing](#f23-a-past-unpublish-date-blocks-publishing)                                                 | both                 | low      | open       |
 | F24 | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                                       | `paragraphs_blokkli` | medium   | open       |
 | F25 | [An empty change description keeps the old log](#f25-an-empty-change-description-keeps-the-old-log)                                     | `paragraphs_blokkli` | low      | open       |
@@ -429,20 +428,6 @@ From chunk 04 (2026-09-26):
   (`createAndAddParagraphWithTemplate` sets no behavior settings), only its
   children's (by reading).
 - **Fix idea:** skip the template's children for a field that gets children.
-
-## F21: "Add to library" needs two clicks
-
-- **Found:** 2026-09-27, 13d, in the browser.
-- **Symptom:** in the "Add to library" dialog, an editor types the label and
-  clicks "Add to library". The first click only enables the button; the dialog
-  stays open until a second click.
-- **Cause:** the label field is a `FormText` with `lazy`
-  (`src/runtime/editor/features/library/DialogMakeReusable/index.vue:32-36`), so
-  `label` updates on `change`, when the field loses focus. The button is
-  disabled while the label is empty (`:can-submit="!!label.length"`), and the
-  click that blurs the field lands on the disabled button.
-- **Fix idea:** drop `lazy` there, or enable the button from the field's current
-  value.
 
 ## F23: A past unpublish date blocks publishing
 
