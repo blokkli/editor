@@ -96,6 +96,8 @@
             <p
               v-else-if="item.duplicate !== null"
               class="mt-8 text-sm text-mono-700"
+              data-test="upload-duplicate"
+              :data-test-label="item.duplicate"
             >
               {{
                 $t(

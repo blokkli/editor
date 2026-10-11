@@ -156,6 +156,10 @@ Traefik sends every hostname to the web container's nginx on port 80.
   repository (symlinked to `web/modules/contrib/paragraphs_blokkli`). Patches
   are in `sandbox/drupal/patches/` and `composer.json`
   (`composer-exit-on-patch-failure`).
+- **Duplicate uploads:** the `filehash` module keeps every file's SHA-256, so an
+  upload with the content of a media's file gets that media
+  (`MediaUploader::findDuplicate()` in `paragraphs_blokkli`). filehash's own
+  check (`dedupe`) stays off: it would refuse the file.
 
 ### blokkli_sandbox
 

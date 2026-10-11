@@ -575,9 +575,16 @@ What changed, all in Drupal:
   later file, an unpublished media, one the user can't view),
   `MediaUploaderRokkaDuplicateTest` (with the rokka module: found, and a later
   file), `CreateMediaFromUploadsTest::testDuplicate`.
-- Not covered: the sandbox has neither filehash nor Rokka, so no E2E test sees a
-  duplicate, and an upload to Rokka itself has never been run here.
-- Docs: `configuration.md` ("Uploads").
+- **The sandbox has `filehash`** (SHA-256, its own `dedupe` off), so duplicates
+  can be tried and tested (the user, 2026-10-11). It's enabled on the dev site;
+  the templates that `ddev reset` and new sandboxes copy get it with the next
+  bake, and E2E's template bakes itself.
+- E2E (`clipboard/upload.test.ts`): a file that a media already has, and two
+  identical files in one dialog. `support/uploads.ts` builds images of random
+  colours, and identical ones for the same `color`. The dialog's duplicate row
+  has a test hook (`upload-duplicate`).
+- Not covered: an upload to Rokka itself has never been run here.
+- Docs: `configuration.md` ("Uploads"), and the sandbox skill.
 
 ## Later
 

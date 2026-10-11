@@ -1,0 +1,29 @@
+_core:
+  default_config_hash: 2Ppep0uLituckL0Uhef93b18rIGi-pf4ah8ycRylIUo
+algorithms:
+  blake2b_128: false
+  blake2b_160: false
+  blake2b_224: false
+  blake2b_256: false
+  blake2b_384: false
+  blake2b_512: false
+  md5: false
+  sha1: false
+  sha224: false
+  sha256: true
+  sha384: false
+  sha512_224: false
+  sha512_256: false
+  sha512: false
+  sha3_224: false
+  sha3_256: false
+  sha3_384: false
+  sha3_512: false
+dedupe: 0
+rehash: false
+original: false
+dedupe_original: false
+mime_types: {  }
+mime_types_exclude: false
+autohash: false
+suppress_warnings: false

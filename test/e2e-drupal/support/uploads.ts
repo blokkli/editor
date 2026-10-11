@@ -5,11 +5,19 @@ import { dialog } from './overlays'
 // Files for the upload dialog, and the dialog itself.
 //
 // The files are built in the page: images drawn on a canvas, so Drupal takes
-// them as images, each of another colour, so none is a duplicate. A broken one
-// is zeros, which Drupal refuses.
+// them as images. A broken one is zeros, which Drupal refuses.
 
-/** A file to upload. */
-export type TestFile = { name: string; type: string; broken?: boolean }
+/**
+ * A file to upload. Images of the same `color` and type have the same content,
+ * which makes the later ones duplicates (the sandbox has filehash). Without a
+ * colour, an image gets random ones, and is no other's duplicate.
+ */
+export type TestFile = {
+  name: string
+  type: string
+  broken?: boolean
+  color?: string
+}
 
 /**
  * Build the files in the page and hand them over: as a synthetic `paste`, or
@@ -23,7 +31,9 @@ function provideFiles(
   return page.evaluate(
     async ({ files, input }) => {
       const dt = new DataTransfer()
-      for (const { name, type, broken } of files) {
+      const randomColor = () =>
+        `rgb(${[0, 1, 2].map(() => Math.floor(Math.random() * 256)).join(' ')})`
+      for (const { name, type, broken, color } of files) {
         let blob: Blob
         if (broken) {
           blob = new Blob([new Uint8Array(64)], { type })
@@ -32,8 +42,12 @@ function provideFiles(
           canvas.width = 40
           canvas.height = 30
           const context = canvas.getContext('2d')!
-          context.fillStyle = `hsl(${Math.random() * 360} 80% 50%)`
-          context.fillRect(0, 0, 40, 30)
+          // Four stripes: with a single random colour, two images of a run
+          // could well be the same.
+          for (let stripe = 0; stripe < 4; stripe++) {
+            context.fillStyle = color ?? randomColor()
+            context.fillRect(stripe * 10, 0, 10, 30)
+          }
           blob = await new Promise<Blob>((resolve) =>
             canvas.toBlob((v) => resolve(v!), type),
           )

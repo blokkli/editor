@@ -49,6 +49,19 @@ function isDragging(page: Page): Promise<boolean> {
 const ALT = 'field_media_image[0][alt]'
 const CREDIT = 'field_credit[0][value]'
 
+/** The alt texts of the images of the blocks added since `before`. */
+async function addedAlts(page: Page, before: string[]): Promise<string[]> {
+  const uuids = await withApp(page, (app) => app.state.getAllUuids())
+  return Promise.all(
+    uuids
+      .filter((uuid) => !before.includes(uuid))
+      .map(
+        async (uuid) =>
+          (await blockState(page, uuid)).props?.media?.image?.alt ?? '',
+      ),
+  )
+}
+
 /**
  * Page lifecycle: one editor page shared, on the page "Blocks". Each test
  * pastes once and finds the blocks it added by their uuids; `afterEach`
@@ -295,6 +308,58 @@ describe('Uploading pasted files', async () => {
       .poll(async () => (await blockState(page, uuid)).props?.media?.image?.alt)
       .toBe('New')
     expect(await blockCount(page)).toBe(before.length + 1)
+  })
+
+  test('a file that a media already has is not uploaded again', async () => {
+    const before = await withApp(page, (app) => app.state.getAllUuids())
+    const color = 'rgb(20 120 220)'
+    await pasteAndDrop(page, [{ name: 'lake.png', type: 'image/png', color }])
+    await expect.poll(() => uploadStatuses(page)).toEqual(['uploaded'])
+    await uploadField(page, ALT).fill('A lake')
+    await uploadField(page, ALT).blur()
+    await dialogSubmit(page).click()
+    await uploadDialog(page).waitFor({ state: 'detached' })
+    await expect.poll(() => blockCount(page)).toBe(before.length + 1)
+
+    // The same content under another name: Drupal answers with the media.
+    await pasteAndDrop(page, [{ name: 'copy.png', type: 'image/png', color }])
+    const duplicate = uploadDialog(page).locator(
+      '[data-test="upload-duplicate"]',
+    )
+    await duplicate.waitFor()
+    expect(await duplicate.getAttribute('data-test-label')).toBe('lake.png')
+    // Nothing to fill in: the media has its values.
+    expect(await uploadField(page, ALT).count()).toBe(0)
+    await dialogSubmit(page).click()
+    await uploadDialog(page).waitFor({ state: 'detached' })
+
+    await expect.poll(() => blockCount(page)).toBe(before.length + 2)
+    expect(await addedAlts(page, before)).toEqual(['A lake', 'A lake'])
+  })
+
+  test('two files of the same content become one media', async () => {
+    const before = await withApp(page, (app) => app.state.getAllUuids())
+    const color = 'rgb(220 60 20)'
+    await pasteAndDrop(page, [
+      { name: 'one.png', type: 'image/png', color },
+      { name: 'two.png', type: 'image/png', color },
+    ])
+
+    // Neither is a media's file while they're uploaded.
+    await expect
+      .poll(() => uploadStatuses(page))
+      .toEqual(['uploaded', 'uploaded'])
+    const alts = uploadField(page, ALT)
+    await alts.first().fill('One')
+    await alts.first().blur()
+    await alts.nth(1).fill('Two')
+    await alts.nth(1).blur()
+    await dialogSubmit(page).click()
+    await uploadDialog(page).waitFor({ state: 'detached' })
+
+    // The second file gets the first one's media, so its values are left out.
+    await expect.poll(() => blockCount(page)).toBe(before.length + 2)
+    expect(await addedAlts(page, before)).toEqual(['One', 'One'])
   })
 
   test('cancelling adds nothing', async () => {

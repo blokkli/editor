@@ -23,6 +23,7 @@ module:
   field: 0
   field_ui: 0
   file: 0
+  filehash: 0
   filter: 0
   focal_point: 0
   frontend_routing: 0
