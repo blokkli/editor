@@ -4,6 +4,8 @@
     :value="uuid"
     name="entity"
     :title="label"
+    data-test="import-existing-item"
+    :data-test-uuid="uuid"
   >
     <template #title>
       <span class="truncate">

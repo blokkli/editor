@@ -109,6 +109,9 @@ declare module '#blokkli/editor/adapter' {
   interface BlokkliAdapter<T> {
     /**
      * Search for host entities.
+     *
+     * The list has every entity, also the ones that the user may not view.
+     * The features that show it need the permission `list_entities`.
      */
     getHostEntities?: () => Promise<HostEntitySearchResult>
   }

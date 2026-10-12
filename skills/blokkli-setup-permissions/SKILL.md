@@ -15,7 +15,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export).
 metadata:
   author: blokkli
-  version: '1.0.8'
+  version: '1.0.9'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/configuration#drupal-permissions-reference
 ---
@@ -54,10 +54,15 @@ which:
   media or a translation is refused for a field that the user may not edit
   (`hook_entity_field_access()`, e.g. the Field Permissions module). On a node,
   the author, the dates and the published status take `administer nodes`.
-- **"Import from an existing page" follows view access.** A user copies from the
-  entities that they may view, in every language of the entity: the copy takes
-  the paragraphs with their translations. One unpublished translation is enough
-  to refuse it for a role without `view any unpublished content`.
+- **The list of all pages takes a permission of its own:**
+  `view any blokkli entity label`. "Switch page" and "Import from an existing
+  page" show the label of every entity that is edited with blökkli and whether
+  it has pending changes, also for entities that the user may not view. Without
+  the permission the editor has neither feature.
+- **"Import from an existing page" also follows view access.** A user copies
+  from the entities that they may view, in every language of the entity: the
+  copy takes the paragraphs with their translations. One unpublished translation
+  is enough to refuse it for a role without `view any unpublished content`.
 
 ## 2. Paragraph types
 
@@ -113,6 +118,10 @@ with blökkli (e.g. `page`, `news`).
   translate)
 - the AI agent, if it's set up: `use paragraphs blokkli agent` (see the
   `blokkli-setup-agent` skill). The agent can't do more than its user.
+- `view any blokkli entity label`, for "Switch page" and "Import from an
+  existing page". Ask before proposing it: the role then sees the title of every
+  entity that is edited with blökkli, also of the ones it may not view. Leave it
+  out where that matters, e.g. with sections that are closed to other teams.
 - GraphQL access (`execute <server id> arbitrary graphql requests`)
 
 **Editor** (edits and publishes):
@@ -182,6 +191,8 @@ the editor:
 - **An editor gets no paragraph types to add (admins do):**
   `paragraphs_type_permissions` is enabled and the role has no
   `create paragraph content <type>` (section 2).
+- **No "Switch page" in the toolbar, no "Import…" in the menu:** no
+  `view any blokkli entity label` (section 1).
 - **"Content could not be imported.", with "Access denied: cannot view …":** the
   role may not view the page to import from, or one of its translations (section
   1).

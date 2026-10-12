@@ -300,10 +300,11 @@ For machine translation, see
 Pasting and dropping files also needs create access to the media types they use,
 such as `create image media` (see [Uploads](#uploads)).
 
-"Import from an existing page" needs view access to that page, in every language
-that it has: the copy takes the paragraphs with their translations. A page with
-a translation that the user may not view, such as an unpublished one, is
-refused.
+"Import from an existing page" needs the permission for the list of all pages
+(`view any blokkli entity label`, see below), and view access to the page that
+is imported from, in every language that it has: the copy takes the paragraphs
+with their translations. A page with a translation that the user may not view,
+such as an unpublished one, is refused.
 
 ### Collaboration Permissions
 
@@ -313,9 +314,17 @@ refused.
 | `post blokkli comments`             | Comment and reply, resolve, edit and delete own comments |
 | `load id and name of blokkli users` | Mention other users in comments                          |
 | `transfer blokkli paragraphs`       | Copy and paste paragraphs between pages                  |
+| `view any blokkli entity label`     | List every entity that is edited with blökkli            |
 
 A user with only the review permission comments on the changes, or on the entity
 as it is where nobody has made changes yet.
+
+`view any blokkli entity label` is for the list of all pages: "Switch page" and
+"Import from an existing page" in the editor. The list has the label of every
+entity that is edited with blökkli and whether it has pending changes, also for
+the entities that the user may not view, such as the unpublished pages of
+others. Without the permission the editor has neither feature. Using the editor
+doesn't give it, and neither does a preview link.
 
 ### Paragraph Types
 

@@ -24,6 +24,7 @@ fragment paragraphsBlokkliCurrentUser on ParagraphsBlokkliUser {
     permission: "manage all blokkli agent conversations"
   )
   list_users: hasPermission(permission: "load id and name of blokkli users")
+  list_entities: hasPermission(permission: "view any blokkli entity label")
   transfer_blocks: hasPermission(permission: "transfer blokkli paragraphs")
 }
 

@@ -141,11 +141,12 @@ Traefik sends every hostname to the web container's nginx on port 80.
   | Élodie Favre | `translator` ("Translator (French)") | translate, edit translations; can't take over an edit state     |
   | Jonas Weber  | `restricted_editor`                  | edit, but not charts, and can't add or delete sections          |
 
-  All four have `view any unpublished content` (contrib `view_unpublished`) and
-  `use paragraphs blokkli agent`. The two editor roles may export and import
-  paragraphs (`transfer blokkli paragraphs`). Élodie can't take over an edit
-  state: it covers every language, so she would take over the editors'
-  unfinished changes.
+  All four have `view any unpublished content` (contrib `view_unpublished`),
+  `use paragraphs blokkli agent` and `view any blokkli entity label` (the list
+  of all pages: "Switch page" and "Import from an existing page"). The two
+  editor roles may export and import paragraphs (`transfer blokkli paragraphs`).
+  Élodie can't take over an edit state: it covers every language, so she would
+  take over the editors' unfinished changes.
 
 - **Access:** the anonymous role only has `view media`, so a site is private
   ("This sandbox is private", `app/error.vue`). `blokkli_playground`'s
@@ -237,7 +238,9 @@ Traefik sends every hostname to the web container's nginx on port 80.
 - `tests/modules/blokkli_playground_test`, only in E2E sandboxes (`bake-e2e`
   installs it): allows the widget on pages, fakes YouTube and Vimeo, and adds
   the roles `comment_reader` (a reviewer who may read comments but not post
-  them) and `comment_administrator` (one who administers comments).
+  them) and `comment_administrator` (one who administers comments). Neither has
+  `view any blokkli entity label`: they are the roles without the list of all
+  pages.
 
 ## Sandboxes
 

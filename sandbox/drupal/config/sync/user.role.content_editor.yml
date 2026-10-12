@@ -108,6 +108,7 @@ permissions:
   - 'update content translations'
   - 'use paragraphs blokkli agent'
   - 'view all revisions'
+  - 'view any blokkli entity label'
   - 'view any unpublished content'
   - 'view blokkli comments'
   - 'view own unpublished content'

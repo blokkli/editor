@@ -61,6 +61,7 @@ permissions:
   - 'translate translatable_config_pages'
   - 'update content translations'
   - 'use paragraphs blokkli agent'
+  - 'view any blokkli entity label'
   - 'view any unpublished content'
   - 'view blokkli comments'
   - 'view paragraphs blokkli edit state'

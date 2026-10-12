@@ -1,6 +1,8 @@
 <template>
   <a
     :href="url"
+    data-test="workspace-item"
+    :data-test-uuid="uuid"
     class="bk-command flex items-center gap-10 px-15 w-full text-left no-underline max-w-full min-w-0 border border-transparent"
     :class="focused ? 'bg-mono-800 text-white' : 'text-mono-300'"
   >

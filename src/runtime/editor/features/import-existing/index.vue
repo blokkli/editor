@@ -30,6 +30,7 @@ const { adapter, settings } = defineBlokkliFeature({
   label: 'Import existing content',
   icon: 'bk_mdi_arrow_downward',
   requiredAdapterMethods: ['getHostEntities', 'importFromExisting'],
+  requiredPermissions: ['list_entities'],
   description:
     'Implements a menu action that renders a dialog to import blocks from another entity.',
 

@@ -67,6 +67,12 @@ load the ID and name of user entities.
 By default, user images for comment avatars are not exposed. This has to be
 manually enabled in the blökkli settings, key: `use_user_images`.
 
+The list of all pages ("Switch page" in the toolbar, "Import from an existing
+page" in the menu) takes the new permission `view any blokkli entity label`.
+Without it the editor has neither feature. The list shows the title of every
+entity that is edited with blökkli, also of the ones that the user may not view:
+the developer decides which roles get it.
+
 ## Let the developer know
 
 None of these require changes during the migration. Add them to the progress

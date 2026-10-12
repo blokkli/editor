@@ -9,6 +9,10 @@ For this feature to work the `getHostEntities()` method must also be implemented
 — the dialog reuses the workspaces provider's host entity list, filtered to
 entities of the same bundle as the current page.
 
+The user also needs the `list_entities` permission (see
+[getUserPermissions()](/adapter/getUserPermissions)): the list has every entity,
+also the ones that the user may not view.
+
 ## Example
 
 ::: code-group

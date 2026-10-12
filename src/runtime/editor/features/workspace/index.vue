@@ -39,6 +39,7 @@ defineBlokkliFeature({
   label: 'Workspace',
   description: 'Allows users to switch between edit states.',
   requiredAdapterMethods: ['getHostEntities'],
+  requiredPermissions: ['list_entities'],
 })
 
 const { $t, ui } = useBlokkli()

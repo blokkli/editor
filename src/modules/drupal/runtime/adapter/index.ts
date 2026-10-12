@@ -113,6 +113,7 @@ const PERMISSION_FIELDS: Record<
   use_agent: 'use_agent',
   manage_agent_conversations: 'manage_agent_conversations',
   list_users: 'list_users',
+  list_entities: 'list_entities',
   transfer_blocks: 'transfer_blocks',
 }
 

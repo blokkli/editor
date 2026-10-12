@@ -24,6 +24,7 @@ permissions:
   - 'review paragraphs blokkli edit state'
   - 'use paragraphs blokkli agent'
   - 'view all revisions'
+  - 'view any blokkli entity label'
   - 'view any unpublished content'
   - 'view blokkli comments'
   - 'view paragraphs blokkli edit state'
