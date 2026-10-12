@@ -5794,9 +5794,6 @@ type Query {
 
   paragraphsBlokkliAvailableFeatures: ParagraphsBlokkliAvailableFeatures
 
-  "Get import source entities."
-  pbGetImportSourceEntities(entityType: String!, entityUuid: String!, filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliImportSourceEntities
-
   "Get the paragraph types."
   pbGetParagraphTypes: [ParagraphsBlokkliParagraphType!]
 
@@ -7310,33 +7307,6 @@ type ParagraphsBlokkliTranslationState {
 
   "The translations (existing or non existing) available for the entity."
   translations: [ParagraphsBlokkliTranslationStateEntityTranslation!]
-}
-
-""
-type ParagraphsBlokkliImportSourceEntities {
-  ""
-  total: Int
-
-  ""
-  perPage: Int
-
-  ""
-  items: [ParagraphsBlokkliImportSourceEntity]
-
-  ""
-  filters: [ParagraphsBlokkliConfigInput!]!
-}
-
-""
-type ParagraphsBlokkliImportSourceEntity {
-  ""
-  label: String!
-
-  ""
-  uuid: String!
-
-  ""
-  description: String
 }
 
 ""

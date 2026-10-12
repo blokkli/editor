@@ -57,7 +57,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F96  | [The editor reads field values through a detached element](#f96-the-editor-reads-field-values-through-a-detached-element)                                                 | editor               | low      | to verify  |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli` | low      | to verify  |
 | F99  | [A preview grant passes for the permission to use the editor](#f99-a-preview-grant-passes-for-the-permission-to-use-the-editor)                                           | `paragraphs_blokkli` | low      | to verify  |
-| F100 | [The module keeps a query for import sources that the editor doesn't use](#f100-the-module-keeps-a-query-for-import-sources-that-the-editor-doesnt-use)                   | `paragraphs_blokkli` | low      | open       |
 | F101 | [Lists from an entity query rely on the query's access check](#f101-lists-from-an-entity-query-rely-on-the-querys-access-check)                                           | `paragraphs_blokkli` | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
@@ -955,35 +954,17 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   `pbGetNotificationCount`, `pbGetEditableFieldConfig`,
   `pbGetDroppableFieldConfig`, `paragraphsBlokkliAvailableFeatures`,
   `paragraphsBlokkliEntitiesSearch`, `paragraphsBlokkliEditStatesSummary`,
-  `pbGetImportSourceEntities`, `paragraphsBlokkliAllowedTypes`,
-  `paragraphsBlokkliEntityTypeConfig`, `pbMediaLibraryGetResults` and
-  `Paragraph.paragraphsBlokkliEditContext`. The extensions for search, the
-  library, transforms, templates, comments and DeepL use the same producer.
-  Which of them check more themselves, and which a preview needs, is open.
-  `paragraphsBlokkliEntitiesSearch`, `paragraphsBlokkliEditStatesSummary` and
-  `pbGetImportSourceEntities` ask for their permission themselves, and
+  `paragraphsBlokkliAllowedTypes`, `paragraphsBlokkliEntityTypeConfig`,
+  `pbMediaLibraryGetResults` and `Paragraph.paragraphsBlokkliEditContext`. The
+  extensions for search, the library, transforms, templates, comments and DeepL
+  use the same producer. Which of them check more themselves, and which a
+  preview needs, is open. `paragraphsBlokkliEntitiesSearch` and
+  `paragraphsBlokkliEditStatesSummary` ask for their permission themselves, and
   `paragraphsBlokkliGetUsers` for `load id and name of blokkli users`.
 - **Impact:** low, as far as it's known: it depends on what each query gives,
   and checks itself.
 - **Fix idea:** two gates. One for what renders a preview: the permission or a
   grant. One for the editor: the permission only.
-
-## F100: The module keeps a query for import sources that the editor doesn't use
-
-- **Found:** 2026-10-12, with the former F98.
-- **Symptom:** none in the editor. `Query.pbGetImportSourceEntities` is in the
-  schema, with the search provider type `import_source`, the plugin
-  `EntityQueryImportSource`, its interface and its models. The editor's import
-  dialog gets its list from `paragraphsBlokkliEntitiesSearch` since `4be10ad0c`
-  (2026-04-19).
-- **Also:** the query asks for `view any blokkli entity label`, as the list that
-  replaced it does: its own list has the gap of F101, in the plugin
-  (`modules/paragraphs_blokkli_search/src/Plugin/ParagraphsBlokkli/Search/EntityQueryImportSource.php:98-141`)
-  and in the fallback of the data producer
-  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/ParagraphsBlokkliImportSourceEntities.php`).
-- **Impact:** low: code to keep right that nothing uses.
-- **Fix idea:** remove the query, the plugin and the search type, with an update
-  that deletes the search providers of that type.
 
 ## F101: Lists from an entity query rely on the query's access check
 

@@ -35,6 +35,14 @@ for example `link` or `teaser`. That way, a user that drag and drops a document
 from the media library in blökkli is presented with the option to either create
 a `link` or `teaser`.
 
+## Search providers for import sources are gone
+
+"Import from an existing page" lists the pages itself. An update hook deletes
+the search providers of the type "Import Source Entities": their files
+(`paragraphs_blokkli_search.blokkli_search_provider.<id>.yml`) leave the config
+export with it. The query `pbGetImportSourceEntities` is gone from the GraphQL
+schema; a project that called it itself uses `paragraphsBlokkliEntitiesSearch`.
+
 ## Refactored paragraphs_blokkli_comment module
 
 blökkli comments no longer rely on the `comment` core module and instead
