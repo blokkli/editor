@@ -32,6 +32,7 @@ import {
 } from '../../support/session'
 import { openSidebar } from '../../support/sidebar'
 import {
+  buildPoFixture,
   buildSingleLangCsv,
   openTranslateDialog,
   switchToCsvImportTab,
@@ -66,12 +67,24 @@ function batchRow(page: Page, key: string): Locator {
   )
 }
 
+/** The table row of the import dialog for a `uuid:fieldName` key. */
+function importRow(page: Page, key: string): Locator {
+  return page.locator(
+    `[data-test="translations-csv-import-row"][data-test-key="${key}"]`,
+  )
+}
+
+/** What Drupal said about the text of a row, in the row. */
+function rowError(row: Locator): Locator {
+  return row.locator('[data-test="translations-row-error"]')
+}
+
 /**
  * Drupal rejects a batch of translations when one of them doesn't fit its
  * field. Nothing of the batch is stored then, and whatever applied it must
- * neither look applied nor lose its texts: the dialogs stay open, the approval
- * of an auto-translation starts again, and the agent's tool ends with an
- * error.
+ * neither look applied nor lose its texts: the dialogs stay open and say in
+ * the row of the text what Drupal said about it, the approval of an
+ * auto-translation starts again, and the agent's tool ends with an error.
  *
  * Drupal's message is in the language of the page, so the specs look for the
  * limit in it.
@@ -132,18 +145,27 @@ describe('Translations that Drupal rejects', async () => {
     await applyButton.click()
     expect((await rejected).items.map((item) => item?.uuid)).toContain(LONG)
 
-    // It says what Drupal said, and nothing is stored.
-    const error = page.locator('[data-test="translations-batch-error"]')
-    await error.waitFor({ state: 'visible' })
-    expect(await error.textContent()).toContain(String(MAX_LENGTH))
+    // The row of the title that is too long says what Drupal said. The other
+    // row says nothing, and neither does the dialog beneath its table.
+    const longRow = batchRow(page, `${LONG}:field_title`)
+    await rowError(longRow).waitFor({ state: 'visible' })
+    const said = await rowError(longRow).textContent()
+    expect(said).toContain(String(MAX_LENGTH))
+    // Drupal emphasises the name of the field. The row has it as text.
+    expect(said).not.toContain('<')
+    expect(
+      await rowError(batchRow(page, `${SHORT.uuid}:field_title`)).count(),
+    ).toBe(0)
+    expect(
+      await page.locator('[data-test="translations-batch-error"]').count(),
+    ).toBe(0)
     expect(await dialog(page, 'translations-translate').isVisible()).toBe(true)
     expect(await storedMutations()).toBe(0)
 
     // The suggestions are still there. Without the one that is too long, they
-    // are applied.
-    await batchRow(page, `${LONG}:field_title`)
-      .locator('[data-test="translations-batch-discard"]')
-      .click()
+    // are applied: discarding it takes what Drupal said about it away.
+    await longRow.locator('[data-test="translations-batch-discard"]').click()
+    await rowError(longRow).waitFor({ state: 'detached' })
     const imported = nextMutation(page, 'pbBulkTranslateFieldValues')
     await applyButton.click()
     await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
@@ -157,6 +179,32 @@ describe('Translations that Drupal rejects', async () => {
       await blockHost(page, SHORT.uuid),
       `[DE] ${SHORT.sourceTitle}`,
     )
+  })
+
+  test('a refused text shows through the filters', async () => {
+    await openTranslateDialog(page)
+    const applyButton = page.locator('[data-test="translations-batch-apply"]')
+    await page.locator('[data-test="translations-batch-request"]').click()
+    await expect.poll(() => applyButton.isDisabled()).toBe(false)
+
+    // No translation of this page is outdated: the filter hides every row.
+    // Their suggestions are applied all the same.
+    const rows = page.locator('[data-test="translations-batch-row"]')
+    await page.locator('[data-test="translations-batch-only-outdated"]').click()
+    await expect.poll(() => rows.count()).toBe(0)
+
+    const rejected = nextMutation(page, 'pbBulkTranslateFieldValues')
+    await applyButton.click()
+    await rejected
+
+    // The refused one is back, with what Drupal said. The others stay hidden.
+    const longRow = batchRow(page, `${LONG}:field_title`)
+    await rowError(longRow).waitFor({ state: 'visible' })
+    expect(await rows.count()).toBe(1)
+    expect(await storedMutations()).toBe(0)
+
+    await page.keyboard.press('Escape')
+    await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
   })
 
   test('the approval of an auto-translation starts again', async () => {
@@ -225,7 +273,11 @@ describe('Translations that Drupal rejects', async () => {
     await page.locator('[data-test="translations-csv-import-apply"]').click()
     await rejected
 
-    await expect.poll(() => shownMessages(page)).toEqual([REFUSAL])
+    // The row says what Drupal said, so no message of the editor on top.
+    const row = importRow(page, `${SHORT.uuid}:field_title`)
+    await rowError(row).waitFor({ state: 'visible' })
+    expect(await rowError(row).textContent()).toContain(String(MAX_LENGTH))
+    expect(await shownMessages(page)).toEqual([])
     // A dialog that closes takes a moment to leave, so "it's still visible"
     // says nothing right away: it must not become hidden.
     await expect(
@@ -235,6 +287,50 @@ describe('Translations that Drupal rejects', async () => {
       }),
     ).rejects.toThrow()
     expect(await rows.count()).toBe(1)
+    expect(await storedMutations()).toBe(0)
+
+    await page.keyboard.press('Escape')
+    await dialog(page, 'translations-csv').waitFor({ state: 'hidden' })
+  })
+
+  test('an import of several languages says it in the row', async () => {
+    // Drupal doesn't say which language it refused: German is too long here,
+    // French isn't.
+    const key = `${SHORT.uuid}:field_title`
+    const file = (langcode: string, translation: string) => ({
+      name: `translations.${langcode}.po`,
+      content: buildPoFixture(
+        [{ key, source: SHORT.sourceTitle, translation }],
+        langcode,
+      ),
+    })
+
+    await page.locator('[data-test="translations-banner-csv"]').click()
+    await dialog(page, 'translations-csv').waitFor({ state: 'visible' })
+    await switchToCsvImportTab(page)
+    await uploadTranslationsFile(page, file('de', 'a'.repeat(MAX_LENGTH + 1)))
+    await uploadTranslationsFile(page, file('fr', 'Un titre court'))
+
+    // One row with a change per language, once both files are read.
+    const applyButton = page.locator(
+      '[data-test="translations-csv-import-apply"]',
+    )
+    await expect
+      .poll(() => applyButton.getAttribute('data-test-count'))
+      .toBe('2')
+    const rows = page.locator('[data-test="translations-csv-import-row"]')
+    expect(await rows.count()).toBe(1)
+
+    const rejected = nextMutation(page, 'pbBulkTranslateFieldValues')
+    await applyButton.click()
+    expect((await rejected).items.map((item) => item?.langcode).sort()).toEqual(
+      ['de', 'fr'],
+    )
+
+    const row = importRow(page, key)
+    await rowError(row).waitFor({ state: 'visible' })
+    expect(await rowError(row).count()).toBe(1)
+    expect(await rowError(row).textContent()).toContain(String(MAX_LENGTH))
     expect(await storedMutations()).toBe(0)
 
     await page.keyboard.press('Escape')

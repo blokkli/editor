@@ -15,12 +15,14 @@
       <div class="flex items-center gap-20">
         <FormToggle
           v-model="onlyOutdated"
+          data-test="translations-batch-only-outdated"
           :label="
             $t('translationsCsvOnlyOutdated', 'Only outdated translations')
           "
         />
         <FormToggle
           v-model="onlyUntranslated"
+          data-test="translations-batch-only-missing"
           :label="$t('translationsCsvOnlyMissing', 'Only missing translations')"
         />
       </div>
@@ -103,74 +105,86 @@
                 @save="onEditorSave(item, $event)"
                 @cancel="editingKey = null"
               />
-              <div v-else class="flex items-start gap-10">
-                <div class="flex-1 min-w-0">
-                  <DiffValue
-                    v-if="effectiveValue(item) !== undefined"
-                    :before="currentValues.get(item.key) || ''"
-                    :after="effectiveValue(item)!"
-                    :after-only="
-                      !currentValues.get(item.key) ||
-                      currentValues.get(item.key) === item.value
-                    "
-                  />
-                  <span
-                    v-else-if="
-                      currentValues.get(item.key) &&
-                      currentValues.get(item.key) !== item.value
-                    "
-                    v-text="stripHtml(currentValues.get(item.key)!)"
-                  />
-                  <span v-else class="text-mono-400 italic">&mdash;</span>
+              <div v-else>
+                <div class="flex items-start gap-10">
+                  <div class="flex-1 min-w-0">
+                    <DiffValue
+                      v-if="effectiveValue(item) !== undefined"
+                      :before="currentValues.get(item.key) || ''"
+                      :after="effectiveValue(item)!"
+                      :after-only="
+                        !currentValues.get(item.key) ||
+                        currentValues.get(item.key) === item.value
+                      "
+                    />
+                    <span
+                      v-else-if="
+                        currentValues.get(item.key) &&
+                        currentValues.get(item.key) !== item.value
+                      "
+                      v-text="stripHtml(currentValues.get(item.key)!)"
+                    />
+                    <span v-else class="text-mono-400 italic">&mdash;</span>
+                  </div>
+                  <div class="flex items-center gap-5 shrink-0 relative">
+                    <Pill
+                      v-if="editedTranslations.has(item.key)"
+                      data-test="translations-batch-edited"
+                      :text="
+                        $t('translationsEditedManually', 'Manually edited')
+                      "
+                    />
+                    <ButtonAction
+                      v-if="editedTranslations.has(item.key)"
+                      icon="bk_mdi_undo"
+                      data-test="translations-batch-edit-reset"
+                      :label="
+                        $t(
+                          'translationsEditReset',
+                          'Discard manual translation',
+                        )
+                      "
+                      @click="editedTranslations.delete(item.key)"
+                    />
+                    <ButtonAction
+                      v-if="
+                        !editedTranslations.has(item.key) &&
+                        translations.has(item.key) &&
+                        !discardedProposals.has(item.key)
+                      "
+                      icon="bk_mdi_close"
+                      data-test="translations-batch-discard"
+                      :label="
+                        $t('translationsDiscardProposal', 'Discard suggestion')
+                      "
+                      @click="discardedProposals.add(item.key)"
+                    />
+                    <ButtonAction
+                      v-if="
+                        !editedTranslations.has(item.key) &&
+                        discardedProposals.has(item.key)
+                      "
+                      icon="bk_mdi_undo"
+                      data-test="translations-batch-restore"
+                      :label="
+                        $t('translationsRestoreProposal', 'Restore suggestion')
+                      "
+                      @click="discardedProposals.delete(item.key)"
+                    />
+                    <ButtonAction
+                      v-if="editConfigFor(item)"
+                      icon="bk_mdi_edit"
+                      data-test="translations-batch-edit"
+                      :label="$t('editTranslation', 'Edit translation')"
+                      @click="openEditor(item)"
+                    />
+                  </div>
                 </div>
-                <div class="flex items-center gap-5 shrink-0 relative">
-                  <Pill
-                    v-if="editedTranslations.has(item.key)"
-                    data-test="translations-batch-edited"
-                    :text="$t('translationsEditedManually', 'Manually edited')"
-                  />
-                  <ButtonAction
-                    v-if="editedTranslations.has(item.key)"
-                    icon="bk_mdi_undo"
-                    data-test="translations-batch-edit-reset"
-                    :label="
-                      $t('translationsEditReset', 'Discard manual translation')
-                    "
-                    @click="editedTranslations.delete(item.key)"
-                  />
-                  <ButtonAction
-                    v-if="
-                      !editedTranslations.has(item.key) &&
-                      translations.has(item.key) &&
-                      !discardedProposals.has(item.key)
-                    "
-                    icon="bk_mdi_close"
-                    data-test="translations-batch-discard"
-                    :label="
-                      $t('translationsDiscardProposal', 'Discard suggestion')
-                    "
-                    @click="discardedProposals.add(item.key)"
-                  />
-                  <ButtonAction
-                    v-if="
-                      !editedTranslations.has(item.key) &&
-                      discardedProposals.has(item.key)
-                    "
-                    icon="bk_mdi_undo"
-                    data-test="translations-batch-restore"
-                    :label="
-                      $t('translationsRestoreProposal', 'Restore suggestion')
-                    "
-                    @click="discardedProposals.delete(item.key)"
-                  />
-                  <ButtonAction
-                    v-if="editConfigFor(item)"
-                    icon="bk_mdi_edit"
-                    data-test="translations-batch-edit"
-                    :label="$t('editTranslation', 'Edit translation')"
-                    @click="openEditor(item)"
-                  />
-                </div>
+                <RowError
+                  v-if="rowError(item)"
+                  :message="rowError(item)!"
+                  :reveal="item.key === firstRefusedKey"
+                />
               </div>
             </td>
           </tr>
@@ -228,6 +242,8 @@ import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 import SelectionTable from '../SelectionTable/index.vue'
+import RowError from '../RowError/index.vue'
+import { getViolationText, matchViolationsToTexts } from '../violations'
 import Editor from './Editor/index.vue'
 
 const emit = defineEmits<{
@@ -253,6 +269,11 @@ const isApplying = ref(false)
 const hasTranslated = ref(false)
 const markUpToDate = ref(false)
 const errorMessage = ref('')
+/**
+ * The texts that the backend refused: the value as it was sent, and what the
+ * backend said about it.
+ */
+const refused = ref<Map<string, { value: string; message: string }>>(new Map())
 const onlyOutdated = ref(false)
 const onlyUntranslated = ref(false)
 
@@ -283,16 +304,28 @@ function isMissingTranslation(item: SourceItem): boolean {
 const filteredValues = computed(() => {
   let items = sourceValues.value
 
+  // A text that the backend refused stays in view, whatever the filters say.
+  const isRefused = (item: SourceItem) => rowError(item) !== undefined
+
   if (onlyOutdated.value) {
-    items = items.filter((item) => outdatedUuids.value.has(item.uuid))
+    items = items.filter(
+      (item) => isRefused(item) || outdatedUuids.value.has(item.uuid),
+    )
   }
 
   if (onlyUntranslated.value) {
-    items = items.filter(isMissingTranslation)
+    items = items.filter(
+      (item) => isRefused(item) || isMissingTranslation(item),
+    )
   }
 
   return items
 })
+
+/** The first refused text that is shown: its row is brought into view. */
+const firstRefusedKey = computed(
+  () => filteredValues.value.find((item) => rowError(item) !== undefined)?.key,
+)
 
 const selectedCount = computed(
   () => filteredValues.value.filter((item) => selected.value[item.key]).length,
@@ -369,6 +402,17 @@ function effectiveValue(item: SourceItem): string | undefined {
     return undefined
   }
   return translations.value.get(item.key)
+}
+
+/**
+ * What the backend said about the item's text, for as long as that text is
+ * what would be applied: changing or discarding it takes the message away.
+ */
+function rowError(item: SourceItem): string | undefined {
+  const entry = refused.value.get(item.key)
+  return entry && entry.value === effectiveValue(item)
+    ? entry.message
+    : undefined
 }
 
 /**
@@ -510,6 +554,7 @@ async function applyTranslations() {
 
   isApplying.value = true
   errorMessage.value = ''
+  refused.value = new Map()
 
   try {
     const response = await state.applyMutationSilently(() =>
@@ -519,11 +564,32 @@ async function applyTranslations() {
       }),
     )
     if (!response?.success) {
-      // Rejected: the dialog stays open with its texts and what the backend
-      // said, so the one that is wrong can be corrected.
-      errorMessage.value =
-        response?.errors?.filter(Boolean).join(' ') ||
-        $t('unexpectedMutationError', 'An unexpected error happened.')
+      // Rejected: the dialog stays open with its texts, so the one that is
+      // wrong can be corrected. What the backend said goes to the row of the
+      // text it is about, and beneath the table if it is about none.
+      const sent = new Map(
+        items.map((item) => [
+          `${item.uuid}:${item.fieldName}`,
+          item.fieldValue,
+        ]),
+      )
+      const { messages, unmatched } = matchViolationsToTexts(
+        response?.violations ?? [],
+        sent.keys(),
+      )
+      refused.value = new Map(
+        [...messages].map(([key, message]) => [
+          key,
+          { value: sent.get(key)!, message },
+        ]),
+      )
+      if (unmatched.length) {
+        errorMessage.value = unmatched.map(getViolationText).join(' ')
+      } else if (!messages.size) {
+        errorMessage.value =
+          response?.errors?.filter(Boolean).join(' ') ||
+          $t('unexpectedMutationError', 'An unexpected error happened.')
+      }
       return
     }
     emit('close')

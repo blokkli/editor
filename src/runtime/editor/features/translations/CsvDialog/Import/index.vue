@@ -90,7 +90,15 @@
                   <span class="!mt-0 before:!mt-0" />
                 </div>
               </td>
-              <td v-text="row.source" />
+              <td>
+                {{ row.source }}
+                <!-- The backend doesn't say which language it refused. -->
+                <RowError
+                  v-if="isMultiLang && refused.has(row.key)"
+                  :message="refused.get(row.key)!"
+                  :reveal="row.key === firstRefusedKey"
+                />
+              </td>
               <template v-if="!isMultiLang">
                 <td>
                   <DiffValue
@@ -100,6 +108,11 @@
                       !singleLangChange(row).current ||
                       singleLangChange(row).current === row.source
                     "
+                  />
+                  <RowError
+                    v-if="refused.has(row.key)"
+                    :message="refused.get(row.key)!"
+                    :reveal="row.key === firstRefusedKey"
                   />
                 </td>
               </template>
@@ -140,6 +153,7 @@
         <template #actions>
           <PanelAction
             data-test="translations-csv-import-apply"
+            :data-test-count="selectedCount"
             icon="bk_mdi_check"
             :disabled="!selectedCount"
             :title="
@@ -173,11 +187,14 @@ import {
   FormToggle,
   Icon,
 } from '#blokkli/editor/components'
+import { emitMessage } from '#blokkli/editor/events'
 import { parseCsv, type CsvRow } from '../csv'
 import { parsePo } from '../po'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 import SelectionTable from '../../SelectionTable/index.vue'
+import RowError from '../../RowError/index.vue'
+import { getViolationText, matchViolationsToTexts } from '../../violations'
 
 type ImportChange = {
   id: string
@@ -205,6 +222,8 @@ const isMultiLang = computed(() => languages.value.length > 1)
 const selected = ref<Record<string, boolean>>({})
 const fileInputEl = useTemplateRef('fileInputEl')
 const markUpToDate = ref(false)
+/** What the backend said about the texts that it refused, per row. */
+const refused = ref<Map<string, string>>(new Map())
 
 type ImportRow = {
   key: string
@@ -225,6 +244,11 @@ const rows = computed<ImportRow[]>(() => {
   }
   return [...map.values()]
 })
+
+/** The first refused row: it is brought into view. */
+const firstRefusedKey = computed(
+  () => rows.value.find((row) => refused.value.has(row.key))?.key,
+)
 
 const sourceLangName = computed(() => {
   const id = state.translation.value.sourceLanguage
@@ -297,6 +321,7 @@ async function removeFile(file: File) {
   if (!files.value.length) {
     changes.value = null
     languages.value = []
+    refused.value = new Map()
     return
   }
   await reprocess()
@@ -304,6 +329,7 @@ async function removeFile(file: File) {
 
 async function reprocess() {
   selected.value = {}
+  refused.value = new Map()
   await processFiles(files.value)
 }
 
@@ -450,16 +476,51 @@ async function applyImport() {
     }
   })
 
-  const applied = await state.mutateWithLoadingState(() =>
-    adapter.importTranslationsBatched!({
-      items,
-      markUpToDate: markUpToDate.value,
-    }),
-  )
+  refused.value = new Map()
 
-  // Rejected: the dialog stays open with its selection.
-  if (applied) {
+  let response
+  try {
+    response = await state.applyMutationSilently(() =>
+      adapter.importTranslationsBatched!({
+        items,
+        markUpToDate: markUpToDate.value,
+      }),
+    )
+  } catch (e) {
+    emitMessage(
+      $t('unexpectedMutationError', 'An unexpected error happened.'),
+      'error',
+      e,
+    )
+    return
+  }
+
+  if (response?.success) {
     emit('close')
+    return
+  }
+
+  // Rejected: the dialog stays open with its selection. What the backend said
+  // goes to the row of the text it is about, and into a message if it is about
+  // none.
+  const { messages, unmatched } = matchViolationsToTexts(
+    response?.violations ?? [],
+    selectedChanges.map((change) => change.key),
+  )
+  refused.value = messages
+
+  const reasons = unmatched.length
+    ? unmatched.map(getViolationText)
+    : messages.size
+      ? []
+      : (response?.errors?.filter(Boolean) ?? [])
+  if (reasons.length) {
+    emitMessage(reasons.join('\n'), 'error')
+  } else if (!messages.size) {
+    emitMessage(
+      $t('unexpectedMutationError', 'An unexpected error happened.'),
+      'error',
+    )
   }
 }
 

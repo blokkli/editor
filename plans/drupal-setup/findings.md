@@ -52,10 +52,11 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F78 | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                           | `paragraphs_blokkli` | low      | to verify  |
 | F80 | [A copy from another page takes no access to it](#f80-a-copy-from-another-page-takes-no-access-to-it)                                                                     | `paragraphs_blokkli` | low      | to verify  |
 | F85 | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                     | editor               | low      | to verify  |
-| F87 | [The translate dialog doesn't say which text was refused](#f87-the-translate-dialog-doesnt-say-which-text-was-refused)                                                    | editor               | low      | open       |
 | F88 | [The form of a paragraph hides a link that its user may not open](#f88-the-form-of-a-paragraph-hides-a-link-that-its-user-may-not-open)                                   | `paragraphs_blokkli` | low      | to verify  |
 | F89 | [Building an edit state empties the fields of the cached entities](#f89-building-an-edit-state-empties-the-fields-of-the-cached-entities)                                 | `paragraphs_blokkli` | low      | open       |
 | F90 | [The list of referenced entities names what its user may not view](#f90-the-list-of-referenced-entities-names-what-its-user-may-not-view)                                 | `paragraphs_blokkli` | low      | to verify  |
+| F95 | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                        | both                 | low      | open       |
+| F96 | [The editor reads field values through a detached element](#f96-the-editor-reads-field-values-through-a-detached-element)                                                 | editor               | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -850,22 +851,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   own. It shares `applyFieldDiffs()` with `update_text_fields`, whose spec
   covers it.
 
-## F87: The translate dialog doesn't say which text was refused
-
-- **Found:** 2026-10-12, in the screenshot of the rejected batch
-  (`features/translations/rejected.test.ts`).
-- **Symptom:** when the backend rejects the batch, the dialog shows "Title: may
-  not be longer than 255 characters." above its buttons. On a page with several
-  titles, the user has to find the one that is too long.
-- **Cause:** `applyTranslations()`
-  (`src/runtime/editor/features/translations/TranslateDialog/index.vue:496-535`)
-  shows the response's `errors`. Its `violations` name the paragraph
-  (`entityUuid`) and the field (`propertyPath`), which is the key of a row
-  (`<uuid>:<fieldName>`), and aren't used.
-- **Impact:** low.
-- **Fix idea:** mark the rows of the violations, with their messages. The same
-  goes for the import dialog, which only shows the editor's message.
-
 ## F88: The form of a paragraph hides a link that its user may not open
 
 - **Found:** 2026-10-12, in a screenshot while fixing the links to media (the
@@ -925,3 +910,43 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** view access before an entity is added. And one way to read the
   entity that a link names, for this list and for
   `ParagraphsBlokkliHelper::isAllowedEntityLink()`, which reads `entity:` only.
+
+## F95: A refused batch of texts names one text, without its language
+
+- **Found:** 2026-10-12, while the translate dialog and the import of
+  translations got the message of a refused text in its row (the former F87).
+- **Symptom:** when several texts of a batch don't fit their fields, Drupal
+  names the first one. The user corrects it, applies again and gets the next. In
+  an import of several languages, the row is marked but not the language: the
+  message stands beneath the source text.
+- **Cause:** `bulk_translate_field_values` and `bulk_update_field_values` write
+  their items one after the other, and the first value that the field refuses
+  ends the mutation (`UpdateFieldValueTrait::updateFieldValueByType()`). A
+  violation has the entity and the property path, not the language
+  (`ParagraphsEditViolation`).
+- **Impact:** low. The agent's text tools have the same: one refused field per
+  attempt.
+- **Fix idea:** when such a mutation is added, collect the violations of every
+  item and refuse the batch with all of them. Give a violation its `langcode`.
+  Stored mutations aren't validated, so they replay as they do.
+
+## F96: The editor reads field values through a detached element
+
+- **Found:** 2026-10-12, by reading, when a violation's message had to become
+  plain text. Not reproduced.
+- **Symptom:** none seen. By reading: a browser loads the images of markup that
+  is assigned to an element's `innerHTML`, attached to the page or not, and runs
+  their `onerror`. A field value with such an image would run its script for
+  whoever opens the dialog that reads it.
+- **Cause:** `stripHtml()` in the translate dialog
+  (`src/runtime/editor/features/translations/TranslateDialog/index.vue`) turns
+  the source texts and the current translations into plain text that way. Others
+  to look at: `src/runtime/editor/helpers/diff/index.ts` (two places) and the
+  clipboard feature's `index.vue`. The values are what Drupal stores, before any
+  text format filters them.
+- **Impact:** low, to verify: it takes an editor who writes such a value with a
+  request made by hand (the text editors don't produce one), and a site whose
+  content security policy allows inline handlers.
+- **Fix idea:** parse with `DOMParser`, whose document is inert, as
+  `getViolationText()` does
+  (`src/runtime/editor/features/translations/violations.ts`).
