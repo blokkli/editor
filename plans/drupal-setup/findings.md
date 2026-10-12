@@ -32,7 +32,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F41 | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                                                                               | `paragraphs_blokkli` | low      | open       |
 | F43 | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                                                                            | both                 | low      | open       |
 | F44 | [No approval step](#f44-no-approval-step)                                                                                                                                 | both                 | low      | open       |
-| F45 | ["Replace" fails on link fields](#f45-replace-fails-on-link-fields)                                                                                                       | `paragraphs_blokkli` | medium   | open       |
 | F46 | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                 | low      | open       |
 | F48 | [A preview grant opens more than the preview](#f48-a-preview-grant-opens-more-than-the-preview)                                                                           | `paragraphs_blokkli` | low      | open       |
 | F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`              | low      | open       |
@@ -47,6 +46,11 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F71 | [Moving a paragraph into its own nested paragraph is refused for the wrong reason](#f71-moving-a-paragraph-into-its-own-nested-paragraph-is-refused-for-the-wrong-reason) | `paragraphs_blokkli` | low      | open       |
 | F72 | [The editor offers places below the nesting limit](#f72-the-editor-offers-places-below-the-nesting-limit)                                                                 | editor               | low      | open       |
 | F73 | [A new paragraph of a type its field doesn't allow is no violation](#f73-a-new-paragraph-of-a-type-its-field-doesnt-allow-is-no-violation)                                | `paragraphs`         | low      | open       |
+| F74 | [The older mutations for media leave a link field empty](#f74-the-older-mutations-for-media-leave-a-link-field-empty)                                                     | `paragraphs_blokkli` | low      | open       |
+| F75 | ["Replace" takes any reference field and any ID](#f75-replace-takes-any-reference-field-and-any-id)                                                                       | `paragraphs_blokkli` | medium   | open       |
+| F76 | [A search result replaces the first mapped field](#f76-a-search-result-replaces-the-first-mapped-field)                                                                   | editor               | low      | to verify  |
+| F77 | ["Add to" is offered for link fields with several values](#f77-add-to-is-offered-for-link-fields-with-several-values)                                                     | editor               | low      | to verify  |
+| F78 | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                           | `paragraphs_blokkli` | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -110,7 +114,9 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   `$entity->label()`: the paragraph, not the target entity.
   - For a new paragraph that's "Orphaned Button: …". Affected: `add_file`,
     `add_entity_reference`, `add_entity_reference_multiple`.
-  - `replace_entity_reference` overwrites a title the user wrote.
+  - `replace_entity_reference` overwrites a title the user wrote. So does
+    `replace_media` on a link field, which it takes since 2026-10-12 (the former
+    F45).
   - Fix: use `$targetEntity->label()`, and keep an existing title.
 - **Always true.** `isInternalLinkField()` (`:88`) returns
   `$linkTypeSetting === LINK_GENERIC || LinkItemInterface::LINK_INTERNAL`, which
@@ -480,27 +486,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   page without a `blokkliComment` param. It was deleted on 2026-10-10; recreate
   it in `test/e2e-drupal/features/notifications/` with the notification.
 
-## F45: "Replace" fails on link fields
-
-- **Found:** 2026-09-28, while turning the button into the generic `link`
-  paragraph. Reproduced through the adapter's `mediaLibraryReplaceMedia` on a
-  link's `field_link`.
-- **Symptom:** the media library offers to replace the target of a link field
-  that an entity mapping allows media for (here `media__document` →
-  `link.field_link`), and the mutation fails: "The requested field 'field_link'
-  is not an entity reference field."
-- **Cause:** `ReplaceMedia::execute()`
-  (`src/Plugin/ParagraphsBlokkli/Mutation/ReplaceMedia.php:80`) calls
-  `updateEntityReferenceField()`, which only takes entity reference fields
-  (`src/Plugin/ParagraphsBlokkli/UpdateFieldValueTrait.php:157`). The droppable
-  field config lists link fields as well
-  (`ParagraphsBlokkliHelper::getDroppableFieldType()`).
-- **Workaround:** none needed for the demo; dropping a document into a link list
-  adds a new link.
-- **Fix idea:** set the value with `setLinkOrEntityReferenceFieldValue()`
-  (`src/Traits/LinkOrReferenceFieldTrait.php`), as `add_entity_reference` and
-  `replace_entity_reference` do.
-
 ## F46: A pasted URL can't become a link
 
 - **Found:** 2026-09-28, with the generic `link` paragraph, by reading the code.
@@ -761,3 +746,96 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   changed.
 - **Fix idea:** a patch for Paragraphs (`use ($bundles)`). Whether drupal.org
   has an issue for it isn't looked up yet.
+
+## F74: The older mutations for media leave a link field empty
+
+- **Found:** 2026-10-12, with a kernel test, while checking which mutations
+  besides `replace_media` (the former F45) can't set a link field.
+- **Symptom:** with an entity mapping from the media type to a link field (as
+  the sandbox has for documents), `add_media_image_reference` and
+  `add_media_video_reference` add the paragraph with an empty link. Nothing is
+  reported.
+- **By reading:** `add_video_remote` sets its field the same way.
+- **Cause:** they set `['target_id' => …]` on the mapped field
+  (`Mutation/AddMediaImageReference.php:168`,
+  `Mutation/AddMediaVideoReference.php:168`, `Mutation/AddVideoRemote.php:179`
+  at `0f3e2e8`), which a link item ignores. The other mutations that fill a
+  mapped field use `setLinkOrEntityReferenceFieldValue()`.
+- **Impact:** low. The Drupal adapter uses only `add_video_remote`, for a pasted
+  video URL, and the sandbox maps remote videos to a reference field. The other
+  two are for older clients.
+- **Fix idea:** `setLinkOrEntityReferenceFieldValue()` behind a mutation
+  version, since stored ones replay with the empty link. Or refuse a mapping to
+  a link field when the mutation is added.
+
+## F75: "Replace" takes any reference field and any ID
+
+- **Found:** 2026-10-12, with a kernel test, in the same check.
+- **Symptoms:**
+  - `replace_host_entity_media` with `fieldName: "uid"` and a user's ID is
+    accepted, without a violation. Publishing makes that user the page's author.
+  - `replace_media` and `replace_host_entity_media` accept a media of a type
+    that the field doesn't allow, and an ID that no media has. Validation
+    reports both ("This entity (media: 3) cannot be referenced.", "The
+    referenced entity (media: 9999) does not exist.") where `validation_types`
+    covers the entity. The sandbox validates paragraphs only, so not the page's
+    own fields.
+- **Who:** every user who may edit the edit state. `replace_media` also checks
+  update access to the paragraph type and its hosts.
+- **Cause:** `updateEntityReferenceField()`
+  (`src/Plugin/ParagraphsBlokkli/UpdateFieldValueTrait.php:140-164` at
+  `0f3e2e8`) sets `target_id` on any field that is a list of references. It
+  doesn't use its `$targetEntityType`, and has a "@todo Check if target bundle
+  is allowed".
+- **By reading, not checked:** `update_field_value` and
+  `update_host_entity_field_value` write the `value` of any field as well
+  (`updateTextFieldValue()`, `:34-86`).
+- **Not affected:** `replace_media` on a link field, which takes the media types
+  of the field's entity mappings.
+- **Fix idea:** when the mutation is added, refuse a field that isn't in the
+  droppable field config for media, a media that doesn't exist, and a media type
+  that the field's settings don't allow. Stored mutations replay as they did.
+
+## F76: A search result replaces the first mapped field
+
+- **Found:** 2026-10-12, by reading, in the same check. Not reproduced: no
+  paragraph type of the sandbox has two such fields.
+- **Symptom:** a paragraph type has two fields that entity mappings allow the
+  same bundle for. A search result dropped on the second one ("Replace …")
+  replaces the first.
+- **Cause:** the Drupal adapter's `replaceContentSearchItem`
+  (`src/modules/drupal/runtime/adapter/index.ts:2041-2050`, in this repository)
+  doesn't send the field's name, although `pbReplaceEntityReference` has the
+  variable. `replace_entity_reference` then takes the bundle's first mapping for
+  the paragraph type (`PbEntityMapping::getMappingForBundle()`). The agent's
+  `replace_content_search_item` tool goes through the same method.
+- **Fix idea:** send `fieldName: data.host.fieldName`.
+
+## F77: "Add to" is offered for link fields with several values
+
+- **Found:** 2026-10-12, by reading, in the same check. Not reproduced: the
+  sandbox has no link field with several values.
+- **Symptom:** a media dragged from the library over a link field with several
+  values, which an entity mapping allows its type for, gets the place "Add to
+  …". The drop fails: "Field '…' is not a droppable reference field."
+- **Cause:** the drop areas of the editor's `droppable-field-edit` feature
+  (`src/runtime/editor/features/droppable-field-edit/index.vue:178-250`, in this
+  repository) don't look at the field's type, as its command (`:103`) and
+  `droppable:open` (`:146`) do. `update_droppable_field` only takes reference
+  fields, which `UpdateDroppableFieldTest` pins.
+- **Fix idea:** leave out fields whose `config.type` isn't `reference`.
+
+## F78: A page's link field takes a paragraph type's mapping by name
+
+- **Found:** 2026-10-12, by reading, in the same check. Not reproduced.
+- **Symptom:** a content type has the machine name of a paragraph type, and a
+  link field of the same name as that type's (say both `event`, with
+  `field_link`). The page's link field is then listed with the entities that the
+  paragraph type's mappings allow. For media, the editor offers "Replace …" on
+  it, and `replace_host_entity_media` refuses: it only takes reference fields,
+  since no mapping can name a field of a page.
+- **Cause:** `ParagraphsBlokkliDroppableFieldConfig::getDroppableFields()`
+  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/ParagraphsBlokkliDroppableFieldConfig.php:117-133`
+  at `0f3e2e8`) compares a mapping's paragraph type and field with the bundle
+  and the field's name, also for the host's bundle.
+- **Fix idea:** look at the mappings only for fields of paragraphs.

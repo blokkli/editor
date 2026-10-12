@@ -310,6 +310,42 @@ describe('Uploading pasted files', async () => {
     expect(await blockCount(page)).toBe(before.length + 1)
   })
 
+  test("a document dropped on a link's target replaces it", async () => {
+    const before = await withApp(page, (app) => app.state.getAllUuids())
+    await pasteAndDrop(page, [{ name: 'old.pdf', type: 'application/pdf' }])
+    await expect.poll(() => uploadStatuses(page)).toEqual(['uploaded'])
+    await dialogSubmit(page).click()
+    await uploadDialog(page).waitFor({ state: 'detached' })
+    await expect.poll(() => blockCount(page)).toBe(before.length + 1)
+    const uuid = (await withApp(page, (app) => app.state.getAllUuids())).find(
+      (uuid) => !before.includes(uuid),
+    )!
+    const target = async () =>
+      (await blockState(page, uuid)).props?.link?.uri?.entity?.label
+    expect(await target()).toBe('old.pdf')
+    // The target is a link field, which takes documents through a mapping.
+    const area = `replace-media:${uuid}:field_link`
+
+    // An image can't replace a document.
+    await pasteFiles(page, [{ name: 'photo.png', type: 'image/png' }])
+    await expect.poll(() => isDragging(page)).toBe(true)
+    expect(await dropAreaIds(page)).not.toContain(area)
+    await emitEvent(page, 'dragging:end')
+
+    await pasteFiles(page, [{ name: 'new.pdf', type: 'application/pdf' }])
+    await expect.poll(() => isDragging(page)).toBe(true)
+    expect(await dropAreaIds(page)).toContain(area)
+    await dropOnArea(page, area)
+    await emitEvent(page, 'dragging:end')
+
+    await expect.poll(() => uploadStatuses(page)).toEqual(['uploaded'])
+    await dialogSubmit(page).click()
+    await uploadDialog(page).waitFor({ state: 'detached' })
+
+    await expect.poll(target).toBe('new.pdf')
+    expect(await blockCount(page)).toBe(before.length + 1)
+  })
+
   test('a file that a media already has is not uploaded again', async () => {
     const before = await withApp(page, (app) => app.state.getAllUuids())
     const color = 'rgb(20 120 220)'
