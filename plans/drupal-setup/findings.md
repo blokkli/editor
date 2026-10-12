@@ -39,8 +39,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F64  | [A template or a copy places a library item its user may not view](#f64-a-template-or-a-copy-places-a-library-item-its-user-may-not-view)                                 | `paragraphs_blokkli` | low      | to verify  |
 | F67  | [A deleted library item fails the edit states that placed it](#f67-a-deleted-library-item-fails-the-edit-states-that-placed-it)                                           | `paragraphs_blokkli` | low      | open       |
 | F68  | [A stored copy from another page follows that page](#f68-a-stored-copy-from-another-page-follows-that-page)                                                               | `paragraphs_blokkli` | low      | to verify  |
-| F69  | [A detach right after "Add to library" copies the published nested paragraphs](#f69-a-detach-right-after-add-to-library-copies-the-published-nested-paragraphs)           | `paragraphs_blokkli` | low      | open       |
-| F70  | ["Add to library" changes the page's earlier revisions](#f70-add-to-library-changes-the-pages-earlier-revisions)                                                          | `paragraphs_blokkli` | medium   | open       |
+| F70  | [A library item shares its paragraph with the page's earlier revisions](#f70-a-library-item-shares-its-paragraph-with-the-pages-earlier-revisions)                        | `paragraphs_blokkli` | low      | open       |
 | F71  | [Moving a paragraph into its own nested paragraph is refused for the wrong reason](#f71-moving-a-paragraph-into-its-own-nested-paragraph-is-refused-for-the-wrong-reason) | `paragraphs_blokkli` | low      | open       |
 | F72  | [The editor offers places below the nesting limit](#f72-the-editor-offers-places-below-the-nesting-limit)                                                                 | editor               | low      | open       |
 | F73  | [A new paragraph of a type its field doesn't allow is no violation](#f73-a-new-paragraph-of-a-type-its-field-doesnt-allow-is-no-violation)                                | `paragraphs`         | low      | open       |
@@ -59,6 +58,9 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F102 | [The library search fails for an empty list of types](#f102-the-library-search-fails-for-an-empty-list-of-types)                                                          | `paragraphs_blokkli` | low      | open       |
 | F103 | [A preview misses a change that is made before its first poll](#f103-a-preview-misses-a-change-that-is-made-before-its-first-poll)                                        | editor               | low      | open       |
 | F104 | [A refused machine translation answers "Internal server error"](#f104-a-refused-machine-translation-answers-internal-server-error)                                        | `paragraphs_blokkli` | low      | open       |
+| F106 | [A duplicate doesn't keep the published state](#f106-a-duplicate-doesnt-keep-the-published-state)                                                                         | `paragraphs_blokkli` | low      | to verify  |
+| F107 | [A duplicate drops nested paragraphs in fields that blökkli doesn't manage](#f107-a-duplicate-drops-nested-paragraphs-in-fields-that-blökkli-doesnt-manage)               | `paragraphs_blokkli` | low      | to verify  |
+| F108 | [A template of a new library item's paragraph saves the item early](#f108-a-template-of-a-new-library-items-paragraph-saves-the-item-early)                               | `paragraphs_blokkli` | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -620,68 +622,43 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   deep instead of 5, so a stored copy now also brings the source's levels 6
   and 7. By reading: these copies have no stored UUID, so they get a new one on
   every replay until the edit state is published.
+- **The same for every mutation that copies nested paragraphs,** by reading (a
+  review of a plan): `getUuidForNewEntity()` only stores a UUID on the first
+  run. A nested paragraph that the first run didn't see gets a new one on every
+  replay, e.g. when an earlier mutation is switched off and on again
+  (`setMutationStatus`). Affected: `duplicate` and the older versions of
+  `detach_reusable`.
 
-## F69: A detach right after "Add to library" copies the published nested paragraphs
+## F70: A library item shares its paragraph with the page's earlier revisions
 
-- **Found:** 2026-10-12, fixing "Add to library" on a paragraph with nested
-  paragraphs (the former F12); reproduced with a throwaway kernel test.
-- **Symptom:** a grid is published with the buttons "one" and "two". In one edit
-  state it gets a button "three" and loses "two", is added to the library, and
-  is detached again. The copy holds "one" and "two": the nested paragraphs that
-  were published last. That's what the editor shows, and what is published.
-- **Not affected:** the library item itself. Without the detach, it holds "one"
-  and "three", in the editor and when it's published.
-- **Cause:** `DetachReusable` stores its copy when the mutation is added
-  (`getCopyData()`,
-  `src/Plugin/ParagraphsBlokkli/Mutation/DetachReusable.php:70` at `0afa03d`),
-  from the fields of the item's paragraph. While the mutations run, those still
-  hold what the paragraph was loaded with:
-  `ParagraphsBlokkliEditState::rebuildNewLibraryItems()` fills them from the
-  proxies after the last mutation.
-- **Also:** the proxies of the nested paragraphs stay behind, with the paragraph
-  that went into the library item as their host. Nothing saves them.
-- **Impact:** low. It takes "Add to library" and "Detach from library" on the
-  same paragraph in one edit state, and changes to its nested paragraphs before
-  both.
-- **Fix idea:** fill the fields of the item's paragraph from the proxies before
-  the copy is taken. The rebuild is a method of the edit state today; a mutation
-  can't call it.
-
-## F70: "Add to library" changes the page's earlier revisions
-
-- **Found:** 2026-10-12, fixing the former F12. Looked into the same day, with a
-  throwaway kernel test: everything below is reproduced.
-- **Symptom:** a page is published with a grid that has two buttons. A third
-  button is added, the grid is added to the library, and the page is published.
-  - **The earlier revision changes:** it now shows the grid with three buttons.
-    The grid has one revision, which the earlier revision of the page and the
-    library item both reference, and its parent is the library item.
-  - **Deleting the library item empties it:** once the cleanup of orphaned
-    paragraphs has run (cron), the grid is gone. The page's earlier revision
-    references a paragraph that doesn't exist.
-  - **A revert gives the grid two hosts:** reverting the page to the earlier
-    revision makes a new revision of the grid for the page. The library item
-    keeps referencing the older one. The grid's default revision and its parent
-    are the page's. Each host shows its own revision, and the cleanup deletes
-    the revisions of whichever host is deleted.
+- **Found:** 2026-10-12, fixing the former F12. Its larger part is fixed: "Add
+  to library" changed the page's earlier revisions, and deleting the library
+  item emptied them. A paragraph that gets a new host now gets a new revision:
+  the same happened to one that was moved into a new paragraph.
+- **Symptom:** "Add to library" moves the paragraph into the new library item.
+  The library item references a new revision of it, the page's earlier revisions
+  the ones before: one paragraph, with one UUID, in two places.
+  - Reverting the page to an earlier revision makes a further revision for the
+    page. The paragraph's default revision and its parent are then the page's,
+    until the library item is saved again. Reproduced before the fix.
+  - By reading: after the library item is deleted, its revision of the paragraph
+    stays behind without a parent. The cleanup of orphaned paragraphs never
+    deletes a default revision that has others next to it.
 - **Cause:** `MakeReusable::execute()`
   (`src/Plugin/ParagraphsBlokkli/Mutation/MakeReusable.php:102-108` at
-  `0afa03d`) puts the paragraph itself into the new library item. The item is
-  new, so entity_reference_revisions saves the paragraph without a new revision:
-  the revision that the page's earlier revisions reference is changed in place.
-  Paragraphs' own "Promote to library" (`LibraryItem::createFromParagraph()`)
-  puts a duplicate into the item.
-- **Impact:** medium. Earlier revisions of the page change without a trace, and
-  lose the paragraph when the library item is deleted. What is published isn't
-  affected.
+  `0afa03d`) puts the paragraph itself into the library item. Paragraphs' own
+  "Promote to library" (`LibraryItem::createFromParagraph()`) puts a duplicate
+  into it.
+- **Impact:** low: each place shows its own revision.
 - **Fix idea:** a new version of `make_reusable` that puts a duplicate into the
-  library item, with stored UUIDs: `duplicateParagraph()` of the helper and
-  `DuplicateMutationBase::duplicateChildren()` make it from the proxies, as the
-  mutation for duplicates does. The original and its nested paragraphs leave the
-  edit state, as removed ones do. Stored mutations keep moving the paragraph.
-  Library items that were made before stay as they are.
-- **Possibly with it:** F69, if the duplicate gets its nested paragraphs when
-  the mutation runs. Not checked.
+  library item, with stored UUIDs (`duplicateParagraph()` of the helper and
+  `DuplicateMutationBase::duplicateChildren()`). The original and its nested
+  paragraphs leave the edit state. Stored mutations keep moving the paragraph.
+  By reading (a review of the plan), the duplicate must also:
+  - keep the published state, per translation: the helper leaves `status` out
+    (F106);
+  - keep the nested paragraphs in fields that blökkli doesn't manage (F107);
+  - cope with nested paragraphs that the first run didn't see (F68).
 
 ## F71: Moving a paragraph into its own nested paragraph is refused for the wrong reason
 
@@ -1007,3 +984,48 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   request is refused; its error names the wrong reason.
 - **Fix idea:** a result that may be null, as the editor's other mutations have,
   or an error that says "Access denied".
+
+## F106: A duplicate doesn't keep the published state
+
+- **Found:** 2026-10-12, by reading, in a review of the plan for F70. Not
+  reproduced.
+- **Symptom:** the copy of an unpublished paragraph is published. With
+  `paragraphs_blokkli_scheduler`, the copy of a paragraph that is scheduled to
+  be published is published at once, and keeps its "Publish on" date.
+- **Cause:** `ParagraphsBlokkliHelper::getDuplicateData()` leaves `status` and
+  `created` out (`SKIP_FIELDS`, `src/ParagraphsBlokkliHelper.php` at `70608d0`),
+  and copies the other fields, the scheduler's dates among them. Every mutation
+  that copies with it is affected: `duplicate`, `detach_reusable`,
+  `copy_from_existing`, templates.
+- **Fix idea:** copy `status`, per translation. Stored mutations replay with the
+  helper: a new behaviour needs a version of each.
+
+## F107: A duplicate drops nested paragraphs in fields that blökkli doesn't manage
+
+- **Found:** 2026-10-12, by reading, in a review of the plan for F70. Not
+  reproduced; no test has `restrict_fields`.
+- **Symptom:** with "Restrict paragraph fields" on, blökkli manages no
+  paragraphs field of a paragraph type: the settings form only offers the fields
+  of the host types. A paragraph then keeps its nested paragraphs as they are
+  stored. Its duplicate has none.
+- **Cause:** `extractFieldValues()` (`src/ParagraphsBlokkliHelper.php` at
+  `70608d0`) leaves every paragraphs field out of a duplicate, because
+  `duplicateChildren()` copies the nested paragraphs from their proxies. There
+  are proxies only for the fields that `getAvailableHostFieldNames()` returns.
+- **Fix idea:** copy the paragraphs of the fields that have no proxies with the
+  paragraph, as `Paragraph::createDuplicate()` does.
+
+## F108: A template of a new library item's paragraph saves the item early
+
+- **Found:** 2026-10-12, by reading, in a review of the plan for F70. Not
+  reproduced.
+- **Symptom:** in one edit state a paragraph is added to the library, and a
+  template is made of the paragraph that shows the new library item. The
+  template is saved at once, and the library item with it, before the page is
+  published. Publishing then saves a library item with the same UUID again.
+- **Cause:** `BlokkliParagraphTemplateService::cloneParagraphForTemplate()`
+  (`modules/paragraphs_blokkli_template/src/BlokkliParagraphTemplateService.php`
+  at `70608d0`) copies the paragraph's fields, and the reference to an unsaved
+  library item is the item itself. Saving the template saves what it references.
+- **Fix idea:** refuse a template of a paragraph that shows a library item which
+  isn't saved yet.
