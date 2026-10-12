@@ -37,7 +37,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F48 | [A preview grant opens more than the preview](#f48-a-preview-grant-opens-more-than-the-preview)                                                                           | `paragraphs_blokkli` | low      | open       |
 | F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`              | low      | open       |
 | F52 | [A comment's label throws](#f52-a-comments-label-throws)                                                                                                                  | `paragraphs_blokkli` | low      | open       |
-| F53 | [Violations while editing come from the stored structure](#f53-violations-while-editing-come-from-the-stored-structure)                                                   | `paragraphs_blokkli` | medium   | open       |
 | F62 | [An edit state shows the latest revision without revision access](#f62-an-edit-state-shows-the-latest-revision-without-revision-access)                                   | `paragraphs_blokkli` | low      | to verify  |
 | F63 | [A stored conversion follows the current field settings](#f63-a-stored-conversion-follows-the-current-field-settings)                                                     | `paragraphs_blokkli` | low      | open       |
 | F64 | [A template or a copy places a library item its user may not view](#f64-a-template-or-a-copy-places-a-library-item-its-user-may-not-view)                                 | `paragraphs_blokkli` | low      | to verify  |
@@ -47,6 +46,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F70 | ["Add to library" changes the page's earlier revisions](#f70-add-to-library-changes-the-pages-earlier-revisions)                                                          | `paragraphs_blokkli` | low      | open       |
 | F71 | [Moving a paragraph into its own nested paragraph is refused for the wrong reason](#f71-moving-a-paragraph-into-its-own-nested-paragraph-is-refused-for-the-wrong-reason) | `paragraphs_blokkli` | low      | open       |
 | F72 | [The editor offers places below the nesting limit](#f72-the-editor-offers-places-below-the-nesting-limit)                                                                 | editor               | low      | open       |
+| F73 | [A new paragraph of a type its field doesn't allow is no violation](#f73-a-new-paragraph-of-a-type-its-field-doesnt-allow-is-no-violation)                                | `paragraphs`         | low      | open       |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -521,30 +521,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** `use StringTranslationTrait;` in the entity, or
   `new TranslatableMarkup()`.
 
-## F53: Violations while editing come from the stored structure
-
-- **Found:** 2026-10-08, with the E2E fixture
-  `test/e2e-drupal/content/nodes/broken.yml` (a title in a gallery, which only
-  allows images).
-- **Symptom:** deleting the misplaced title doesn't clear the gallery's
-  violation ("This entity (paragraph: 4) cannot be referenced.",
-  `field_paragraphs.0.target_id`): the editor keeps the red frame and the
-  analyze entry. Publishing then succeeds. The other way round, a structural
-  problem that a mutation creates should only show when publishing (not
-  reproduced).
-- **Cause:** `ParagraphsBlokkliEditState::getMutatedState()` calls
-  `$this->validate()` (`src/Entity/ParagraphsBlokkliEditState.php:437` at
-  `3f07f6e`) before `rebuildFields()` (`:495`) puts the mutated paragraphs into
-  the fields, and that only happens when saving. So validation sees the
-  paragraph fields as stored. `ParagraphsBlokkliManager::doPublish()` validates
-  again after the rebuild (`src/ParagraphsBlokkliManager.php:303`), which is why
-  publishing gets it right.
-- **Fix idea:** rebuild the fields before validating in both cases; the editing
-  path empties them afterwards anyway. A kernel test: a disallowed paragraph
-  that a mutation removes leaves no violation in the mutated state.
-- **E2E:** `test/e2e-drupal/invalid-content.test.ts`, "drops the violation once
-  the misplaced paragraph is gone", is marked `it.fails` until it's fixed.
-
 ## F62: An edit state shows the latest revision without revision access
 
 - **Found:** 2026-10-10, reading the code while letting reviewers open entities
@@ -731,3 +707,24 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** the adapter tells the editor the limit, and the editor leaves
   out fields on that level, and places where the dragged paragraphs wouldn't fit
   (`state.getNestingLevel()` knows the level of each paragraph).
+
+## F73: A new paragraph of a type its field doesn't allow is no violation
+
+- **Found:** 2026-10-12, with a kernel test, when the edit state got validated
+  as it's edited (the former F53).
+- **Symptom:** a stored `add` puts a text into a grid that only takes buttons.
+  While editing, validation finds nothing. A saved text that a stored `move`
+  puts there has its violation (`field_items.0.target_id`).
+- **By reading:** publishing validates the same way, so it finds nothing either.
+  Once published, the paragraph is saved, and the next edit state shows the
+  violation.
+- **Cause:** Paragraphs 8.x-1.23,
+  `ParagraphSelection::validateReferenceableNewEntities()`
+  (`src/Plugin/EntityReferenceSelection/ParagraphSelection.php:251-259`). Its
+  closure doesn't `use ($bundles)`, so `isset($bundles)` is false in it and
+  every new paragraph counts as allowed.
+- **Impact:** low. A mutation is refused when it's added, so only a stored one
+  gets there: one from before that check, or from before the field's settings
+  changed.
+- **Fix idea:** a patch for Paragraphs (`use ($bundles)`). Whether drupal.org
+  has an issue for it isn't looked up yet.

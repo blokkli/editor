@@ -76,11 +76,7 @@ describe("Content the site doesn't allow", async () => {
   })
 
   // Last two: they fix the page.
-  //
-  // A known bug: while editing, paragraphs_blokkli validates the paragraph
-  // fields as stored, not as edited (getMutatedState() validates before
-  // rebuildFields()). Drop `.fails` once it's fixed.
-  it.fails('drops the violation once the misplaced paragraph is gone', async () => {
+  it('drops the violation once the misplaced paragraph is gone', async () => {
     await selectBlock(page, MISPLACED_TITLE)
     await clickItemAction(page, 'delete')
     await expect.poll(() => blockExists(page, MISPLACED_TITLE)).toBe(false)
