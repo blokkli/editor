@@ -56,7 +56,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F88 | [The form of a paragraph hides a link that its user may not open](#f88-the-form-of-a-paragraph-hides-a-link-that-its-user-may-not-open)                                   | `paragraphs_blokkli` | low      | to verify  |
 | F89 | [Building an edit state empties the fields of the cached entities](#f89-building-an-edit-state-empties-the-fields-of-the-cached-entities)                                 | `paragraphs_blokkli` | low      | open       |
 | F90 | [The list of referenced entities names what its user may not view](#f90-the-list-of-referenced-entities-names-what-its-user-may-not-view)                                 | `paragraphs_blokkli` | low      | to verify  |
-| F93 | [A refused template leaves its paragraphs behind](#f93-a-refused-template-leaves-its-paragraphs-behind)                                                                   | `paragraphs_blokkli` | low      | open       |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -926,25 +925,3 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** view access before an entity is added. And one way to read the
   entity that a link names, for this list and for
   `ParagraphsBlokkliHelper::isAllowedEntityLink()`, which reads `entity:` only.
-
-## F93: A refused template leaves its paragraphs behind
-
-- **Found:** 2026-10-12, in a kernel test (not kept) while fixing the error of a
-  refused template (the former F92): after two refused templates of one text,
-  the database had three paragraphs.
-- **Symptom:** a template that doesn't validate isn't created, but the copies of
-  its paragraphs are, the nested ones too, and nothing references them. The
-  editor gets there with "Use as default" for more than one paragraph or for a
-  type that has a default already, and with a label of more than 255 characters,
-  which its dialog doesn't limit (`DialogCreateTemplate`).
-- **Cause:** `createTemplateFromEditState()` and `cloneParagraphForTemplate()`
-  (`modules/paragraphs_blokkli_template/src/BlokkliParagraphTemplateService.php:246-311`
-  at `69c4ec8`) save every copy, then the template is validated and the
-  exception thrown. Two of the template's constraints read its paragraphs
-  (`DefaultTemplateSingleParagraph`, `UniqueDefaultPerBundle`), so it can't be
-  validated without them.
-- **Impact:** low: orphaned paragraphs, one set per refused attempt.
-- **Fix idea:** validate the template with copies that aren't saved yet, and let
-  saving the template save them. Deleting the copies afterwards is the other
-  way; deleting a paragraph only queues its nested ones for
-  `entity_reference_revisions`' purger.
