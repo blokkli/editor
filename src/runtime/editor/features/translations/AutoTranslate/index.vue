@@ -29,6 +29,7 @@
 
   <DiffApproval
     v-if="phase === 'approving'"
+    :key="approvalRun"
     :items="approvalItems"
     insertions-only
     editable
@@ -52,6 +53,8 @@ const { adapter, $t, state, context, selection, types, ui } = useBlokkli()
 
 const phase = ref<'idle' | 'loading' | 'approving'>('idle')
 const approvalItems = ref<ApprovalItem[]>([])
+// Counts the approvals of one request: a rejected one starts again.
+const approvalRun = ref(0)
 
 const isTranslating = computed(() => state.editMode.value === 'translating')
 
@@ -154,21 +157,34 @@ async function onClick() {
 
 async function onApply(data: DiffApplyPayload) {
   const targetLanguage = context.value.language
-  const items = approvalItems.value
+  const accepted = approvalItems.value
     // Anything not explicitly rejected counts as accepted, matching the agent
     // tools — a key can be absent, e.g. after a manual edit collapsed an item.
     .filter((item) => data.selected[String(item.id)] !== false)
     .map((item) => ({
-      langcode: targetLanguage,
-      uuid: item.uuid,
-      fieldName: item.fieldName,
-      fieldValue: data.edited[String(item.id)] ?? item.value,
+      ...item,
+      value: data.edited[String(item.id)] ?? item.value,
     }))
 
-  if (items.length) {
-    await state.mutateWithLoadingState(() =>
-      adapter.importTranslationsBatched!({ items }),
+  if (accepted.length) {
+    const applied = await state.mutateWithLoadingState(() =>
+      adapter.importTranslationsBatched!({
+        items: accepted.map((item) => ({
+          langcode: targetLanguage,
+          uuid: item.uuid,
+          fieldName: item.fieldName,
+          fieldValue: item.value,
+        })),
+      }),
     )
+    if (!applied) {
+      // Rejected: DiffApproval has reset its previews for the apply, so it
+      // starts again, with the accepted texts as the user left them. The one
+      // that is wrong can be corrected there.
+      approvalItems.value = accepted
+      approvalRun.value++
+      return
+    }
   }
 
   finishApproval()

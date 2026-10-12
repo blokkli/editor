@@ -450,14 +450,17 @@ async function applyImport() {
     }
   })
 
-  await state.mutateWithLoadingState(() =>
+  const applied = await state.mutateWithLoadingState(() =>
     adapter.importTranslationsBatched!({
       items,
       markUpToDate: markUpToDate.value,
     }),
   )
 
-  emit('close')
+  // Rejected: the dialog stays open with its selection.
+  if (applied) {
+    emit('close')
+  }
 }
 
 function acceptTranslationFile(item: DataTransferItem): boolean {

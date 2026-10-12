@@ -17,6 +17,7 @@ import { splitIntoSegments } from '#blokkli/editor/helpers/diff'
 import type {
   McpToolContext,
   ComponentToolResult,
+  ToolError,
 } from '#blokkli/agent/app/types'
 import type {
   ApprovalItem,
@@ -30,6 +31,7 @@ import {
   partialRejectionGuidance,
   manualEditsMessage,
   decideFieldUpdates,
+  fieldUpdateFailure,
   type RejectedByUser,
 } from '../fieldDiffApproval'
 import type { ComponentParams, AutoTranslateResult } from './index'
@@ -41,7 +43,10 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'done', result: ComponentToolResult<AutoTranslateResult>): void
+  (
+    e: 'done',
+    result: ComponentToolResult<AutoTranslateResult> | ToolError,
+  ): void
 }>()
 
 const blokkli = useBlokkli()
@@ -63,6 +68,11 @@ function emitDone(result: ComponentToolResult<AutoTranslateResult>): void {
     ...result,
     agentMessage: appendAgentNote(result.agentMessage, skippedNote),
   })
+}
+
+/** The backend rejected the values: the tool ends with an error. */
+function emitFailure(failure: string): void {
+  emit('done', { error: appendAgentNote(failure, skippedNote) ?? failure })
 }
 
 function resolveFieldLabel(
@@ -182,7 +192,9 @@ async function onApply(data: DiffApplyPayload) {
     )
 
   if (updates.length) {
-    await state.mutateWithLoadingState(() =>
+    // Without the editor's own error message: the conversation shows that the
+    // tool failed, and the agent gets what the backend said.
+    const response = await state.applyMutationSilently(() =>
       adapter.importTranslationsBatched!({
         items: updates.map((u) => ({
           langcode: targetLanguage,
@@ -192,6 +204,10 @@ async function onApply(data: DiffApplyPayload) {
         })),
       }),
     )
+    if (!response?.success) {
+      emitFailure(fieldUpdateFailure(response))
+      return
+    }
   }
 
   const label =

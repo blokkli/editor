@@ -10,8 +10,11 @@ import { resetSandbox, sandboxHost, workerSandbox } from './support/sandbox'
  * page's title is hers to change, its author and whether it's published are
  * not.
  *
- * The editor offers no way to write such a field, so the specs call the
- * adapter, as a request made by hand would.
+ * The same goes for the value: Drupal validates the field, and a value that
+ * the form would refuse is refused.
+ *
+ * The editor offers no way to write such a field or value, so the specs call
+ * the adapter, as a request made by hand would.
  */
 
 /** Ask Drupal to set a field of the page, in a mutation of its own. */
@@ -78,6 +81,29 @@ describe('The fields a mutation may write', async () => {
         errors: [`Field '${fieldName}' can't be edited.`],
       })
     }
+  })
+
+  it("refuses a value that the page's form would refuse", async () => {
+    // A title takes 255 characters. The violation names the page and the
+    // field, for a client that shows it there.
+    const result = await page.evaluate(async (fieldValue) => {
+      const result = await window.__BLOKKLI__!.app!.adapter
+        .updateEntityFieldValue!({ fieldName: 'title', fieldValue })
+      return {
+        success: result?.success,
+        errors: result?.errors ?? [],
+        violations: (result?.violations ?? []).map((violation) => ({
+          propertyPath: violation.propertyPath,
+          entityType: violation.entityType,
+        })),
+      }
+    }, 'a'.repeat(256))
+
+    expect(result).toEqual({
+      success: false,
+      errors: ['Title: may not be longer than 255 characters.'],
+      violations: [{ propertyPath: 'title.0.value', entityType: 'node' }],
+    })
   })
 
   // Last: it changes the page.

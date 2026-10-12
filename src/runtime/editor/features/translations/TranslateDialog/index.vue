@@ -189,7 +189,11 @@
     </PanelSection>
 
     <template v-if="errorMessage" #pre-footer>
-      <div class="text-red-normal text-sm" v-text="errorMessage" />
+      <div
+        class="text-red-normal text-sm"
+        data-test="translations-batch-error"
+        v-text="errorMessage"
+      />
     </template>
 
     <template #footer>
@@ -508,12 +512,20 @@ async function applyTranslations() {
   errorMessage.value = ''
 
   try {
-    await state.mutateWithLoadingState(() =>
+    const response = await state.applyMutationSilently(() =>
       adapter.importTranslationsBatched!({
         items,
         markUpToDate: markUpToDate.value,
       }),
     )
+    if (!response?.success) {
+      // Rejected: the dialog stays open with its texts and what the backend
+      // said, so the one that is wrong can be corrected.
+      errorMessage.value =
+        response?.errors?.filter(Boolean).join(' ') ||
+        $t('unexpectedMutationError', 'An unexpected error happened.')
+      return
+    }
     emit('close')
   } catch (e: any) {
     errorMessage.value = e?.message || 'Failed to apply translations.'

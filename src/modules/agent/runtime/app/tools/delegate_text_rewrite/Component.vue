@@ -61,6 +61,7 @@ import ToolCard from '../../features/agent/Panel/ToolCard/index.vue'
 import type {
   McpToolContext,
   ComponentToolResult,
+  ToolError,
 } from '#blokkli/agent/app/types'
 import type { ComponentParams, StreamTextFieldsResult } from './index'
 import { applyOperations } from '../helpers'
@@ -85,7 +86,10 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'done', result: ComponentToolResult<StreamTextFieldsResult>): void
+  (
+    e: 'done',
+    result: ComponentToolResult<StreamTextFieldsResult> | ToolError,
+  ): void
 }>()
 
 const blokkli = useBlokkli()
@@ -100,6 +104,11 @@ function emitDone(result: ComponentToolResult<StreamTextFieldsResult>): void {
     ...result,
     agentMessage: appendAgentNote(result.agentMessage, skippedNote),
   })
+}
+
+/** The backend rejected the values: the tool ends with an error. */
+function emitFailure(failure: string): void {
+  emit('done', { error: appendAgentNote(failure, skippedNote) ?? failure })
 }
 
 const completedItems = ref<ApprovalItem[]>([])
@@ -254,6 +263,7 @@ async function applySelected(data: DiffApplyPayload) {
     label,
     appliedByItemId,
     editedFields,
+    failure,
   } = await applyFieldDiffs(
     blokkli,
     props.context.adapter,
@@ -263,6 +273,11 @@ async function applySelected(data: DiffApplyPayload) {
     edited,
     atomicItemIds,
   )
+
+  if (failure) {
+    emitFailure(failure)
+    return
+  }
 
   // Build a detailed agentMessage so the main agent knows what the sub-agent produced.
   const parts: string[] = []

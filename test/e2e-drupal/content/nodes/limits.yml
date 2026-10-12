@@ -1,0 +1,20 @@
+# A page with a German translation and a title that fills its field, at
+# /en/limits and /de/grenzen: 252 of the 255 characters, without a German value.
+# The DeepL fake puts "[DE] " in front of it, so its translation is too long
+# for the field and Drupal rejects it (features/translations/rejected,
+# features/agent/tools/auto_translate_paragraphs).
+key: limits
+type: page
+title: { en: Limits, de: Grenzen }
+field_paragraphs:
+  - type: title
+    key: limits-long-title
+    field_title:
+      'A title that fills its field, as an editor writes it who was told that a
+      title may have up to two hundred and fifty-five characters and takes that
+      as an invitation: clause after clause, until there is hardly any room left
+      for a single word more at all.'
+  # English only as well, and short: its translation fits.
+  - type: title
+    key: limits-short-title
+    field_title: A short title

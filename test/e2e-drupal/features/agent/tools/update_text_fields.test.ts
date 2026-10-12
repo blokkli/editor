@@ -8,7 +8,9 @@ import {
   waitForEditableText,
   plaintextEditor,
   editableOverlay,
+  editableText,
 } from '../../../support/editable'
+import { messageTexts } from '../../../support/overlays'
 import { applyDiff, editDiff } from '../../../support/diff'
 import type { BatchRewriteResult } from '../../../../../src/modules/agent/runtime/app/tools/update_text_fields/index'
 import { nextMutation } from '../../../support/mutations'
@@ -36,8 +38,9 @@ const TITLE = seedUuid('paragraph', 'first-title')
  * Applying stores the values in Drupal (`pbBulkUpdateFieldValues`); the
  * editor then renders what Drupal returns.
  *
- * Page lifecycle: one editor page with the `test-cases` sidebar open. Both
- * tests change the same title, each to its own value.
+ * Page lifecycle: one editor page with the `test-cases` sidebar open. The
+ * tests change the same title, each to its own value; the last one is
+ * rejected and changes nothing.
  */
 describe('agent: update_text_fields', async () => {
   const sandbox = workerSandbox()
@@ -136,5 +139,41 @@ describe('agent: update_text_fields', async () => {
       host,
       'Accepted as suggested',
     )
+  })
+
+  test('a value that Drupal rejects ends the tool with an error', async () => {
+    const host = await blockHost(page, TITLE)
+    const before = await editableText(page, 'field_title', host)
+
+    // A title takes 255 characters.
+    const done = runComponentTool<{ error?: string }>(
+      page,
+      'update_text_fields',
+      {
+        updates: [
+          { uuid: TITLE, fieldName: 'field_title', value: 'a'.repeat(256) },
+        ],
+      },
+    )
+    await page
+      .locator('[data-test="diff-approval-apply"]')
+      .waitFor({ state: 'visible' })
+
+    const rejected = nextMutation(page, 'pbBulkUpdateFieldValues')
+    await applyDiff(page)
+    await rejected
+    const result = await done
+
+    // What the agent gets names the paragraph and the field, and says that
+    // nothing was written. Not "1 change applied".
+    expect(result.error).toContain('255')
+    expect(result.error).toContain(`field_title.0.value (paragraph ${TITLE})`)
+    expect(result.error).toContain('None of the values were written.')
+    expect(result).not.toHaveProperty('acceptedCount')
+
+    // The title is as it was, and the editor shows no message of its own: the
+    // conversation shows the error.
+    await waitForEditableText(page, 'field_title', host, before)
+    expect(await messageTexts(page)).toEqual([])
   })
 })

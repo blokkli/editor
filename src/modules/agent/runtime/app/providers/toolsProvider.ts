@@ -146,6 +146,12 @@ export default function toolsProvider({
     )
     const { payload, meta } = splitMeta(raw)
 
+    // A component ends with an error when the backend rejected what it
+    // applied: reported to the agent as for a mutation tool.
+    if (isToolError(payload)) {
+      return { ok: false, error: payload.error }
+    }
+
     const payloadObj = asRecord(payload)
     if (setLabel && payloadObj && typeof payloadObj.label === 'string') {
       setLabel(payloadObj.label)

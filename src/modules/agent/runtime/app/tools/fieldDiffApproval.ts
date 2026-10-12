@@ -1,7 +1,11 @@
 import type { BlokkliApp } from '#blokkli/editor/types/app'
-import type { FullBlokkliAdapter } from '#blokkli/editor/adapter'
+import type {
+  FullBlokkliAdapter,
+  MutationResponseLike,
+} from '#blokkli/editor/adapter'
 import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'
 import { flattenSegments, reassembleValue } from '#blokkli/editor/helpers/diff'
+import { formatMutationFailure } from '../helpers/mutationResult'
 
 export type RejectedSegment = {
   tag: string
@@ -303,6 +307,22 @@ export type FieldDiffApplyResult = FieldDecisionResult & {
    * (agent-facing audit log).
    */
   appliedByItemId: Record<number, string>
+  /**
+   * Set when the backend rejected the batch: nothing was written. The message
+   * is for the agent and names what the backend objected to.
+   */
+  failure?: string
+}
+
+/**
+ * The agent-facing message for a batch of field values that the backend
+ * rejected. Shared with the translation tool, which applies through a
+ * different adapter method.
+ */
+export function fieldUpdateFailure(
+  response: MutationResponseLike<any> | undefined,
+): string {
+  return `${formatMutationFailure(response)}\nNone of the values were written. Correct the rejected values and call the tool again.`
 }
 
 /**
@@ -355,9 +375,19 @@ export async function applyFieldDiffs(
     }
   }
 
-  await state.mutateWithLoadingState(() =>
+  // Without the editor's own error message: the conversation shows that the
+  // tool failed, and the agent gets what the backend said.
+  const response = await state.applyMutationSilently(() =>
     adapter.updateFieldValueBatched!({ items: batchItems, entityItems }),
   )
+  if (!response?.success) {
+    return {
+      ...decision,
+      label: '',
+      appliedByItemId: {},
+      failure: fieldUpdateFailure(response),
+    }
+  }
 
   const label =
     decision.acceptedCount === decision.totalCount

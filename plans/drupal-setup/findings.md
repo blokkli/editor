@@ -50,8 +50,13 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F76 | [A search result replaces the first mapped field](#f76-a-search-result-replaces-the-first-mapped-field)                                                                   | editor               | low      | to verify  |
 | F77 | ["Add to" is offered for link fields with several values](#f77-add-to-is-offered-for-link-fields-with-several-values)                                                     | editor               | low      | to verify  |
 | F78 | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                           | `paragraphs_blokkli` | low      | to verify  |
-| F79 | [A field mutation writes a value unchecked](#f79-a-field-mutation-writes-a-value-unchecked)                                                                               | `paragraphs_blokkli` | low      | open       |
 | F80 | [A copy from another page takes no access to it](#f80-a-copy-from-another-page-takes-no-access-to-it)                                                                     | `paragraphs_blokkli` | low      | to verify  |
+| F81 | [The edit state doesn't validate nested paragraphs](#f81-the-edit-state-doesnt-validate-nested-paragraphs)                                                                | `paragraphs_blokkli` | medium   | open       |
+| F82 | [A link to a media is "inaccessible" for an editor](#f82-a-link-to-a-media-is-inaccessible-for-an-editor)                                                                 | `paragraphs_blokkli` | low      | open       |
+| F84 | [A refused new paragraph only says "Entity Violations"](#f84-a-refused-new-paragraph-only-says-entity-violations)                                                         | `paragraphs_blokkli` | low      | to verify  |
+| F85 | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                     | editor               | low      | to verify  |
+| F86 | [A refused mutation is announced as an unexpected error](#f86-a-refused-mutation-is-announced-as-an-unexpected-error)                                                     | editor               | low      | open       |
+| F87 | [The translate dialog doesn't say which text was refused](#f87-the-translate-dialog-doesnt-say-which-text-was-refused)                                                    | editor               | low      | open       |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -813,30 +818,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   and the field's name, also for the host's bundle.
 - **Fix idea:** look at the mappings only for fields of paragraphs.
 
-## F79: A field mutation writes a value unchecked
-
-- **Found:** 2026-10-12, with a kernel test, when the mutations got their check
-  of the field that they write (the former F75). That check is about the field,
-  not about the value.
-- **Symptom:** `update_field_value` with the property path `field_link.uri` and
-  `javascript:alert(1)` is accepted, and the paragraph of the edit state has
-  that link.
-- **By reading:**
-  - `update_field_value` and `update_host_entity_field_value` write any property
-    of the field's first item that way (`updateTextFieldValue()`,
-    `src/Plugin/ParagraphsBlokkli/UpdateFieldValueTrait.php:34-86`): also a
-    reference's `target_id`, around the checks that `replace_media` makes.
-  - `bulk_update_field_values` checks a link with `Url::fromUri()`
-    (`normalizeFieldValue()`, `:259-298`), which takes any scheme.
-  - Publishing validates the value where `validation_types` covers the entity,
-    and then needs the permission to publish with validation errors. A site that
-    doesn't validate paragraphs saves it.
-- **Impact:** low: only fields that the user may edit, and Drupal's own form
-  would refuse the same value.
-- **Fix idea:** when the mutation is added, validate the field that it wrote
-  (`$entity->get($fieldName)->validate()`) and refuse it on a violation. Or
-  limit the text mutations to text fields and the title of a link.
-
 ## F80: A copy from another page takes no access to it
 
 - **Found:** 2026-10-12, by reading, in the same check. Not reproduced.
@@ -849,3 +830,114 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   access to the paragraph types. It doesn't check access to the source.
 - **Impact:** low: the UUID of the page must be known.
 - **Fix idea:** view access to the source when the mutation is added.
+
+## F81: The edit state doesn't validate nested paragraphs
+
+- **Found:** 2026-10-12, with a probe in a sandbox, while planning the check of
+  a written value (the former F79).
+- **Symptom:** the page "Applying for a building permit" has a link list with a
+  link to a document. As Anna Keller, validating that link reports "The path
+  'entity:media/30' is inaccessible." (F82). Her edit state of the page reports
+  no violations, so nothing holds the publishing back.
+- **Cause:** `ParagraphsBlokkliEditState::validate()`
+  (`src/Entity/ParagraphsBlokkliEditState.php:823-871` at `87937b6`) validates
+  the paragraphs that the fields of the page reference. It doesn't go into their
+  paragraphs fields, and validating a paragraph doesn't validate the paragraphs
+  in it.
+- **Impact:** medium: with `validation_types: [paragraph]`, a paragraph in a
+  section, a list or a grid is never validated, in the editor and when
+  publishing.
+- **Fix idea:** validate every paragraph of the mutated state. That shows F82
+  where it is hidden today, so the two belong together.
+
+## F82: A link to a media is "inaccessible" for an editor
+
+- **Found:** 2026-10-12, with a probe on the dev site, while planning the check
+  of a written value (the former F79).
+- **Symptom:** as Anna Keller, a link field with `entity:media/30` has the
+  violation "The path 'entity:media/30' is inaccessible."; as the admin it has
+  none. The module writes such links itself, for the media types that an entity
+  mapping allows in a link field (`replace_media`, the add mutations, uploads).
+- **Cause:** core's `LinkAccess` constraint asks whether the user may access the
+  link's route, unless they have `link to any page`. With
+  `media.settings:standalone_url` off, Drupal's default, that route is the
+  media's edit form (`/media/{media}/edit`, which asks for `media.update`). Anna
+  Keller may view the media, but not edit it.
+- **Impact:** low today: the sandbox's only such link is nested, and nested
+  paragraphs aren't validated (F81). By reading, not reproduced: such a link in
+  a field of the page keeps an editor from publishing, since no role may publish
+  with validation errors. The form of the paragraph validates it the same way
+  (`ParagraphsBlokkliFormBase::validateForm()`), and Drupal's link widget shows
+  and stores the URI as it is: by a probe of both, not by submitting the form,
+  Anna Keller can't save the form of that link.
+- **Fix idea:** open. The sandbox's roles could get `link to any page`, or the
+  module could leave `LinkAccess` out for the links that it builds from an
+  entity mapping. The check of a written value (the former F79) leaves these
+  links out for that reason: they keep the checks of their mutations.
+
+## F84: A refused new paragraph only says "Entity Violations"
+
+- **Found:** 2026-10-12, by reading, when the check of a written value (the
+  former F79) got a message of its own. Not reproduced in the editor.
+- **Symptom:** when Drupal refuses a mutation for the violations of a new
+  paragraph (a required field without a value, for one that is added without its
+  form), the editor's message is "Entity Violations".
+- **Cause:** `MutationViolationException` has that text as its message unless
+  the caller gives one, and the GraphQL result puts it into `errors`
+  (`ParagraphsBlokkliMutation.php:102-113` at `87937b6`). The violations are in
+  `violations`, which the editor's message doesn't read
+  (`mutateWithLoadingState()`, `src/runtime/editor/providers/state.ts:742-747`).
+  The agent reads them (`formatMutationFailure()`).
+- **Impact:** low: the mutation is refused either way, but the user doesn't
+  learn why.
+- **Fix idea:** build the message from the violations where none is given, as
+  the check of a written value does.
+
+## F85: A rejected rewrite drops the token usage of its stream
+
+- **Found:** 2026-10-12, by reading, when the agent's text tools got their error
+  for a batch that the backend rejects (the former F83). Not reproduced.
+- **Symptom:** `delegate_text_rewrite` streams its texts from the model, and
+  reports the tokens of that stream with its result. When the backend rejects
+  the texts, the tool ends with an error, and the tokens aren't counted.
+- **Cause:** `emitFailure()`
+  (`src/modules/agent/runtime/app/tools/delegate_text_rewrite/Component.vue:110`)
+  emits the error without `_usage`, and the error of a `ToolOutcome` has no
+  `meta` to carry it (`executeComponentTool()`,
+  `providers/toolsProvider.ts:151`).
+- **Impact:** low: the usage of one stream, on a path that is rare.
+- **Fix idea:** give the failed outcome its `meta`.
+- **Also open:** the rejection in `delegate_text_rewrite` has no spec of its
+  own. It shares `applyFieldDiffs()` with `update_text_fields`, whose spec
+  covers it.
+
+## F86: A refused mutation is announced as an unexpected error
+
+- **Found:** 2026-10-12, in the screenshots of the rejected import and the
+  rejected auto-translation (`features/translations/rejected.test.ts`).
+- **Symptom:** the red message says "An unexpected error happened", and what the
+  backend said beneath it, smaller: "Title: may not be longer than 255
+  characters." A refusal is expected, and its reason is the message.
+- **Cause:** `mutateWithLoadingState()`
+  (`src/runtime/editor/providers/state.ts:722-767`) throws the backend's errors
+  as an `Error` and shows them as the message's additional text. The headline is
+  the caller's `errorMessage`, or the generic one.
+- **Impact:** low: the reason is there, but it reads like a crash.
+- **Fix idea:** for a response with `success: false`, make what the backend said
+  the message. See F84 for the responses that only say "Entity Violations".
+
+## F87: The translate dialog doesn't say which text was refused
+
+- **Found:** 2026-10-12, in the screenshot of the rejected batch
+  (`features/translations/rejected.test.ts`).
+- **Symptom:** when the backend rejects the batch, the dialog shows "Title: may
+  not be longer than 255 characters." above its buttons. On a page with several
+  titles, the user has to find the one that is too long.
+- **Cause:** `applyTranslations()`
+  (`src/runtime/editor/features/translations/TranslateDialog/index.vue:496-535`)
+  shows the response's `errors`. Its `violations` name the paragraph
+  (`entityUuid`) and the field (`propertyPath`), which is the key of a row
+  (`<uuid>:<fieldName>`), and aren't used.
+- **Impact:** low.
+- **Fix idea:** mark the rows of the violations, with their messages. The same
+  goes for the import dialog, which only shows the editor's message.

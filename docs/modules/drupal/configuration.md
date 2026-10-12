@@ -338,6 +338,19 @@ the published status for users with `administer nodes`. What makes up an entity
 way. A refused change is reported to the editor, for example "Access denied:
 cannot edit field 'field_lead'."
 
+Drupal also validates the field that is written, as the form would. A value that
+adds a violation is refused with Drupal's message, for example "Title: may not
+be longer than 255 characters.":
+
+- a text that is too long for its field, or a required field left empty
+- a link with a script as its target, or to a page that the user may not access
+- a reference to something that the field doesn't take, or that the user may not
+  reference
+
+Nothing of a batch is stored then: translations that are applied together, or
+the texts that the agent changes. A violation that the field had before doesn't
+count, so a field with an old problem can still be edited.
+
 ### Admin Permissions
 
 | Permission                                 | Description                                                               |

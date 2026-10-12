@@ -19,6 +19,7 @@ import {
 import type {
   McpToolContext,
   ComponentToolResult,
+  ToolError,
 } from '#blokkli/agent/app/types'
 import type { ComponentParams, BatchRewriteResult } from './index'
 import {
@@ -47,7 +48,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'done', result: ComponentToolResult<BatchRewriteResult>): void
+  (e: 'done', result: ComponentToolResult<BatchRewriteResult> | ToolError): void
 }>()
 
 const blokkli = useBlokkli()
@@ -64,6 +65,11 @@ function emitDone(result: ComponentToolResult<BatchRewriteResult>): void {
     ...result,
     agentMessage: appendAgentNote(result.agentMessage, skippedNote),
   })
+}
+
+/** The backend rejected the values: the tool ends with an error. */
+function emitFailure(failure: string): void {
+  emit('done', { error: appendAgentNote(failure, skippedNote) ?? failure })
 }
 
 onMounted(() => {
@@ -262,6 +268,7 @@ async function applySelected(data: DiffApplyPayload) {
     label,
     appliedByItemId,
     editedFields,
+    failure,
   } = await applyFieldDiffs(
     blokkli,
     props.context.adapter,
@@ -271,6 +278,11 @@ async function applySelected(data: DiffApplyPayload) {
     edited,
     atomicItemIds,
   )
+
+  if (failure) {
+    emitFailure(failure)
+    return
+  }
 
   // Capture before/after diffs for the details panel. For segmented items the
   // "after" is the reassembled hybrid we actually wrote, not the agent's
