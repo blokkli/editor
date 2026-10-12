@@ -15,7 +15,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export).
 metadata:
   author: blokkli
-  version: '1.0.3'
+  version: '1.0.4'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/configuration#drupal-permissions-reference
 ---
@@ -88,8 +88,11 @@ public function access(ParagraphsTypeInterface $type, string $operation, Account
 - **Adding a template** needs `create` for every paragraph type in it, the
   nested ones included, and `view paragraph templates`.
 - **Placing a library item** only needs `create` for `from_library`, whatever
-  type the item's paragraph has. Don't rely on per-type permissions for the
-  types that library items hold.
+  type the item's paragraph has: a role can show an item of a type that it may
+  not create.
+- **Detaching a library item** puts a copy of the item's paragraph on the page.
+  It needs `delete` for `from_library` and `create` for the type of the item's
+  paragraph.
 
 ## 3. A proposal per role
 

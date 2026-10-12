@@ -270,9 +270,12 @@ sandbox/drupal/web/sites/default/files/sandboxes/<id>/   its public files
 - **Drush-made sandboxes never expire:** only the control app deletes, and only
   its own. They show no "Sandbox" button unless created with `--expires` (e.g.
   `--expires=$(($(date +%s) + 86400)) --idle=7200`).
-- **Every database caches the container and the router.** After changing
-  services or routes: `ddev drush cr` (dev site), the same with `--uri` for a
-  sandbox, and a bake so that new sandboxes get it.
+- **Every database caches the container, the router and the plugin
+  definitions.** After changing services, routes or a plugin's attribute (e.g. a
+  mutation's `version`, which new mutations are stored with): `ddev drush cr`
+  (dev site), the same with `--uri` for a sandbox, and a bake so that new
+  sandboxes get it. The E2E template's fingerprint doesn't cover the module's
+  code: run `ddev bake-e2e` after such a change.
 - **Logins** are `<payload>.<signature>`: base64url JSON
   `{sandbox, user, expires}` and base64url HMAC-SHA256 with
   `NUXT_SANDBOX_LOGIN_SECRET`. The control app makes them
