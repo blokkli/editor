@@ -27,7 +27,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F32 | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                                                                       | `paragraphs_blokkli` | medium   | open       |
 | F33 | [Transform plugins don't get the language](#f33-transform-plugins-dont-get-the-language)                                                                                  | both                 | low      | workaround |
 | F35 | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)                                                      | `@blokkli/editor`    | low      | open       |
-| F38 | [Editors can't view paragraph types](#f38-editors-cant-view-paragraph-types)                                                                                              | `paragraphs_blokkli` | high     | workaround |
 | F40 | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                   | `paragraphs_blokkli` | low      | open       |
 | F41 | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                                                                               | `paragraphs_blokkli` | low      | open       |
 | F43 | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                                                                            | both                 | low      | open       |
@@ -57,6 +56,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F90 | [The list of referenced entities names what its user may not view](#f90-the-list-of-referenced-entities-names-what-its-user-may-not-view)                                 | `paragraphs_blokkli` | low      | to verify  |
 | F95 | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                        | both                 | low      | open       |
 | F96 | [The editor reads field values through a detached element](#f96-the-editor-reads-field-values-through-a-detached-element)                                                 | editor               | low      | to verify  |
+| F97 | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli` | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -420,26 +420,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   slices at most).
 - **Fix idea:** an optional stable `key` per category and series in
   `ChartDataSourcePayload`, used for the overrides when present.
-
-## F38: Editors can't view paragraph types
-
-- **Found:** 2026-09-28, 13h, logged in as the first non-admin editor.
-- **Symptom:** the editor opens and edits, but its add list is empty: an editor
-  can't add any paragraph. Admins see every type.
-- **Cause:** the frontend loads the types with
-  `entityQuery(entityType: PARAGRAPHS_TYPE)`
-  (`src/modules/drupal/graphql/base/query.pbConfig.graphql`, in this
-  repository), and graphql_core_schema returns `null` for every item the user
-  may not view (`src/Wrappers/QueryConnection.php:66`, in graphql_core_schema
-  1.0.28). Paragraphs' `ParagraphsTypeAccessControlHandler` only opens
-  `view label` (with `access content`); `view` needs
-  `administer paragraphs types`. The starterkit works around it in its custom
-  module (`blokkli_starterkit_paragraphs_type_access()`).
-- **Workaround:** `blokkli_playground`'s `ParagraphsTypeHooks` grants `view`
-  with `view paragraphs blokkli edit state`. Documented in the configuration
-  docs and the skills.
-- **Fix idea:** the same hook in paragraphs_blokkli, or the types from a data
-  producer of its own that checks blökkli's permission.
 
 ## F40: A new comment without a mention notifies nobody
 
@@ -950,3 +930,18 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** parse with `DOMParser`, whose document is inert, as
   `getViolationText()` does
   (`src/runtime/editor/features/translations/violations.ts`).
+
+## F97: The edit extension still requires the entity query extension
+
+- **Found:** 2026-10-12, by reading, when the editor got the paragraph types
+  from a query of the module's own (the former F38).
+- **Symptom:** none. A GraphQL server with `paragraphs_blokkli_edit` must have
+  graphql_core_schema's `entity_query` extension enabled, which adds
+  `entityQuery`, `entityById` and `entityByUuid` to the schema of every site.
+- **Cause:** `EditExtension::getExtensionDependencies()` returns
+  `['entity_query']`. The editor's only use of it was the list of paragraph
+  types. Not checked: whether the module's schema needs anything else of that
+  extension.
+- **Impact:** low: queries in the schema that a project may not want.
+- **Fix idea:** drop the dependency, if a server without the extension still
+  builds its schema.

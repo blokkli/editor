@@ -12,7 +12,7 @@ compatibility: >-
   1.x.
 metadata:
   author: blokkli
-  version: '1.0.0'
+  version: '1.0.1'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li
 disable-model-invocation: true

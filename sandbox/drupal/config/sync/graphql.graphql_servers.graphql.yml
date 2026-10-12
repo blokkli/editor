@@ -63,7 +63,6 @@ schema_configuration:
       paragraph: 1
       paragraphs_blokkli_edit_state: 1
       paragraphs_library_item: 1
-      paragraphs_type: 1
       taxonomy_term: 1
       translatable_config_pages: 1
       user: 1
@@ -155,12 +154,6 @@ schema_configuration:
         changed: changed
         created: created
         paragraphs: paragraphs
-        status: status
-      paragraphs_type:
-        behavior_plugins: behavior_plugins
-        description: description
-        icon_default: icon_default
-        icon_uuid: icon_uuid
         status: status
       taxonomy_term:
         field_address: field_address

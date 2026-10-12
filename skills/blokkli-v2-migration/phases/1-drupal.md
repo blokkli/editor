@@ -80,6 +80,15 @@ This is now displayed in the editor.
 This doesn't mean you have to invent a description now. Just let the developer
 know that this is a follow-up task that needs to be done.
 
+### Paragraph types come from the module's own query
+
+The editor used to load the paragraph types as entities, which took a
+`hook_paragraphs_type_access()` in a custom module (without it, editors got no
+paragraph types to add) and `paragraphs_type` among the GraphQL server's entity
+types. It now gets them from `pbGetParagraphTypes`. If the project has such a
+hook only for the editor, it can be removed, and so can `paragraphs_type` in the
+server's entity types and fields, unless the frontend reads it.
+
 ### New `review` mode for edit states
 
 Previously there was no way to grant a role the permission to review blökkli

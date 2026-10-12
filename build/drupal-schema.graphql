@@ -86,9 +86,6 @@ enum EntityType {
   "Paragraphs library item"
   PARAGRAPHS_LIBRARY_ITEM
 
-  "Paragraphs type"
-  PARAGRAPHS_TYPE
-
   "Taxonomy term"
   TAXONOMY_TERM
 
@@ -3007,65 +3004,8 @@ type TranslatableConfigPagesSite implements TranslatableConfigPages & Entity & E
   ): TranslatableConfigPagesSite
 }
 
-"Paragraphs type"
-type ParagraphsType implements Entity {
-  "{field: status} "
-  status: Boolean
-
-  "{field: icon_uuid} "
-  iconUuid: String
-
-  "{field: icon_default} "
-  iconDefault: String
-
-  "{field: description} "
-  description: String
-
-  ""
-  id: String
-
-  "The unique UUID."
-  uuid: String!
-
-  "The label of this entity."
-  label: String
-
-  "The langcode of this entity."
-  langcode: String
-
-  "The bundle ID of the entity."
-  entityBundle: String!
-
-  "The entity type ID."
-  entityTypeId: String!
-
-  "Determines whether the entity is new."
-  isNew: Boolean!
-
-  "Check entity access for the given operation, defaults to view."
-  accessCheck(operation: String): Boolean!
-
-  "Whether this paragraph type can be made reusable."
-  allowReusable: Boolean
-
-  "If this paragraph is translatable."
-  isTranslatable: Boolean
-
-  "The permissions the current user has for this paragraph type."
-  permissions: [ParagraphsBlokkliTypePermission!]!
-
-  hasPublishOn: Boolean!
-  hasUnpublishOn: Boolean!
-}
-
 "Paragraph"
 interface Paragraph implements Entity & EntityRevisionable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -3159,12 +3099,6 @@ interface Paragraph implements Entity & EntityRevisionable {
 
 "Accordion {entity_type: paragraph, bundle: accordion}"
 type ParagraphAccordion implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -3282,12 +3216,6 @@ type ParagraphAccordion implements Paragraph & Entity & EntityRevisionable & Ent
 
 "Banner {entity_type: paragraph, bundle: banner}"
 type ParagraphBanner implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -3405,12 +3333,6 @@ type ParagraphBanner implements Paragraph & Entity & EntityRevisionable & Entity
 
 "blökkli Fragment {entity_type: paragraph, bundle: blokkli_fragment}"
 type ParagraphBlokkliFragment implements Paragraph & Entity & EntityRevisionable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -3510,12 +3432,6 @@ type ParagraphBlokkliFragment implements Paragraph & Entity & EntityRevisionable
 
 "Call to action {entity_type: paragraph, bundle: call_to_action}"
 type ParagraphCallToAction implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -3645,12 +3561,6 @@ type ParagraphCallToAction implements Paragraph & Entity & EntityRevisionable & 
 
 "Chart {entity_type: paragraph, bundle: chart}"
 type ParagraphChart implements Paragraph & Entity & EntityRevisionable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -3744,12 +3654,6 @@ type ParagraphChart implements Paragraph & Entity & EntityRevisionable {
 
 "Columns {entity_type: paragraph, bundle: columns}"
 type ParagraphColumns implements Paragraph & Entity & EntityRevisionable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -3855,12 +3759,6 @@ type ParagraphColumns implements Paragraph & Entity & EntityRevisionable {
 
 "Contact {entity_type: paragraph, bundle: contact}"
 type ParagraphContact implements Paragraph & Entity & EntityRevisionable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -3960,12 +3858,6 @@ type ParagraphContact implements Paragraph & Entity & EntityRevisionable {
 
 "Embed {entity_type: paragraph, bundle: embed}"
 type ParagraphEmbed implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -4083,12 +3975,6 @@ type ParagraphEmbed implements Paragraph & Entity & EntityRevisionable & EntityT
 
 "From library {entity_type: paragraph, bundle: from_library}"
 type ParagraphFromLibrary implements Paragraph & Entity & EntityRevisionable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -4188,12 +4074,6 @@ type ParagraphFromLibrary implements Paragraph & Entity & EntityRevisionable {
 
 "Gallery {entity_type: paragraph, bundle: gallery}"
 type ParagraphGallery implements Paragraph & Entity & EntityRevisionable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -4293,12 +4173,6 @@ type ParagraphGallery implements Paragraph & Entity & EntityRevisionable {
 
 "Image {entity_type: paragraph, bundle: image}"
 type ParagraphImage implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -4416,12 +4290,6 @@ type ParagraphImage implements Paragraph & Entity & EntityRevisionable & EntityT
 
 "Link {entity_type: paragraph, bundle: link}"
 type ParagraphLink implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -4539,12 +4407,6 @@ type ParagraphLink implements Paragraph & Entity & EntityRevisionable & EntityTr
 
 "Link list {entity_type: paragraph, bundle: link_list}"
 type ParagraphLinkList implements Paragraph & Entity & EntityRevisionable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -4644,12 +4506,6 @@ type ParagraphLinkList implements Paragraph & Entity & EntityRevisionable {
 
 "Section {entity_type: paragraph, bundle: section}"
 type ParagraphSection implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -4767,12 +4623,6 @@ type ParagraphSection implements Paragraph & Entity & EntityRevisionable & Entit
 
 "Step {entity_type: paragraph, bundle: step}"
 type ParagraphStep implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -4926,12 +4776,6 @@ type FieldItemTypeTextLong implements FieldItemType & FieldItemTypeStringInterfa
 
 "Steps {entity_type: paragraph, bundle: steps}"
 type ParagraphSteps implements Paragraph & Entity & EntityRevisionable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -5031,12 +4875,6 @@ type ParagraphSteps implements Paragraph & Entity & EntityRevisionable {
 
 "Table {entity_type: paragraph, bundle: table}"
 type ParagraphTable implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -5148,12 +4986,6 @@ type ParagraphTable implements Paragraph & Entity & EntityRevisionable & EntityT
 
 "Teaser {entity_type: paragraph, bundle: teaser}"
 type ParagraphTeaser implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -5283,12 +5115,6 @@ type ParagraphTeaser implements Paragraph & Entity & EntityRevisionable & Entity
 
 "Automatic teaser list {entity_type: paragraph, bundle: teaser_list}"
 type ParagraphTeaserList implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -5400,12 +5226,6 @@ type ParagraphTeaserList implements Paragraph & Entity & EntityRevisionable & En
 
 "Text {entity_type: paragraph, bundle: text}"
 type ParagraphText implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -5517,12 +5337,6 @@ type ParagraphText implements Paragraph & Entity & EntityRevisionable & EntityTr
 
 "Title {entity_type: paragraph, bundle: title}"
 type ParagraphTitle implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -5634,12 +5448,6 @@ type ParagraphTitle implements Paragraph & Entity & EntityRevisionable & EntityT
 
 "Video {entity_type: paragraph, bundle: video}"
 type ParagraphVideo implements Paragraph & Entity & EntityRevisionable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -5739,12 +5547,6 @@ type ParagraphVideo implements Paragraph & Entity & EntityRevisionable {
 
 "Widget {entity_type: paragraph, bundle: widget}"
 type ParagraphWidget implements Paragraph & Entity & EntityRevisionable & EntityTranslatable {
-  "{field: type} "
-  typeRawField: FieldItemListEntityReference
-
-  "{value} {field: type} "
-  type: ParagraphsType
-
   "{field: status} "
   statusRawField: FieldItemListBoolean
 
@@ -5994,6 +5796,9 @@ type Query {
 
   "Get import source entities."
   pbGetImportSourceEntities(entityType: String!, entityUuid: String!, filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliImportSourceEntities
+
+  "Get the paragraph types."
+  pbGetParagraphTypes: [ParagraphsBlokkliParagraphType!]
 
   pbGetFieldConfig: [ParagraphsBlokkliFieldConfig!]
   pbGetEditableFieldConfig(entityType: String!, entityBundle: String!): [ParagraphsBlokkliEditableFieldConfig!]
@@ -8116,6 +7921,38 @@ type ParagraphsBlokkliEntityRestriction {
 
   ""
   bundles: [String!]!
+}
+
+"""
+A paragraph type, with what the editor needs to know about it.
+
+This is not the paragraph type as an entity: whoever can use blökkli gets
+these, without access to the paragraph types themselves.
+"""
+type ParagraphsBlokkliParagraphType {
+  "The machine name of the paragraph type."
+  id: String!
+
+  "The label, in the language of the request."
+  label: String!
+
+  "The description, in the language of the request."
+  description: String
+
+  "Whether paragraphs of this type can be made reusable."
+  allowReusable: Boolean!
+
+  "Whether paragraphs of this type are translatable."
+  isTranslatable: Boolean!
+
+  "The permissions the current user has for this paragraph type."
+  permissions: [ParagraphsBlokkliTypePermission!]!
+
+  "Whether paragraphs of this type can be scheduled for publishing."
+  hasPublishOn: Boolean!
+
+  "Whether paragraphs of this type can be scheduled for unpublishing."
+  hasUnpublishOn: Boolean!
 }
 
 ""

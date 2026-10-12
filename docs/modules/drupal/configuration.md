@@ -314,20 +314,10 @@ as it is where nobody has made changes yet.
 
 ### Paragraph Types
 
-The editor loads the paragraph types through GraphQL, which only returns the
-types a user may view. Paragraphs allows that only with
-`administer paragraphs types`, so editors without it get no paragraph types to
-add. Grant view access in a custom module:
-
-```php
-#[Hook('paragraphs_type_access')]
-public function access(ParagraphsTypeInterface $type, string $operation, AccountInterface $account): AccessResultInterface {
-  if ($operation !== 'view') {
-    return AccessResult::neutral();
-  }
-  return AccessResult::allowedIfHasPermission($account, 'view paragraphs blokkli edit state');
-}
-```
+The editor gets the paragraph types from a query of the module's own
+(`pbGetParagraphTypes`), which answers whoever may use blökkli. The paragraph
+types don't have to be exposed in the GraphQL schema as entities, and editors
+need no access to view them.
 
 With Paragraphs' `paragraphs_type_permissions` module, a user needs
 `create paragraph content <type>` to add a paragraph of a type: the editor hides

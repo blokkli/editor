@@ -18,7 +18,7 @@ compatibility: >-
   Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.1'
+  version: '1.0.2'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/configuration
 ---
@@ -302,8 +302,8 @@ Tell the developer who needs which; don't assign them:
 
 1. **The patch applied:** `ParagraphScheduler.php` exists. After `drush cr`,
    `drush sch-ent-upd` has nothing left to do.
-2. **The schema** has `hasPublishOn` on `ParagraphsType`, and the mutations
-   `set_paragraph_schedule` and `schedule`.
+2. **The schema** has `hasPublishOn` on `ParagraphsBlokkliParagraphType`, and
+   the mutations `set_paragraph_schedule` and `schedule`.
 3. **The Nuxt dev server's log** doesn't list `block-scheduler` or
    `preview-grant` among the disabled features.
 4. **In the browser, as an editor** (not user 1, who skips validation):

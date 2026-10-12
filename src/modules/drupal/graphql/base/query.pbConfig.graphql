@@ -37,10 +37,8 @@ query pbConfig($entityType: String!, $entityBundle: String!) {
   features: paragraphsBlokkliAvailableFeatures {
     ...paragraphsBlokkliAvailableFeatures
   }
-  allTypes: entityQuery(entityType: PARAGRAPHS_TYPE, limit: 999) {
-    items {
-      ...blokkliParagraphsType
-    }
+  allTypes: pbGetParagraphTypes {
+    ...blokkliParagraphType
   }
 
   fieldConfig: pbGetFieldConfig {

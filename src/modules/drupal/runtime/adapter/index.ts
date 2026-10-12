@@ -297,24 +297,19 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         clipboard: v.data.clipboards || [],
         currentUser: v.data.currentUser,
         availableFeatures: v.data.features,
-        allTypes: (v.data.allTypes.items || [])
-          .map<BlockBundleDefinition | null>((v) => {
-            if (v && 'id' in v && v.id) {
-              return {
-                id: v.id,
-                label: v.label ?? '',
-                description: v.description ?? '',
-                allowReusable: !!v.allowReusable,
-                isTranslatable: !!v.isTranslatable,
-                hasPublishOn: !!v.hasPublishOn,
-                hasUnpublishOn: !!v.hasUnpublishOn,
-                permissions: v.permissions ?? [],
-              }
-            }
-
-            return null
-          })
-          .filter(falsy),
+        allTypes: (v.data.allTypes ?? []).map<BlockBundleDefinition>(
+          (type) => ({
+            id: type.id,
+            label: type.label,
+            description: type.description ?? '',
+            allowReusable: type.allowReusable,
+            isTranslatable: type.isTranslatable,
+            // Only with paragraphs_blokkli_scheduler.
+            hasPublishOn: !!type.hasPublishOn,
+            hasUnpublishOn: !!type.hasUnpublishOn,
+            permissions: type.permissions,
+          }),
+        ),
         fieldConfig: v.data.fieldConfig || [],
         editableFieldConfig: v.data.editableFieldConfig || [],
         droppableFieldConfig: v.data.droppableFieldConfig || [],

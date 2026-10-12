@@ -15,7 +15,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export).
 metadata:
   author: blokkli
-  version: '1.0.6'
+  version: '1.0.7'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/configuration#drupal-permissions-reference
 ---
@@ -57,20 +57,10 @@ which:
 
 ## 2. Paragraph types
 
-**Let blökkli's users view paragraph types.** The editor loads them through
-GraphQL, which only returns the types a user may view, and Paragraphs allows
-that only with `administer paragraphs types`. Without a hook, editors get no
-paragraph types at all. In a custom module:
-
-```php
-#[Hook('paragraphs_type_access')]
-public function access(ParagraphsTypeInterface $type, string $operation, AccountInterface $account): AccessResultInterface {
-  if ($operation !== 'view') {
-    return AccessResult::neutral();
-  }
-  return AccessResult::allowedIfHasPermission($account, 'view paragraphs blokkli edit state');
-}
-```
+**Nothing to set up for the list of paragraph types.** The editor gets it from
+the module's own query (`pbGetParagraphTypes`), which answers whoever may use
+blökkli. A project that has a `hook_paragraphs_type_access()` only for the
+editor (it was needed before) can remove it.
 
 **Per paragraph type,** with Paragraphs' `paragraphs_type_permissions` module
 (part of `drupal/paragraphs`):

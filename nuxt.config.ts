@@ -52,12 +52,13 @@ fragment paragraphsBlokkliParagraphEditContext on ParagraphsBlokkliParagraphEdit
   unpublishOn
 }
 
-fragment blokkliParagraphsType on ParagraphsType {
+fragment blokkliParagraphType on ParagraphsBlokkliParagraphType {
   id
   label
   description
   allowReusable
   isTranslatable
+  permissions
   hasPublishOn
   hasUnpublishOn
 }

@@ -15,7 +15,7 @@ compatibility: >-
   backend (composer, drush) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.8'
+  version: '1.0.9'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/overview
 ---
@@ -165,7 +165,8 @@ At `/admin/config/graphql`, edit the server (schema "Core Composable"):
 - **Entity types:** the host types (e.g. `node`), `paragraph`,
   `paragraphs_blokkli_edit_state`, plus what the features and the frontend read
   (`media`, `file`, `user`, `paragraphs_library_item`,
-  `blokkli_paragraph_template`).
+  `blokkli_paragraph_template`). Not `paragraphs_type`: the editor gets the
+  paragraph types from the module's own query.
 - **Bundles:** list **every** bundle the frontend queries: each paragraph type
   (including `blokkli_fragment` and `from_library`), the host bundles, the media
   types. graphql_core_schema only generates a type such as `ParagraphText` for
@@ -232,9 +233,6 @@ permissions yourself.
   comment; `take ownership of paragraphs blokkli edit state` to take over
   another user's changes. The full list is in the
   [configuration docs](https://docs.blokk.li/modules/drupal/configuration#drupal-permissions-reference).
-- **Paragraph types:** users without `administer paragraphs types` can't view
-  them, so the editor offers them none. Grant view access in a custom module
-  (`hook_paragraphs_type_access()`, in the `blokkli-setup-permissions` skill).
 - **Content:** editors also need the usual permissions to edit the host entity
   and to use its media, and create access to the media types of uploaded files
   (`create image media`): without it, files can't be pasted, and the media
@@ -434,7 +432,7 @@ export default defineBlokkliEditAdapter(async (ctx) => {
 | Symptom                                                                   | Cause                                                                                     |
 | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | No edit button                                                            | Bundle not in the enabled types, missing permissions, or `blokkliProps` not bound         |
-| The editor offers no paragraph types to editors, only to admins           | They can't view paragraph types (section 6)                                               |
+| The editor fails to start: no "pbGetParagraphTypes" query                 | `paragraphs_blokkli` is older than the editor: update it, dump the schema                 |
 | `Unknown type "ParagraphXyz"`, or a `…Unexposed` type                     | The bundle is missing from the GraphQL server's `bundles`                                 |
 | A field is missing from the schema                                        | It's missing from the server's `fields`                                                   |
 | "Failed to initialise blökkli Drupal module"                              | `nuxt-graphql-middleware` isn't before `@blokkli/editor`                                  |

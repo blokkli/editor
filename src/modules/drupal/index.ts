@@ -134,6 +134,16 @@ export declare const templateEditRouteName: string|null
 
     const queryFields = getTypeFields('Query')
     const mutationFields = getTypeFields('Mutation')
+
+    // The paragraph types come from a query of paragraphs_blokkli's own.
+    // Without it there is nothing the editor could add or name.
+    if (!queryFields.has('pbGetParagraphTypes')) {
+      helper.logger.box(
+        'The Drupal GraphQL schema has no "pbGetParagraphTypes" query. Update the "paragraphs_blokkli" module and dump the schema again.',
+      )
+
+      throw new Error('Failed to initialise blökkli Drupal module.')
+    }
     const editStateFields = getTypeFields('ParagraphsBlokkliEditState')
     const editMutationStateFields = getTypeFields('ParagraphsEditMutationState')
 
@@ -604,8 +614,10 @@ fragment paragraphsBlokkliParagraphEditContext on ParagraphsBlokkliParagraphEdit
 
     addMutation('set_paragraph_schedule', 'block-scheduler')
 
-    const paragraphsTypeFields = [
-      ...getTypeFields('ParagraphsType').keys(),
+    // The paragraph types, as paragraphs_blokkli has them for the editor. Its
+    // submodules add fields (the scheduler's `hasPublishOn`).
+    const paragraphTypeFields = [
+      ...getTypeFields('ParagraphsBlokkliParagraphType').keys(),
     ].filter((field) => {
       return [
         'id',
@@ -620,10 +632,10 @@ fragment paragraphsBlokkliParagraphEditContext on ParagraphsBlokkliParagraphEdit
     })
 
     graphql.addDocument(
-      'blokkli:paragraphsType',
+      'blokkli:paragraphType',
       `
-fragment blokkliParagraphsType on ParagraphsType {
-  ${paragraphsTypeFields.join('\n  ')}
+fragment blokkliParagraphType on ParagraphsBlokkliParagraphType {
+  ${paragraphTypeFields.join('\n  ')}
 }
 `,
     )
