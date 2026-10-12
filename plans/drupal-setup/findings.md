@@ -47,10 +47,11 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F72 | [The editor offers places below the nesting limit](#f72-the-editor-offers-places-below-the-nesting-limit)                                                                 | editor               | low      | open       |
 | F73 | [A new paragraph of a type its field doesn't allow is no violation](#f73-a-new-paragraph-of-a-type-its-field-doesnt-allow-is-no-violation)                                | `paragraphs`         | low      | open       |
 | F74 | [The older mutations for media leave a link field empty](#f74-the-older-mutations-for-media-leave-a-link-field-empty)                                                     | `paragraphs_blokkli` | low      | open       |
-| F75 | ["Replace" takes any reference field and any ID](#f75-replace-takes-any-reference-field-and-any-id)                                                                       | `paragraphs_blokkli` | medium   | open       |
 | F76 | [A search result replaces the first mapped field](#f76-a-search-result-replaces-the-first-mapped-field)                                                                   | editor               | low      | to verify  |
 | F77 | ["Add to" is offered for link fields with several values](#f77-add-to-is-offered-for-link-fields-with-several-values)                                                     | editor               | low      | to verify  |
 | F78 | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                           | `paragraphs_blokkli` | low      | to verify  |
+| F79 | [A field mutation writes a value unchecked](#f79-a-field-mutation-writes-a-value-unchecked)                                                                               | `paragraphs_blokkli` | low      | open       |
+| F80 | [A copy from another page takes no access to it](#f80-a-copy-from-another-page-takes-no-access-to-it)                                                                     | `paragraphs_blokkli` | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -768,34 +769,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   version, since stored ones replay with the empty link. Or refuse a mapping to
   a link field when the mutation is added.
 
-## F75: "Replace" takes any reference field and any ID
-
-- **Found:** 2026-10-12, with a kernel test, in the same check.
-- **Symptoms:**
-  - `replace_host_entity_media` with `fieldName: "uid"` and a user's ID is
-    accepted, without a violation. Publishing makes that user the page's author.
-  - `replace_media` and `replace_host_entity_media` accept a media of a type
-    that the field doesn't allow, and an ID that no media has. Validation
-    reports both ("This entity (media: 3) cannot be referenced.", "The
-    referenced entity (media: 9999) does not exist.") where `validation_types`
-    covers the entity. The sandbox validates paragraphs only, so not the page's
-    own fields.
-- **Who:** every user who may edit the edit state. `replace_media` also checks
-  update access to the paragraph type and its hosts.
-- **Cause:** `updateEntityReferenceField()`
-  (`src/Plugin/ParagraphsBlokkli/UpdateFieldValueTrait.php:140-164` at
-  `0f3e2e8`) sets `target_id` on any field that is a list of references. It
-  doesn't use its `$targetEntityType`, and has a "@todo Check if target bundle
-  is allowed".
-- **By reading, not checked:** `update_field_value` and
-  `update_host_entity_field_value` write the `value` of any field as well
-  (`updateTextFieldValue()`, `:34-86`).
-- **Not affected:** `replace_media` on a link field, which takes the media types
-  of the field's entity mappings.
-- **Fix idea:** when the mutation is added, refuse a field that isn't in the
-  droppable field config for media, a media that doesn't exist, and a media type
-  that the field's settings don't allow. Stored mutations replay as they did.
-
 ## F76: A search result replaces the first mapped field
 
 - **Found:** 2026-10-12, by reading, in the same check. Not reproduced: no
@@ -839,3 +812,40 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   at `0f3e2e8`) compares a mapping's paragraph type and field with the bundle
   and the field's name, also for the host's bundle.
 - **Fix idea:** look at the mappings only for fields of paragraphs.
+
+## F79: A field mutation writes a value unchecked
+
+- **Found:** 2026-10-12, with a kernel test, when the mutations got their check
+  of the field that they write (the former F75). That check is about the field,
+  not about the value.
+- **Symptom:** `update_field_value` with the property path `field_link.uri` and
+  `javascript:alert(1)` is accepted, and the paragraph of the edit state has
+  that link.
+- **By reading:**
+  - `update_field_value` and `update_host_entity_field_value` write any property
+    of the field's first item that way (`updateTextFieldValue()`,
+    `src/Plugin/ParagraphsBlokkli/UpdateFieldValueTrait.php:34-86`): also a
+    reference's `target_id`, around the checks that `replace_media` makes.
+  - `bulk_update_field_values` checks a link with `Url::fromUri()`
+    (`normalizeFieldValue()`, `:259-298`), which takes any scheme.
+  - Publishing validates the value where `validation_types` covers the entity,
+    and then needs the permission to publish with validation errors. A site that
+    doesn't validate paragraphs saves it.
+- **Impact:** low: only fields that the user may edit, and Drupal's own form
+  would refuse the same value.
+- **Fix idea:** when the mutation is added, validate the field that it wrote
+  (`$entity->get($fieldName)->validate()`) and refuse it on a violation. Or
+  limit the text mutations to text fields and the title of a link.
+
+## F80: A copy from another page takes no access to it
+
+- **Found:** 2026-10-12, by reading, in the same check. Not reproduced.
+- **Symptom:** `copy_from_existing` copies the paragraphs of any entity of the
+  host's type and bundle whose UUID the request names, also of one that the user
+  may not view, such as an unpublished page of somebody else.
+- **Cause:** `CopyFromExisting::execute()`
+  (`src/Plugin/ParagraphsBlokkli/Mutation/CopyFromExisting.php:48-128` at
+  `e2523c5`) loads the source by its UUID and checks its bundle, and create
+  access to the paragraph types. It doesn't check access to the source.
+- **Impact:** low: the UUID of the page must be known.
+- **Fix idea:** view access to the source when the mutation is added.

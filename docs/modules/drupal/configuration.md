@@ -322,6 +322,22 @@ the others, and the mutations refuse them. Every user who sees pages also needs
 `view paragraph content <type>` for each type, or
 `bypass paragraphs type content access`.
 
+### Fields
+
+A text edited in place, a replaced media, a changed reference or a translation
+writes one field of a paragraph or of the page. Drupal accepts the fields that
+the entity's form could let the user edit:
+
+- the field isn't read-only or computed, and its form display is configurable
+- the user has edit access to the field (`hook_entity_field_access()`, for
+  example through the Field Permissions module)
+
+For a node, Drupal keeps the author, the creation date, "Promoted", "Sticky" and
+the published status for users with `administer nodes`. What makes up an entity
+(its ID, type and language) and the paragraphs fields are never written this
+way. A refused change is reported to the editor, for example "Access denied:
+cannot edit field 'field_lead'."
+
 ### Admin Permissions
 
 | Permission                                 | Description                                                               |

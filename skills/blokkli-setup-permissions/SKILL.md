@@ -15,7 +15,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export).
 metadata:
   author: blokkli
-  version: '1.0.4'
+  version: '1.0.5'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/configuration#drupal-permissions-reference
 ---
@@ -50,6 +50,10 @@ which:
 - **The first user to open a page with changes creates the edit state**
   (`create paragraphs blokkli edit state`). A reviewer can't, so they can only
   comment on pages with pending changes.
+- **Fields follow Drupal's field access.** A text edited in place, a replaced
+  media or a translation is refused for a field that the user may not edit
+  (`hook_entity_field_access()`, e.g. the Field Permissions module). On a node,
+  the author, the dates and the published status take `administer nodes`.
 
 ## 2. Paragraph types
 
@@ -193,3 +197,5 @@ the editor:
 - **Nested paragraphs are read-only:** the parent's type has no update
   permission.
 - **A translator can edit the source language:** expected (section 3).
+- **"Access denied: cannot edit field …" after editing a text in place:** the
+  user has no edit access to that field (section 1).
