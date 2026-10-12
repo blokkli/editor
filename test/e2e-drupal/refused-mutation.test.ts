@@ -86,6 +86,30 @@ describe('A mutation that fails', async () => {
     expect(await shownMessages(page)).toEqual([])
   })
 
+  it('says what the violations say when there are no errors', async () => {
+    // Drupal gives every refused mutation an error, so this is the answer of
+    // another backend.
+    const applied = await page.evaluate(() =>
+      window.__BLOKKLI__!.app!.state.mutateWithLoadingState(() =>
+        Promise.resolve({
+          success: false,
+          violations: [
+            { message: 'The lead is missing.' },
+            { message: 'The teaser has no image.' },
+          ],
+        }),
+      ),
+    )
+    expect(applied).toBe(false)
+    expect(await shownMessages(page)).toEqual([
+      {
+        text: 'The lead is missing.\nThe teaser has no image.',
+        additional: null,
+        hasDetails: false,
+      },
+    ])
+  })
+
   it('offers the details of anything else that fails', async () => {
     const applied = await page.evaluate(
       (errorMessage) =>

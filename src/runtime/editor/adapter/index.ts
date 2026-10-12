@@ -35,6 +35,10 @@ export interface MutationResponseLike<T> {
    * are, so they should be in the user's language and say what to change.
    */
   errors?: string[]
+  /**
+   * What is wrong with the content. Without `errors`, the editor shows their
+   * messages as the reason of a refusal.
+   */
   violations?: Validation[]
 }
 
