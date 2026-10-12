@@ -32,7 +32,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F43  | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                                                                            | both                 | low      | open       |
 | F44  | [No approval step](#f44-no-approval-step)                                                                                                                                 | both                 | low      | open       |
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                 | low      | open       |
-| F48  | [A preview grant opens more than the preview](#f48-a-preview-grant-opens-more-than-the-preview)                                                                           | `paragraphs_blokkli` | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`              | low      | open       |
 | F52  | [A comment's label throws](#f52-a-comments-label-throws)                                                                                                                  | `paragraphs_blokkli` | low      | open       |
 | F62  | [An edit state shows the latest revision without revision access](#f62-an-edit-state-shows-the-latest-revision-without-revision-access)                                   | `paragraphs_blokkli` | low      | to verify  |
@@ -41,7 +40,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F67  | [A deleted library item fails the edit states that placed it](#f67-a-deleted-library-item-fails-the-edit-states-that-placed-it)                                           | `paragraphs_blokkli` | low      | open       |
 | F68  | [A stored copy from another page follows that page](#f68-a-stored-copy-from-another-page-follows-that-page)                                                               | `paragraphs_blokkli` | low      | to verify  |
 | F69  | [A detach right after "Add to library" copies the published nested paragraphs](#f69-a-detach-right-after-add-to-library-copies-the-published-nested-paragraphs)           | `paragraphs_blokkli` | low      | open       |
-| F70  | ["Add to library" changes the page's earlier revisions](#f70-add-to-library-changes-the-pages-earlier-revisions)                                                          | `paragraphs_blokkli` | low      | open       |
+| F70  | ["Add to library" changes the page's earlier revisions](#f70-add-to-library-changes-the-pages-earlier-revisions)                                                          | `paragraphs_blokkli` | medium   | open       |
 | F71  | [Moving a paragraph into its own nested paragraph is refused for the wrong reason](#f71-moving-a-paragraph-into-its-own-nested-paragraph-is-refused-for-the-wrong-reason) | `paragraphs_blokkli` | low      | open       |
 | F72  | [The editor offers places below the nesting limit](#f72-the-editor-offers-places-below-the-nesting-limit)                                                                 | editor               | low      | open       |
 | F73  | [A new paragraph of a type its field doesn't allow is no violation](#f73-a-new-paragraph-of-a-type-its-field-doesnt-allow-is-no-violation)                                | `paragraphs`         | low      | open       |
@@ -492,20 +491,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   types with a link field, like the file mapping), a mutation that sets the link
   field, and the mapping in the Drupal adapter.
 
-## F48: A preview grant opens more than the preview
-
-- **Found:** 2026-10-06, chunk 10, by reading the code.
-- **Symptom:** a session with a preview grant passes
-  `paragraphs_blokkli_can_use_blokkli`. That also gates search, the library,
-  transforms, templates, comments and DeepL's translation request
-  (`modules/paragraphs_blokkli_deepl/src/Plugin/GraphQL/SchemaExtension/DeeplExtension.php:44-52`).
-  Since chunk 10, anonymous visitors with a preview link can request
-  translations from DeepL.
-- **Checked:** mutations of the edit state are refused (they need update access
-  to it).
-- **Fix idea:** gate DeepL, and anything else that writes or costs, with the
-  edit permission.
-
 ## F50: Any GraphQL user can create text keys
 
 - **Found:** 2026-09-27, 13f.
@@ -664,14 +649,21 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 
 ## F70: "Add to library" changes the page's earlier revisions
 
-- **Found:** 2026-10-12, fixing the former F12; reproduced with a throwaway
-  kernel test. The revert is by reading.
+- **Found:** 2026-10-12, fixing the former F12. Looked into the same day, with a
+  throwaway kernel test: everything below is reproduced.
 - **Symptom:** a page is published with a grid that has two buttons. A third
   button is added, the grid is added to the library, and the page is published.
-  The page's earlier revision now shows the grid with three buttons. The grid
-  has one revision, and its parent is the library item.
-- **By reading:** reverting the page to such a revision puts the library item's
-  paragraph into the page's field too: one paragraph with two hosts.
+  - **The earlier revision changes:** it now shows the grid with three buttons.
+    The grid has one revision, which the earlier revision of the page and the
+    library item both reference, and its parent is the library item.
+  - **Deleting the library item empties it:** once the cleanup of orphaned
+    paragraphs has run (cron), the grid is gone. The page's earlier revision
+    references a paragraph that doesn't exist.
+  - **A revert gives the grid two hosts:** reverting the page to the earlier
+    revision makes a new revision of the grid for the page. The library item
+    keeps referencing the older one. The grid's default revision and its parent
+    are the page's. Each host shows its own revision, and the cleanup deletes
+    the revisions of whichever host is deleted.
 - **Cause:** `MakeReusable::execute()`
   (`src/Plugin/ParagraphsBlokkli/Mutation/MakeReusable.php:102-108` at
   `0afa03d`) puts the paragraph itself into the new library item. The item is
@@ -679,12 +671,17 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   the revision that the page's earlier revisions reference is changed in place.
   Paragraphs' own "Promote to library" (`LibraryItem::createFromParagraph()`)
   puts a duplicate into the item.
-- **Impact:** low. Only earlier revisions change, and only to what the page had
-  when "Add to library" was published. Later changes to the library item get new
-  revisions.
+- **Impact:** medium. Earlier revisions of the page change without a trace, and
+  lose the paragraph when the library item is deleted. What is published isn't
+  affected.
 - **Fix idea:** a new version of `make_reusable` that puts a duplicate into the
-  library item, with stored UUIDs, as `detach_reusable` makes its copy. Stored
-  mutations keep moving the paragraph.
+  library item, with stored UUIDs: `duplicateParagraph()` of the helper and
+  `DuplicateMutationBase::duplicateChildren()` make it from the proxies, as the
+  mutation for duplicates does. The original and its nested paragraphs leave the
+  edit state, as removed ones do. Stored mutations keep moving the paragraph.
+  Library items that were made before stay as they are.
+- **Possibly with it:** F69, if the duplicate gets its nested paragraphs when
+  the mutation runs. Not checked.
 
 ## F71: Moving a paragraph into its own nested paragraph is refused for the wrong reason
 
