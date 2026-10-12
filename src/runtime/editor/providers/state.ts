@@ -156,6 +156,10 @@ export type StateProvider = {
    *
    * Shows loading indicator, handles errors, updates state, and shows messages.
    *
+   * When the backend refuses the mutation (`success: false` with `errors`),
+   * its errors are shown: beneath `errorMessage`, or as the message when there
+   * is none. Anything else that fails is an unexpected error.
+   *
    * @param callback - Function that performs the mutation
    * @param errorMessage - Error message to show on failure (false to suppress)
    * @param successMessage - Optional success message to show
@@ -740,10 +744,21 @@ export default async function (
       }
 
       if (!result.success) {
-        const errorMessage =
-          result.errors?.join('\n') ||
-          $t('unexpectedMutationError', 'An unexpected error happened.')
-        throw new Error(errorMessage)
+        const reason = result.errors?.join('\n')
+        if (!reason) {
+          throw new Error(
+            $t('unexpectedMutationError', 'An unexpected error happened.'),
+          )
+        }
+
+        // The backend refused the mutation and says why. That's for the user
+        // to read, not an error to look into.
+        if (errorMessage) {
+          emitMessage(errorMessage, 'error', reason)
+        } else if (errorMessage !== false) {
+          emitMessage(reason, 'error')
+        }
+        return false
       }
 
       if (successMessage) {

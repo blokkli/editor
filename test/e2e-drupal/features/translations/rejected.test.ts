@@ -12,7 +12,12 @@ import {
 } from '../../support/editable'
 import { emitEvent } from '../../support/events'
 import { countMutations, nextMutation } from '../../support/mutations'
-import { dialog, dismissMessages, messageTexts } from '../../support/overlays'
+import {
+  dialog,
+  dismissMessages,
+  messageTexts,
+  shownMessages,
+} from '../../support/overlays'
 import {
   resetSandbox,
   sandboxHost,
@@ -43,6 +48,16 @@ const SHORT = {
 
 /** The longest text that a title takes. */
 const MAX_LENGTH = 255
+
+/**
+ * The editor's message for a batch that Drupal refuses: what Drupal said is
+ * the message itself, and nothing about it looks like an error to look into.
+ */
+const REFUSAL = {
+  text: expect.stringContaining(String(MAX_LENGTH)),
+  additional: null,
+  hasDetails: false,
+}
 
 /** The table row of the translate dialog for a `uuid:fieldName` key. */
 function batchRow(page: Page, key: string): Locator {
@@ -157,9 +172,7 @@ describe('Translations that Drupal rejects', async () => {
     await rejected
 
     // The editor says what Drupal said, and the suggestion is back.
-    await expect
-      .poll(async () => (await messageTexts(page)).join(' '))
-      .toContain(String(MAX_LENGTH))
+    await expect.poll(() => shownMessages(page)).toEqual([REFUSAL])
     expect(await storedMutations()).toBe(0)
     await dismissMessages(page)
     await applyButton.waitFor({ state: 'visible' })
@@ -212,9 +225,7 @@ describe('Translations that Drupal rejects', async () => {
     await page.locator('[data-test="translations-csv-import-apply"]').click()
     await rejected
 
-    await expect
-      .poll(async () => (await messageTexts(page)).join(' '))
-      .toContain(String(MAX_LENGTH))
+    await expect.poll(() => shownMessages(page)).toEqual([REFUSAL])
     // A dialog that closes takes a moment to leave, so "it's still visible"
     // says nothing right away: it must not become hidden.
     await expect(

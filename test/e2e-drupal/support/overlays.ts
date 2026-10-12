@@ -73,3 +73,28 @@ export function dismissMessages(page: Page): Promise<void> {
 export function messageTexts(page: Page): Promise<string[]> {
   return page.locator('[data-test="message-close"]').allTextContents()
 }
+
+/** A toast message as the user sees it. */
+export type ShownMessage = {
+  /** What it says. */
+  text: string
+  /** What it says beneath, smaller. */
+  additional: string | null
+  /** Whether it offers the details of an error. */
+  hasDetails: boolean
+}
+
+/** The toast messages shown, in their parts. */
+export function shownMessages(page: Page): Promise<ShownMessage[]> {
+  return page.locator('[data-test="message"]').evaluateAll((elements) =>
+    elements.map((element) => {
+      const part = (name: string) =>
+        element.querySelector(`[data-test="message-${name}"]`)
+      return {
+        text: part('text')?.textContent?.trim() ?? '',
+        additional: part('additional')?.textContent?.trim() ?? null,
+        hasDetails: !!part('details'),
+      }
+    }),
+  )
+}

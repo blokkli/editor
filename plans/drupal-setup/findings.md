@@ -51,13 +51,13 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F77 | ["Add to" is offered for link fields with several values](#f77-add-to-is-offered-for-link-fields-with-several-values)                                                     | editor               | low      | to verify  |
 | F78 | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                           | `paragraphs_blokkli` | low      | to verify  |
 | F80 | [A copy from another page takes no access to it](#f80-a-copy-from-another-page-takes-no-access-to-it)                                                                     | `paragraphs_blokkli` | low      | to verify  |
-| F84 | [A refused new paragraph only says "Entity Violations"](#f84-a-refused-new-paragraph-only-says-entity-violations)                                                         | `paragraphs_blokkli` | low      | to verify  |
 | F85 | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                     | editor               | low      | to verify  |
-| F86 | [A refused mutation is announced as an unexpected error](#f86-a-refused-mutation-is-announced-as-an-unexpected-error)                                                     | editor               | low      | open       |
 | F87 | [The translate dialog doesn't say which text was refused](#f87-the-translate-dialog-doesnt-say-which-text-was-refused)                                                    | editor               | low      | open       |
 | F88 | [The form of a paragraph hides a link that its user may not open](#f88-the-form-of-a-paragraph-hides-a-link-that-its-user-may-not-open)                                   | `paragraphs_blokkli` | low      | to verify  |
 | F89 | [Building an edit state empties the fields of the cached entities](#f89-building-an-edit-state-empties-the-fields-of-the-cached-entities)                                 | `paragraphs_blokkli` | low      | open       |
 | F90 | [The list of referenced entities names what its user may not view](#f90-the-list-of-referenced-entities-names-what-its-user-may-not-view)                                 | `paragraphs_blokkli` | low      | to verify  |
+| F91 | [A refusal that only has violations is called an unexpected error](#f91-a-refusal-that-only-has-violations-is-called-an-unexpected-error)                                 | editor               | low      | to verify  |
+| F92 | [A refused template doesn't say which field is wrong](#f92-a-refused-template-doesnt-say-which-field-is-wrong)                                                            | `paragraphs_blokkli` | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -834,24 +834,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Impact:** low: the UUID of the page must be known.
 - **Fix idea:** view access to the source when the mutation is added.
 
-## F84: A refused new paragraph only says "Entity Violations"
-
-- **Found:** 2026-10-12, by reading, when the check of a written value (the
-  former F79) got a message of its own. Not reproduced in the editor.
-- **Symptom:** when Drupal refuses a mutation for the violations of a new
-  paragraph (a required field without a value, for one that is added without its
-  form), the editor's message is "Entity Violations".
-- **Cause:** `MutationViolationException` has that text as its message unless
-  the caller gives one, and the GraphQL result puts it into `errors`
-  (`ParagraphsBlokkliMutation.php:102-113` at `87937b6`). The violations are in
-  `violations`, which the editor's message doesn't read
-  (`mutateWithLoadingState()`, `src/runtime/editor/providers/state.ts:742-747`).
-  The agent reads them (`formatMutationFailure()`).
-- **Impact:** low: the mutation is refused either way, but the user doesn't
-  learn why.
-- **Fix idea:** build the message from the violations where none is given, as
-  the check of a written value does.
-
 ## F85: A rejected rewrite drops the token usage of its stream
 
 - **Found:** 2026-10-12, by reading, when the agent's text tools got their error
@@ -869,21 +851,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Also open:** the rejection in `delegate_text_rewrite` has no spec of its
   own. It shares `applyFieldDiffs()` with `update_text_fields`, whose spec
   covers it.
-
-## F86: A refused mutation is announced as an unexpected error
-
-- **Found:** 2026-10-12, in the screenshots of the rejected import and the
-  rejected auto-translation (`features/translations/rejected.test.ts`).
-- **Symptom:** the red message says "An unexpected error happened", and what the
-  backend said beneath it, smaller: "Title: may not be longer than 255
-  characters." A refusal is expected, and its reason is the message.
-- **Cause:** `mutateWithLoadingState()`
-  (`src/runtime/editor/providers/state.ts:722-767`) throws the backend's errors
-  as an `Error` and shows them as the message's additional text. The headline is
-  the caller's `errorMessage`, or the generic one.
-- **Impact:** low: the reason is there, but it reads like a crash.
-- **Fix idea:** for a response with `success: false`, make what the backend said
-  the message. See F84 for the responses that only say "Entity Violations".
 
 ## F87: The translate dialog doesn't say which text was refused
 
@@ -960,3 +927,36 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** view access before an entity is added. And one way to read the
   entity that a link names, for this list and for
   `ParagraphsBlokkliHelper::isAllowedEntityLink()`, which reads `entity:` only.
+
+## F91: A refusal that only has violations is called an unexpected error
+
+- **Found:** 2026-10-12, by reading, when a refused mutation got its reason as
+  the message (the former F86). Not reproduced.
+- **Symptom:** a response with `success: false`, no `errors` and a list of
+  `violations` is shown as "An unexpected error happened.": beneath what the
+  feature says, or twice when the feature says nothing.
+- **Cause:** `mutateWithLoadingState()`
+  (`src/runtime/editor/providers/state.ts`) takes the reason from `errors` only.
+  With the Drupal adapter no response is like that: `paragraphs_blokkli` gives
+  every refused mutation an error, and publishing, whose refusal only has
+  violations, goes through the publish dialog, which lists them. An adapter
+  without `getPublishOptions` publishes through `mutateWithLoadingState()`
+  (`publishCurrent()`, `src/runtime/editor/features/publish/index.vue`).
+- **Impact:** low.
+- **Fix idea:** without errors, the messages of the violations are the reason.
+
+## F92: A refused template doesn't say which field is wrong
+
+- **Found:** 2026-10-12, by reading, when a refused mutation got the labels of
+  its fields in its error (the former F84). Not reproduced.
+- **Symptom:** when a template doesn't validate, the editor shows "Failed to
+  create template." and Drupal's messages beneath, without their fields: "This
+  value should not be null."
+- **Cause:** `TemplateCreate`
+  (`modules/paragraphs_blokkli_template/src/Plugin/GraphQL/DataProducer/TemplateCreate.php:146-152`
+  at `36f1c09`) returns `MutationViolationException::getViolationErrors()`, the
+  plain messages. The exception's own message has the labels since the fix of
+  F84, and nothing else calls `getViolationErrors()`.
+- **Impact:** low.
+- **Fix idea:** return the exception's message, and remove
+  `getViolationErrors()`.

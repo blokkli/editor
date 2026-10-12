@@ -2,6 +2,7 @@
   <div
     class="bk-message"
     :class="[{ 'bk-has-timer': hasTimer }, 'bk-is-' + type]"
+    data-test="message"
     @mouseenter="stopTimer"
     @mouseleave="startTimer"
   >
@@ -10,8 +11,12 @@
       data-test="message-close"
       @click="$emit('close')"
     >
-      <p>{{ message }}</p>
-      <p v-if="additionalText" class="bk-message-additional">
+      <p data-test="message-text">{{ message }}</p>
+      <p
+        v-if="additionalText"
+        class="bk-message-additional"
+        data-test="message-additional"
+      >
         {{ additionalText }}
       </p>
     </button>
@@ -22,6 +27,7 @@
     >
       <button
         class="bk-button bk-scheme-red"
+        data-test="message-details"
         @click.prevent="showDetails = true"
       >
         <Icon name="bk_mdi_bug_report" />
@@ -82,6 +88,11 @@ const additionalText = computed(() => {
 
   if (props.additional instanceof Error) {
     return props.additional.message
+  }
+
+  // A text is shown as it is. Only an error has details to look into.
+  if (typeof props.additional === 'string') {
+    return props.additional
   }
 
   return null

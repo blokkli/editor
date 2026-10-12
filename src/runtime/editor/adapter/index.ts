@@ -30,6 +30,10 @@ import type {
 export interface MutationResponseLike<T> {
   success: boolean
   state?: T
+  /**
+   * Why the mutation was refused. The editor shows these to the user as they
+   * are, so they should be in the user's language and say what to change.
+   */
   errors?: string[]
   violations?: Validation[]
 }
