@@ -300,6 +300,11 @@ For machine translation, see
 Pasting and dropping files also needs create access to the media types they use,
 such as `create image media` (see [Uploads](#uploads)).
 
+"Import from an existing page" needs view access to that page, in every language
+that it has: the copy takes the paragraphs with their translations. A page with
+a translation that the user may not view, such as an unpublished one, is
+refused.
+
 ### Collaboration Permissions
 
 | Permission                          | Description                                              |

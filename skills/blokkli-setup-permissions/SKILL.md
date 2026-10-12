@@ -15,7 +15,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export).
 metadata:
   author: blokkli
-  version: '1.0.7'
+  version: '1.0.8'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/configuration#drupal-permissions-reference
 ---
@@ -54,6 +54,10 @@ which:
   media or a translation is refused for a field that the user may not edit
   (`hook_entity_field_access()`, e.g. the Field Permissions module). On a node,
   the author, the dates and the published status take `administer nodes`.
+- **"Import from an existing page" follows view access.** A user copies from the
+  entities that they may view, in every language of the entity: the copy takes
+  the paragraphs with their translations. One unpublished translation is enough
+  to refuse it for a role without `view any unpublished content`.
 
 ## 2. Paragraph types
 
@@ -175,8 +179,12 @@ the editor:
 
 ## Traps, by symptom
 
-- **An editor gets no paragraph types to add (admins do):** no view access to
-  paragraph types (section 2).
+- **An editor gets no paragraph types to add (admins do):**
+  `paragraphs_type_permissions` is enabled and the role has no
+  `create paragraph content <type>` (section 2).
+- **"Content could not be imported.", with "Access denied: cannot view …":** the
+  role may not view the page to import from, or one of its translations (section
+  1).
 - **One paragraph type is missing from the add list:** no
   `create paragraph content <type>`, e.g. for a new type.
 - **Paragraphs vanish from pages for some users:** no

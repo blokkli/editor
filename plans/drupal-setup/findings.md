@@ -49,7 +49,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F76 | [A search result replaces the first mapped field](#f76-a-search-result-replaces-the-first-mapped-field)                                                                   | editor               | low      | to verify  |
 | F77 | ["Add to" is offered for link fields with several values](#f77-add-to-is-offered-for-link-fields-with-several-values)                                                     | editor               | low      | to verify  |
 | F78 | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                           | `paragraphs_blokkli` | low      | to verify  |
-| F80 | [A copy from another page takes no access to it](#f80-a-copy-from-another-page-takes-no-access-to-it)                                                                     | `paragraphs_blokkli` | low      | to verify  |
 | F85 | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                     | editor               | low      | to verify  |
 | F88 | [The form of a paragraph hides a link that its user may not open](#f88-the-form-of-a-paragraph-hides-a-link-that-its-user-may-not-open)                                   | `paragraphs_blokkli` | low      | to verify  |
 | F89 | [Building an edit state empties the fields of the cached entities](#f89-building-an-edit-state-empties-the-fields-of-the-cached-entities)                                 | `paragraphs_blokkli` | low      | open       |
@@ -57,6 +56,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F95 | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                        | both                 | low      | open       |
 | F96 | [The editor reads field values through a detached element](#f96-the-editor-reads-field-values-through-a-detached-element)                                                 | editor               | low      | to verify  |
 | F97 | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli` | low      | to verify  |
+| F98 | [The list of pages to import from names pages that its user may not view](#f98-the-list-of-pages-to-import-from-names-pages-that-its-user-may-not-view)                   | `paragraphs_blokkli` | low      | open       |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -800,19 +800,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   and the field's name, also for the host's bundle.
 - **Fix idea:** look at the mappings only for fields of paragraphs.
 
-## F80: A copy from another page takes no access to it
-
-- **Found:** 2026-10-12, by reading, in the same check. Not reproduced.
-- **Symptom:** `copy_from_existing` copies the paragraphs of any entity of the
-  host's type and bundle whose UUID the request names, also of one that the user
-  may not view, such as an unpublished page of somebody else.
-- **Cause:** `CopyFromExisting::execute()`
-  (`src/Plugin/ParagraphsBlokkli/Mutation/CopyFromExisting.php:48-128` at
-  `e2523c5`) loads the source by its UUID and checks its bundle, and create
-  access to the paragraph types. It doesn't check access to the source.
-- **Impact:** low: the UUID of the page must be known.
-- **Fix idea:** view access to the source when the mutation is added.
-
 ## F85: A rejected rewrite drops the token usage of its stream
 
 - **Found:** 2026-10-12, by reading, when the agent's text tools got their error
@@ -945,3 +932,32 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Impact:** low: queries in the schema that a project may not want.
 - **Fix idea:** drop the dependency, if a server without the extension still
   builds its schema.
+
+## F98: The list of pages to import from names pages that its user may not view
+
+- **Found:** 2026-10-12, when the copy from another page got its access check
+  (the former F80).
+- **Symptom:** on a site without a node access module, "Import from an existing
+  page" lists the unpublished pages of other users, with their title and
+  description, for a user who may not view them. The copy itself is refused.
+- **Cause:** `EntityQueryImportSource::getImportSourceSearchResults()`
+  (`modules/paragraphs_blokkli_search/src/Plugin/ParagraphsBlokkli/Search/EntityQueryImportSource.php:98-141`
+  at `7dca33d`) and the fallback of the data producer
+  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/ParagraphsBlokkliImportSourceEntities.php:188`)
+  rely on `accessCheck(TRUE)`. For nodes, core checks such a query against the
+  node grants only, and not at all where no module implements
+  `hook_node_grants()`: the published status isn't looked at. The results are
+  loaded and listed without `access('view')`.
+- **Verified:** the query, in a kernel test with core's node module only: it
+  returns an unpublished page that `access('view')` denies. The two classes by
+  reading. The sandbox doesn't show it: `view_unpublished` implements the
+  grants.
+- **Also:** with a node access module the list still offers a page that the copy
+  refuses, the one with a translation that the user may not view: a page is
+  listed when any of its translations is viewable.
+- **By reading, not checked:** the other lists from an entity query
+  (`EntityQuery`, `EntityQueryMediaLibrary` and `EntityQueryLibraryItems`, next
+  to `EntityQueryImportSource`) rely on `accessCheck(TRUE)` too.
+- **Impact:** low: titles, for someone who may edit a page of the same type.
+- **Fix idea:** view access to every translation of a result before it's listed
+  (the total is then an upper bound).
