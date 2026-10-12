@@ -20,7 +20,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F23 | [A past unpublish date blocks publishing](#f23-a-past-unpublish-date-blocks-publishing)                                                                                   | both                 | low      | open       |
 | F24 | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                                                                         | `paragraphs_blokkli` | medium   | open       |
 | F25 | [An empty change description keeps the old log](#f25-an-empty-change-description-keeps-the-old-log)                                                                       | `paragraphs_blokkli` | low      | open       |
-| F26 | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation)                                                   | `paragraphs_blokkli` | medium   | open       |
+| F26 | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation)                                                   | both                 | medium   | parked     |
 | F28 | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                                                                    | `@blokkli/editor`    | low      | workaround |
 | F29 | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                                                                              | `paragraphs_blokkli` | low      | workaround |
 | F30 | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                                                                             | `paragraphs_blokkli` | low      | open       |
@@ -273,18 +273,51 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 
 ## F26: "Publish if unpublished" acts on the default translation
 
-- **Found:** 2026-09-27, 13f.
+- **Found:** 2026-09-27, 13f. Reproduced 2026-10-12 over GraphQL, in sandboxes
+  with English and with German as the original language.
 - **Symptom:** a news item published in English and unpublished in German,
-  published from the German editor with "Publish if unpublished": German stays
+  published from the German editor with the mode "Publish": German stays
   unpublished. The other way round (English unpublished, German published),
-  publishing from the German editor publishes English.
+  publishing from the German editor publishes English. English is the original
+  language here; with German as the original, it shows from the English editor.
 - **Cause:** publishing loads the host through `getHostEntity()`, which returns
-  the default translation (`Entity/ParagraphsBlokkliEditState.php:303`), and
-  sets that one published (`ParagraphsBlokkliManager.php:175-176`). The publish
-  dialog shows the status of the editor's language.
+  the original language (`src/Entity/ParagraphsBlokkliEditState.php:317-347` at
+  `0f3e2e8`), and sets that one published
+  (`src/ParagraphsBlokkliManager.php:323-325`). The publish dialog shows the
+  status of the editor's language.
 - **Impact:** an editor can't publish a translation from the editor, and may
-  publish the source by accident.
-- **Fix idea:** publish the translation of the edit's language.
+  publish the original language by accident.
+- **Decision (the user, 2026-10-12): no patch.** Publishing the editor's
+  language, or a list of languages to tick in the dialog, would paper over what
+  is missing: the editor has no notion of a publish status per language. That is
+  a feature with a plan of its own, not started
+  ([README](README.md#features-that-need-their-own-plan)).
+- **What the feature must do:** show clearly that only some languages are
+  published, whichever language the user is in.
+- **The open UX problem:** the status sits next to the entity's title in the
+  toolbar, the language switcher at the toolbar's other end. Showing the status
+  with the language switcher is the obvious choice, but then the one at the
+  title is in limbo: it changes with the language the user is in.
+- **What exists today** (2026-10-12, read in the code):
+  - The editor acts on one status, `state.entity.status`
+    (`src/runtime/editor/features/publish/`). The Drupal adapter fills it with
+    the status of the language being edited.
+  - The state already has every translation's `exists` and `status`
+    (`state.translation.value.translations`, `EntityTranslation` in
+    `src/runtime/editor/types/state.ts`). Only `exists` is used, by the language
+    switcher.
+  - `publish()` sends one flag, `publishIfUnpublished`, without a language. A
+    page that is published only has the mode "Publish", so the flag is sent on
+    every publish: publishing every language on it would put a translation live
+    that was held back on purpose.
+  - The publish button is disabled without pending changes, so a language can't
+    be published on its own without changing something.
+  - The module creates a page's translation as a copy of the original
+    (`addTranslation()` with its values), status included.
+  - By a search: the scheduler submodule doesn't pass the flag, so a scheduled
+    publish doesn't change the page's status.
+- **Related:** F24 (a paragraph's schedule applies to one translation) and the
+  sandbox's scheduler dates, which are translatable to match `status`.
 
 ## F28: Labels that can't be translated
 

@@ -35,6 +35,17 @@ Statuses: `todo`, `in progress`.
   server config (extensions, `bundles`, `fields`), GraphQL access, the explicit
   allowed types, the library item route, and the header forwarding.
 
+## Features that need their own plan
+
+Not started, and not to be patched in the meantime.
+
+- **Publish status per language** (the user, 2026-10-12). The editor knows one
+  publish status, the one of the language being edited, and "Publish" acts on
+  the original language (F26 in [findings.md](findings.md), with what exists
+  today). The editor must show clearly that only some languages are published,
+  whichever language the user is in. Open: where the status lives. It sits next
+  to the title today, the language switcher at the toolbar's other end.
+
 ## Upstream bugs
 
 [findings.md](findings.md): bugs in `paragraphs_blokkli`, `@blokkli/editor` and
