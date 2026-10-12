@@ -52,6 +52,10 @@ them too. A project whose own schema extension uses the data producer
 `paragraphs_blokkli_can_use_blokkli` for a field that a preview renders maps
 `previewGrant` to `TRUE` there, and checks the access to what the field returns.
 
+The edit state itself comes without its owner and its list of changes
+(`ownerName`, `uid`, `mutations`, `currentIndex`) for them: these take
+`view paragraphs blokkli edit state`.
+
 ## Refactored paragraphs_blokkli_comment module
 
 blökkli comments no longer rely on the `comment` core module and instead

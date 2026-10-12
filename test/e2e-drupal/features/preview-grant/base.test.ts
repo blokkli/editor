@@ -35,6 +35,21 @@ const EDIT_STATE = `query ($uuid: String!) {
   }
 }`
 
+/** Who changed the page, and how: an edit state has it for the editor. */
+const HISTORY = `query ($uuid: String!) {
+  state: getParagraphsEditState(
+    entityType: NODE
+    entityUuid: $uuid
+    langcode: "en"
+  ) {
+    ownerName
+    owner: uidRawField { first { targetId } }
+    currentIndex
+    mutations { pluginId }
+    history: mutationsRawField { count }
+  }
+}`
+
 /** What the editor asks Drupal for, and a preview has no use for. */
 const EDITOR_ONLY = `query ($uuid: String!) {
   types: pbGetParagraphTypes { id }
@@ -186,6 +201,28 @@ describe('The preview link', async () => {
 
     const other = await ask(visitor, EDIT_STATE, { uuid: NOTICES })
     expect(other.data).toEqual({ state: null })
+  })
+
+  it('does not say who changed the page, or how', async () => {
+    // The editor's user gets it.
+    const editor = await ask(anna, HISTORY, { uuid: BLOCKS })
+    expect(editor.data?.state).toMatchObject({
+      ownerName: 'Anna Keller',
+      currentIndex: 1,
+      mutations: [{ pluginId: 'add' }, { pluginId: 'add' }],
+      history: { count: 2 },
+    })
+
+    const answer = await ask(visitor, HISTORY, { uuid: BLOCKS })
+    expect(answer.data).toEqual({
+      state: {
+        ownerName: null,
+        owner: null,
+        currentIndex: null,
+        mutations: [],
+        history: null,
+      },
+    })
   })
 
   it('gets nothing else of the editor from Drupal', async () => {

@@ -18,7 +18,7 @@ compatibility: >-
   Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.3'
+  version: '1.0.4'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/configuration
 ---
@@ -268,6 +268,10 @@ Nothing to enable: the feature is on when the schema has
     host (`getParagraphsEditState`). The editor's other queries and mutations
     take the permission to edit or to review an edit state, with or without a
     grant.
+  - **Not who changed the page, or how.** The owner of the edit state and its
+    list of changes (`ownerName`, `uid`, `mutations`, `currentIndex`) take
+    `view paragraphs blokkli edit state`: a viewer with only a grant gets them
+    empty.
 - **The link opens the language the editor was in.**
 
 The module leaves access to the site. For a site whose anonymous visitors can't

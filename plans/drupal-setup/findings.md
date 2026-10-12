@@ -56,7 +56,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F95  | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                        | both                 | low      | open       |
 | F96  | [The editor reads field values through a detached element](#f96-the-editor-reads-field-values-through-a-detached-element)                                                 | editor               | low      | to verify  |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli` | low      | to verify  |
-| F99  | [A preview link shows who changed the page, and how](#f99-a-preview-link-shows-who-changed-the-page-and-how)                                                              | `paragraphs_blokkli` | low      | open       |
 | F101 | [Lists from an entity query rely on the query's access check](#f101-lists-from-an-entity-query-rely-on-the-querys-access-check)                                           | `paragraphs_blokkli` | low      | to verify  |
 | F102 | [The library search fails for an empty list of types](#f102-the-library-search-fails-for-an-empty-list-of-types)                                                          | `paragraphs_blokkli` | low      | open       |
 | F103 | [A preview misses a change that is made before its first poll](#f103-a-preview-misses-a-change-that-is-made-before-its-first-poll)                                        | editor               | low      | open       |
@@ -937,29 +936,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** drop the dependency, if a server without the extension still
   builds its schema.
 
-## F99: A preview link shows who changed the page, and how
-
-- **Found:** 2026-10-12, when the editor's list of all pages got a permission of
-  its own (the former F98). Its larger part is fixed: a preview grant passed for
-  the permission to use the editor, and with it for every query and mutation
-  behind the editor's gate, the machine translation among them. Now the grant
-  only counts for the edit state.
-- **Symptom:** a visitor with a preview grant gets more of the granted edit
-  state than the page with its changes: the name of its owner, its preview hash
-  (which they came with), the index in its history, and its mutations with their
-  plugin, label, time and paragraph. Not the values of the mutations.
-- **Cause:** the fields of `ParagraphsBlokkliEditState` resolve for whoever may
-  view the edit state, and a grant gives that
-  (`ParagraphsBlokkliEditStateAccessControlHandler::checkAccess()`). The
-  preview's own query (`pbEditState`) asks for them, without using them.
-- **Verified:** over HTTP, as an anonymous visitor with a grant for one page, in
-  an E2E sandbox, before the fix of the gate. The fix didn't touch these fields.
-- **Impact:** low: a name and the kind of changes, for someone who was given the
-  link.
-- **Fix idea:** the owner and the mutations for those with the permission to
-  view edit states. `mapState()` of the Drupal adapter must then do without them
-  in a preview.
-
 ## F101: Lists from an entity query rely on the query's access check
 
 - **Found:** 2026-10-12, with the former F98.
@@ -979,13 +955,13 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   (`modules/paragraphs_blokkli_search/src/Plugin/ParagraphsBlokkli/Search/`).
   What an entity query checks for media and library items is open.
 - **Also verified,** over HTTP as an anonymous visitor with a preview grant,
-  while such a grant still passed for the editor's gate (the former part of
-  F99): the search for templates (`EntityQueryTemplates`) lists a template, with
-  its ID and without its label, for someone without `view paragraph templates`.
-  The search for edit states (`EntityQueryEditStates`) counts in its total the
-  edit states that its user may not view; the items are filtered. An entity
-  query checks nothing for either entity type. Not checked again as a user who
-  may use the editor.
+  while such a grant still passed for the editor's gate (the former F99): the
+  search for templates (`EntityQueryTemplates`) lists a template, with its ID
+  and without its label, for someone without `view paragraph templates`. The
+  search for edit states (`EntityQueryEditStates`) counts in its total the edit
+  states that its user may not view; the items are filtered. An entity query
+  checks nothing for either entity type. Not checked again as a user who may use
+  the editor.
 - **Impact:** low: titles, for someone who may use the editor.
 - **Fix idea:** view access to a result before it's listed (the total is then an
   upper bound).
@@ -993,7 +969,7 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 ## F102: The library search fails for an empty list of types
 
 - **Found:** 2026-10-12, while probing the queries behind the editor's gate (the
-  fixed part of F99).
+  former F99).
 - **Symptom:** `paragraphsBlokkliSearchLibraryItems(bundles: [])` answers
   "Internal server error". With a paragraph type in the list it answers.
   Verified over HTTP in an E2E sandbox.
@@ -1022,7 +998,7 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 
 ## F104: A refused machine translation answers "Internal server error"
 
-- **Found:** 2026-10-12, with the fix of the editor's gate (F99).
+- **Found:** 2026-10-12, with the fix of the editor's gate (the former F99).
 - **Symptom:** `paragraphsBlokkliRequestTranslation` answers someone who may not
   use the editor with the error "Internal server error" and without data.
   Verified over HTTP, as an anonymous visitor with a preview grant.
