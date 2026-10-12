@@ -12,6 +12,7 @@
         allowtransparency
         :src="url"
         class="absolute top-0 left-0 size-full"
+        data-test="edit-form-frame"
         @load="onIFrameLoad"
       />
     </div>

@@ -15,7 +15,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export).
 metadata:
   author: blokkli
-  version: '1.0.5'
+  version: '1.0.6'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/configuration#drupal-permissions-reference
 ---
@@ -162,6 +162,10 @@ editors should have it.
 - Pasting and dropping images and files in blökkli creates media of the types
   set in blökkli's settings, and needs `create <media type> media` for that
   type. Without it, the paste fails with an error.
+- A link to a media (a document in a link field) needs view access to the media,
+  and an entity mapping from the media type to that paragraph type and field.
+  Without the mapping, Drupal asks for access to the media's own page, which is
+  the form to edit it: give the role `link to any page` then.
 
 ## 5. Check it
 
@@ -199,3 +203,6 @@ the editor:
 - **A translator can edit the source language:** expected (section 3).
 - **"Access denied: cannot edit field …" after editing a text in place:** the
   user has no edit access to that field (section 1).
+- **"The path 'entity:media/…' is inaccessible.":** a link to a media in a field
+  that no entity mapping names, or to a media that the user may not view
+  (section 4).

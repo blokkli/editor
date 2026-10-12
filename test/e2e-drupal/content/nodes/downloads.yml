@@ -1,0 +1,27 @@
+# A link list with two links, at /en/downloads (features/publish/nested).
+# - The first links to a document, which the editors may view but not edit.
+#   Drupal alone calls that inaccessible; an entity mapping allows documents in
+#   the link of a link, so paragraphs_blokkli asks whether they may view it.
+# - The second has a title that is too long for its field, on purpose
+#   (`invalid: true`): the violation of a nested paragraph.
+key: downloads
+type: page
+title: Downloads
+field_paragraphs:
+  - type: link_list
+    key: downloads-list
+    field_paragraphs:
+      - type: link
+        key: downloads-document
+        field_link: { media: guide }
+        field_title: The guide
+      - type: link
+        key: downloads-long
+        invalid: true
+        field_link: https://www.example.com
+        field_title: >-
+          A link whose title is longer than the 255 characters that its field
+          takes: the seed stores it as it is, and Drupal reports it when it
+          validates the link. A link whose title is longer than the 255
+          characters that its field takes: the seed stores it as it is, and
+          Drupal reports it when it validates the link.

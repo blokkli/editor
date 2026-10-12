@@ -18,7 +18,7 @@ compatibility: >-
   Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.0'
+  version: '1.0.1'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/configuration
 ---
@@ -201,11 +201,11 @@ users.
   A paragraph scheduled in English stays published in its German translation.
   Schedule it in each language.
 - **A past "Unpublish on" blocks publishing.** Scheduler rejects any past
-  unpublish date, and blökkli validates the paragraphs when publishing. Between
-  the date and the next cron run, publishing the host fails with the message
-  "The 'unpublish on' date must be in the future." Users with "publish
-  paragraphs blokkli edit state with validation errors" aren't affected. Run
-  cron often (section 5).
+  unpublish date, and blökkli validates the paragraphs when publishing, also the
+  ones inside other paragraphs. Between the date and the next cron run,
+  publishing the host fails with the message "The 'unpublish on' date must be in
+  the future." Users with "publish paragraphs blokkli edit state with validation
+  errors" aren't affected. Run cron often (section 5).
 
 ## 4. Scheduling pending changes
 

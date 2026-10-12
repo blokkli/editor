@@ -13,3 +13,11 @@
   name: The hills
   field_media_image:
     file: images/hills.jpg
+
+# A document for a link (features/publish/nested): a PDF of one page. The
+# editors may view it, but not edit it.
+- key: guide
+  type: document
+  name: The guide
+  field_media_document:
+    file: documents/guide.pdf

@@ -105,6 +105,11 @@ Configure at `/admin/config/content/blokkli`:
   field gets the text without markup.
 - **Hide unpublished paragraphs** — Whether to hide unpublished paragraphs in
   view mode
+- **Validations** — What Drupal validates while editing and before publishing:
+  the host entity, its paragraphs fields, and the paragraphs. "Paragraph"
+  validates every paragraph, also the ones inside other paragraphs. A violation
+  holds the publishing back for everyone without the permission
+  `publish paragraphs blokkli edit state with validation errors`.
 
 ### Host Options Field
 
@@ -129,6 +134,14 @@ types. This powers drag-and-drop from the media library and content search.
 For example, mapping `media:image` to `paragraph:image` means that when a user
 drags an image from the media library, blökkli knows to create an `image`
 paragraph and set its media reference field.
+
+A mapping can also name a link field, for example for documents in a link. The
+user then needs view access to what they link to. Drupal alone would ask for
+access to the page of the entity, which for a media is the form to edit it
+(unless "Standalone media URL" is on): an editor could not link to a document.
+For a link field without a mapping Drupal's rule stays, and such a link is
+reported as "The path 'entity:media/…' is inaccessible." unless the user has the
+permission `link to any page`.
 
 ### Uploads
 
@@ -344,8 +357,13 @@ be longer than 255 characters.":
 
 - a text that is too long for its field, or a required field left empty
 - a link with a script as its target, or to a page that the user may not access
+  (for an entity that an [entity mapping](#entity-mappings) allows in the field:
+  that the user may not view)
 - a reference to something that the field doesn't take, or that the user may not
   reference
+
+The same goes for an entity that is dropped on the page or that replaces another
+one, such as a media from the library.
 
 Nothing of a batch is stored then: translations that are applied together, or
 the texts that the agent changes. A violation that the field had before doesn't

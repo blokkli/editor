@@ -51,12 +51,13 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F77 | ["Add to" is offered for link fields with several values](#f77-add-to-is-offered-for-link-fields-with-several-values)                                                     | editor               | low      | to verify  |
 | F78 | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                           | `paragraphs_blokkli` | low      | to verify  |
 | F80 | [A copy from another page takes no access to it](#f80-a-copy-from-another-page-takes-no-access-to-it)                                                                     | `paragraphs_blokkli` | low      | to verify  |
-| F81 | [The edit state doesn't validate nested paragraphs](#f81-the-edit-state-doesnt-validate-nested-paragraphs)                                                                | `paragraphs_blokkli` | medium   | open       |
-| F82 | [A link to a media is "inaccessible" for an editor](#f82-a-link-to-a-media-is-inaccessible-for-an-editor)                                                                 | `paragraphs_blokkli` | low      | open       |
 | F84 | [A refused new paragraph only says "Entity Violations"](#f84-a-refused-new-paragraph-only-says-entity-violations)                                                         | `paragraphs_blokkli` | low      | to verify  |
 | F85 | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                     | editor               | low      | to verify  |
 | F86 | [A refused mutation is announced as an unexpected error](#f86-a-refused-mutation-is-announced-as-an-unexpected-error)                                                     | editor               | low      | open       |
 | F87 | [The translate dialog doesn't say which text was refused](#f87-the-translate-dialog-doesnt-say-which-text-was-refused)                                                    | editor               | low      | open       |
+| F88 | [The form of a paragraph hides a link that its user may not open](#f88-the-form-of-a-paragraph-hides-a-link-that-its-user-may-not-open)                                   | `paragraphs_blokkli` | low      | to verify  |
+| F89 | [Building an edit state empties the fields of the cached entities](#f89-building-an-edit-state-empties-the-fields-of-the-cached-entities)                                 | `paragraphs_blokkli` | low      | open       |
+| F90 | [The list of referenced entities names what its user may not view](#f90-the-list-of-referenced-entities-names-what-its-user-may-not-view)                                 | `paragraphs_blokkli` | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -115,8 +116,8 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Found:** 2026-09-26, while building the content model in chunk 04, by
   reading the code.
 - **Wrong title.** When a mapping targets a link field with a title,
-  `LinkOrReferenceFieldTrait::setLinkOrEntityReferenceFieldValue()`
-  (`src/Traits/LinkOrReferenceFieldTrait.php:62`) sets the title to
+  `LinkOrReferenceFieldTrait::getLinkOrEntityReferenceFieldValue()`
+  (`src/Traits/LinkOrReferenceFieldTrait.php:64`) sets the title to
   `$entity->label()`: the paragraph, not the target entity.
   - For a new paragraph that's "Orphaned Button: …". Affected: `add_file`,
     `add_entity_reference`, `add_entity_reference_multiple`.
@@ -255,6 +256,8 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   violation). The site's only editor is user 1, who has "publish paragraphs
   blokkli edit state with validation errors" and skips validation
   (`ParagraphsBlokkliManager.php:181-185`); other editors hit it.
+- **Since 2026-10-12** the edit state validates nested paragraphs too, so a
+  nested paragraph with a past date blocks the publishing as well.
 - **Fix idea:** paragraphs_blokkli ignores scheduler's date constraints on
   paragraphs that cron will process, or processes due paragraphs before
   validating.
@@ -766,11 +769,11 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   (`Mutation/AddMediaImageReference.php:168`,
   `Mutation/AddMediaVideoReference.php:168`, `Mutation/AddVideoRemote.php:179`
   at `0f3e2e8`), which a link item ignores. The other mutations that fill a
-  mapped field use `setLinkOrEntityReferenceFieldValue()`.
+  mapped field use `getLinkOrEntityReferenceFieldValue()`.
 - **Impact:** low. The Drupal adapter uses only `add_video_remote`, for a pasted
   video URL, and the sandbox maps remote videos to a reference field. The other
   two are for older clients.
-- **Fix idea:** `setLinkOrEntityReferenceFieldValue()` behind a mutation
+- **Fix idea:** `getLinkOrEntityReferenceFieldValue()` behind a mutation
   version, since stored ones replay with the empty link. Or refuse a mapping to
   a link field when the mutation is added.
 
@@ -830,50 +833,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   access to the paragraph types. It doesn't check access to the source.
 - **Impact:** low: the UUID of the page must be known.
 - **Fix idea:** view access to the source when the mutation is added.
-
-## F81: The edit state doesn't validate nested paragraphs
-
-- **Found:** 2026-10-12, with a probe in a sandbox, while planning the check of
-  a written value (the former F79).
-- **Symptom:** the page "Applying for a building permit" has a link list with a
-  link to a document. As Anna Keller, validating that link reports "The path
-  'entity:media/30' is inaccessible." (F82). Her edit state of the page reports
-  no violations, so nothing holds the publishing back.
-- **Cause:** `ParagraphsBlokkliEditState::validate()`
-  (`src/Entity/ParagraphsBlokkliEditState.php:823-871` at `87937b6`) validates
-  the paragraphs that the fields of the page reference. It doesn't go into their
-  paragraphs fields, and validating a paragraph doesn't validate the paragraphs
-  in it.
-- **Impact:** medium: with `validation_types: [paragraph]`, a paragraph in a
-  section, a list or a grid is never validated, in the editor and when
-  publishing.
-- **Fix idea:** validate every paragraph of the mutated state. That shows F82
-  where it is hidden today, so the two belong together.
-
-## F82: A link to a media is "inaccessible" for an editor
-
-- **Found:** 2026-10-12, with a probe on the dev site, while planning the check
-  of a written value (the former F79).
-- **Symptom:** as Anna Keller, a link field with `entity:media/30` has the
-  violation "The path 'entity:media/30' is inaccessible."; as the admin it has
-  none. The module writes such links itself, for the media types that an entity
-  mapping allows in a link field (`replace_media`, the add mutations, uploads).
-- **Cause:** core's `LinkAccess` constraint asks whether the user may access the
-  link's route, unless they have `link to any page`. With
-  `media.settings:standalone_url` off, Drupal's default, that route is the
-  media's edit form (`/media/{media}/edit`, which asks for `media.update`). Anna
-  Keller may view the media, but not edit it.
-- **Impact:** low today: the sandbox's only such link is nested, and nested
-  paragraphs aren't validated (F81). By reading, not reproduced: such a link in
-  a field of the page keeps an editor from publishing, since no role may publish
-  with validation errors. The form of the paragraph validates it the same way
-  (`ParagraphsBlokkliFormBase::validateForm()`), and Drupal's link widget shows
-  and stores the URI as it is: by a probe of both, not by submitting the form,
-  Anna Keller can't save the form of that link.
-- **Fix idea:** open. The sandbox's roles could get `link to any page`, or the
-  module could leave `LinkAccess` out for the links that it builds from an
-  entity mapping. The check of a written value (the former F79) leaves these
-  links out for that reason: they keep the checks of their mutations.
 
 ## F84: A refused new paragraph only says "Entity Violations"
 
@@ -941,3 +900,63 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Impact:** low.
 - **Fix idea:** mark the rows of the violations, with their messages. The same
   goes for the import dialog, which only shows the editor's message.
+
+## F88: The form of a paragraph hides a link that its user may not open
+
+- **Found:** 2026-10-12, in a screenshot while fixing the links to media (the
+  former F82): as Anna Keller, the form of a link to a document showed "Link"
+  empty.
+- **Symptom:** the form of a paragraph shows a link field without its target
+  when the user may not access the page of the target: a page that they may not
+  view, or a media that no entity mapping allows in that field. By reading, not
+  reproduced: a required field then refuses the form, as the sandbox's would,
+  and one that isn't required is saved empty: the link is gone.
+- **Cause:** Drupal's link widget (`LinkWidget::formElement()`,
+  `core/modules/link/src/Plugin/Field/FieldWidget/LinkWidget.php:218-221`)
+  leaves the default value out for a user who may neither `link to any page` nor
+  access the link. `EditParagraphForm` stores the fields that the form changed,
+  and an emptied link is a change.
+- **Fixed for** the links that an entity mapping allows and whose target the
+  user may view: `ParagraphsBlokkliFormBase::showAllowedEntityLinks()` shows
+  them.
+- **Impact:** low: the page forms of Drupal do the same.
+- **Fix idea:** leave a link field out of the stored changes when the form
+  didn't show its value, or disable it in the form with a hint.
+
+## F89: Building an edit state empties the fields of the cached entities
+
+- **Found:** 2026-10-12, in a kernel test for the validation of nested
+  paragraphs (the former F81): a grid that was loaded and saved after the edit
+  state was built lost its paragraphs.
+- **Symptom:** after an edit state is built for editing, the page and its nested
+  paragraphs are in Drupal's entity cache with empty paragraphs fields. Code
+  that loads one of them later in the same request gets it without its
+  paragraphs, and stores it that way when it saves it.
+- **Cause:** `ParagraphsBlokkliEditState::executeMutations()`
+  (`src/Entity/ParagraphsBlokkliEditState.php:472-490` at `4b5c6e7`) empties the
+  fields on the objects that it loaded, which are the cached ones. The module's
+  tests clear the cache for that reason
+  (`ParagraphsBlokkliTestTrait::paragraphsBlokkliPublish()`).
+- **Impact:** low: nothing in the module saves these entities in such a request.
+  A hook of a site could.
+- **Fix idea:** build the state on clones, or put the fields back after the
+  mutated state is built.
+
+## F90: The list of referenced entities names what its user may not view
+
+- **Found:** 2026-10-12, by reading, while checking which forms of a link the
+  rule for links to media reads (the former F82). Not reproduced.
+- **Symptom:** the editor's list of the entities that a page references gets the
+  label and the type of every entity behind a reference or a link, also of one
+  that the user may not view. A link is read loosely there: `entity:media/7` and
+  `internal:/media/7` both name media 7. With Drupal's default media settings
+  `/media/7` leads nowhere, and Drupal accepts such a path for anyone without a
+  check, so an editor can write it for any ID and read the label.
+- **Cause:** `ReferencedEntities::loadEntityFromUri()` and `addEntity()`
+  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/ReferencedEntities.php:163-228`
+  at `4b5c6e7`) load the entity from what follows the scheme, and add it without
+  asking for view access.
+- **Impact:** low: labels, for someone who may edit the page.
+- **Fix idea:** view access before an entity is added. And one way to read the
+  entity that a link names, for this list and for
+  `ParagraphsBlokkliHelper::isAllowedEntityLink()`, which reads `entity:` only.
