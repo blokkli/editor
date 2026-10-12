@@ -8,10 +8,11 @@ import {
   provide,
 } from 'vue'
 import { refreshNuxtData, useState } from 'nuxt/app'
-import type {
-  BlokkliAdapter,
-  AdapterContext,
-  MutationResponseLike,
+import {
+  StateUnavailableError,
+  type BlokkliAdapter,
+  type AdapterContext,
+  type MutationResponseLike,
 } from '../adapter'
 import { INJECT_MUTATED_FIELDS_MAP } from '../../helpers/injections'
 import { onBlokkliEvent, addElementClasses } from '#blokkli/editor/composables'
@@ -233,6 +234,11 @@ export type StateProvider = {
   stateAvailable: ComputedRef<boolean>
 
   /**
+   * Why the state could not be loaded, if the adapter said so.
+   */
+  stateUnavailableReason: Readonly<Ref<string | null>>
+
+  /**
    * Whether a loading operation is in progress.
    *
    * Automatically adds 'bk-body-loading' class to document.body when true.
@@ -378,6 +384,7 @@ export default async function (
   const overrideHostOptions = useState('options:' + providerKey)
   const stateLoaded = ref(false)
   const stateLoadError = ref(false)
+  const stateUnavailableReason = ref<string | null>(null)
   const owner = ref<BlokkliOwner | null>(null)
   const refreshKey = ref('')
   const mutatedFields = ref<MutatedField[]>([])
@@ -783,9 +790,12 @@ export default async function (
       }
       setContext(adapter.mapState(state))
       stateLoadError.value = false
+      stateUnavailableReason.value = null
       stateLoaded.value = true
-    } catch {
+    } catch (e) {
       stateLoadError.value = true
+      stateUnavailableReason.value =
+        e instanceof StateUnavailableError ? e.message : null
       stateLoaded.value = false
     }
   }
@@ -862,6 +872,7 @@ export default async function (
 
   return {
     stateAvailable,
+    stateUnavailableReason: readonly(stateUnavailableReason),
     getMappedState,
     refreshKey,
     owner: readonly(owner),

@@ -31,10 +31,12 @@
             scheme="red"
             data-test="state-unavailable-banner"
           >
-            <BannerInner
-              icon="bk_mdi_sentiment_dissatisfied"
-              :text="stateNotAvailableText"
-            />
+            <BannerInner icon="bk_mdi_sentiment_dissatisfied">
+              <p>
+                <strong v-text="stateUnavailableTitle" />
+                {{ stateUnavailableText }}
+              </p>
+            </BannerInner>
           </Banner>
           <Banner
             v-else-if="viewOnlyBanner"
@@ -447,15 +449,19 @@ function textWithHighlight(title: string, text: string): string {
   return `<strong>${title}</strong> ${text}`
 }
 
-const stateNotAvailableText = computed(() => {
-  return textWithHighlight(
-    $t('stateUnavailableTitle', 'The edit state could not be loaded.'),
+const stateUnavailableTitle = computed(() =>
+  $t('stateUnavailableTitle', 'The edit state could not be loaded.'),
+)
+
+// The adapter's reason comes from the backend: it's shown as text, not HTML.
+const stateUnavailableText = computed(
+  () =>
+    state.stateUnavailableReason.value ||
     $t(
       'stateUnavailableText',
       'This could be due to missing permissions or a temporary problem. Please try again later.',
     ),
-  )
-})
+)
 
 const viewOnlyBanner = computed<{
   mode: 'review' | 'view'

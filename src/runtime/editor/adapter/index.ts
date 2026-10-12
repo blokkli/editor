@@ -105,9 +105,19 @@ export type AdapterSearchArguments = {
   filters: Record<string, any>
 }
 
+/**
+ * Thrown by loadState() when the backend says why there is no state.
+ *
+ * The editor shows the message in place of its general hint, so it must be
+ * written for the user.
+ */
+export class StateUnavailableError extends Error {}
+
 export interface BlokkliAdapter<T> {
   /**
    * Load the state.
+   *
+   * Throw a StateUnavailableError to tell the user why there is none.
    */
   loadState(): Promise<T | undefined>
 

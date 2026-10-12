@@ -8,6 +8,16 @@ argument of `defineBlokkliEditAdapter()`.
 The returned object will then be passed to the [adapter.mapState] method of your
 adapter.
 
+If the method throws, the editor shows a banner: the state could not be loaded.
+To tell the user why, throw a `StateUnavailableError`. Its message replaces the
+banner's general hint, so write it for the user:
+
+```typescript
+import { StateUnavailableError } from '#blokkli/editor/adapter'
+
+throw new StateUnavailableError('This page is being imported. Try again later.')
+```
+
 ## Example
 
 ::: code-group

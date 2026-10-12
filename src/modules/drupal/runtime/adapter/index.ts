@@ -1,5 +1,6 @@
 import {
   defineBlokkliEditAdapter,
+  StateUnavailableError,
   type BlokkliAdapterFactory,
   type FullBlokkliAdapter,
   type MutationResponseLike,
@@ -349,11 +350,23 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     })
 
     const loadState: DrupalAdapter['loadState'] = async () => {
-      const state = await useGraphqlQuery('pbEditState', {
+      const response = await useGraphqlQuery('pbEditState', {
         ...ctx.value,
-      }).then((v) => v?.data.state)
+      })
+      const state = response?.data.state
 
-      if (!state) {
+      // Without the mutated state, the page would look empty.
+      if (!state?.mutatedState) {
+        // Drupal says why it refuses an edit state, e.g. for paragraphs that
+        // are nested too deep.
+        const reason = response?.errors.find(
+          (error) =>
+            error.extensions?.code ===
+            'PARAGRAPHS_BLOKKLI_EDIT_STATE_UNAVAILABLE',
+        )
+        if (reason) {
+          throw new StateUnavailableError(reason.message)
+        }
         throw new Error('Failed to load state.')
       }
 
