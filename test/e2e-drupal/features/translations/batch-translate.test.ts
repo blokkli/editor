@@ -6,6 +6,7 @@ import {
   editableState,
   editableFrame,
   setFrameValue,
+  waitForEditableText,
 } from '../../support/editable'
 import { dialog } from '../../support/overlays'
 import { openTranslateDialog } from '../../support/translations'
@@ -16,7 +17,12 @@ import {
   seedUuid,
   workerSandbox,
 } from '../../support/sandbox'
-import { editorPath, openEditor, revertAllChanges } from '../../support/session'
+import {
+  editorPath,
+  getHostContext,
+  openEditor,
+  revertAllChanges,
+} from '../../support/session'
 
 // The page "Notices" (content/nodes/notices.yml): two titles and a text
 // without a German value, and a title with an up-to-date German one.
@@ -185,6 +191,39 @@ describe('Batch translate (TranslateDialog)', async () => {
     )
     expect(sentUuids.has(a.uuid)).toBe(true)
     expect(sentUuids.has(b.uuid)).toBe(true)
+  })
+
+  test("translates the page's own title", async () => {
+    // The page's texts are rows like those of its paragraphs, with the page's
+    // UUID in their key.
+    const host = await getHostContext(page)
+    await openTranslateDialog(page)
+    await deselectAll(page)
+    await batchRow(page, `${host.uuid}:title`)
+      .locator('[data-test="translations-batch-row-checkbox"]')
+      .click()
+
+    const applyButton = page.locator('[data-test="translations-batch-apply"]')
+    await page.locator('[data-test="translations-batch-request"]').click()
+    await expect.poll(() => applyButton.isDisabled()).toBe(false)
+
+    const imported = nextMutation(page, 'pbBulkTranslateFieldValues')
+    await applyButton.click()
+    await dialog(page, 'translations-translate').waitFor({ state: 'hidden' })
+
+    // Drupal takes an item without a UUID for the page, and skips one with a
+    // UUID that is no paragraph: the page's goes without.
+    const { items } = await imported
+    expect(items).toHaveLength(1)
+    expect(items[0]).toMatchObject({
+      langcode: 'de',
+      name: 'title',
+      value: '[DE] Notices',
+    })
+    expect(items[0]?.uuid ?? null).toBeNull()
+
+    // Drupal wrote it.
+    await waitForEditableText(page, 'title', host, '[DE] Notices')
   })
 
   test('only missing or outdated translations are initially selected', async () => {

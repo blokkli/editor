@@ -32,9 +32,10 @@ declare module '#blokkli/editor/adapter' {
     /**
      * Import translations for multiple languages at once.
      *
-     * Each item includes the target language, block UUID, field name, and
-     * the new field value. Applied as a single mutation so it can be undone
-     * in one step.
+     * Each item includes the target language, the UUID and the field name as
+     * `loadTextFieldValuesForLanguage` gave them, and the new field value. The
+     * UUID is a block's, or the host entity's for one of its own texts (its
+     * title). Applied as a single mutation so it can be undone in one step.
      */
     importTranslationsBatched?: (arg: {
       items: {

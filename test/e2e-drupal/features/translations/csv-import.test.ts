@@ -4,6 +4,7 @@ import type { Page } from 'playwright-core'
 import {
   waitForEditorReady,
   editorPath,
+  getHostContext,
   openEditor,
   revertAllChanges,
 } from '../../support/session'
@@ -124,6 +125,49 @@ describe('Translations CSV/PO import', async () => {
     await page.reload()
     await waitForEditorReady(page)
     await waitForEditableText(page, 'field_title', host, 'Mitteilung alpha')
+  })
+
+  test("CSV import applies a translation of the page's own title", async () => {
+    // An export has the page's texts too, with the page's UUID in their key.
+    const host = await getHostContext(page)
+    const csv = buildSingleLangCsv([
+      {
+        key: `${host.uuid}:title`,
+        source: 'Notices',
+        translation: 'Hinweise',
+      },
+    ])
+
+    await page.locator('[data-test="translations-banner-csv"]').click()
+    await dialog(page, 'translations-csv').waitFor({ state: 'visible' })
+    await switchToCsvImportTab(page)
+    await uploadTranslationsFile(page, {
+      name: 'translations.csv',
+      content: csv,
+    })
+    const rows = page.locator('[data-test="translations-csv-import-row"]')
+    await expect.poll(() => rows.count()).toBe(1)
+
+    const imported = nextMutation(page, 'pbBulkTranslateFieldValues')
+    await page.locator('[data-test="translations-csv-import-apply"]').click()
+    await dialog(page, 'translations-csv').waitFor({ state: 'hidden' })
+
+    // Drupal takes an item without a UUID for the page.
+    const { items } = await imported
+    expect(items).toHaveLength(1)
+    expect(items[0]).toMatchObject({
+      langcode: 'de',
+      name: 'title',
+      value: 'Hinweise',
+    })
+    expect(items[0]?.uuid ?? null).toBeNull()
+
+    await waitForEditableText(page, 'title', host, 'Hinweise')
+
+    // Drupal stored it.
+    await page.reload()
+    await waitForEditorReady(page)
+    await waitForEditableText(page, 'title', host, 'Hinweise')
   })
 
   test('PO import applies the translation to the editable', async () => {

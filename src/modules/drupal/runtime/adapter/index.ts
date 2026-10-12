@@ -912,7 +912,10 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           ...ctx.value,
           clearOutdated: !!markUpToDate,
           items: items.map((item) => ({
-            uuid: item.uuid,
+            // The host entity's own texts come with its UUID. Drupal writes
+            // the host for an item without a UUID, and skips one whose UUID
+            // is no paragraph of the edit state.
+            uuid: item.uuid === ctx.value.entityUuid ? undefined : item.uuid,
             name: item.fieldName,
             value: item.fieldValue,
             langcode: item.langcode,
