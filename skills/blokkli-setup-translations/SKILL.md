@@ -19,7 +19,7 @@ compatibility: >-
   Drupal backend (composer, drush, config export) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.0'
+  version: '1.0.1'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/configuration#translations
 ---
@@ -267,7 +267,8 @@ Tell the developer who needs which; don't assign them:
 - **Config pages:** `translate translatable_config_pages`.
 - **Paragraphs:** translating them is an edit of the edit state:
   `edit paragraphs blokkli edit state`, which "Edit translation" checks too.
-- **DeepL** has no permission of its own: whoever can use blökkli can use it.
+- **DeepL** has no permission of its own: whoever may edit or review an edit
+  state can use it. A preview link doesn't count.
 
 ## 9. Check the result
 

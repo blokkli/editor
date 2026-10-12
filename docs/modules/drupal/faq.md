@@ -243,8 +243,9 @@ Scheduled paragraphs only change when cron runs.
 ## Preview links don't open for others
 
 "Preview (with smartphone)" gives a link that adds a preview grant to the
-visitor's session. The grant only lets them see the pending changes. Everything
-else is checked as usual, so the visitor needs:
+visitor's session. The grant only lets them see the pending changes of that
+page: it is no permission to use the editor, whose other queries answer them
+nothing. Everything else is checked as usual, so the visitor needs:
 
 - `access content`, for the link itself (`/paragraphs_blokkli/preview_grant/…`)
 - access to the GraphQL endpoint

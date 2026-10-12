@@ -14,7 +14,13 @@
           $t('previewQrCodeText', 'You can also copy the link and share it.')
         }}
       </p>
-      <input :value="fullUrl" class="bk-form-input" readonly @focus="onFocus" />
+      <input
+        :value="fullUrl"
+        class="bk-form-input"
+        readonly
+        data-test="preview-grant-link"
+        @focus="onFocus"
+      />
     </PanelSection>
   </div>
 </template>

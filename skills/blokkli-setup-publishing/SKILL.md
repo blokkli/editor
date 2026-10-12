@@ -18,7 +18,7 @@ compatibility: >-
   Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.2'
+  version: '1.0.3'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/configuration
 ---
@@ -264,6 +264,10 @@ Nothing to enable: the feature is on when the schema has
   - **The grant itself adds no permissions.** For anonymous visitors without
     them, or for an unpublished host, the site adds them while the grant is
     valid (below).
+  - **The grant is for the preview only.** It opens the pending changes of its
+    host (`getParagraphsEditState`). The editor's other queries and mutations
+    take the permission to edit or to review an edit state, with or without a
+    grant.
 - **The link opens the language the editor was in.**
 
 The module leaves access to the site. For a site whose anonymous visitors can't
@@ -281,6 +285,10 @@ view content, or to preview unpublished hosts:
 - **Paragraph type permissions:** with `paragraphs_type_permissions`, the viewer
   also needs `view paragraph content <type>` or
   `bypass paragraphs type content access`.
+- **The project's own GraphQL fields:** a resolver behind the data producer
+  `paragraphs_blokkli_can_use_blokkli` returns nothing to a viewer who only has
+  a grant. If a preview renders such a field, map `previewGrant` to `TRUE` on
+  the producer there, and check the access to what the field returns.
 
 ## 8. Permissions
 

@@ -43,6 +43,15 @@ the search providers of the type "Import Source Entities": their files
 export with it. The query `pbGetImportSourceEntities` is gone from the GraphQL
 schema; a project that called it itself uses `paragraphsBlokkliEntitiesSearch`.
 
+## A preview link is for the preview only
+
+Who opens a preview link ("Preview (with smartphone)") gets the page with its
+pending changes: the query `getParagraphsEditState`. The editor's other queries
+and mutations now take the permission to edit or to review an edit state from
+them too. A project whose own schema extension uses the data producer
+`paragraphs_blokkli_can_use_blokkli` for a field that a preview renders maps
+`previewGrant` to `TRUE` there, and checks the access to what the field returns.
+
 ## Refactored paragraphs_blokkli_comment module
 
 blökkli comments no longer rely on the `comment` core module and instead

@@ -56,8 +56,11 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F95  | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                        | both                 | low      | open       |
 | F96  | [The editor reads field values through a detached element](#f96-the-editor-reads-field-values-through-a-detached-element)                                                 | editor               | low      | to verify  |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli` | low      | to verify  |
-| F99  | [A preview grant passes for the permission to use the editor](#f99-a-preview-grant-passes-for-the-permission-to-use-the-editor)                                           | `paragraphs_blokkli` | low      | to verify  |
+| F99  | [A preview link shows who changed the page, and how](#f99-a-preview-link-shows-who-changed-the-page-and-how)                                                              | `paragraphs_blokkli` | low      | open       |
 | F101 | [Lists from an entity query rely on the query's access check](#f101-lists-from-an-entity-query-rely-on-the-querys-access-check)                                           | `paragraphs_blokkli` | low      | to verify  |
+| F102 | [The library search fails for an empty list of types](#f102-the-library-search-fails-for-an-empty-list-of-types)                                                          | `paragraphs_blokkli` | low      | open       |
+| F103 | [A preview misses a change that is made before its first poll](#f103-a-preview-misses-a-change-that-is-made-before-its-first-poll)                                        | editor               | low      | open       |
+| F104 | [A refused machine translation answers "Internal server error"](#f104-a-refused-machine-translation-answers-internal-server-error)                                        | `paragraphs_blokkli` | low      | open       |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -934,37 +937,28 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** drop the dependency, if a server without the extension still
   builds its schema.
 
-## F99: A preview grant passes for the permission to use the editor
+## F99: A preview link shows who changed the page, and how
 
 - **Found:** 2026-10-12, when the editor's list of all pages got a permission of
-  its own (the former F98).
-- **Symptom:** a visitor with a preview grant, which is for one edit state, may
-  run every query that asks for `canUseBlokkli`. Verified over HTTP for the list
-  of all pages and the summary of the edit states: an anonymous visitor with a
-  grant for one page got the titles of all 84 entities of a sandbox. Those two
-  ask for `view any blokkli entity label` now.
-- **Cause:** `CanUseBlokkli::resolve()`
-  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/CanUseBlokkli.php:76-88`)
-  returns TRUE for the permission to edit or to review, or for a valid grant,
-  whatever is asked for.
-- **By reading, not checked:** `EditExtension` puts 17 resolvers behind it:
-  `pbGetParagraphTypes`, `paragraphsBlokkliConversions`,
-  `paragraphsBlokkliGetUsers`, `paragraphsBlokkliGetUser`,
-  `pbGetSupportedClipboards`, `pbGetFieldConfig`, `pbGetNotifications`,
-  `pbGetNotificationCount`, `pbGetEditableFieldConfig`,
-  `pbGetDroppableFieldConfig`, `paragraphsBlokkliAvailableFeatures`,
-  `paragraphsBlokkliEntitiesSearch`, `paragraphsBlokkliEditStatesSummary`,
-  `paragraphsBlokkliAllowedTypes`, `paragraphsBlokkliEntityTypeConfig`,
-  `pbMediaLibraryGetResults` and `Paragraph.paragraphsBlokkliEditContext`. The
-  extensions for search, the library, transforms, templates, comments and DeepL
-  use the same producer. Which of them check more themselves, and which a
-  preview needs, is open. `paragraphsBlokkliEntitiesSearch` and
-  `paragraphsBlokkliEditStatesSummary` ask for their permission themselves, and
-  `paragraphsBlokkliGetUsers` for `load id and name of blokkli users`.
-- **Impact:** low, as far as it's known: it depends on what each query gives,
-  and checks itself.
-- **Fix idea:** two gates. One for what renders a preview: the permission or a
-  grant. One for the editor: the permission only.
+  its own (the former F98). Its larger part is fixed: a preview grant passed for
+  the permission to use the editor, and with it for every query and mutation
+  behind the editor's gate, the machine translation among them. Now the grant
+  only counts for the edit state.
+- **Symptom:** a visitor with a preview grant gets more of the granted edit
+  state than the page with its changes: the name of its owner, its preview hash
+  (which they came with), the index in its history, and its mutations with their
+  plugin, label, time and paragraph. Not the values of the mutations.
+- **Cause:** the fields of `ParagraphsBlokkliEditState` resolve for whoever may
+  view the edit state, and a grant gives that
+  (`ParagraphsBlokkliEditStateAccessControlHandler::checkAccess()`). The
+  preview's own query (`pbEditState`) asks for them, without using them.
+- **Verified:** over HTTP, as an anonymous visitor with a grant for one page, in
+  an E2E sandbox, before the fix of the gate. The fix didn't touch these fields.
+- **Impact:** low: a name and the kind of changes, for someone who was given the
+  link.
+- **Fix idea:** the owner and the mutations for those with the permission to
+  view edit states. `mapState()` of the Drupal adapter must then do without them
+  in a preview.
 
 ## F101: Lists from an entity query rely on the query's access check
 
@@ -984,6 +978,59 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   `EntityQueryLibraryItems`
   (`modules/paragraphs_blokkli_search/src/Plugin/ParagraphsBlokkli/Search/`).
   What an entity query checks for media and library items is open.
+- **Also verified,** over HTTP as an anonymous visitor with a preview grant,
+  while such a grant still passed for the editor's gate (the former part of
+  F99): the search for templates (`EntityQueryTemplates`) lists a template, with
+  its ID and without its label, for someone without `view paragraph templates`.
+  The search for edit states (`EntityQueryEditStates`) counts in its total the
+  edit states that its user may not view; the items are filtered. An entity
+  query checks nothing for either entity type. Not checked again as a user who
+  may use the editor.
 - **Impact:** low: titles, for someone who may use the editor.
 - **Fix idea:** view access to a result before it's listed (the total is then an
   upper bound).
+
+## F102: The library search fails for an empty list of types
+
+- **Found:** 2026-10-12, while probing the queries behind the editor's gate (the
+  fixed part of F99).
+- **Symptom:** `paragraphsBlokkliSearchLibraryItems(bundles: [])` answers
+  "Internal server error". With a paragraph type in the list it answers.
+  Verified over HTTP in an E2E sandbox.
+- **Cause:** not looked at. Probably a condition on an empty list in
+  `EntityQueryLibraryItems`.
+- **Impact:** low: the editor always names the types.
+- **Fix idea:** no results for an empty list.
+
+## F103: A preview misses a change that is made before its first poll
+
+- **Found:** 2026-10-12, by the E2E spec for the preview link
+  (`test/e2e-drupal/features/preview-grant/base.test.ts`), which waits for the
+  first poll because of it.
+- **Symptom:** a preview that is opened on its own (a preview link, or "Preview
+  (new window)") follows the changes of the editor. A change that is made within
+  the first second after it has loaded doesn't show, until the next change.
+- **Cause:** `PreviewProvider.vue`
+  (`src/runtime/editor/components/PreviewProvider.vue`) starts with
+  `lastChanged = 0` and asks the adapter for the time of the last change a
+  second after it has mounted (five seconds for an adapter without
+  `getLastChanged`). The first answer is only kept, to compare the next one
+  with: what changed between loading the state and that answer is never loaded.
+- **Impact:** low: a short window, and the next change shows both.
+- **Fix idea:** start from the time of the loaded state (`lastChanged` of
+  `mapState()`'s result, which the Drupal adapter fills).
+
+## F104: A refused machine translation answers "Internal server error"
+
+- **Found:** 2026-10-12, with the fix of the editor's gate (F99).
+- **Symptom:** `paragraphsBlokkliRequestTranslation` answers someone who may not
+  use the editor with the error "Internal server error" and without data.
+  Verified over HTTP, as an anonymous visitor with a preview grant.
+- **Cause:** the mutation's type is `ParagraphsBlokkliTranslationResult!`, and
+  its resolver returns nothing where the gate refuses
+  (`modules/paragraphs_blokkli_deepl/src/Plugin/GraphQL/SchemaExtension/DeeplExtension.php`).
+  Not checked: whether Drupal logs each of them.
+- **Impact:** low: the editor only sends it for users who may use it. The
+  request is refused; its error names the wrong reason.
+- **Fix idea:** a result that may be null, as the editor's other mutations have,
+  or an error that says "Access denied".
