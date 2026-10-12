@@ -16,7 +16,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.1'
+  version: '1.0.2'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/features/library
 ---
@@ -76,7 +76,8 @@ At `/admin/config/content/blokkli/library` check the types. The setting is
 `third_party_settings.paragraphs_library.allow_library_conversion` on the
 paragraph type. It decides both:
 
-- which paragraphs offer "Add to library"
+- which paragraphs offer "Add to library". For other types, the request is
+  refused as well: "Paragraph type '…' cannot be added to the library."
 - which paragraph types a library item may hold
 
 **The trap: containers.** Making a container reusable (a section, columns, an
@@ -129,7 +130,9 @@ Tell the developer who needs which permissions; don't assign them:
 | Edit an item (its page)                       | `edit paragraph library item`   |
 | Delete items, see unpublished ones, revisions | `administer paragraphs library` |
 
-Placing and detaching items needs only blökkli's edit state permissions.
+Placing and detaching items needs only blökkli's edit state permissions. A user
+places the items that they may view: an unpublished one takes
+`administer paragraphs library`.
 
 ## 6. The GraphQL fragment
 
@@ -282,4 +285,6 @@ if (!item.value) {
 | A container's content is lost or reverted after "Add to library"                          | It had unpublished changes (section 2)                                                                                                 |
 | The item's label is in the source language on a translated page                           | Each translation starts with the source label                                                                                          |
 | Placing a library item fails: "Paragraph type '…' is not allowed in field '…'"            | The field must allow `from_library` and the paragraph type of the item. The same goes for "Add to library" and for detaching an item   |
+| Placing a library item fails: "Access denied: cannot view the library item."              | The item is unpublished, and the user lacks `administer paragraphs library`                                                            |
+| "Add to library" fails: "Access denied: cannot create library items."                     | The user lacks `create paragraph library item`                                                                                         |
 | Saving the host's form fails: "The Reusable paragraph field cannot contain a … paragraph" | The field holds a library item whose paragraph type it doesn't allow any more: blökkli refuses new ones, but keeps what is there       |

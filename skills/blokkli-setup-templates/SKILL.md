@@ -15,7 +15,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.1.1'
+  version: '1.1.2'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/pages#template-editing
 ---
@@ -77,9 +77,11 @@ At `/admin/config/content/blokkli/search/add` add a provider:
 Export the config (`drush cex`). The export is
 `paragraphs_blokkli_search.blokkli_search_provider.<id>.yml`.
 
-The dialog lists every template, including ones whose paragraph types the target
-field doesn't allow. Inserting such a template is refused: "Paragraph type '…'
-is not allowed in field '…'."
+The dialog lists every template to every user. Inserting one is refused if:
+
+- the target field doesn't allow one of its paragraph types: "Paragraph type '…'
+  is not allowed in field '…'."
+- the user may not insert it (section 4): "Access denied: …"
 
 ## 4. Permissions
 
@@ -87,7 +89,7 @@ Tell the developer who needs which permissions; don't assign them:
 
 | Task                                                  | Permission                                                       |
 | ----------------------------------------------------- | ---------------------------------------------------------------- |
-| Insert a template, with previews in the dialog        | `view paragraph templates` (without it, the previews stay empty) |
+| Insert a template, and see its preview in the dialog  | `view paragraph templates`                                       |
 | Create one ("Create template")                        | `create paragraph template`                                      |
 | Edit one on its route                                 | `view paragraph templates` and `edit own/any paragraph template` |
 | Delete one                                            | `delete own/any paragraph template`                              |
@@ -95,6 +97,10 @@ Tell the developer who needs which permissions; don't assign them:
 | The list at `/admin/config/content/blokkli/templates` | `view paragraph templates` or `administer paragraph templates`   |
 
 Editors also need blökkli's edit state permissions, as for any host.
+
+With per-type permissions (`paragraphs_type_permissions`), inserting a template
+also needs `create paragraph content <type>` for every paragraph type in it, the
+nested ones included. A template is no way around them.
 
 ## 5. The route in Nuxt
 
@@ -184,6 +190,8 @@ columns with a text in each column.
 | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
 | The "Template" dialog is empty                                                       | No search provider of type "Paragraph Templates"                                                     |
 | The dialog lists templates, but their previews are empty                             | The user lacks `view paragraph templates`                                                            |
+| Inserting a template fails: "Access denied: cannot view the template."               | The user lacks `view paragraph templates`                                                            |
+| Inserting a template fails: "Access denied: cannot create paragraph of type '…'"     | The user lacks `create paragraph content <type>` for a type in the template, also a nested one       |
 | No "Template" or "Create template" in the editor                                     | Templates are disabled: see the Nuxt log (a missing field on `BlokkliParagraphTemplate`)             |
 | Templates have no edit button; "templateEditRouteName … is not valid" in the console | The route name is wrong, or the route has a parameter besides `uuid`                                 |
 | The template's route renders nothing                                                 | The user lacks `view paragraph templates`, or the uuid doesn't exist                                 |

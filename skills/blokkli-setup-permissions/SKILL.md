@@ -15,7 +15,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export).
 metadata:
   author: blokkli
-  version: '1.0.2'
+  version: '1.0.3'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/configuration#drupal-permissions-reference
 ---
@@ -83,9 +83,13 @@ public function access(ParagraphsTypeInterface $type, string $operation, Account
 - `bypass paragraphs type content access` for the roles without limits.
 - **Every new paragraph type needs its permissions,** or it's invisible.
 
-Templates and library items can contain types a role may not create: adding one
-doesn't check each paragraph inside. Don't rely on per-type permissions where
-templates or library items contain the denied types.
+**Templates and library items:**
+
+- **Adding a template** needs `create` for every paragraph type in it, the
+  nested ones included, and `view paragraph templates`.
+- **Placing a library item** only needs `create` for `from_library`, whatever
+  type the item's paragraph has. Don't rely on per-type permissions for the
+  types that library items hold.
 
 ## 3. A proposal per role
 
