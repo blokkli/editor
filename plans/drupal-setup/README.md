@@ -24,6 +24,12 @@ Statuses: `todo`, `in progress`.
   Here, the mock playground's dev CSS picks up candidates from `sandbox/`. Only
   extra CSS, and dev-only. The fix: `source(none)` plus the explicit `@source`
   paths; diff the generated CSS.
+- **Containers in the sandbox's library.** Sections, columns and accordions have
+  no library conversion (13d, the user): "Add to library" lost their unpublished
+  changes, which is fixed since 2026-10-12. To enable them: the setting on the
+  paragraph types, and their fragments in
+  `Paragraph/FromLibrary/fragment.graphql`, without letting them spread
+  `paragraphFromLibrary` (a cycle).
 - **The Drupal docs** (`docs/modules/drupal/`) lack what the
   `blokkli-setup-drupal` skill covers: the same-origin requirement, the GraphQL
   server config (extensions, `bundles`, `fields`), GraphQL access, the explicit

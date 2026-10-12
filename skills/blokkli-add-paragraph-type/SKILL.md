@@ -19,7 +19,7 @@ compatibility: >-
   backend (drush, config export) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.1.3'
+  version: '1.1.4'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/blocks
 ---
@@ -354,9 +354,10 @@ field.
   deeper than that are lost when the page is published. Keep a level spare.
 - **Required fields on nested paragraphs** are checked when a paragraph is added
   or changed, not when the page is published.
-- **Library conversion:** making a container reusable loses the changes made
-  inside it since the last publish (the `blokkli-setup-library` skill). Keep
-  containers out of the library, or tell editors to publish first.
+- **Library conversion:** a container becomes a library item with the paragraphs
+  that it holds. The fragment for library items then spreads the container's
+  fragment, which must not spread `paragraphFromLibrary` (the
+  `blokkli-setup-library` skill).
 - **Fragments can't be recursive,** so a container's fragment spreads each
   allowed child's fragment. A shared fragment for the paragraph types without
   children keeps that in one place:

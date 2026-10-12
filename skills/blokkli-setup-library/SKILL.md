@@ -7,8 +7,7 @@ description: >-
   the library search provider, translation, permissions, the GraphQL fragment
   and the library item page in Nuxt. Use when editors should reuse a paragraph
   on several pages (e.g. emergency numbers), or when "Add to library" or "From
-  library" is missing or empty, library items open a 404, or a container
-  paragraph loses its content after being made reusable.
+  library" is missing or empty, or library items open a 404.
 license: MIT
 compatibility: >-
   Requires a working blökkli + Drupal setup (see the blokkli-setup-drupal
@@ -16,7 +15,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.3'
+  version: '1.0.4'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/features/library
 ---
@@ -47,7 +46,7 @@ This skill is the procedure and the traps.
 
 - **Which paragraph types may become library items?** Usually ones that don't
   hold other paragraphs: a table, a text, a contact box. Containers (sections,
-  columns) can, but see the trap in section 2.
+  columns) can too; their fragments need care (section 6).
 - **Where may library items go?** Every paragraphs field that should offer "From
   library", including fields inside containers.
 
@@ -81,15 +80,9 @@ paragraph type. It decides both:
   refused as well: "Paragraph type '…' cannot be added to the library."
 - which paragraph types a library item may hold
 
-**The trap: containers.** Making a container reusable (a section, columns, an
-accordion) loses the changes made inside it since the last publish:
-
-- Paragraphs added to it, or moved into it, are gone after publishing.
-- Paragraphs removed or moved out come back.
-- A container that was never published ends up empty.
-
-Only enable containers if editors publish first, and tell the developer.
-Paragraph types that don't hold other paragraphs are safe.
+**Containers** (a section, columns, an accordion) take their paragraphs along:
+the library item gets the container with the paragraphs that it has in the
+editor, published or not.
 
 ## 3. GraphQL
 
@@ -289,7 +282,6 @@ if (!item.value) {
 | `Cycle` or `Cannot spread fragment` errors for `paragraphFromLibrary`                     | The fragment spreads `paragraph`, or a container spread there spreads `paragraphFromLibrary`                                           |
 | A placed library item renders nothing                                                     | The item's paragraph type isn't spread in `paragraphFromLibrary`, or the item is unpublished                                           |
 | The item's page is a 404 from Drupal's links (open editing, language switch)              | The page only loads by uuid; Drupal links with the id                                                                                  |
-| A container's content is lost or reverted after "Add to library"                          | It had unpublished changes (section 2)                                                                                                 |
 | The item's label is in the source language on a translated page                           | Each translation starts with the source label                                                                                          |
 | Placing a library item fails: "Paragraph type '…' is not allowed in field '…'"            | The field must allow `from_library` and the paragraph type of the item. The same goes for "Add to library" and for detaching an item   |
 | Placing a library item fails: "Access denied: cannot view the library item."              | The item is unpublished, and the user lacks `administer paragraphs library`                                                            |

@@ -7,44 +7,45 @@ removed; its commit names it.
 Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 (2.0.x), unless noted otherwise.
 
-| #   | Finding                                                                                                                                   | Project              | Severity | Status     |
-| --- | ----------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- |
-| F5  | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                                                 | Drupal core          | high     | workaround |
-| F6  | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                                  | `blokkli_starterkit` | low      | open       |
-| F9  | [Link titles from entity mappings](#f9-link-titles-from-entity-mappings)                                                                  | `paragraphs_blokkli` | medium   | workaround |
-| F10 | [Paragraphs below level 5 are lost on publish](#f10-paragraphs-below-level-5-are-lost-on-publish)                                         | `paragraphs_blokkli` | medium   | workaround |
-| F11 | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                                     | `paragraphs_blokkli` | low      | open       |
-| F12 | ["Make reusable" on a container with unpublished children](#f12-make-reusable-on-a-container-with-unpublished-children)                   | `paragraphs_blokkli` | medium   | open       |
-| F14 | [The comment filter leaks into new text formats](#f14-the-comment-filter-leaks-into-new-text-formats)                                     | `paragraphs_blokkli` | low      | open       |
-| F18 | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                                         | both                 | low      | workaround |
-| F19 | [Template and library search](#f19-template-and-library-search)                                                                           | both                 | low      | open       |
-| F20 | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                                         | `paragraphs_blokkli` | low      | open       |
-| F23 | [A past unpublish date blocks publishing](#f23-a-past-unpublish-date-blocks-publishing)                                                   | both                 | low      | open       |
-| F24 | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                                         | `paragraphs_blokkli` | medium   | open       |
-| F25 | [An empty change description keeps the old log](#f25-an-empty-change-description-keeps-the-old-log)                                       | `paragraphs_blokkli` | low      | open       |
-| F26 | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation)                   | `paragraphs_blokkli` | medium   | open       |
-| F28 | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                                    | `@blokkli/editor`    | low      | workaround |
-| F29 | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                                              | `paragraphs_blokkli` | low      | workaround |
-| F30 | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                                             | `paragraphs_blokkli` | low      | open       |
-| F32 | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                                       | `paragraphs_blokkli` | medium   | open       |
-| F33 | [Transform plugins don't get the language](#f33-transform-plugins-dont-get-the-language)                                                  | both                 | low      | workaround |
-| F35 | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)                      | `@blokkli/editor`    | low      | open       |
-| F38 | [Editors can't view paragraph types](#f38-editors-cant-view-paragraph-types)                                                              | `paragraphs_blokkli` | high     | workaround |
-| F40 | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                   | `paragraphs_blokkli` | low      | open       |
-| F41 | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                                               | `paragraphs_blokkli` | low      | open       |
-| F43 | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                                            | both                 | low      | open       |
-| F44 | [No approval step](#f44-no-approval-step)                                                                                                 | both                 | low      | open       |
-| F45 | ["Replace" fails on link fields](#f45-replace-fails-on-link-fields)                                                                       | `paragraphs_blokkli` | medium   | open       |
-| F46 | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                  | both                 | low      | open       |
-| F48 | [A preview grant opens more than the preview](#f48-a-preview-grant-opens-more-than-the-preview)                                           | `paragraphs_blokkli` | low      | open       |
-| F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                       | `texts`              | low      | open       |
-| F52 | [A comment's label throws](#f52-a-comments-label-throws)                                                                                  | `paragraphs_blokkli` | low      | open       |
-| F53 | [Violations while editing come from the stored structure](#f53-violations-while-editing-come-from-the-stored-structure)                   | `paragraphs_blokkli` | medium   | open       |
-| F62 | [An edit state shows the latest revision without revision access](#f62-an-edit-state-shows-the-latest-revision-without-revision-access)   | `paragraphs_blokkli` | low      | to verify  |
-| F63 | [A stored conversion follows the current field settings](#f63-a-stored-conversion-follows-the-current-field-settings)                     | `paragraphs_blokkli` | low      | open       |
-| F64 | [A template or a copy places a library item its user may not view](#f64-a-template-or-a-copy-places-a-library-item-its-user-may-not-view) | `paragraphs_blokkli` | low      | to verify  |
-| F67 | [A deleted library item fails the edit states that placed it](#f67-a-deleted-library-item-fails-the-edit-states-that-placed-it)           | `paragraphs_blokkli` | low      | open       |
-| F68 | [A stored copy from another page follows that page](#f68-a-stored-copy-from-another-page-follows-that-page)                               | `paragraphs_blokkli` | low      | to verify  |
+| #   | Finding                                                                                                                                                         | Project              | Severity | Status     |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- |
+| F5  | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                                                                       | Drupal core          | high     | workaround |
+| F6  | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                                                        | `blokkli_starterkit` | low      | open       |
+| F9  | [Link titles from entity mappings](#f9-link-titles-from-entity-mappings)                                                                                        | `paragraphs_blokkli` | medium   | workaround |
+| F10 | [Paragraphs below level 5 are lost on publish](#f10-paragraphs-below-level-5-are-lost-on-publish)                                                               | `paragraphs_blokkli` | medium   | workaround |
+| F11 | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                                                           | `paragraphs_blokkli` | low      | open       |
+| F14 | [The comment filter leaks into new text formats](#f14-the-comment-filter-leaks-into-new-text-formats)                                                           | `paragraphs_blokkli` | low      | open       |
+| F18 | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                                                               | both                 | low      | workaround |
+| F19 | [Template and library search](#f19-template-and-library-search)                                                                                                 | both                 | low      | open       |
+| F20 | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                                                               | `paragraphs_blokkli` | low      | open       |
+| F23 | [A past unpublish date blocks publishing](#f23-a-past-unpublish-date-blocks-publishing)                                                                         | both                 | low      | open       |
+| F24 | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                                                               | `paragraphs_blokkli` | medium   | open       |
+| F25 | [An empty change description keeps the old log](#f25-an-empty-change-description-keeps-the-old-log)                                                             | `paragraphs_blokkli` | low      | open       |
+| F26 | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation)                                         | `paragraphs_blokkli` | medium   | open       |
+| F28 | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                                                          | `@blokkli/editor`    | low      | workaround |
+| F29 | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                                                                    | `paragraphs_blokkli` | low      | workaround |
+| F30 | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                                                                   | `paragraphs_blokkli` | low      | open       |
+| F32 | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                                                             | `paragraphs_blokkli` | medium   | open       |
+| F33 | [Transform plugins don't get the language](#f33-transform-plugins-dont-get-the-language)                                                                        | both                 | low      | workaround |
+| F35 | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)                                            | `@blokkli/editor`    | low      | open       |
+| F38 | [Editors can't view paragraph types](#f38-editors-cant-view-paragraph-types)                                                                                    | `paragraphs_blokkli` | high     | workaround |
+| F40 | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                         | `paragraphs_blokkli` | low      | open       |
+| F41 | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                                                                     | `paragraphs_blokkli` | low      | open       |
+| F43 | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                                                                  | both                 | low      | open       |
+| F44 | [No approval step](#f44-no-approval-step)                                                                                                                       | both                 | low      | open       |
+| F45 | ["Replace" fails on link fields](#f45-replace-fails-on-link-fields)                                                                                             | `paragraphs_blokkli` | medium   | open       |
+| F46 | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                        | both                 | low      | open       |
+| F48 | [A preview grant opens more than the preview](#f48-a-preview-grant-opens-more-than-the-preview)                                                                 | `paragraphs_blokkli` | low      | open       |
+| F50 | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                             | `texts`              | low      | open       |
+| F52 | [A comment's label throws](#f52-a-comments-label-throws)                                                                                                        | `paragraphs_blokkli` | low      | open       |
+| F53 | [Violations while editing come from the stored structure](#f53-violations-while-editing-come-from-the-stored-structure)                                         | `paragraphs_blokkli` | medium   | open       |
+| F62 | [An edit state shows the latest revision without revision access](#f62-an-edit-state-shows-the-latest-revision-without-revision-access)                         | `paragraphs_blokkli` | low      | to verify  |
+| F63 | [A stored conversion follows the current field settings](#f63-a-stored-conversion-follows-the-current-field-settings)                                           | `paragraphs_blokkli` | low      | open       |
+| F64 | [A template or a copy places a library item its user may not view](#f64-a-template-or-a-copy-places-a-library-item-its-user-may-not-view)                       | `paragraphs_blokkli` | low      | to verify  |
+| F67 | [A deleted library item fails the edit states that placed it](#f67-a-deleted-library-item-fails-the-edit-states-that-placed-it)                                 | `paragraphs_blokkli` | low      | open       |
+| F68 | [A stored copy from another page follows that page](#f68-a-stored-copy-from-another-page-follows-that-page)                                                     | `paragraphs_blokkli` | low      | to verify  |
+| F69 | [A detach right after "Add to library" copies the published nested paragraphs](#f69-a-detach-right-after-add-to-library-copies-the-published-nested-paragraphs) | `paragraphs_blokkli` | low      | open       |
+| F70 | ["Add to library" changes the page's earlier revisions](#f70-add-to-library-changes-the-pages-earlier-revisions)                                                | `paragraphs_blokkli` | low      | open       |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -134,6 +135,10 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
     paragraphs field it visits and refills it from the proxies, with no depth
     limit. A level-5 paragraph's children have no proxies, so its fields are
     saved empty.
+- **Also in a new library item:** since 2026-10-12 "Add to library" rebuilds the
+  fields of the paragraph that it moves into the library item
+  (`rebuildNewLibraryItems()`), so this applies there too. Before, that
+  paragraph kept the nested paragraphs it was loaded with.
 - **Workaround in the sandbox:** the model goes 4 deep (13b).
 - **Fix ideas:** the same limit in both places (or none), or leave fields
   untouched when their children weren't loaded. A kernel test with 6 levels.
@@ -160,43 +165,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   existing settings instead of replacing them; optionally validate mutations
   against the schema when one is configured; resolve relative paths against
   `DRUPAL_ROOT` and log a missing file.
-
-## F12: "Make reusable" on a container with unpublished children
-
-- **Found:** 2026-09-26, the Drupal review of 13b's plan, by reading the code.
-  Reproduced 2026-09-27 in 13d (`tmp/drupal-reusable-mutations.sh f12`).
-- **Symptom:** after "make reusable" on a container (a section) and publishing,
-  the library item's container is the last published one:
-  - A text edited since the last publish kept its edit in the run.
-  - A removed text came back.
-  - A title added since the last publish, and one moved in from the page, were
-    lost; the moved one is gone from the page too.
-  - A container that was never published ends up empty.
-- **Cause:**
-  - `MakeReusable`
-    (`src/Plugin/ParagraphsBlokkli/Mutation/MakeReusable.php:79-131`) moves the
-    container into a new library item and removes its proxy. The children's
-    proxies stay behind, with the container as their host.
-  - On publish, `rebuildFields()` only walks down from the host's fields.
-    `from_library` holds the library item through a plain entity reference, so
-    the container's fields are never rebuilt, and the container keeps the child
-    list it had when the edit state loaded it.
-  - The only test publishes first
-    (`TemplateLibraryIntegrationTest.php:352-398`).
-  - Since 2026-10-11 `make_reusable` refuses a paragraph type without
-    `allow_library_conversion`: reproducing this takes a container that the
-    library allows.
-- **How to reproduce:** publish a section with two texts. Then edit one, remove
-  the other, add a title into the section, add a title to the page and move it
-  into the section; `make_reusable` the section, publish, and list the library
-  item's section.
-- **Fix idea:** in `rebuildFields()`, when a `from_library` paragraph references
-  a new library item, rebuild the item's `paragraphs` and mark them for saving.
-  Only for new items: `rebuildFields` empties a field before refilling it.
-- **In the sandbox:** containers have no library conversion (13d, the user).
-  Once fixed, enable it, and add the containers to
-  `Paragraph/FromLibrary/fragment.graphql` without letting them spread
-  `paragraphFromLibrary` (a cycle).
 
 ## F14: The comment filter leaks into new text formats
 
@@ -699,3 +667,53 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   `detach_reusable` does since version 3
   (`ParagraphsBlokkliHelper::getDuplicateData()`), and replay from it. Stored
   mutations without it keep today's behaviour.
+
+## F69: A detach right after "Add to library" copies the published nested paragraphs
+
+- **Found:** 2026-10-12, fixing "Add to library" on a paragraph with nested
+  paragraphs (the former F12); reproduced with a throwaway kernel test.
+- **Symptom:** a grid is published with the buttons "one" and "two". In one edit
+  state it gets a button "three" and loses "two", is added to the library, and
+  is detached again. The copy holds "one" and "two": the nested paragraphs that
+  were published last. That's what the editor shows, and what is published.
+- **Not affected:** the library item itself. Without the detach, it holds "one"
+  and "three", in the editor and when it's published.
+- **Cause:** `DetachReusable` stores its copy when the mutation is added
+  (`getCopyData()`,
+  `src/Plugin/ParagraphsBlokkli/Mutation/DetachReusable.php:70` at `0afa03d`),
+  from the fields of the item's paragraph. While the mutations run, those still
+  hold what the paragraph was loaded with:
+  `ParagraphsBlokkliEditState::rebuildNewLibraryItems()` fills them from the
+  proxies after the last mutation.
+- **Also:** the proxies of the nested paragraphs stay behind, with the paragraph
+  that went into the library item as their host. Nothing saves them.
+- **Impact:** low. It takes "Add to library" and "Detach from library" on the
+  same paragraph in one edit state, and changes to its nested paragraphs before
+  both.
+- **Fix idea:** fill the fields of the item's paragraph from the proxies before
+  the copy is taken. The rebuild is a method of the edit state today; a mutation
+  can't call it.
+
+## F70: "Add to library" changes the page's earlier revisions
+
+- **Found:** 2026-10-12, fixing the former F12; reproduced with a throwaway
+  kernel test. The revert is by reading.
+- **Symptom:** a page is published with a grid that has two buttons. A third
+  button is added, the grid is added to the library, and the page is published.
+  The page's earlier revision now shows the grid with three buttons. The grid
+  has one revision, and its parent is the library item.
+- **By reading:** reverting the page to such a revision puts the library item's
+  paragraph into the page's field too: one paragraph with two hosts.
+- **Cause:** `MakeReusable::execute()`
+  (`src/Plugin/ParagraphsBlokkli/Mutation/MakeReusable.php:102-108` at
+  `0afa03d`) puts the paragraph itself into the new library item. The item is
+  new, so entity_reference_revisions saves the paragraph without a new revision:
+  the revision that the page's earlier revisions reference is changed in place.
+  Paragraphs' own "Promote to library" (`LibraryItem::createFromParagraph()`)
+  puts a duplicate into the item.
+- **Impact:** low. Only earlier revisions change, and only to what the page had
+  when "Add to library" was published. Later changes to the library item get new
+  revisions.
+- **Fix idea:** a new version of `make_reusable` that puts a duplicate into the
+  library item, with stored UUIDs, as `detach_reusable` makes its copy. Stored
+  mutations keep moving the paragraph.
