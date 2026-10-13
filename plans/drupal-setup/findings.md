@@ -34,7 +34,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                 | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`              | low      | open       |
 | F52  | [A comment's label throws](#f52-a-comments-label-throws)                                                                                                                  | `paragraphs_blokkli` | low      | open       |
-| F62  | [An edit state shows the latest revision without revision access](#f62-an-edit-state-shows-the-latest-revision-without-revision-access)                                   | `paragraphs_blokkli` | low      | to verify  |
 | F63  | [A stored conversion follows the current field settings](#f63-a-stored-conversion-follows-the-current-field-settings)                                                     | `paragraphs_blokkli` | low      | open       |
 | F64  | [A template or a copy places a library item its user may not view](#f64-a-template-or-a-copy-places-a-library-item-its-user-may-not-view)                                 | `paragraphs_blokkli` | low      | to verify  |
 | F67  | [A deleted library item fails the edit states that placed it](#f67-a-deleted-library-item-fails-the-edit-states-that-placed-it)                                           | `paragraphs_blokkli` | low      | open       |
@@ -515,23 +514,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   or a log message with the label.
 - **Fix idea:** `use StringTranslationTrait;` in the entity, or
   `new TranslatableMarkup()`.
-
-## F62: An edit state shows the latest revision without revision access
-
-- **Found:** 2026-10-10, reading the code while letting reviewers open entities
-  without an edit state (not reproduced: the sandbox has no such revisions).
-- **Symptom:** whoever may view edit states sees the host entity's latest
-  revision in the editor, even one they couldn't view otherwise, e.g. a content
-  moderation draft without "View latest version". With the read-only edit state
-  for reviewers, that's every entity with blökkli they can view, not only the
-  ones someone has edited.
-- **Cause:** `ParagraphsBlokkliEditState::getHostEntity()` loads the latest
-  revision, while `LoadHostEntity::resolve()`
-  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/LoadHostEntity.php`)
-  checks view access on the default revision only.
-- **Fix idea:** when the latest revision isn't the default one, check access to
-  it (`view revision`, or content moderation's latest version access); without
-  it, use the default revision.
 
 ## F63: A stored conversion follows the current field settings
 

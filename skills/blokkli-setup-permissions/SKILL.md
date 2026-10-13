@@ -15,7 +15,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export).
 metadata:
   author: blokkli
-  version: '1.0.9'
+  version: '1.0.10'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/configuration#drupal-permissions-reference
 ---
@@ -114,6 +114,16 @@ with blökkli (e.g. `page`, `news`).
   to review or translate it). Core only has `view own unpublished content`: the
   permission comes from Content Moderation or the `view_unpublished` module.
   Without it, the editor can't load the node.
+- access to revisions (`view all revisions`, or `view <type> revisions` per node
+  type), where a published node can have a draft: a latest revision that isn't
+  the published one, as Content Moderation makes them. The editor shows that
+  revision. Whoever may edit the node sees it, as in the node's form. Anyone
+  else, e.g. a reviewer, needs Drupal's access to the revision
+  (`view revision`): this permission, on top of view access to the node and,
+  without a node access module, to the unpublished draft. A project can allow
+  `view revision` in an access hook instead. Without it they get no edit state
+  for the node. Core knows the operation for nodes, media, taxonomy terms and
+  custom blocks; another entity type with such a revision needs the hook.
 - `view the administration theme`: blökkli opens Drupal's forms (add, edit,
   translate)
 - the AI agent, if it's set up: `use paragraphs blokkli agent` (see the
@@ -207,6 +217,10 @@ the editor:
 - **Publish is disabled:** not the owner, or no edit rights.
 - **A reviewer can't comment:** nobody has changed the page yet, so there's no
   edit state; or `post blokkli comments` is missing.
+- **A reviewer can't open a page that has a draft, or the publish dialog doesn't
+  list another page's pending changes:** the role may not view the page, or the
+  revision that the edit state is built on (section 3: unpublished content,
+  access to revisions).
 - **Nested paragraphs are read-only:** the parent's type has no update
   permission.
 - **A translator can edit the source language:** expected (section 3).

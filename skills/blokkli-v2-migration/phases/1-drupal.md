@@ -56,6 +56,25 @@ The edit state itself comes without its owner and its list of changes
 (`ownerName`, `uid`, `mutations`, `currentIndex`) for them: these take
 `view paragraphs blokkli edit state`.
 
+## An edit state is for those who may see its entity
+
+An edit state shows the latest revision of its host entity, with the pending
+changes. `view paragraphs blokkli edit state` now only covers the edit states of
+what the user may see: they must be allowed to update the host entity, or to
+view the revision that the edit state is built on.
+
+- A user who may not view an entity no longer finds its edit state, e.g. in the
+  publish dialog's list of other pages with changes.
+- With Content Moderation, the latest revision of a published node can be a
+  draft. Whoever may edit the node sees it in the editor, as in the node's form.
+  A reviewer needs Drupal's access to that revision (`view revision`): the
+  permission `view all revisions` or `view <type> revisions`, on top of view
+  access; or an access hook of the project that allows the operation. Without it
+  they get no edit state for the node.
+- A preview link still shows the page with its pending changes.
+
+Check the roles that review or comment without editing.
+
 ## Refactored paragraphs_blokkli_comment module
 
 blökkli comments no longer rely on the `comment` core module and instead
