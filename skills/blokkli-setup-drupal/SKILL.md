@@ -15,7 +15,7 @@ compatibility: >-
   backend (composer, drush) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.9'
+  version: '1.0.10'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/overview
 ---
@@ -148,9 +148,11 @@ Watch out for:
   text of an empty field) gets the first of the field's allowed formats that the
   editor may use. A field without allowed formats takes the editor's first
   format, so set them to decide it.
-- **Link fields that a mapping targets:** blökkli sets the link title to the
-  paragraph's label and overwrites titles on replace. Turn the link title off
-  and put the text in its own field.
+- **Link fields that a mapping targets:** the field must take internal links. If
+  it has a link text, a new paragraph gets the name of its target as the text,
+  and replacing the target keeps the text that the link has. The link text can
+  only be edited once the link has a URL: a text that editors write first
+  belongs in a field of its own.
 
 Export the config (`drush cex`).
 

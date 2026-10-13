@@ -11,7 +11,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- |
 | F5   | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                                                                                                    | Drupal core          | high     | workaround |
 | F6   | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                                                                                     | `blokkli_starterkit` | low      | open       |
-| F9   | [Link titles from entity mappings](#f9-link-titles-from-entity-mappings)                                                                                                                     | `paragraphs_blokkli` | medium   | workaround |
 | F11  | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                                                                                        | `paragraphs_blokkli` | low      | open       |
 | F14  | [The comment filter leaks into new text formats](#f14-the-comment-filter-leaks-into-new-text-formats)                                                                                        | `paragraphs_blokkli` | low      | open       |
 | F18  | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                                                                                            | both                 | low      | workaround |
@@ -57,6 +56,8 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F107 | [A duplicate drops nested paragraphs in fields that blökkli doesn't manage](#f107-a-duplicate-drops-nested-paragraphs-in-fields-that-blökkli-doesnt-manage)                                  | `paragraphs_blokkli` | low      | to verify  |
 | F108 | [A template of a new library item's paragraph saves the item early](#f108-a-template-of-a-new-library-items-paragraph-saves-the-item-early)                                                  | `paragraphs_blokkli` | low      | to verify  |
 | F110 | [The Search API lists show what the index returns](#f110-the-search-api-lists-show-what-the-index-returns)                                                                                   | `paragraphs_blokkli` | low      | to verify  |
+| F111 | [A new target resets the options of a link](#f111-a-new-target-resets-the-options-of-a-link)                                                                                                 | `paragraphs_blokkli` | low      | to verify  |
+| F112 | [A text update of a link field does nothing, and is stored](#f112-a-text-update-of-a-link-field-does-nothing-and-is-stored)                                                                  | `paragraphs_blokkli` | low      | open       |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -109,30 +110,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
     `.ddev/nginx_full/nginx-site.conf` does all three.
   - `location ~ ^/sites/[^/]+/files/.*\.php$ { deny all; }` before the other
     locations of files, as in this repo since chunk 10.
-
-## F9: Link titles from entity mappings
-
-- **Found:** 2026-09-26, while building the content model in chunk 04, by
-  reading the code.
-- **Wrong title.** When a mapping targets a link field with a title,
-  `LinkOrReferenceFieldTrait::getLinkOrEntityReferenceFieldValue()`
-  (`src/Traits/LinkOrReferenceFieldTrait.php:64`) sets the title to
-  `$entity->label()`: the paragraph, not the target entity.
-  - For a new paragraph that's "Orphaned Button: …". Affected: `add_file`,
-    `add_entity_reference`, `add_entity_reference_multiple`.
-  - `replace_entity_reference` overwrites a title the user wrote. So does
-    `replace_media` on a link field, which it takes since 2026-10-12 (the former
-    F45).
-  - Fix: use `$targetEntity->label()`, and keep an existing title.
-- **Always true.** `isInternalLinkField()` (`:88`) returns
-  `$linkTypeSetting === LINK_GENERIC || LinkItemInterface::LINK_INTERNAL`, which
-  is always TRUE. It should compare the setting with both constants.
-- **Lost title.** Editing a link's title inline while the field has no URI
-  writes an item with only a title
-  (`src/Plugin/ParagraphsBlokkli/UpdateFieldValueTrait.php:70`).
-  `LinkItem::isEmpty()` only looks at the URI, so the title is dropped on save.
-- **Workaround:** link fields without a title and the text in its own field, as
-  in the starterkit and winterthur. The playground's `button` does this.
 
 ## F11: Options schema: no validation, lossy form saves
 
@@ -943,3 +920,37 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** load the entities of a page of results and leave out what the
   user may not view, as the entity query plugins do. Or say in the skill which
   processors the index needs.
+
+## F111: A new target resets the options of a link
+
+- **Found:** 2026-10-13, by reading, when a link kept its title on a new target
+  (the former F9). Not reproduced.
+- **Symptom:** none seen. By reading: a link item also has options, such as the
+  attributes that the Link Attributes module stores. Replacing the target of a
+  link through an entity mapping (`replace_entity_reference`, `replace_media`)
+  writes an item with a URI and a title only, so the options are gone. Typing or
+  pasting a URL keeps them: that path merges into the item.
+- **Cause:** `LinkOrReferenceFieldTrait::getLinkOrEntityReferenceFieldValue()`
+  (`src/Traits/LinkOrReferenceFieldTrait.php`) returns the URI and the title,
+  and the mutations set that as the field's value.
+- **Impact:** low: blökkli has no UI for a link's options, so they come from
+  Drupal's form on a site with such a module.
+- **Fix idea:** keep the options of the item, as the title is kept. Behind a new
+  version of the two mutations.
+
+## F112: A text update of a link field does nothing, and is stored
+
+- **Found:** 2026-10-13, in the sandbox check of the link titles (the former
+  F9), over GraphQL.
+- **Symptom:** `update_field_value` with the name of a link field and a URI as
+  its value answers with success. The link has no URL afterwards, and the edit
+  state has a mutation that changes nothing. The editor doesn't send this: it
+  sets a URL with `bulk_update_field_values`, which writes the URI.
+- **Cause:** `UpdateFieldValueTrait::updateTextFieldValue()`
+  (`src/Plugin/ParagraphsBlokkli/UpdateFieldValueTrait.php`) writes a value
+  without a property into the item's `value`, which a link item doesn't have. By
+  reading, the same goes for every field whose items have no `value`.
+- **Impact:** low: a client of its own, or a tool of the agent, that picks the
+  wrong mutation gets no error.
+- **Fix idea:** refuse a field whose items have no `value` when the mutation is
+  added, or write the value as `bulk_update_field_values` does.
