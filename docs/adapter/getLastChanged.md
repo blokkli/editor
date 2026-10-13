@@ -1,11 +1,11 @@
 # getLastChanged()
 
-This method should return the timestamp (as a Unix epoch timestamp in seconds)
-of when the host entity has been last edited.
+This method should return when the edit state was last changed, as an ISO 8601
+date (e.g. `2026-05-28T14:32:18.000Z`).
 
 This method is called when the edit state is being previewed using the preview
-URL. When the timestamp changes, the `<PreviewProvider>` will call the
-[loadState()](/adapter/loadState) method to get the updated state.
+URL. When the date differs from the one before, the `<PreviewProvider>` will
+call the [loadState()](/adapter/loadState) method to get the updated state.
 
 ::: code-group
 
@@ -16,8 +16,8 @@ export default defineBlokkliEditAdapter((ctx) => {
   return {
     getLastChanged: () => {
       return Promise.resolve(
-        // Timestamp of when the state was last edited (as seconds since UNIX epoch).
-        1706109810,
+        // When the state was last changed, as an ISO 8601 date.
+        '2024-01-24T15:23:30.000Z',
       )
     },
   }

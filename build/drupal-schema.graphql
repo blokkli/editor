@@ -2399,6 +2399,12 @@ type FieldItemTypeParagraphsBlokkliMutation implements FieldItemType {
   isEmpty: Boolean!
 
   plugin: ParagraphsBlokkliMutationPlugin
+
+  """
+  When the mutation was added, as an ISO 8601 date in UTC, e.g.
+  2026-05-28T14:32:18.000Z.
+  """
+  created: String
 }
 
 "Paragraphs Blokkli Edit State"
@@ -2485,6 +2491,12 @@ type ParagraphsBlokkliEditState implements Entity & EntityLinkable {
   url(rel: String, options: UrlOptions): Url
 
   comments: [ParagraphsBlokkliComment]
+
+  """
+  When the edit state was last changed, as an ISO 8601 date in UTC, e.g.
+  2026-05-28T14:32:18.000Z. It changes with every mutation.
+  """
+  lastChanged: String
 
   "The paragraphs_blokkli host entity information."
   entity: ParagraphsBlokkliEntity!
@@ -7209,7 +7221,10 @@ type ParagraphsBlokkliPublishOptions {
   ""
   hasRevisionLogMessage: Boolean!
 
-  ""
+  """
+  When the entity was last changed, as an ISO 8601 date in UTC, e.g.
+  2026-05-28T14:32:18.000Z.
+  """
   lastChanged: String
 
   ""
@@ -8028,7 +8043,7 @@ type ParagraphsBlokkliNotification {
   "Whether the current user has read this notification."
   read: Boolean!
 
-  "The creation time as an ISO 8601 UTC timestamp, e.g. 2026-05-28T14:32:18Z."
+  "The creation time as an ISO 8601 date in UTC, e.g. 2026-05-28T14:32:18.000Z."
   created: String!
 
   "The raw notification type id, e.g. \"comment:mention\"."

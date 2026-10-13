@@ -341,7 +341,7 @@ export class EditState {
       const mutation = createMutation(v.id as any, v.configuration)
       return {
         pluginId: v.id,
-        timestamp: (v.timestamp / 1000).toString(),
+        timestamp: new Date(v.timestamp).toISOString(),
         plugin: {
           label: v.id,
           affectedItemUuid: mutation.getAffectedUuid(v.args),

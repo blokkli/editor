@@ -30,13 +30,14 @@ current edit state.
 
 ### Example
 
-Each item has an optional `timestamp` (a `string`), `pluginId`, `plugin` (with
-`label` and `affectedItemUuid`) and `enabled`.
+Each item has an optional `timestamp` (when the mutation was added, as an ISO
+8601 date), `pluginId`, `plugin` (with `label` and `affectedItemUuid`) and
+`enabled`.
 
 ```json
 [
   {
-    "timestamp": "1706109810",
+    "timestamp": "2024-01-24T15:23:30.000Z",
     "pluginId": "move_blocks",
     "plugin": {
       "label": "Move 'Title' block",
@@ -44,7 +45,7 @@ Each item has an optional `timestamp` (a `string`), `pluginId`, `plugin` (with
     }
   },
   {
-    "timestamp": "1706109422",
+    "timestamp": "2024-01-24T15:17:02.000Z",
     "pluginId": "add_new_block",
     "plugin": {
       "label": "Add 'Text' block",
@@ -52,7 +53,7 @@ Each item has an optional `timestamp` (a `string`), `pluginId`, `plugin` (with
     }
   },
   {
-    "timestamp": "1706107204",
+    "timestamp": "2024-01-24T14:40:04.000Z",
     "pluginId": "add_new_block",
     "plugin": {
       "label": "Add 'Title' block",
@@ -368,7 +369,7 @@ This is an example of a full edit state object that should be returned by
   "currentIndex": 2,
   "mutations": [
     {
-      "timestamp": "1706109810",
+      "timestamp": "2024-01-24T15:23:30.000Z",
       "pluginId": "move_blocks",
       "plugin": {
         "label": "Move 'Title' block",
@@ -376,7 +377,7 @@ This is an example of a full edit state object that should be returned by
       }
     },
     {
-      "timestamp": "1706109422",
+      "timestamp": "2024-01-24T15:17:02.000Z",
       "pluginId": "add_new_block",
       "plugin": {
         "label": "Add 'Text' block",
@@ -384,7 +385,7 @@ This is an example of a full edit state object that should be returned by
       }
     },
     {
-      "timestamp": "1706107204",
+      "timestamp": "2024-01-24T14:40:04.000Z",
       "pluginId": "add_new_block",
       "plugin": {
         "label": "Add 'Title' block",

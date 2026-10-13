@@ -13,6 +13,7 @@ import { closeFormOverlay, dialog, formOverlay } from '../../support/overlays'
 import { toolbarButton } from '../../support/toolbar'
 import { emitEvent } from '../../support/events'
 import { nextMutation } from '../../support/mutations'
+import { isRecentIsoDate } from '../../support/dates'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 
 /**
@@ -154,6 +155,20 @@ describe('The entity-title feature', async () => {
     // A pending mutation on a published page flips success → warning.
     await addBlock(publishedPage, { fieldName: 'field_paragraphs' })
     await expect.poll(() => entityStatus(publishedPage)).toBe('warning')
+
+    // The title says when the edit state was last changed: just now.
+    const lastChanged = entityTitle(publishedPage).locator(
+      '[data-test="relative-time"]',
+    )
+    await expect
+      .poll(async () =>
+        (await lastChanged.count()) === 1
+          ? isRecentIsoDate(
+              await lastChanged.getAttribute('data-test-relative-time-date'),
+            )
+          : false,
+      )
+      .toBe(true)
   })
 
   test('pending changes do not upgrade the status of an unpublished page', async () => {

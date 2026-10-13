@@ -68,7 +68,7 @@ const broadcast = broadcastProvider()
 const definitions = definitionProvider(props.providerType, interfaceLanguage)
 
 let timeout: any = null
-let lastChanged: number = 0
+let lastChanged: string | null = null
 const mutatedFieldsMap = reactive<Record<string, MutatedField | undefined>>({})
 const mutatedOptions = reactive<MutatedOptions>({})
 const mutatedEntityFromState = ref<T | null>(null)
@@ -180,9 +180,9 @@ function checkChangedDate() {
   timeout = setTimeout(async () => {
     const changed = adapter.getLastChanged
       ? await adapter.getLastChanged()
-      : Date.now()
+      : new Date().toISOString()
     if (changed) {
-      if (lastChanged !== 0 && lastChanged !== changed) {
+      if (lastChanged !== null && lastChanged !== changed) {
         await refresh()
         updateState()
       }

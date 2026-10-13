@@ -175,7 +175,7 @@ const manualResults = useState<AnalyzeResultWithPluginId[]>(
   () => [],
 )
 const activeId = ui.activeHighlightId
-const lastRun = useState(() => 0)
+const lastRun = useState(() => '')
 const lastRunKey = useState(() => '')
 const selectedCategory = useState(() => ALL)
 const keepVisible = storage.use('analyze:keepVisible', true)
@@ -541,7 +541,7 @@ async function runContinuous() {
     continuousResults.value = newResults
 
     hasRunOnce.value = true
-    lastRun.value = Date.now() / 1000
+    lastRun.value = new Date().toISOString()
   } catch (error) {
     // If the error is an abort error, silently ignore it
     if (error instanceof Error && error.name === 'AbortError') {
@@ -607,7 +607,7 @@ async function onClick() {
     manualResults.value = newManualResults
 
     hasRunOnce.value = true
-    lastRun.value = Date.now() / 1000
+    lastRun.value = new Date().toISOString()
 
     // Only update lastRunKey if the refresh key hasn't changed during analysis
     if (state.refreshKey.value === currentRefreshKey) {

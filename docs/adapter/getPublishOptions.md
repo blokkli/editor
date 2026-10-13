@@ -30,6 +30,9 @@ This method returns information about the publishing capabilities and current
 state of the entity being edited. The editor uses this information to display
 the appropriate publish UI and options.
 
+`lastChanged` and `publishOn` are ISO 8601 dates (e.g.
+`2026-05-28T14:32:18.000Z`).
+
 ## Example
 
 ```typescript

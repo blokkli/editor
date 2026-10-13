@@ -1,6 +1,11 @@
 <template>
   <slot :formatted :formatted-date>
-    <span :title="formattedDate">{{ formatted }}</span>
+    <span
+      :title="formattedDate"
+      data-test="relative-time"
+      :data-test-relative-time-date="date ? date.toISOString() : ''"
+      >{{ formatted }}</span
+    >
   </slot>
 </template>
 
@@ -9,17 +14,16 @@ import { isValidDate } from '#blokkli/editor/helpers/date'
 import { ref, computed, onMounted, onBeforeUnmount, useBlokkli } from '#imports'
 
 const props = defineProps<{
-  timestamp: number | string
+  /**
+   * An ISO 8601 date, e.g. `2026-05-28T14:32:18.000Z`.
+   */
+  timestamp: string
 }>()
 
 const { ui, $t } = useBlokkli()
 
 const date = computed<Date | null>(() => {
-  const dateArg =
-    typeof props.timestamp === 'number'
-      ? props.timestamp * 1000
-      : props.timestamp
-  const parsedDate = new Date(dateArg)
+  const parsedDate = new Date(props.timestamp)
   return isValidDate(parsedDate) ? parsedDate : null
 })
 

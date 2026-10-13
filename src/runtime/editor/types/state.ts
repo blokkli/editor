@@ -36,6 +36,10 @@ export interface TranslationState {
 }
 
 export interface MutationItem {
+  /**
+   * When the mutation was added, as an ISO 8601 date (e.g.
+   * `2026-05-28T14:32:18.000Z`).
+   */
   timestamp?: string
   pluginId?: string
   plugin?: { label?: string; affectedItemUuid?: string }
@@ -56,12 +60,13 @@ export interface MappedState {
   currentUserIsOwner: boolean
   ownerName: string
   /**
-   * Unix timestamp (in seconds) of when the edit state was last changed.
+   * When the edit state was last changed, as an ISO 8601 date (e.g.
+   * `2026-05-28T14:32:18.000Z`).
    *
    * This is the edit state's own `changed` time (it bumps on every mutation),
    * distinct from `publishOptions.lastChanged`, which is the published entity's.
    */
-  lastChanged?: number
+  lastChanged?: string
   ownerId?: string
   mutatedState?: {
     mutatedOptions?: any

@@ -109,7 +109,7 @@ function getPublishOptions(ctx: {
     canPublish: true,
     isRevisionable: true,
     hasRevisionLogMessage: true,
-    lastChanged: '1725890401',
+    lastChanged: '2024-09-09T14:00:01.000Z',
     canSchedule: true,
     publishOn,
     revisionLogMessage,
@@ -811,7 +811,7 @@ export default defineBlokkliEditAdapter((ctx) => {
         ownerName: state.owner.name,
         ownerId: state.owner.id,
         // The mock has no persisted "changed" timestamp — fake it as "now".
-        lastChanged: Math.floor(Date.now() / 1000),
+        lastChanged: new Date().toISOString(),
         mutatedEntity: inputState.context.entity.getData(),
         mutatedState: {
           mutatedOptions: inputState.mutatedOptions,

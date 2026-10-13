@@ -25,11 +25,15 @@
               <strong>{{ item.mutation.plugin?.label }}</strong>
             </div>
             <RelativeTime
-              v-if="item.timestamp"
+              v-if="item.mutation.timestamp"
               v-slot="{ formatted }"
-              :timestamp="item.timestamp"
+              :timestamp="item.mutation.timestamp"
             >
-              <em>{{ formatted }}</em>
+              <em
+                data-test="history-item-time"
+                :data-test-history-time="item.mutation.timestamp"
+                >{{ formatted }}</em
+              >
             </RelativeTime>
           </div>
         </button>
@@ -117,7 +121,10 @@ watch(totalMutations, (newTotal, previousTotal) => {
 type HistoryItem = {
   index: number
   mutation: MutationItem
-  timestamp: number
+  /**
+   * When the mutation was added, in milliseconds, to sort by.
+   */
+  time: number
   enabled: boolean
 }
 
@@ -127,12 +134,12 @@ const mapped = computed<HistoryItem[]>(() =>
       return {
         index,
         mutation,
-        timestamp: mutation.timestamp ? Number.parseInt(mutation.timestamp) : 0,
+        time: mutation.timestamp ? Date.parse(mutation.timestamp) || 0 : 0,
         enabled: mutation.enabled !== false,
       }
     })
     .sort((a, b) => {
-      return b.timestamp - a.timestamp
+      return b.time - a.time
     })
     .filter((v, _i, arr) => {
       return v.index >= arr.length - showAmount.value

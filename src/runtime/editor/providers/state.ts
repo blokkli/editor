@@ -136,13 +136,13 @@ export type StateProvider = {
   currentMutationIndex: Readonly<Ref<number>>
 
   /**
-   * Unix timestamp (in seconds) of when the edit state was last changed, or
-   * `null` if there are no changes yet. Updates after every mutation.
+   * When the edit state was last changed, as an ISO 8601 date, or `null` if
+   * there are no changes yet. Updates after every mutation.
    *
    * Distinct from `publishOptions.lastChanged`, which is the published entity's
    * change time.
    */
-  lastChanged: Readonly<Ref<number | null>>
+  lastChanged: Readonly<Ref<string | null>>
 
   /**
    * Validation violations for the current state.
@@ -410,7 +410,7 @@ export default async function (
   })
   const currentMutationIndex = ref(-1)
   const isLoading = ref(false)
-  const lastChanged = ref<number | null>(null)
+  const lastChanged = ref<string | null>(null)
   const entity = ref<EditEntity>({
     label: '',
     status: false,

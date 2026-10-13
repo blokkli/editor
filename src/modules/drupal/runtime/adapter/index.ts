@@ -385,8 +385,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       const mutations = (state?.mutations || []).filter(falsy)
       const currentUserIsOwner = !!state?.currentUserIsOwner
       const ownerName = state?.ownerName || ''
-      const lastChangedRaw = state?.changedRawField?.first?.value
-      const lastChanged = lastChangedRaw ? parseInt(lastChangedRaw) : undefined
+      const lastChanged = state?.lastChanged ?? undefined
       const fields = state?.mutatedState?.fields || []
       const violations = state.mutatedState?.violations || []
       const entity = state.entity
@@ -674,7 +673,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     }
 
     const getLastChanged: DrupalAdapter['getLastChanged'] = () =>
-      $fetch<{ changed: number }>(
+      $fetch<{ changed: string }>(
         `/paragraphs_blokkli/${ctx.value.entityType}/${ctx.value.entityUuid}/last_changed`,
       ).then((v) => v.changed)
 
@@ -1820,7 +1819,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
                     label: v.label,
                     ownerName: v.uid?.name ?? '',
                     pendingChanges: v.mutations?.count ?? 0,
-                    lastChanged: v.changedRawField?.first?.formatted ?? '',
+                    lastChanged: v.lastChanged ?? '',
                     url: v.url.path,
                     entity: v.entity,
                     currentUserIsOwner: v.currentUserIsOwner,

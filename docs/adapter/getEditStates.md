@@ -56,6 +56,8 @@ showing unpublished changes across different entities. This is useful for
 editors to see where they have pending changes or to find edit states created by
 other users.
 
+`lastChanged` is an ISO 8601 date (e.g. `2026-05-28T14:32:18.000Z`).
+
 ## Example
 
 ```typescript

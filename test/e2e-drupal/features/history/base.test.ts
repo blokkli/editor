@@ -20,6 +20,7 @@ import {
   openHistory,
 } from '../../support/history'
 import { nextMutation } from '../../support/mutations'
+import { isRecentIsoDate } from '../../support/dates'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 import { editorPath, openEditor, revertAllChanges } from '../../support/session'
 
@@ -140,6 +141,16 @@ describe('The history feature', async () => {
 
     await expect.poll(() => historyItems(page).count()).toBe(2)
     expect(await mutationCount(page)).toBe(2)
+
+    // Each item says when its mutation was added: a date that the editor reads.
+    const times = page.locator('[data-test="history-item-time"]')
+    await expect.poll(() => times.count()).toBe(2)
+    for (const time of await times.all()) {
+      expect(
+        isRecentIsoDate(await time.getAttribute('data-test-history-time')),
+      ).toBe(true)
+      expect((await time.textContent())?.trim()).not.toBe('')
+    }
 
     // At index 1 the second mutation's item is active; "Current revision" is not.
     await expect.poll(() => activeHistoryIndex(page)).toBe(1)

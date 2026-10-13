@@ -55,11 +55,7 @@ query pbSearchEditStates($page: Int) {
       uid {
         name
       }
-      changedRawField {
-        first {
-          formatted(format: "c")
-        }
-      }
+      lastChanged
       entity {
         label
         status

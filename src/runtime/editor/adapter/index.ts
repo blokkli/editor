@@ -202,9 +202,13 @@ export interface BlokkliAdapter<T> {
   ): Promise<MutationResponseLike<T>>
 
   /**
-   * Get the last changed timestamp for the edit state.
+   * Get when the edit state was last changed, as an ISO 8601 date (e.g.
+   * `2026-05-28T14:32:18.000Z`).
+   *
+   * The preview asks for it repeatedly and reloads when the value differs from
+   * the one before.
    */
-  getLastChanged?: () => Promise<number>
+  getLastChanged?: () => Promise<string>
 
   /**
    * Build the URL for forms.
