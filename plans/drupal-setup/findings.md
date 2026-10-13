@@ -53,13 +53,13 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F95  | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                        | both                 | low      | open       |
 | F96  | [The editor reads field values through a detached element](#f96-the-editor-reads-field-values-through-a-detached-element)                                                 | editor               | low      | to verify  |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli` | low      | to verify  |
-| F101 | [Lists from an entity query rely on the query's access check](#f101-lists-from-an-entity-query-rely-on-the-querys-access-check)                                           | `paragraphs_blokkli` | low      | to verify  |
 | F102 | [The library search fails for an empty list of types](#f102-the-library-search-fails-for-an-empty-list-of-types)                                                          | `paragraphs_blokkli` | low      | open       |
 | F103 | [A preview misses a change that is made before its first poll](#f103-a-preview-misses-a-change-that-is-made-before-its-first-poll)                                        | editor               | low      | open       |
 | F104 | [A refused machine translation answers "Internal server error"](#f104-a-refused-machine-translation-answers-internal-server-error)                                        | `paragraphs_blokkli` | low      | open       |
 | F106 | [A duplicate doesn't keep the published state](#f106-a-duplicate-doesnt-keep-the-published-state)                                                                         | `paragraphs_blokkli` | low      | to verify  |
 | F107 | [A duplicate drops nested paragraphs in fields that blökkli doesn't manage](#f107-a-duplicate-drops-nested-paragraphs-in-fields-that-blökkli-doesnt-manage)               | `paragraphs_blokkli` | low      | to verify  |
 | F108 | [A template of a new library item's paragraph saves the item early](#f108-a-template-of-a-new-library-items-paragraph-saves-the-item-early)                               | `paragraphs_blokkli` | low      | to verify  |
+| F110 | [The Search API lists show what the index returns](#f110-the-search-api-lists-show-what-the-index-returns)                                                                | `paragraphs_blokkli` | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -890,36 +890,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** drop the dependency, if a server without the extension still
   builds its schema.
 
-## F101: Lists from an entity query rely on the query's access check
-
-- **Found:** 2026-10-12, with the former F98.
-- **Symptom:** on a site without a node access module, a list that comes from an
-  entity query with `accessCheck(TRUE)` has the unpublished pages of other
-  users, for a user who may not view them.
-- **Cause:** for nodes, core checks such a query against the node grants only,
-  and not at all where no module implements `hook_node_grants()`: the published
-  status isn't looked at. The results are loaded and listed without
-  `access('view')`.
-- **Verified:** the query, in a kernel test with core's node module only: it
-  returns an unpublished page that `access('view')` denies. The sandbox doesn't
-  show it: `view_unpublished` implements the grants.
-- **By reading, not checked:** the lists that the editor uses without Search
-  API: `EntityQuery` (the content search), `EntityQueryMediaLibrary` and
-  `EntityQueryLibraryItems`
-  (`modules/paragraphs_blokkli_search/src/Plugin/ParagraphsBlokkli/Search/`).
-  What an entity query checks for media and library items is open.
-- **Also verified,** over HTTP as an anonymous visitor with a preview grant,
-  while such a grant still passed for the editor's gate (the former F99): the
-  search for templates (`EntityQueryTemplates`) lists a template, with its ID
-  and without its label, for someone without `view paragraph templates`. The
-  search for edit states (`EntityQueryEditStates`) counts in its total the edit
-  states that its user may not view; the items are filtered. An entity query
-  checks nothing for either entity type. Not checked again as a user who may use
-  the editor.
-- **Impact:** low: titles, for someone who may use the editor.
-- **Fix idea:** view access to a result before it's listed (the total is then an
-  upper bound).
-
 ## F102: The library search fails for an empty list of types
 
 - **Found:** 2026-10-12, while probing the queries behind the editor's gate (the
@@ -1009,3 +979,26 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   library item is the item itself. Saving the template saves what it references.
 - **Fix idea:** refuse a template of a paragraph that shows a library item which
   isn't saved yet.
+
+## F110: The Search API lists show what the index returns
+
+- **Found:** 2026-10-13, by reading, when the lists from an entity query got
+  their check for view access (the former F101). Not reproduced; the sandbox's
+  editor uses the entity query plugins.
+- **Symptom:** none seen. By reading: the content search and the media library
+  of `paragraphs_blokkli_search_api` list the title, the text and the image that
+  the index has for a result. No entity is loaded and nobody asks whether the
+  user may view it. What a user finds depends on the index alone: on its
+  processors "Content access" and "Entity status", if they're enabled.
+- **Cause:** `SearchApi::getResults()` and
+  `SearchApiMediaLibrary::getMediaLibraryResults()`
+  (`modules/paragraphs_blokkli_search_api/src/Plugin/ParagraphsBlokkli/Search/`)
+  map the result items of the query. The entity query plugins load the entities
+  and call `filterViewable()`.
+- **Also:** the search skill (`skills/blokkli-setup-search`, "Permissions") says
+  that each result is access-checked. That holds for the entity query plugin.
+- **Impact:** low, to verify: titles and text excerpts, on a site whose index
+  has what its editors may not view.
+- **Fix idea:** load the entities of a page of results and leave out what the
+  user may not view, as the entity query plugins do. Or say in the skill which
+  processors the index needs.
