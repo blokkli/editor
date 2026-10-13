@@ -35,7 +35,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                                          | `texts`              | low      | open       |
 | F52  | [A comment's label throws](#f52-a-comments-label-throws)                                                                                                                                     | `paragraphs_blokkli` | low      | open       |
 | F64  | [A template or a copy places a library item its user may not view](#f64-a-template-or-a-copy-places-a-library-item-its-user-may-not-view)                                                    | `paragraphs_blokkli` | low      | to verify  |
-| F67  | [A deleted library item fails the edit states that placed it](#f67-a-deleted-library-item-fails-the-edit-states-that-placed-it)                                                              | `paragraphs_blokkli` | low      | open       |
 | F68  | [A copy of a nested paragraph that the first run didn't see gets a new UUID on every replay](#f68-a-copy-of-a-nested-paragraph-that-the-first-run-didnt-see-gets-a-new-uuid-on-every-replay) | `paragraphs_blokkli` | low      | to verify  |
 | F70  | [A library item shares its paragraph with the page's earlier revisions](#f70-a-library-item-shares-its-paragraph-with-the-pages-earlier-revisions)                                           | `paragraphs_blokkli` | low      | open       |
 | F71  | [Moving a paragraph into its own nested paragraph is refused for the wrong reason](#f71-moving-a-paragraph-into-its-own-nested-paragraph-is-refused-for-the-wrong-reason)                    | `paragraphs_blokkli` | low      | open       |
@@ -538,25 +537,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   items of the placed paragraphs, next to the check of the allowed types. Or
   decide that repeating an existing reference needs no check, as for the nested
   paragraph types of a duplicated paragraph.
-
-## F67: A deleted library item fails the edit states that placed it
-
-- **Found:** 2026-10-12, in the sandbox check of the detach fix.
-- **Symptom:** an edit state places a library item (`add_reusable`) and isn't
-  published. Then the item is deleted. From then on the placement fails on every
-  replay with "Missing Entity", and what was done with the placed paragraph
-  since is lost with it. That includes a detach: since 2026-10-12 it stores its
-  copy, but the paragraph that the copy replaces isn't there.
-- **Not affected:** a paragraph that was placed and published before it's
-  detached. Its copy stays on the page when the item is changed or deleted.
-- **Cause:** `AddReusable::execute()`
-  (`src/Plugin/ParagraphsBlokkli/Mutation/AddReusable.php:72-83` at `b4f9c16`)
-  looks the item up on every run, and throws when it's gone.
-- **Impact:** low. The replay reports the error, and placing a library item to
-  detach it at once is one way to get there.
-- **Fix idea:** a detach stores where its paragraph was (host, field, the
-  paragraph before it) with the copy, and adds the copy there when the paragraph
-  is missing. Or decide that a failed placement fails what follows.
 
 ## F68: A copy of a nested paragraph that the first run didn't see gets a new UUID on every replay
 
