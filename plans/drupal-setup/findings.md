@@ -971,7 +971,9 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Cause:**
   `modules/paragraphs_blokkli_comment/paragraphs_blokkli_comment.info.yml` lists
   `paragraphs_blokkli`, `filter` and `text` only. The agent's module names the
-  dependency.
+  dependency. The extension also resolves four fields with `call_method`, a data
+  producer of `graphql_core_schema`: that module provides the extension's schema
+  (`core_composable`), and the GraphQL submodule depends on it.
 - **Impact:** low: comments are of no use over GraphQL without the edit
   extension, so no site is set up this way.
 - **Fix idea:** add the dependency, or move the schema extension into
