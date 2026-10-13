@@ -58,6 +58,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F110 | [The Search API lists show what the index returns](#f110-the-search-api-lists-show-what-the-index-returns)                                                                                   | `paragraphs_blokkli` | low      | to verify  |
 | F111 | [A new target resets the options of a link](#f111-a-new-target-resets-the-options-of-a-link)                                                                                                 | `paragraphs_blokkli` | low      | to verify  |
 | F112 | [A text update of a link field does nothing, and is stored](#f112-a-text-update-of-a-link-field-does-nothing-and-is-stored)                                                                  | `paragraphs_blokkli` | low      | open       |
+| F113 | [The comment module's schema extension needs the GraphQL submodule](#f113-the-comment-modules-schema-extension-needs-the-graphql-submodule)                                                  | `paragraphs_blokkli` | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -954,3 +955,25 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   wrong mutation gets no error.
 - **Fix idea:** refuse a field whose items have no `value` when the mutation is
   added, or write the value as `bulk_update_field_values` does.
+
+## F113: The comment module's schema extension needs the GraphQL submodule
+
+- **Found:** 2026-10-13, by reading, when the tests of the schema extensions'
+  resolvers were written. Not reproduced: a kernel test loads the classes of
+  every module, enabled or not.
+- **Symptom:** none seen. By reading: `paragraphs_blokkli_comment` doesn't
+  depend on `paragraphs_blokkli_graphql`, but its schema extension formats the
+  dates of a comment with `BlokkliResolverHelper` and resolves its queries with
+  data producers of that module (`paragraphs_blokkli_can_use_blokkli`,
+  `paragraphs_blokkli_load_host_entity`, `paragraphs_blokkli_load_edit_state`).
+  On a site with the GraphQL module and the comment module, but without the
+  GraphQL submodule, a server with this extension fails.
+- **Cause:**
+  `modules/paragraphs_blokkli_comment/paragraphs_blokkli_comment.info.yml` lists
+  `paragraphs_blokkli`, `filter` and `text` only. The agent's module names the
+  dependency.
+- **Impact:** low: comments are of no use over GraphQL without the edit
+  extension, so no site is set up this way.
+- **Fix idea:** add the dependency, or move the schema extension into
+  `paragraphs_blokkli_graphql`, where the library's, the search's and the
+  transform's are.
