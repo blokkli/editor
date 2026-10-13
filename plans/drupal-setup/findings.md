@@ -59,6 +59,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F111 | [A new target resets the options of a link](#f111-a-new-target-resets-the-options-of-a-link)                                                                                                 | `paragraphs_blokkli` | low      | to verify  |
 | F112 | [A text update of a link field does nothing, and is stored](#f112-a-text-update-of-a-link-field-does-nothing-and-is-stored)                                                                  | `paragraphs_blokkli` | low      | open       |
 | F113 | [The comment module's schema extension needs the GraphQL submodule](#f113-the-comment-modules-schema-extension-needs-the-graphql-submodule)                                                  | `paragraphs_blokkli` | low      | to verify  |
+| F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                                                                                          | `paragraphs_blokkli` | low      | open       |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -962,12 +963,12 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   resolvers were written. Not reproduced: a kernel test loads the classes of
   every module, enabled or not.
 - **Symptom:** none seen. By reading: `paragraphs_blokkli_comment` doesn't
-  depend on `paragraphs_blokkli_graphql`, but its schema extension formats the
-  dates of a comment with `BlokkliResolverHelper` and resolves its queries with
-  data producers of that module (`paragraphs_blokkli_can_use_blokkli`,
-  `paragraphs_blokkli_load_host_entity`, `paragraphs_blokkli_load_edit_state`).
-  On a site with the GraphQL module and the comment module, but without the
-  GraphQL submodule, a server with this extension fails.
+  depend on `paragraphs_blokkli_graphql`, but its schema extension resolves its
+  queries with data producers of that module
+  (`paragraphs_blokkli_can_use_blokkli`, `paragraphs_blokkli_load_host_entity`,
+  `paragraphs_blokkli_load_edit_state`). On a site with the GraphQL module and
+  the comment module, but without the GraphQL submodule, a server with this
+  extension fails.
 - **Cause:**
   `modules/paragraphs_blokkli_comment/paragraphs_blokkli_comment.info.yml` lists
   `paragraphs_blokkli`, `filter` and `text` only. The agent's module names the
@@ -979,3 +980,21 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** add the dependency, or move the schema extension into
   `paragraphs_blokkli_graphql`, where the library's, the search's and the
   transform's are.
+
+## F114: A date after 2038 can't be scheduled on MySQL
+
+- **Found:** 2026-10-13, in a kernel test of the scheduling (MariaDB), when the
+  dates got their one format.
+- **Symptom:** scheduling an edit state for a date after 2038-01-19 fails with
+  "Numeric value out of range: 1264 Out of range value for column 'publish_on'".
+  The mutation answers with a server error, not with a reason. On SQLite, as in
+  the sandbox, the date is stored. By reading, the same goes for the dates of a
+  paragraph, which are the scheduler module's fields of the same type.
+- **Cause:** `publish_on` is a `timestamp` field, which Drupal stores in a
+  signed 32-bit column. `ScheduleEditState`
+  (`modules/paragraphs_blokkli_scheduler/src/Plugin/GraphQL/DataProducer/ScheduleEditState.php`)
+  only refuses a date that is too soon.
+- **Impact:** low: no one schedules that far ahead today. Whether the editor's
+  date input lets a user pick such a date is not checked.
+- **Fix idea:** refuse a date that the column can't hold, with a message, where
+  the date is read (`BlokkliDate::parse()` or its two callers).
