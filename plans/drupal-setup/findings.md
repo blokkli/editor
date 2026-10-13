@@ -34,7 +34,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                                     | both                 | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                                          | `texts`              | low      | open       |
 | F52  | [A comment's label throws](#f52-a-comments-label-throws)                                                                                                                                     | `paragraphs_blokkli` | low      | open       |
-| F63  | [A stored conversion follows the current field settings](#f63-a-stored-conversion-follows-the-current-field-settings)                                                                        | `paragraphs_blokkli` | low      | open       |
 | F64  | [A template or a copy places a library item its user may not view](#f64-a-template-or-a-copy-places-a-library-item-its-user-may-not-view)                                                    | `paragraphs_blokkli` | low      | to verify  |
 | F67  | [A deleted library item fails the edit states that placed it](#f67-a-deleted-library-item-fails-the-edit-states-that-placed-it)                                                              | `paragraphs_blokkli` | low      | open       |
 | F68  | [A copy of a nested paragraph that the first run didn't see gets a new UUID on every replay](#f68-a-copy-of-a-nested-paragraph-that-the-first-run-didnt-see-gets-a-new-uuid-on-every-replay) | `paragraphs_blokkli` | low      | to verify  |
@@ -515,30 +514,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** `use StringTranslationTrait;` in the entity, or
   `new TranslatableMarkup()`.
 
-## F63: A stored conversion follows the current field settings
-
-- **Found:** 2026-10-11, reading the conversions for the allowed types (the
-  former F16); reproduced with a throwaway kernel test.
-- **Symptom:** a conversion that was stored with its nested paragraphs loses
-  them later. A grid with a button was converted into a list whose field allows
-  every type: the list had the button. After the list's field was narrowed to
-  another type, the same edit state replayed the conversion without the button.
-  Nothing reports it. By reading: publishing then saves the list without it, and
-  the other way round, a nested paragraph that was dropped comes back.
-- **Cause:** `ConvertMutationBase::convertParagraph()`
-  (`modules/paragraphs_blokkli_conversion/src/Plugin/ConvertMutationBase.php:164-179`
-  at `29a392b`) asks on every run which types the target field allows, and marks
-  a nested paragraph that doesn't fit as deleted. Other decisions that depend on
-  the site's settings (validation, text formats, templates, allowed types) are
-  made on the first run, and stored where a replay needs them.
-- **Impact:** only with a change of a field's allowed types while an edit state
-  with such a conversion is pending, e.g. a deployment. Later mutations of the
-  same edit state that change a dropped paragraph then act on a deleted one (by
-  reading).
-- **Fix idea:** decide on the first run which nested paragraphs move to which
-  field, store that in the mutation's configuration, and replay it. Stored
-  conversions without it keep today's behaviour.
-
 ## F64: A template or a copy places a library item its user may not view
 
 - **Found:** 2026-10-11, by reading, when `add_reusable` got its check of view
@@ -604,6 +579,10 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
     holds on every run, so also the nested paragraphs that were added since.
     Since 2026-10-12 paragraphs are loaded 7 levels deep instead of 5, so they
     also bring the levels 6 and 7.
+- **Related:** a conversion (`convert`, `convert_multiple`) stores since its
+  version 2 which nested paragraphs move into the converted paragraph. For one
+  that the first run didn't see, the settings of the field decide on every run,
+  as they did for all of them before.
 - **Impact:** low.
 - **Fix idea:** a new version of `duplicate` that stores what it copies when it
   is added, as the other two do (`DuplicateMutationBase::getCopyData()`). That
