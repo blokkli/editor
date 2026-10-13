@@ -50,7 +50,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F85  | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                     | editor               | low      | to verify  |
 | F88  | [The form of a paragraph hides a link that its user may not open](#f88-the-form-of-a-paragraph-hides-a-link-that-its-user-may-not-open)                                   | `paragraphs_blokkli` | low      | to verify  |
 | F89  | [Building an edit state empties the fields of the cached entities](#f89-building-an-edit-state-empties-the-fields-of-the-cached-entities)                                 | `paragraphs_blokkli` | low      | open       |
-| F90  | [The list of referenced entities names what its user may not view](#f90-the-list-of-referenced-entities-names-what-its-user-may-not-view)                                 | `paragraphs_blokkli` | low      | to verify  |
 | F95  | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                        | both                 | low      | open       |
 | F96  | [The editor reads field values through a detached element](#f96-the-editor-reads-field-values-through-a-detached-element)                                                 | editor               | low      | to verify  |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli` | low      | to verify  |
@@ -835,25 +834,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   A hook of a site could.
 - **Fix idea:** build the state on clones, or put the fields back after the
   mutated state is built.
-
-## F90: The list of referenced entities names what its user may not view
-
-- **Found:** 2026-10-12, by reading, while checking which forms of a link the
-  rule for links to media reads (the former F82). Not reproduced.
-- **Symptom:** the editor's list of the entities that a page references gets the
-  label and the type of every entity behind a reference or a link, also of one
-  that the user may not view. A link is read loosely there: `entity:media/7` and
-  `internal:/media/7` both name media 7. With Drupal's default media settings
-  `/media/7` leads nowhere, and Drupal accepts such a path for anyone without a
-  check, so an editor can write it for any ID and read the label.
-- **Cause:** `ReferencedEntities::loadEntityFromUri()` and `addEntity()`
-  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/ReferencedEntities.php:163-228`
-  at `4b5c6e7`) load the entity from what follows the scheme, and add it without
-  asking for view access.
-- **Impact:** low: labels, for someone who may edit the page.
-- **Fix idea:** view access before an entity is added. And one way to read the
-  entity that a link names, for this list and for
-  `ParagraphsBlokkliHelper::isAllowedEntityLink()`, which reads `entity:` only.
 
 ## F95: A refused batch of texts names one text, without its language
 

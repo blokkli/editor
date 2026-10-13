@@ -1,11 +1,16 @@
 <template>
+  <!-- Without the URL of its form, an entity is listed but can't be opened. -->
   <a
     ref="rootEl"
     :href="editUrl"
     target="_blank"
     rel="noopener"
-    class="flex px-10 py-8 hover:bg-mono-600"
-    @click.prevent="isEditing = true"
+    class="flex px-10 py-8"
+    :class="{ 'hover:bg-mono-600': editUrl }"
+    data-test="referenced-entity"
+    :data-test-entity-type="entityType"
+    :data-test-editable="!!editUrl"
+    @click.prevent="isEditing = !!editUrl"
   >
     <div class="text-mono-200 flex items-center gap-10 pl-2">
       <div

@@ -27,7 +27,13 @@ export const resultSchema = z.object({
             'replace_media_field when the entityType is "media".',
         ),
       label: z.string().describe('Human-readable label of the entity'),
-      editUrl: z.string().describe('Backend edit URL of the entity'),
+      editUrl: z
+        .string()
+        .optional()
+        .describe(
+          'Backend edit URL of the entity. Absent when the user may not ' +
+            'edit the entity.',
+        ),
       referencedBy: z
         .array(z.string())
         .describe(

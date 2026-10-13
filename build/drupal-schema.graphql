@@ -7877,8 +7877,11 @@ type ParagraphsBlokkliReferencedEntity {
   ""
   label: String
 
-  ""
-  editUrl: String!
+  """
+  The URL of the form that edits the entity. Null if the current user may not
+  open it.
+  """
+  editUrl: String
 
   ""
   uuids: [String!]!

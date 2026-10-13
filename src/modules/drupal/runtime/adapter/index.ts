@@ -1150,7 +1150,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           uuids,
         }).then((v) =>
           (v.data.state?.referencedEntities || []).map((entity) => ({
-            editUrl: entity.editUrl,
+            editUrl: entity.editUrl ?? undefined,
             entityBundle: entity.entityBundle,
             entityType: entity.entityType,
             entityUuid: entity.entityUuid,
