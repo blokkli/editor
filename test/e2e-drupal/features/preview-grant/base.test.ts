@@ -1,9 +1,11 @@
+import { execFileSync } from 'node:child_process'
 import { createPage, setup } from '@nuxt/test-utils/e2e'
 import type { Page } from 'playwright-core'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { addBlock } from '../../support/blocks'
 import { dialog } from '../../support/overlays'
 import {
+  ROOT,
   resetSandbox,
   sandboxHost,
   seedUuid,
@@ -96,23 +98,49 @@ type Answer = {
   errors?: { path?: string[] }[]
 }
 
-/** Asks Drupal directly, as the page's visitor. */
-function ask(
+/** Quotes a value for the shell of `ddev exec`. */
+function shellQuote(value: string): string {
+  return `'${value.replaceAll("'", `'\\''`)}'`
+}
+
+/**
+ * Asks Drupal directly, as the page's visitor. nginx refuses Drupal's
+ * endpoint to the browser on a sandbox's host, but Drupal has to refuse these
+ * by itself: Nuxt's server passes the browser's cookie on with every operation
+ * of the app. So this asks the way Nuxt's server does, from inside the
+ * container.
+ */
+async function ask(
   page: Page,
   query: string,
   variables: Record<string, string> = {},
 ): Promise<Answer> {
-  return page.evaluate(
-    async (body) => {
-      const response = await fetch('/en/graphql', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      })
-      return response.json()
-    },
-    { query, variables },
-  )
+  const url = new URL(page.url())
+  const cookies = await page.context().cookies(url.origin)
+  const command = [
+    'curl',
+    '-s',
+    '-X',
+    'POST',
+    'http://127.0.0.1/en/graphql',
+    '-H',
+    'Content-Type: application/json',
+    '-H',
+    `X-Forwarded-Host: ${url.host}`,
+    '-H',
+    'X-Forwarded-Proto: https',
+    '-H',
+    `Cookie: ${cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join('; ')}`,
+    '--data-binary',
+    '@-',
+  ]
+    .map(shellQuote)
+    .join(' ')
+  const output = execFileSync('ddev', ['exec', command], {
+    cwd: ROOT,
+    input: JSON.stringify({ query, variables }),
+  })
+  return JSON.parse(output.toString())
 }
 
 /** Whether the page renders the block. */

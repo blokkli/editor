@@ -37,6 +37,24 @@ describe('The E2E sandbox', async () => {
     expect(await blockCount(page)).toBe(3)
   })
 
+  it("leaves Drupal's GraphQL endpoint to Nuxt's server", async () => {
+    // The editor asks nuxt-graphql-middleware, whose server asks Drupal from
+    // inside the container. nginx refuses the endpoint to the browser.
+    const answers = await page.evaluate(() =>
+      Promise.all(
+        ['/graphql', '/en/graphql'].map(async (path) => {
+          const response = await fetch(path, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: '{ __typename }' }),
+          })
+          return `${response.status} ${response.headers.get('x-blokkli-upstream')}`
+        }),
+      ),
+    )
+    expect(answers).toEqual(['403 nginx', '403 nginx'])
+  })
+
   it('has the test cases', async () => {
     await openSidebar(page, 'test-cases')
     const result = await runAgentTool(page, 'get_all_page_content', {})

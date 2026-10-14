@@ -474,10 +474,11 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Found:** 2026-09-27, 13f.
 - **Symptom:** the texts resolvers create a text for every unknown key, without
   an access check (`TextsTranslator::trans()`, `src/TextsTranslator.php:117` in
-  `texts`). Any user with GraphQL access can fill the table:
-  - in a sandbox, its users;
-  - since chunk 10, anonymous visitors with a preview grant;
-  - on the dev site, everyone, with `blokkli_playground_public`.
+  `texts`). Any user with GraphQL access can fill the table: on the dev site,
+  everyone, with `blokkli_playground_public`. Sandboxes are safe from it since
+  2026-10-14: nginx refuses Drupal's GraphQL endpoint to the browser there, and
+  the app's operations name their keys as literals
+  (`app/graphql/fragment.easyTexts.graphql`).
 - **Fix idea:** create keys only with a permission, or only in development.
 
 ## F52: A comment's label throws

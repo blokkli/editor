@@ -54,8 +54,10 @@ two instances: `main` (public) at `sandbox.blokk.li` and `dev` (invite only) at
   - `ftp.drupal.org`, only if the deploy imports interface translations
   - no SMTP: mail stays in Mailpit
 - [ ] The hosted nginx template takes chunk 10's rules from `nginx-site.conf`:
-      `headers.inc` (CSP, noindex), each sandbox's files only on its host, and
-      no PHP under `sites/*/files`.
+      `headers.inc` (CSP, noindex), each sandbox's files only on its host, no
+      PHP under `sites/*/files`, and Drupal's GraphQL endpoint only for requests
+      from inside the container (`$blokkli_graphql_denied`; without the local
+      exception for the dev site).
 - [ ] Candidates: limits on PHP-FPM time (600 s today), request size (100M) and
       request rate, so that one sandbox can't slow down the others.
 

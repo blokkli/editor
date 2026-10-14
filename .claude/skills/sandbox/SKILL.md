@@ -102,6 +102,13 @@ Traefik sends every hostname to the web container's nginx on port 80.
   `http://127.0.0.1`, the endpoint `/<lang>/graphql`, with the browser's cookie
   and `X-Forwarded-*` headers (`shared/utils/request.ts`). nginx makes
   `X-Forwarded-Host` the `Host`, so Drupal resolves the same sandbox.
+- **Drupal's GraphQL endpoint is for Nuxt's server only:** on a sandbox's host,
+  nginx answers `/graphql` with 403 unless the request comes from inside the
+  container (`$blokkli_graphql_denied`). The browser goes through
+  nuxt-graphql-middleware (`/api/graphql_middleware/`), which sends only the
+  app's operations. The dev site's endpoint stays open, for debugging. To ask a
+  sandbox's Drupal directly, do it the way Nuxt does:
+  `ddev exec curl http://127.0.0.1/en/graphql -H 'X-Forwarded-Host: <id>.blokkli.ddev.site' …`.
 - **SSR only for anonymous visitors, and only locally**
   (`sandbox/frontend/server/middleware/spa.ts`): a session cookie,
   `blokkliEditing`/`blokkliPreview` in the URL, or `IS_DDEV_HOSTED=true` gets
