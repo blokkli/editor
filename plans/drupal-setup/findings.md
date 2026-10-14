@@ -7,60 +7,60 @@ removed; its commit names it.
 Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 (2.0.x), unless noted otherwise.
 
-| #    | Finding                                                                                                                                                                                      | Project              | Severity | Status     |
-| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- |
-| F5   | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                                                                                                    | Drupal core          | high     | workaround |
-| F6   | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                                                                                     | `blokkli_starterkit` | low      | open       |
-| F11  | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                                                                                        | `paragraphs_blokkli` | low      | open       |
-| F14  | [The comment filter leaks into new text formats](#f14-the-comment-filter-leaks-into-new-text-formats)                                                                                        | `paragraphs_blokkli` | low      | open       |
-| F18  | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                                                                                            | both                 | low      | workaround |
-| F19  | [Template and library search](#f19-template-and-library-search)                                                                                                                              | both                 | low      | open       |
-| F20  | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                                                                                            | `paragraphs_blokkli` | low      | open       |
-| F23  | [A past unpublish date blocks publishing](#f23-a-past-unpublish-date-blocks-publishing)                                                                                                      | both                 | low      | open       |
-| F24  | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                                                                                            | `paragraphs_blokkli` | medium   | open       |
-| F25  | [An empty change description keeps the old log](#f25-an-empty-change-description-keeps-the-old-log)                                                                                          | `paragraphs_blokkli` | low      | open       |
-| F26  | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation)                                                                      | both                 | medium   | parked     |
-| F28  | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                                                                                       | `@blokkli/editor`    | low      | workaround |
-| F29  | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                                                                                                 | `paragraphs_blokkli` | low      | workaround |
-| F30  | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                                                                                                | `paragraphs_blokkli` | low      | open       |
-| F32  | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                                                                                          | `paragraphs_blokkli` | medium   | open       |
-| F33  | [Transform plugins don't get the language](#f33-transform-plugins-dont-get-the-language)                                                                                                     | both                 | low      | workaround |
-| F35  | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)                                                                         | `@blokkli/editor`    | low      | open       |
-| F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                                      | `paragraphs_blokkli` | low      | open       |
-| F41  | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                                                                                                  | `paragraphs_blokkli` | low      | open       |
-| F43  | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                                                                                               | both                 | low      | open       |
-| F44  | [No approval step](#f44-no-approval-step)                                                                                                                                                    | both                 | low      | open       |
-| F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                                     | both                 | low      | open       |
-| F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                                          | `texts`              | low      | open       |
-| F52  | [A comment's label throws](#f52-a-comments-label-throws)                                                                                                                                     | `paragraphs_blokkli` | low      | open       |
-| F64  | [A template or a copy places a library item its user may not view](#f64-a-template-or-a-copy-places-a-library-item-its-user-may-not-view)                                                    | `paragraphs_blokkli` | low      | to verify  |
-| F68  | [A copy of a nested paragraph that the first run didn't see gets a new UUID on every replay](#f68-a-copy-of-a-nested-paragraph-that-the-first-run-didnt-see-gets-a-new-uuid-on-every-replay) | `paragraphs_blokkli` | low      | to verify  |
-| F70  | [A library item shares its paragraph with the page's earlier revisions](#f70-a-library-item-shares-its-paragraph-with-the-pages-earlier-revisions)                                           | `paragraphs_blokkli` | low      | open       |
-| F71  | [Moving a paragraph into its own nested paragraph is refused for the wrong reason](#f71-moving-a-paragraph-into-its-own-nested-paragraph-is-refused-for-the-wrong-reason)                    | `paragraphs_blokkli` | low      | open       |
-| F72  | [The editor offers places below the nesting limit](#f72-the-editor-offers-places-below-the-nesting-limit)                                                                                    | editor               | low      | open       |
-| F73  | [A new paragraph of a type its field doesn't allow is no violation](#f73-a-new-paragraph-of-a-type-its-field-doesnt-allow-is-no-violation)                                                   | `paragraphs`         | low      | open       |
-| F74  | [The older mutations for media leave a link field empty](#f74-the-older-mutations-for-media-leave-a-link-field-empty)                                                                        | `paragraphs_blokkli` | low      | open       |
-| F76  | [A search result replaces the first mapped field](#f76-a-search-result-replaces-the-first-mapped-field)                                                                                      | editor               | low      | to verify  |
-| F77  | ["Add to" is offered for link fields with several values](#f77-add-to-is-offered-for-link-fields-with-several-values)                                                                        | editor               | low      | to verify  |
-| F78  | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                                              | `paragraphs_blokkli` | low      | to verify  |
-| F85  | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                                        | editor               | low      | to verify  |
-| F88  | [The form of a paragraph hides a link that its user may not open](#f88-the-form-of-a-paragraph-hides-a-link-that-its-user-may-not-open)                                                      | `paragraphs_blokkli` | low      | to verify  |
-| F89  | [Building an edit state empties the fields of the cached entities](#f89-building-an-edit-state-empties-the-fields-of-the-cached-entities)                                                    | `paragraphs_blokkli` | low      | open       |
-| F95  | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                                           | both                 | low      | open       |
-| F96  | [The editor reads field values through a detached element](#f96-the-editor-reads-field-values-through-a-detached-element)                                                                    | editor               | low      | to verify  |
-| F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                                            | `paragraphs_blokkli` | low      | to verify  |
-| F102 | [The library search fails for an empty list of types](#f102-the-library-search-fails-for-an-empty-list-of-types)                                                                             | `paragraphs_blokkli` | low      | open       |
-| F103 | [A preview misses a change that is made before its first poll](#f103-a-preview-misses-a-change-that-is-made-before-its-first-poll)                                                           | editor               | low      | open       |
-| F104 | [A refused machine translation answers "Internal server error"](#f104-a-refused-machine-translation-answers-internal-server-error)                                                           | `paragraphs_blokkli` | low      | open       |
-| F106 | [A duplicate doesn't keep the published state](#f106-a-duplicate-doesnt-keep-the-published-state)                                                                                            | `paragraphs_blokkli` | low      | to verify  |
-| F107 | [A duplicate drops nested paragraphs in fields that blökkli doesn't manage](#f107-a-duplicate-drops-nested-paragraphs-in-fields-that-blökkli-doesnt-manage)                                  | `paragraphs_blokkli` | low      | to verify  |
-| F108 | [A template of a new library item's paragraph saves the item early](#f108-a-template-of-a-new-library-items-paragraph-saves-the-item-early)                                                  | `paragraphs_blokkli` | low      | to verify  |
-| F110 | [The Search API lists show what the index returns](#f110-the-search-api-lists-show-what-the-index-returns)                                                                                   | `paragraphs_blokkli` | low      | to verify  |
-| F111 | [A new target resets the options of a link](#f111-a-new-target-resets-the-options-of-a-link)                                                                                                 | `paragraphs_blokkli` | low      | to verify  |
-| F112 | [A text update of a link field does nothing, and is stored](#f112-a-text-update-of-a-link-field-does-nothing-and-is-stored)                                                                  | `paragraphs_blokkli` | low      | open       |
-| F113 | [The comment module's schema extension needs the GraphQL submodule](#f113-the-comment-modules-schema-extension-needs-the-graphql-submodule)                                                  | `paragraphs_blokkli` | low      | to verify  |
-| F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                                                                                          | `paragraphs_blokkli` | low      | open       |
-| F115 | [A violation of a host's paragraphs field names no entity](#f115-a-violation-of-a-hosts-paragraphs-field-names-no-entity)                                                                    | `paragraphs_blokkli` | low      | to verify  |
+| #    | Finding                                                                                                                                                                     | Project              | Severity | Status     |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | ---------- |
+| F5   | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                                                                                   | Drupal core          | high     | workaround |
+| F6   | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                                                                    | `blokkli_starterkit` | low      | open       |
+| F11  | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                                                                       | `paragraphs_blokkli` | low      | open       |
+| F14  | [The comment filter leaks into new text formats](#f14-the-comment-filter-leaks-into-new-text-formats)                                                                       | `paragraphs_blokkli` | low      | open       |
+| F18  | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                                                                           | both                 | low      | workaround |
+| F19  | [Template and library search](#f19-template-and-library-search)                                                                                                             | both                 | low      | open       |
+| F20  | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                                                                           | `paragraphs_blokkli` | low      | open       |
+| F23  | [A past unpublish date blocks publishing](#f23-a-past-unpublish-date-blocks-publishing)                                                                                     | both                 | low      | open       |
+| F24  | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                                                                           | `paragraphs_blokkli` | medium   | open       |
+| F25  | [An empty change description keeps the old log](#f25-an-empty-change-description-keeps-the-old-log)                                                                         | `paragraphs_blokkli` | low      | open       |
+| F26  | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation)                                                     | both                 | medium   | parked     |
+| F28  | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                                                                      | `@blokkli/editor`    | low      | workaround |
+| F29  | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                                                                                | `paragraphs_blokkli` | low      | workaround |
+| F30  | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                                                                               | `paragraphs_blokkli` | low      | open       |
+| F32  | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                                                                         | `paragraphs_blokkli` | medium   | open       |
+| F33  | [Transform plugins don't get the language](#f33-transform-plugins-dont-get-the-language)                                                                                    | both                 | low      | workaround |
+| F35  | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)                                                        | `@blokkli/editor`    | low      | open       |
+| F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                     | `paragraphs_blokkli` | low      | open       |
+| F41  | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                                                                                 | `paragraphs_blokkli` | low      | open       |
+| F43  | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                                                                              | both                 | low      | open       |
+| F44  | [No approval step](#f44-no-approval-step)                                                                                                                                   | both                 | low      | open       |
+| F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                    | both                 | low      | open       |
+| F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                         | `texts`              | low      | open       |
+| F52  | [A comment's label throws](#f52-a-comments-label-throws)                                                                                                                    | `paragraphs_blokkli` | low      | open       |
+| F64  | [A template or a copy places a library item its user may not view](#f64-a-template-or-a-copy-places-a-library-item-its-user-may-not-view)                                   | `paragraphs_blokkli` | low      | to verify  |
+| F68  | [An old copy from another page gives its new paragraphs a new UUID on every replay](#f68-an-old-copy-from-another-page-gives-its-new-paragraphs-a-new-uuid-on-every-replay) | `paragraphs_blokkli` | low      | open       |
+| F70  | [A library item shares its paragraph with the page's earlier revisions](#f70-a-library-item-shares-its-paragraph-with-the-pages-earlier-revisions)                          | `paragraphs_blokkli` | low      | open       |
+| F71  | [Moving a paragraph into its own nested paragraph is refused for the wrong reason](#f71-moving-a-paragraph-into-its-own-nested-paragraph-is-refused-for-the-wrong-reason)   | `paragraphs_blokkli` | low      | open       |
+| F72  | [The editor offers places below the nesting limit](#f72-the-editor-offers-places-below-the-nesting-limit)                                                                   | editor               | low      | open       |
+| F73  | [A new paragraph of a type its field doesn't allow is no violation](#f73-a-new-paragraph-of-a-type-its-field-doesnt-allow-is-no-violation)                                  | `paragraphs`         | low      | open       |
+| F74  | [The older mutations for media leave a link field empty](#f74-the-older-mutations-for-media-leave-a-link-field-empty)                                                       | `paragraphs_blokkli` | low      | open       |
+| F76  | [A search result replaces the first mapped field](#f76-a-search-result-replaces-the-first-mapped-field)                                                                     | editor               | low      | to verify  |
+| F77  | ["Add to" is offered for link fields with several values](#f77-add-to-is-offered-for-link-fields-with-several-values)                                                       | editor               | low      | to verify  |
+| F78  | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                             | `paragraphs_blokkli` | low      | to verify  |
+| F85  | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                       | editor               | low      | to verify  |
+| F88  | [The form of a paragraph hides a link that its user may not open](#f88-the-form-of-a-paragraph-hides-a-link-that-its-user-may-not-open)                                     | `paragraphs_blokkli` | low      | to verify  |
+| F89  | [Building an edit state empties the fields of the cached entities](#f89-building-an-edit-state-empties-the-fields-of-the-cached-entities)                                   | `paragraphs_blokkli` | low      | open       |
+| F95  | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                          | both                 | low      | open       |
+| F96  | [The editor reads field values through a detached element](#f96-the-editor-reads-field-values-through-a-detached-element)                                                   | editor               | low      | to verify  |
+| F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                           | `paragraphs_blokkli` | low      | to verify  |
+| F102 | [The library search fails for an empty list of types](#f102-the-library-search-fails-for-an-empty-list-of-types)                                                            | `paragraphs_blokkli` | low      | open       |
+| F103 | [A preview misses a change that is made before its first poll](#f103-a-preview-misses-a-change-that-is-made-before-its-first-poll)                                          | editor               | low      | open       |
+| F104 | [A refused machine translation answers "Internal server error"](#f104-a-refused-machine-translation-answers-internal-server-error)                                          | `paragraphs_blokkli` | low      | open       |
+| F106 | [Templates and imported paragraphs don't keep the published state](#f106-templates-and-imported-paragraphs-dont-keep-the-published-state)                                   | `paragraphs_blokkli` | low      | to verify  |
+| F107 | [A duplicate drops nested paragraphs in fields that blökkli doesn't manage](#f107-a-duplicate-drops-nested-paragraphs-in-fields-that-blökkli-doesnt-manage)                 | `paragraphs_blokkli` | low      | to verify  |
+| F108 | [A template of a new library item's paragraph saves the item early](#f108-a-template-of-a-new-library-items-paragraph-saves-the-item-early)                                 | `paragraphs_blokkli` | low      | to verify  |
+| F110 | [The Search API lists show what the index returns](#f110-the-search-api-lists-show-what-the-index-returns)                                                                  | `paragraphs_blokkli` | low      | to verify  |
+| F111 | [A new target resets the options of a link](#f111-a-new-target-resets-the-options-of-a-link)                                                                                | `paragraphs_blokkli` | low      | to verify  |
+| F112 | [A text update of a link field does nothing, and is stored](#f112-a-text-update-of-a-link-field-does-nothing-and-is-stored)                                                 | `paragraphs_blokkli` | low      | open       |
+| F113 | [The comment module's schema extension needs the GraphQL submodule](#f113-the-comment-modules-schema-extension-needs-the-graphql-submodule)                                 | `paragraphs_blokkli` | low      | to verify  |
+| F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                                                                         | `paragraphs_blokkli` | low      | open       |
+| F115 | [A violation of a host's paragraphs field names no entity](#f115-a-violation-of-a-hosts-paragraphs-field-names-no-entity)                                                   | `paragraphs_blokkli` | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -519,36 +519,28 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   decide that repeating an existing reference needs no check, as for the nested
   paragraph types of a duplicated paragraph.
 
-## F68: A copy of a nested paragraph that the first run didn't see gets a new UUID on every replay
+## F68: An old copy from another page gives its new paragraphs a new UUID on every replay
 
-- **Found:** 2026-10-12, by reading (a review of a plan). Not reproduced. Until
-  2026-10-13 this finding was about `copy_from_existing`, which copied what the
-  other page held on every run: since its version 3 it stores what it copies.
-- **Symptom:** a nested paragraph that a mutation copies gets a different UUID
-  on every replay, until the edit state is published. A later mutation that
-  names it by UUID no longer finds it.
+- **Found:** 2026-10-12, by reading. Its larger part is fixed since 2026-10-14:
+  the copy of a nested paragraph that the first run didn't see gets the same
+  UUID on every replay, made of the UUIDs of its paragraph's copy and of the
+  nested paragraph (`DuplicateMutationBase::getUuidForNestedCopy()`). That
+  covers `duplicate`, `duplicate_multiple`, and the nested paragraphs in the
+  copies of `copy_from_existing` and `detach_reusable` that were stored before
+  their version 3.
+- **Symptom:** a `copy_from_existing` that was stored before its version 3
+  copies what the other page holds on every run. A paragraph that the other page
+  got since, at the top of a copied field, gets a new UUID on every replay: a
+  later mutation that names it no longer finds it. The same for a
+  `detach_reusable` stored before its version 3, when the library item holds
+  another paragraph since.
 - **Cause:** `getUuidForNewEntity()` (`src/ParagraphsBlokkliPluginTrait.php` at
-  `b8656e6`) puts the UUID into the mutation's configuration, which is only
-  saved when the mutation is added. A paragraph that the first run didn't see
-  has no stored UUID.
-- **Affected:**
-  - `duplicate`: when an earlier mutation is switched off and on again
-    (`setMutationStatus`), the paragraph to duplicate can hold nested paragraphs
-    that it didn't hold on the first run.
-  - The mutations that were stored before version 3 of `detach_reusable` and of
-    `copy_from_existing`: they copy what the library item or the other page
-    holds on every run, so also the nested paragraphs that were added since.
-    Since 2026-10-12 paragraphs are loaded 7 levels deep instead of 5, so they
-    also bring the levels 6 and 7.
-- **Related:** a conversion (`convert`, `convert_multiple`) stores since its
-  version 2 which nested paragraphs move into the converted paragraph. For one
-  that the first run didn't see, the settings of the field decide on every run,
-  as they did for all of them before.
-- **Impact:** low.
-- **Fix idea:** a new version of `duplicate` that stores what it copies when it
-  is added, as the other two do (`DuplicateMutationBase::getCopyData()`). That
-  also decides a question: such a duplicate no longer follows an earlier
-  mutation that is switched off.
+  `f24e0a0`) makes a random UUID for a paragraph that the first run didn't
+  store. Such a paragraph has no copy of a paragraph above it to make its UUID
+  of.
+- **Impact:** low: only mutations stored before version 3 of the two.
+- **Fix idea:** none yet. A UUID made of the host's and the paragraph's would be
+  the same for two such mutations that copy from the same page.
 
 ## F70: A library item shares its paragraph with the page's earlier revisions
 
@@ -576,10 +568,11 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   `DuplicateMutationBase::duplicateChildren()`). The original and its nested
   paragraphs leave the edit state. Stored mutations keep moving the paragraph.
   By reading (a review of the plan), the duplicate must also:
-  - keep the published state, per translation: the helper leaves `status` out
-    (F106);
+  - keep the published state, per translation: `duplicateParagraph()` of the
+    helper with `withStatus`;
   - keep the nested paragraphs in fields that blökkli doesn't manage (F107);
-  - cope with nested paragraphs that the first run didn't see (F68).
+  - cope with nested paragraphs that the first run didn't see:
+    `duplicateChildren()` does.
 
 ## F71: Moving a paragraph into its own nested paragraph is refused for the wrong reason
 
@@ -857,20 +850,27 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** a result that may be null, as the editor's other mutations have,
   or an error that says "Access denied".
 
-## F106: A duplicate doesn't keep the published state
+## F106: Templates and imported paragraphs don't keep the published state
 
-- **Found:** 2026-10-12, by reading, in a review of the plan for F70. Not
-  reproduced.
-- **Symptom:** the copy of an unpublished paragraph is published. With
-  `paragraphs_blokkli_scheduler`, the copy of a paragraph that is scheduled to
-  be published is published at once, and keeps its "Publish on" date.
-- **Cause:** `ParagraphsBlokkliHelper::getDuplicateData()` leaves `status` and
-  `created` out (`SKIP_FIELDS`, `src/ParagraphsBlokkliHelper.php` at `70608d0`),
-  and copies the other fields, the scheduler's dates among them. Every mutation
-  that copies with it is affected: `duplicate`, `detach_reusable`,
-  `copy_from_existing`, templates.
-- **Fix idea:** copy `status`, per translation. Stored mutations replay with the
-  helper: a new behaviour needs a version of each.
+- **Found:** 2026-10-12, by reading, in a review of the plan for F70. Fixed on
+  2026-10-14 for the copies that mutations make: `duplicate` and
+  `duplicate_multiple` since their version 3, and the copies that
+  `copy_from_existing` and `detach_reusable` store (`getDuplicateData()` of the
+  helper, with `withStatus`). Not reproduced for templates and imports.
+- **Symptom:** a template made of an unpublished paragraph holds a published
+  one, and so does a page that the template is added to. Paragraphs that are
+  exported from a page and imported into another are published.
+- **Cause:**
+  - `BlokkliParagraphTemplateService::cloneParagraphForTemplate()`
+    (`modules/paragraphs_blokkli_template/src/BlokkliParagraphTemplateService.php`
+    at `f24e0a0`) duplicates without the status.
+  - Adding a template and importing paragraphs go through the serialized format,
+    which leaves `status` out (`SERIALIZED_PARAGRAPH_SKIP_FIELDS`,
+    `src/SerializedParagraphProducerTrait.php`).
+- **Open question:** whether a template or an export should keep it at all: both
+  are the start of new content, on another page or another site.
+- **Fix idea:** keep `status` per translation in the serialized format, and when
+  a template is made. Data that was stored without it stays published.
 
 ## F107: A duplicate drops nested paragraphs in fields that blökkli doesn't manage
 
