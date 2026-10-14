@@ -113,6 +113,8 @@ export default createConfigForNuxt(
             'ohash',
             'ufo',
             'unplugin',
+            // Nitro's, for the server handlers
+            'h3',
             // Drupal module optional dependencies
             'graphql',
             'nuxt-graphql-middleware',

@@ -73,7 +73,9 @@ export default defineServerSideTool({
 
     if (approved) {
       // Use the local steps array (ctx.plan is a snapshot from construction time)
-      steps[0].status = 'in_progress'
+      // The schema asks for at least two steps.
+      const firstStep = steps[0]!
+      firstStep.status = 'in_progress'
       ctx.send({
         type: 'plan_update',
         plan: ctx.toClientPlan()!,
@@ -86,8 +88,8 @@ export default defineServerSideTool({
           approved: true,
           message: 'Plan approved. Start executing now.',
           current_step: {
-            label: steps[0].label,
-            description: steps[0].description,
+            label: firstStep.label,
+            description: firstStep.description,
           },
         }),
       )

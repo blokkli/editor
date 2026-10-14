@@ -1,9 +1,5 @@
-import {
-  createError,
-  defineEventHandler,
-  readBody,
-  useRuntimeConfig,
-} from '#imports'
+import { createError, defineEventHandler, readBody } from 'h3'
+import { useRuntimeConfig } from '#imports'
 import { enableMock, toolDefinitions } from '#blokkli-build/agent-server'
 import type { UsageTurn, RoutingRequest } from '../shared/types'
 import { resolveSkills } from './helpers/skills'

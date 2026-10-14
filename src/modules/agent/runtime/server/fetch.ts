@@ -1,9 +1,5 @@
-import {
-  createError,
-  defineEventHandler,
-  readBody,
-  useRuntimeConfig,
-} from '#imports'
+import { createError, defineEventHandler, readBody } from 'h3'
+import { useRuntimeConfig } from '#imports'
 import { allowedFetchOrigins } from '#blokkli-build/agent-server'
 import TurndownService from 'turndown'
 import { validateToken } from './helpers/security'
@@ -99,7 +95,7 @@ async function fetchFollowingRedirects(
  */
 function extractTitle(html: string): string {
   const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i)
-  return titleMatch ? titleMatch[1].trim() : ''
+  return titleMatch?.[1]?.trim() ?? ''
 }
 
 /**
@@ -136,12 +132,13 @@ function htmlToMarkdown(html: string): string {
     'img',
     'figure',
     'picture',
-    'svg',
     'canvas',
     'video',
     'audio',
     'iframe',
   ])
+  // Turndown's types only name HTML elements.
+  turndown.remove((node) => node.nodeName.toLowerCase() === 'svg')
 
   return turndown.turndown(html)
 }

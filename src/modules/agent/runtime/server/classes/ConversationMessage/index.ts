@@ -134,7 +134,7 @@ export class ToolRelayMessage extends ConversationMessage {
     super()
   }
 
-  static fromWire(msg: GenericMessage): ToolRelayMessage {
+  static override fromWire(msg: GenericMessage): ToolRelayMessage {
     const content = Array.isArray(msg.content) ? msg.content : []
     const results: ToolRelayEntry[] = []
     const auxBlocks: (GenericTextBlock | GenericSkillBlock)[] = []

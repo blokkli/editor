@@ -138,7 +138,7 @@ export class FieldStreamParser {
     const fieldMatch = this.buffer.match(FIELD_RE)
     if (fieldMatch) {
       const fullMarker = fieldMatch[0]
-      const newIndex = parseInt(fieldMatch[1], 10)
+      const newIndex = parseInt(fieldMatch[1]!, 10)
 
       // Close any open state for the previous field.
       this.closeCurrentState(events)

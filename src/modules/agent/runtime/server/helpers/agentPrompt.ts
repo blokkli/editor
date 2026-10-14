@@ -64,8 +64,7 @@ export function buildSystemPrompt(
 
   // Convert to SystemPromptBlock[], placing cacheHint at group boundaries
   const blocks: SystemPromptBlock[] = []
-  for (let i = 0; i < entries.length; i++) {
-    const entry = entries[i]
+  for (const [i, entry] of entries.entries()) {
     const nextEntry = entries[i + 1]
 
     // Place a cache hint when this is the last block in a cacheable group

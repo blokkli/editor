@@ -1,9 +1,9 @@
 import type { Nuxt } from 'nuxt/schema'
-import type { ConsolaInstance } from 'consola'
 import type { BuildRelativeImports, ModuleOptions } from './types'
 import { relative } from 'pathe'
 import {
   type Resolver,
+  type useLogger,
   addComponent,
   addImports,
   createResolver,
@@ -85,7 +85,8 @@ export class ModuleHelper implements ValidationInterface {
 
   constructor(
     public nuxt: Nuxt,
-    public logger: ConsolaInstance,
+    // Nuxt's own logger type since 4.6, Consola's before.
+    public logger: ReturnType<typeof useLogger>,
     moduleUrl: string,
     providedOptions: ModuleOptions,
   ) {

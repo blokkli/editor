@@ -1,5 +1,6 @@
 import type { Peer, Message } from 'crossws'
-import { defineWebSocketHandler, useRuntimeConfig } from '#imports'
+import { defineWebSocketHandler } from 'h3'
+import { useRuntimeConfig } from '#imports'
 import { clientMessageSchema } from '../shared/types'
 import { SessionManager } from './classes/SessionManager'
 import { send } from './helpers/socket'
