@@ -60,6 +60,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F112 | [A text update of a link field does nothing, and is stored](#f112-a-text-update-of-a-link-field-does-nothing-and-is-stored)                                                                  | `paragraphs_blokkli` | low      | open       |
 | F113 | [The comment module's schema extension needs the GraphQL submodule](#f113-the-comment-modules-schema-extension-needs-the-graphql-submodule)                                                  | `paragraphs_blokkli` | low      | to verify  |
 | F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                                                                                          | `paragraphs_blokkli` | low      | open       |
+| F115 | [A violation of a host's paragraphs field names no entity](#f115-a-violation-of-a-hosts-paragraphs-field-names-no-entity)                                                                    | `paragraphs_blokkli` | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -998,3 +999,22 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   date input lets a user pick such a date is not checked.
 - **Fix idea:** refuse a date that the column can't hold, with a message, where
   the date is read (`BlokkliDate::parse()` or its two callers).
+
+## F115: A violation of a host's paragraphs field names no entity
+
+- **Found:** 2026-10-14, by reading, when the fields of a violation got their
+  resolvers without a callback.
+- **Symptom (by reading):** with the validation of fields on,
+  `ParagraphsBlokkliEditState::validate()` adds what `$field->validate()`
+  returns for each of the host's paragraphs fields. The root of those violations
+  is the field item list, not the entity, so their `entityType` and `entityUuid`
+  are NULL, and their property path starts below the field (empty, or e.g.
+  `0.target_id`) without the field's name. The editor lists such a violation
+  without a target, in the publish dialog and in the validations analyzer, so a
+  user can't go to the field from it. Not checked in the browser.
+- **Cause:** `ParagraphsBlokkliHelper::setValidFieldValue()` rebuilds a field's
+  violations with the entity as their root and the field's name in the path ("As
+  validating the entity reports it"); `validate()` doesn't.
+- **Impact:** low: only with the validation of fields on, and the message is
+  still shown.
+- **Fix idea:** rebuild those violations as `setValidFieldValue()` does.
