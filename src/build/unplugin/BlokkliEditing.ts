@@ -3,18 +3,56 @@ import MagicString from 'magic-string'
 import type { Nuxt } from '@nuxt/schema'
 import { parseQuery, parseURL } from 'ufo'
 import { readFileSync, existsSync } from 'node:fs'
-import { resolve, dirname } from 'pathe'
+import { resolve, dirname, join } from 'pathe'
 
 const REPLACE_TARGET = 'import.meta.blokkliEditing'
 const EDITING_MARKER = '__blokkli_editing__'
 
 export const BlokkliEditingPlugin = (nuxt: Nuxt) => {
+  /**
+   * Vite's dev server can pass the URL of a module, relative to its root
+   * (Nuxt's srcDir), where a file path is expected: "/components/Foo.vue" for
+   * "<srcDir>/components/Foo.vue". It does when a module is requested before
+   * Vite has seen the import that leads to it.
+   */
+  function toFilePath(path: string): string {
+    if (!path.startsWith('/') || existsSync(path)) {
+      return path
+    }
+
+    const inRoot = join(nuxt.options.srcDir, path)
+    return existsSync(inRoot) ? inRoot : path
+  }
+
   return createUnplugin(() => {
     return {
       name: 'blokkli:editing',
       enforce: 'pre',
 
-      resolveId(id, importer) {
+      resolveId(id, importer, options) {
+        // Vite's dependency scanner reads a resolved .vue file from disk,
+        // where an editing variant doesn't exist. It imports the same as the
+        // original component, so the scanner reads that one. unplugin's type
+        // doesn't know Vite's option.
+        if (options && 'scan' in options && options.scan) {
+          return
+        }
+
+        // An editing variant requested by its URL, possibly one of Vue's
+        // sub-modules ("?vue&type=style&index=0&lang.css").
+        if (id.includes(EDITING_MARKER)) {
+          const [markedPath = '', query] = id.split('?')
+          const originalPath = markedPath.replace(EDITING_MARKER, '')
+          const filePath = toFilePath(originalPath)
+          if (filePath !== originalPath) {
+            return (
+              filePath.replace(/\.vue$/, `${EDITING_MARKER}.vue`) +
+              (query ? '?' + query : '')
+            )
+          }
+          return
+        }
+
         const { pathname, search } = parseURL(decodeURIComponent(id))
 
         // Check if this is a direct ?blokkliEditing=true import.
@@ -30,7 +68,10 @@ export const BlokkliEditingPlugin = (nuxt: Nuxt) => {
 
             // Return a modified path that Vue's plugin will still recognize as
             // a .vue file, but is distinct from the original.
-            return resolved.replace(/\.vue$/, `${EDITING_MARKER}.vue`)
+            return toFilePath(resolved).replace(
+              /\.vue$/,
+              `${EDITING_MARKER}.vue`,
+            )
           }
         }
 
@@ -58,7 +99,7 @@ export const BlokkliEditingPlugin = (nuxt: Nuxt) => {
         if (id.startsWith('.')) {
           resolvedPath = resolve(importerDir, id)
         } else if (id.startsWith('/')) {
-          resolvedPath = id
+          resolvedPath = toFilePath(id)
         }
 
         // Only propagate if the resolved file exists (it's a local component).
