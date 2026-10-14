@@ -51,21 +51,22 @@ language.
 
 ## Map
 
-| Path                                            | What                                                                                                         |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `.ddev/config.yaml`                             | Hostnames, the two daemons, SQLite (no db container), `composer install` on start                            |
-| `.ddev/nginx_full/`                             | `nginx-site.conf` (all routing), `proxy.inc`, `headers.inc` (CSP), the 502 and "unknown sandbox" pages       |
-| `.ddev/commands/web/{bake,bake-e2e,reset,nuxt}` | Container commands                                                                                           |
-| `.ddev/commands/host/check-routes`              | The routing test table (also read by a unit test)                                                            |
-| `.ddev/nuxt-daemon.sh`                          | Runs `nuxi dev sandbox/<app>` on 127.0.0.1:3000 (frontend) or :3001 (control), logs to `/tmp/nuxt-<app>.log` |
-| `sandbox/drupal/`                               | Composer root; `web/` docroot, `config/sync`, `content/`, `patches/`                                         |
-| `sandbox/drupal/web/modules/custom/`            | `blokkli_sandbox`, `blokkli_playground`                                                                      |
-| `sandbox/drupal/db/site.sqlite`                 | The dev site's database (gitignored)                                                                         |
-| `sandbox/drupal/sandboxes/`                     | Gitignored: `_template/<lang>/`, `_template/e2e/` and one directory per sandbox                              |
-| `test/e2e-drupal/`                              | The E2E tests against sandboxes: specs, `support/`, fixtures in `content/`                                   |
-| `sandbox/frontend/`                             | The Nuxt app; `blokkli/` holds the agent's skills, tool and prompts                                          |
-| `sandbox/control/`                              | The control app; its database is `sandbox/control/.data/control.sqlite`                                      |
-| `build/drupal-schema.graphql`                   | The site's GraphQL schema, shared by the root config and the frontend                                        |
+| Path                                            | What                                                                                                                                        |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.ddev/config.yaml`                             | Hostnames, the two daemons, SQLite (no db container), `composer install` on start                                                           |
+| `.ddev/nginx_full/`                             | `nginx-site.conf` (all routing), `proxy.inc`, `headers.inc` (CSP), the 502 and "unknown sandbox" pages                                      |
+| `.ddev/commands/web/{bake,bake-e2e,reset,nuxt}` | Container commands                                                                                                                          |
+| `.ddev/commands/host/check-routes`              | The routing test table (also read by a unit test)                                                                                           |
+| `.ddev/commands/host/deploy`                    | `ddev deploy`, on the hosted instance only (see "Hosting")                                                                                  |
+| `.ddev/nuxt-daemon.sh`                          | Runs `nuxi dev sandbox/<app>` (hosted: its production build) on 127.0.0.1:3000 (frontend) or :3001 (control), logs to `/tmp/nuxt-<app>.log` |
+| `sandbox/drupal/`                               | Composer root; `web/` docroot, `config/sync`, `content/`, `patches/`                                                                        |
+| `sandbox/drupal/web/modules/custom/`            | `blokkli_sandbox`, `blokkli_playground`                                                                                                     |
+| `sandbox/drupal/db/site.sqlite`                 | The dev site's database (gitignored)                                                                                                        |
+| `sandbox/drupal/sandboxes/`                     | Gitignored: `_template/<lang>/`, `_template/e2e/` and one directory per sandbox                                                             |
+| `test/e2e-drupal/`                              | The E2E tests against sandboxes: specs, `support/`, fixtures in `content/`                                                                  |
+| `sandbox/frontend/`                             | The Nuxt app; `blokkli/` holds the agent's skills, tool and prompts                                                                         |
+| `sandbox/control/`                              | The control app; its database is `sandbox/control/.data/control.sqlite`                                                                     |
+| `build/drupal-schema.graphql`                   | The site's GraphQL schema, shared by the root config and the frontend                                                                       |
 
 Neither Nuxt app has a `package.json`: both use the repo root's `node_modules`.
 
@@ -87,10 +88,11 @@ Traefik sends every hostname to the web container's nginx on port 80.
     of Drupal's segments isn't: a page "Comments" at `/en/comments` shows
     Drupal's page, without the editor.
 - **The control host** sends every path to `:3001`, Drupal's included.
-- **Sandbox hosts:** a map turns `<id>.blokkli.ddev.site` into the id. Without
-  `sandboxes/<id>/db.sqlite`, nginx answers 410 with `sandbox-unknown.html`
-  (links to the claim page). A sandbox's public files are served only on its own
-  host.
+- **Sandbox hosts:** a map turns `<id>.blokkli.<domain>` into the id. The domain
+  is ddev's `project_tld` (`ddev.site` locally); nginx has no domain of its own.
+  Without `sandboxes/<id>/db.sqlite`, nginx answers 410 with
+  `sandbox-unknown.html` (links to the claim page). A sandbox's public files are
+  served only on its own host.
 - **Every response** has `X-Blokkli-Upstream` (`nuxt`, `drupal`, `control`,
   `nginx`, `sandbox-unknown`) and the CSP from `headers.inc`
   (`connect-src 'self'`, which covers the WebSockets).
@@ -106,8 +108,8 @@ Traefik sends every hostname to the web container's nginx on port 80.
   nginx answers `/graphql` with 403 unless the request comes from inside the
   container (`$blokkli_graphql_denied`). The browser goes through
   nuxt-graphql-middleware (`/api/graphql_middleware/`), which sends only the
-  app's operations. The dev site's endpoint stays open, for debugging. To ask a
-  sandbox's Drupal directly, do it the way Nuxt does:
+  app's operations. The local dev site's endpoint stays open, for debugging. To
+  ask a sandbox's Drupal directly, do it the way Nuxt does:
   `ddev exec curl http://127.0.0.1/en/graphql -H 'X-Forwarded-Host: <id>.blokkli.ddev.site' …`.
 - **SSR only for anonymous visitors, and only locally**
   (`sandbox/frontend/server/middleware/spa.ts`): a session cookie,
@@ -484,8 +486,8 @@ host, with ddev running: `bun run test:e2e-drupal` or
 - **The agent's project pieces** are in `sandbox/frontend/blokkli/` (`skills/`,
   `tools/get_town_data`, `prompts/`), next to `nuxt.config.ts`, not in `app/`.
   Their DE/FR strings are in `blokkli.translations` in `nuxt.config.ts`.
-  `enableMock: true` lets a client replay a scripted conversation instead of the
-  model; it must be off when hosted.
+  `enableMock` lets a client replay a scripted conversation instead of the
+  model: on for the dev server, off in a production build (`NODE_ENV`).
 - **The Test Cases sidebar** (`blokkli/features/test-cases/`): triggers for
   flows that are hard to reach otherwise, also `window.__BLOKKLI__.test` for the
   E2E specs (the `e2e-testing` skill). `devOnly`: the dev server has it, a
@@ -498,21 +500,59 @@ host, with ddev running: `bun run test:e2e-drupal` or
 
 ## Environment
 
-| Variable                                                      | Read by                                                  | Without it                                      |
-| ------------------------------------------------------------- | -------------------------------------------------------- | ----------------------------------------------- |
-| `NUXT_SANDBOX_LOGIN_SECRET`                                   | settings.php, the control app                            | a public fallback (hosted: settings.php throws) |
-| `DRUPAL_HASH_SALT`                                            | settings.php                                             | a public fallback (hosted: throws)              |
-| `NUXT_BLOKKLI_AGENT_AUTH_SECRET`                              | settings.php (dev site, premium sandboxes), the frontend | no agent                                        |
-| `NUXT_BLOKKLI_AGENT_API_KEY`                                  | the frontend                                             | the agent only replays mock scripts             |
-| `DEEPL_AUTH_KEY`                                              | settings.php (not in E2E sandboxes)                      | no DeepL translation                            |
-| `ROKKA_API_KEY`, `ROKKA_ORG`                                  | settings.php (not in E2E sandboxes)                      | no uploads to Rokka in a sandbox set up for it  |
-| `NUXT_ADMIN_PASSWORD`                                         | the control app                                          | `/admin` open locally, 503 when hosted          |
-| `NUXT_TURNSTILE_SECRET_KEY`, `NUXT_PUBLIC_TURNSTILE_SITE_KEY` | the control app                                          | no captcha                                      |
-| `IS_DDEV_HOSTED`                                              | settings.php, the control app, the frontend's SSR rule   | local behaviour                                 |
-| `DDEV_HOSTNAME` (ddev)                                        | settings.php, the control app (`sandboxUrl`)             | —                                               |
+| Variable                                                      | Read by                                                                                 | Without it                                      |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `NUXT_SANDBOX_LOGIN_SECRET`                                   | settings.php, the control app                                                           | a public fallback (hosted: settings.php throws) |
+| `DRUPAL_HASH_SALT`                                            | settings.php                                                                            | a public fallback (hosted: throws)              |
+| `NUXT_BLOKKLI_AGENT_AUTH_SECRET`                              | settings.php (dev site, premium sandboxes), the frontend                                | no agent                                        |
+| `NUXT_BLOKKLI_AGENT_API_KEY`                                  | the frontend                                                                            | the agent only replays mock scripts             |
+| `DEEPL_AUTH_KEY`                                              | settings.php (not in E2E sandboxes)                                                     | no DeepL translation                            |
+| `ROKKA_API_KEY`, `ROKKA_ORG`                                  | settings.php (not in E2E sandboxes)                                                     | no uploads to Rokka in a sandbox set up for it  |
+| `NUXT_ADMIN_PASSWORD`                                         | the control app                                                                         | `/admin` open locally, 503 when hosted          |
+| `NUXT_TURNSTILE_SECRET_KEY`, `NUXT_PUBLIC_TURNSTILE_SITE_KEY` | the control app                                                                         | no captcha                                      |
+| `IS_DDEV_HOSTED`                                              | settings.php, the control app, the frontend's SSR rule, `nuxt-daemon.sh`, `ddev deploy` | local behaviour                                 |
+| `DDEV_HOSTNAME` (ddev)                                        | settings.php, the control app (`sandboxUrl`)                                            | —                                               |
 
 `DRUSH_OPTIONS_URI` is set to the primary URL in `config.yaml` (ddev only does
 that with settings management, which is off).
+
+## Hosting
+
+The same ddev project runs on a server, for internal use (the hosted instance).
+What the server needs besides the repository (VM, firewall, certificates,
+outgoing allowlist, monitoring): `plans/drupal-setup/12-hosted-deploy.md`.
+
+- **The switch** is `.ddev/config.local.yaml` (gitignored) on the server:
+  `IS_DDEV_HOSTED=true` in `web_environment`, and `project_tld: <domain>`. The
+  hosts then have the local shape under that domain: `blokkli-control.<domain>`
+  (the claim page), `<id>.blokkli.<domain>` (sandboxes), `blokkli.<domain>`.
+  settings.php and the control app take them from `DDEV_HOSTNAME`.
+- **nginx tells hosted from local by the domain** (`$blokkli_local`: a
+  `ddev.site` host is local). Hosted, `blokkli.<domain>` redirects to the claim
+  page: the default site is only what the templates are baked from. Drupal's
+  GraphQL endpoint answers only Nuxt's server. The ddev router passes on only
+  the project's hostnames, so no `ddev.site` host reaches the hosted nginx
+  (check it on the server). Not `additional_fqdns`: the `ddev.site` names would
+  stay, and `sandboxUrl()` would pick their wildcard.
+- **The Nuxt apps run their production builds** (`nuxt-daemon.sh`:
+  `node sandbox/<app>/.output/server/index.mjs`), never a dev server, which
+  serves any file of the repository and runs Nitro's tasks for anyone.
+  `bun run sandbox:build` builds both (about 20 s). A production build has its
+  own build directory (`$production.buildDir`, under `node_modules/.cache`), so
+  it can run next to the dev servers; `nuxi build` empties its build directory.
+  To try a build locally, start it on a spare port in the container
+  (`NITRO_HOST=127.0.0.1 NITRO_PORT=3010 node sandbox/frontend/.output/server/index.mjs`)
+  and ask it with curl and the `X-Forwarded-*` headers that nginx sends.
+- **What else changes when hosted:** settings.php throws without
+  `DRUPAL_HASH_SALT` and `NUXT_SANDBOX_LOGIN_SECRET`, also for drush; `/admin`
+  answers 503 without `NUXT_ADMIN_PASSWORD`; the frontend renders no page on the
+  server.
+- **`ddev deploy`** (a host command): pulls the checked-out branch, updates the
+  submodule, stops the Nuxt apps, runs composer and bun, builds both apps, bakes
+  the de, fr and en templates, deletes every sandbox and restarts. It refuses to
+  run without `IS_DDEV_HOSTED=true`, with `ddev.site` hostnames, or without the
+  three secrets above, so it can't run locally. Run it again every week or so:
+  seeded dates are relative to the bake.
 
 ## Checks
 

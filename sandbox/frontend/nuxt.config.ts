@@ -1,5 +1,6 @@
 // The sandbox's Nuxt app. It runs inside ddev as the "nuxt" daemon
-// (`ddev nuxt`), behind nginx at https://blokkli.ddev.site.
+// (`ddev nuxt`), behind nginx at https://blokkli.ddev.site: the dev server
+// locally, the production build (`bun run sandbox:build`) when hosted.
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import { pathPrefix } from 'nuxt-language-negotiation/negotiators'
@@ -226,8 +227,10 @@ export default defineNuxtConfig({
       agent({
         provider: 'anthropic',
         // Lets a client replay a scripted conversation instead of the model
-        // (E2E tests). Local only: the hosted build must turn it off.
-        enableMock: true,
+        // (E2E tests, against the dev server). Never in a production build:
+        // any client could skip the API key and have the server run the tool
+        // calls of its choosing.
+        enableMock: process.env.NODE_ENV !== 'production',
         // Prices in USD per million tokens, from Anthropic's pricing page.
         models: [
           {
@@ -285,6 +288,12 @@ export default defineNuxtConfig({
       // test-cases feature's `window.__BLOKKLI__.test`.
       include: ['../blokkli/features/**/*', '../../../test/e2e-drupal/**/*'],
     },
+  },
+
+  $production: {
+    // A build empties its build directory first: its own, so that it can run
+    // next to the dev server.
+    buildDir: 'node_modules/.cache/nuxt-production',
   },
 
   compatibilityDate: '2026-09-26',

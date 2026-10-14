@@ -1,14 +1,32 @@
 # 12: Hosted deploy
 
-- **Status:** todo
+- **Status:** in progress: the repository is ready (2026-10-14), the server
+  isn't set up
 - **Milestone:** M3 Hosted
 
 ## Goal
 
-The sandbox runs publicly on the existing Hetzner server using hosted ddev, in
-two instances: `main` (public) at `sandbox.blokk.li` and `dev` (invite only) at
-`dev-sandbox.blokk.li`. Sandboxes are subdomains of these, e.g.
-`k3f9.sandbox.blokk.li`.
+First an internal instance, run by a colleague, not public. Later the sandbox
+runs publicly on the existing Hetzner server using hosted ddev, in two
+instances: `main` (public) and `dev` (invite only).
+
+**The hosts** (decided 2026-10-14): ddev's `project_tld` is the hosted domain,
+so the hosts have the local shape under it: `blokkli-control.<domain>` (the
+claim page), `<id>.blokkli.<domain>` (sandboxes), `blokkli.<domain>` (leads to
+the claim page). nginx, settings.php and the control app then need no domain of
+their own. The earlier idea, the claim page on the apex and sandboxes directly
+under it (`k3f9.sandbox.blokk.li`), would need a hosted nginx config of its own.
+
+**The internal instance** is at `dev-sandbox.blokk.li` (its `project_tld`;
+decided 2026-10-14), the name this plan had for the invite-only instance:
+`blokkli-control.dev-sandbox.blokk.li` (the claim page),
+`<id>.blokkli.dev-sandbox.blokk.li` and `blokkli.dev-sandbox.blokk.li`. The DNS
+records exist (Netlify, zone `blokk.li`, 2026-10-14): A and AAAA for
+`blokkli.dev-sandbox`, `blokkli-control.dev-sandbox` and
+`*.blokkli.dev-sandbox`. `sandbox.blokk.li` stays free for the public instance.
+
+How the hosted instance works: the `sandbox` skill, "Hosting", and
+`CONTRIBUTING.md`, "Hosting".
 
 ## Tasks
 
@@ -17,30 +35,42 @@ two instances: `main` (public) at `sandbox.blokk.li` and `dev` (invite only) at
       reasons: ddev's router also publishes dev tools such as Mailpit on
       8025/8026, and the web container gives its user passwordless sudo.
 - [ ] ddev in hosted mode:
-  - [ ] the starterkit's `nginx-site-hosted.conf.template`, selected by
-        `IS_DDEV_HOSTED=true` in `.ddev/config.local.yaml`
-  - [ ] Nuxt runs as a production build daemon (`node .output/server/index.mjs`)
-        instead of `nuxi dev`
-  - [ ] the agent's `enableMock` off in that build
+  - [x] one nginx config for both: the domain comes from `project_tld`, and
+        nginx tells hosted from local by it (2026-10-14)
+  - [x] both Nuxt apps run their production builds when hosted
+        (`.ddev/nuxt-daemon.sh`, `bun run sandbox:build`)
+  - [x] the agent's `enableMock` is off in a production build
         (`sandbox/frontend/nuxt.config.ts`): with it, any client can skip the
         API key and have the server run tool calls of its choosing (13i)
+  - [ ] `.ddev/config.local.yaml` on the server: `IS_DDEV_HOSTED=true` and
+        `project_tld: dev-sandbox.blokk.li`
   - [ ] a dedicated provider key for the agent, with a spend limit set at the
         provider (moved from 11)
-- [ ] TLS with a wildcard certificate via the DNS-01 challenge:
+- [ ] TLS with wildcard certificates via the DNS-01 challenge:
   - ddev's built-in Let's Encrypt uses TLS-ALPN-01 (the router's static config
     has `acme-tlsChallenge`), which can't issue wildcards. A certificate per
     subdomain would hit Let's Encrypt's limit of 50 certificates per registered
     domain per week.
-  - Two certificates: `*.sandbox.blokk.li` and `*.dev-sandbox.blokk.li`.
-  - Options: a Traefik DNS resolver for Netlify DNS (lego provider `netlify`;
-    verify), or move or delegate the zones to another DNS provider.
-- [ ] Two ddev projects: `main` → `sandbox.blokk.li`, `dev` →
-      `dev-sandbox.blokk.li`.
+  - Per instance, one certificate: `blokkli.<domain>`,
+    `blokkli-control.<domain>` and `*.blokkli.<domain>`.
+  - Options: a Traefik DNS resolver for the domain's DNS provider (for Netlify
+    DNS, lego's provider `netlify`; verify), or move or delegate the zone.
+    Netlify's API token can change every record of the account: safer is a CNAME
+    from each `_acme-challenge.<name>` to a challenge-only service (e.g.
+    acme-dns), whose credentials are all the server holds.
+- [ ] IPv6: the AAAA records exist. Check that the router sees an IPv6 visitor's
+      address (`X-Forwarded-For`): Docker's userland proxy replaces it by
+      default, and every IPv6 visitor would then share one address, and the
+      claim page's limit of 3 claims per address and hour. If it does, remove
+      the AAAA records or change Docker's setup.
+- [ ] Public, later: two ddev projects, `main` and `dev`, each with its own
+      domain.
 - [ ] Re-bake regularly (e.g. weekly), not only on deploy, so that the seeded
-      dates stay current (14a: they're relative to the bake).
-- [ ] Deploy script: check out the branch → `git submodule update` → composer
-      install → bun install → build Nuxt → bake → expire all sandboxes →
-      restart. Run it manually at first; a GitHub Action can come later.
+      dates stay current (14a: they're relative to the bake): a cron job on the
+      server that runs `ddev deploy`.
+- [x] Deploy script: `ddev deploy` (`.ddev/commands/host/deploy`, 2026-10-14).
+      Run it manually at first; a GitHub Action can come later. Not run on a
+      server yet: only its guards are tried.
 - [ ] Entry point: a "Try blökkli" link on blokk.li that goes to the claim page
       on the apex.
 - [ ] Monitoring: disk usage from sandboxes, error logs, and an alert when the
@@ -53,11 +83,12 @@ two instances: `main` (public) at `sandbox.blokk.li` and `dev` (invite only) at
     endpoints and thumbnail hosts (remote videos)
   - `ftp.drupal.org`, only if the deploy imports interface translations
   - no SMTP: mail stays in Mailpit
-- [ ] The hosted nginx template takes chunk 10's rules from `nginx-site.conf`:
-      `headers.inc` (CSP, noindex), each sandbox's files only on its host, no
-      PHP under `sites/*/files`, and Drupal's GraphQL endpoint only for requests
-      from inside the container (`$blokkli_graphql_denied`; without the local
-      exception for the dev site).
+- [x] Chunk 10's rules hold when hosted: there's one nginx config. Hosted, it
+      also redirects the default site to the claim page, and has no exception
+      for Drupal's GraphQL endpoint (2026-10-14).
+- [ ] On the server: check that the ddev router passes on no `ddev.site` host
+      and overwrites `X-Forwarded-Host` (nginx relies on both), and that
+      `DDEV_HOSTNAME` has only the hosted names (`ddev deploy` checks it).
 - [ ] Candidates: limits on PHP-FPM time (600 s today), request size (100M) and
       request rate, so that one sandbox can't slow down the others.
 
@@ -72,14 +103,8 @@ two instances: `main` (public) at `sandbox.blokk.li` and `dev` (invite only) at
 From chunk 02 (2026-09-26):
 
 - **Never run `nuxi dev` on a hosted instance.** Vite's `/@fs/` serves any file
-  in the repo (databases, `.env`). Hosted runs the production build only.
-- **The daemon:** `.ddev/nuxt-daemon.sh` can branch on `IS_DDEV_HOSTED` and run
-  `node .output/server/index.mjs` instead, so `web_extra_daemons` stays the same
-  in both setups.
-- **nginx:** when the hosted variant arrives, move the shared parts (the Drupal
-  path list, the internal Drupal server) into include files not named `*.conf`.
-  ddev copies all of `nginx_full/` into `sites-enabled/`, but nginx only loads
-  `*.conf` from there, so the includes are only read where they're included.
+  in the repo (databases, `.env`). Hosted runs the production build only
+  (`.ddev/nuxt-daemon.sh` branches on `IS_DDEV_HOSTED`).
 - **Forwarded headers:** nginx trusts `X-Forwarded-Host`, because the ddev
   router overwrites what clients send (tested locally). Check that the hosted
   router does the same, or a client could pick another sandbox's host.
@@ -115,12 +140,15 @@ From 15a (2026-09-27):
 
 - **The theme's nested CSS** (`main.css`) ships as native CSS nesting in dev;
   check that the production build flattens or keeps it as intended.
+- **The production builds** were tried locally on 2026-10-14, on spare ports:
+  they build in about 20 s; pages, assets, the editor's GraphQL operations and a
+  claim work; `/@fs/` and `/_nitro/tasks` get the app's page. Not tried in a
+  browser.
 
 From chunk 08 (2026-10-02):
 
-- **The hosted domains:** `DDEV_HOSTNAME` needs the wildcard entries
-  (`*.sandbox.blokk.li`), which settings.php reads, and nginx's
-  `$blokkli_sandbox` map has only `blokkli.ddev.site` so far.
+- **The hosted domains:** with `project_tld`, `DDEV_HOSTNAME` has the wildcard
+  entry (`*.blokkli.<domain>`) that settings.php and the control app read.
 - **Disk:** a sandbox is a full copy (32 MB database, 11 MB files). Hard links
   would share the files, but Drupal can write into an existing file (see 08). On
   a filesystem with reflinks (XFS, btrfs), PHP's `copy()` should share the

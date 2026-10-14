@@ -7,7 +7,7 @@ is removed.
 
 | #   | Chunk                                | Status          |
 | --- | ------------------------------------ | --------------- |
-| 12  | [Hosted deploy](12-hosted-deploy.md) | todo            |
+| 12  | [Hosted deploy](12-hosted-deploy.md) | in progress     |
 | 13j | [Skill tests](13j-skill-tests.md)    | todo (deferred) |
 
 Statuses: `todo`, `in progress`.

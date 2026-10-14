@@ -12,6 +12,7 @@ xdebug_enabled: false
 # The sandboxes: <id>.blokkli.ddev.site.
 # The control app: blokkli-control.ddev.site, not a subdomain of
 # blokkli.ddev.site, which would make it a sandbox id.
+# Hosted, project_tld replaces ddev.site (CONTRIBUTING.md, "Hosting").
 additional_hostnames: ["*.blokkli", "blokkli-control"]
 
 # Drupal runs on SQLite (one file per sandbox), so there is no db container,

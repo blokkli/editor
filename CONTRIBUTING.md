@@ -146,6 +146,35 @@ ddev dotenv set .ddev/.env.web --nuxt-blokkli-agent-api-key=…
   exported config. The form shows the placeholder that the config stores
   (`overridden-at-runtime`); the key comes from the environment.
 
+### Hosting
+
+The same ddev project runs on a server, for internal use. There,
+`.ddev/config.local.yaml` (gitignored) makes it the hosted instance:
+
+```yaml
+project_tld: sandbox.example.com # the hosted domain
+web_environment:
+  - IS_DDEV_HOSTED=true
+```
+
+- **The hosts** are the local ones under that domain: `blokkli-control.<domain>`
+  (the claim page), `<id>.blokkli.<domain>` (the sandboxes) and
+  `blokkli.<domain>`, which leads to the claim page. DNS and the certificate
+  need `*.<domain>` and `*.blokkli.<domain>`.
+- **The secrets** go in `.ddev/.env.web`, as locally. `DRUPAL_HASH_SALT`,
+  `NUXT_SANDBOX_LOGIN_SECRET` and `NUXT_ADMIN_PASSWORD` are required: Drupal
+  refuses to run without the first two. Give the agent's API key a spend limit,
+  and don't set the Rokka keys.
+- **`ddev deploy`** updates the code, builds both Nuxt apps for production,
+  bakes the templates, deletes all sandboxes and restarts. Run it again every
+  week or so: the seeded dates are relative to the bake. It refuses to run
+  locally.
+- Hosted, the Nuxt apps run their production builds (never the dev servers,
+  which serve any file of the repository), nginx doesn't serve the dev site, and
+  only Nuxt's server reaches Drupal's GraphQL endpoint.
+- What the server needs besides that (the VM, the firewall, certificates, the
+  outgoing allowlist, monitoring): `plans/drupal-setup/12-hosted-deploy.md`.
+
 ### The agent
 
 The agent is on the dev site and in premium sandboxes (see Sandboxes). All four

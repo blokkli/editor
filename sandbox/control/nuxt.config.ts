@@ -1,7 +1,8 @@
 // The control app: the claim page, the premium invitations, the admin pages,
 // and the cleanup of expired sandboxes. It runs inside ddev as the "control"
 // daemon (`ddev nuxt control`), behind nginx at
-// https://blokkli-control.ddev.site.
+// https://blokkli-control.ddev.site: the dev server locally, the production
+// build (`bun run sandbox:build`) when hosted.
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 
@@ -59,6 +60,12 @@ export default defineNuxtConfig({
 
   typescript: {
     strict: true,
+  },
+
+  $production: {
+    // A build empties its build directory first: its own, so that it can run
+    // next to the dev server.
+    buildDir: 'node_modules/.cache/nuxt-production',
   },
 
   compatibilityDate: '2026-10-02',

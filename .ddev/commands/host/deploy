@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+## Description: Deploy the hosted sandbox: update the code, build the Nuxt apps, bake the templates, delete the sandboxes, restart
+## Usage: deploy
+## Example: "ddev deploy"
+
+# Only on the hosted instance (IS_DDEV_HOSTED=true, a project_tld of its own).
+# It pulls the checked-out branch, updates the submodule and replaces the
+# site's database: locally that would undo work in progress. Run it again every
+# week or so, so that the seeded dates (relative to the bake) stay current.
+
+set -euo pipefail
+
+cd "$DDEV_APPROOT"
+
+fail() {
+  echo "ddev deploy: $1" >&2
+  exit 1
+}
+
+# The checks read the web container's environment, so the project must run.
+web_env() {
+  ddev exec printenv "$1" 2>/dev/null | tr -d '\r' || true
+}
+
+[ "$(web_env IS_DDEV_HOSTED)" = true ] ||
+  fail "this isn't the hosted instance (IS_DDEV_HOSTED=true in .ddev/config.local.yaml), or the project doesn't run (ddev start)."
+
+# nginx tells the local site from the hosted one by the domain (ddev.site).
+case ",$(web_env DDEV_HOSTNAME)," in
+  *.ddev.site,*) fail "the hostnames are ddev.site ones: set project_tld to the hosted domain in .ddev/config.local.yaml." ;;
+esac
+
+# settings.php and the control app refuse to run without them.
+for variable in DRUPAL_HASH_SALT NUXT_SANDBOX_LOGIN_SECRET NUXT_ADMIN_PASSWORD; do
+  [ -n "$(web_env "$variable")" ] || fail "$variable isn't set (.ddev/.env.web)."
+done
+
+echo "== Code"
+git pull --ff-only
+git submodule update --init
+
+# Their builds get replaced: nginx shows its 502 page meanwhile. Stopping one
+# that doesn't run fails.
+echo "== Stopping the Nuxt apps"
+ddev nuxt stop || true
+ddev nuxt control stop || true
+
+echo "== Dependencies"
+ddev composer install --no-interaction
+ddev exec -d /var/www/html bun install --frozen-lockfile
+
+echo "== Building the Nuxt apps"
+ddev exec -d /var/www/html bun run sandbox:build
+
+# Every language with a template. The default site is only what the templates
+# are made of: nginx doesn't serve it when hosted.
+echo "== Baking the templates"
+ddev bake --source=de
+ddev bake --source=fr
+ddev bake
+
+# They're copies of the old templates, made with the old code. The control
+# app's cleanup marks their rows deleted.
+echo "== Deleting the sandboxes"
+for id in $(ddev drush blokkli-sandbox:list --field=id 2>/dev/null | tr -d '\r'); do
+  ddev drush blokkli-sandbox:delete "$id"
+done
+
+# nginx's config, and the Nuxt apps with their new builds.
+echo "== Restarting"
+ddev restart
+
+echo "Deployed $(git rev-parse --short HEAD) (paragraphs_blokkli $(git -C sandbox/drupal/paragraphs_blokkli rev-parse --short HEAD))."
