@@ -48,6 +48,19 @@ export default defineBuildConfig({
         }
         return originalExternal === id
       }
+
+      // The import then names the directory, which Node's ESM loader can't
+      // import (Nuxt would load the module through jiti): name its file.
+      options.plugins.push({
+        name: 'blokkli:global-constants-file',
+        renderChunk(code) {
+          const replaced = code.replace(
+            /(['"])((?:\.\.?\/)+global\/constants)\1/g,
+            '$1$2/index.js$1',
+          )
+          return replaced === code ? null : { code: replaced, map: null }
+        },
+      })
     },
   },
   entries: [
