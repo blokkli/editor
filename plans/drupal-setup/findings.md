@@ -16,8 +16,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F18  | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                                                                           | both                 | low      | workaround |
 | F19  | [Template and library search](#f19-template-and-library-search)                                                                                                             | both                 | low      | open       |
 | F20  | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                                                                           | `paragraphs_blokkli` | low      | open       |
-| F23  | [A past unpublish date blocks publishing](#f23-a-past-unpublish-date-blocks-publishing)                                                                                     | both                 | low      | open       |
-| F24  | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                                                                           | `paragraphs_blokkli` | medium   | open       |
+| F24  | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                                                                           | `paragraphs_blokkli` | medium   | parked     |
 | F25  | [An empty change description keeps the old log](#f25-an-empty-change-description-keeps-the-old-log)                                                                         | `paragraphs_blokkli` | low      | open       |
 | F26  | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation)                                                     | both                 | medium   | parked     |
 | F28  | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                                                                      | `@blokkli/editor`    | low      | workaround |
@@ -62,7 +61,8 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F115 | [A violation of a host's paragraphs field names no entity](#f115-a-violation-of-a-hosts-paragraphs-field-names-no-entity)                                                   | `paragraphs_blokkli` | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
-(the sandbox works around it).
+(the sandbox works around it), `parked` (part of a plan of its own, in
+[README](README.md)'s "Features that need their own plan").
 
 ## F5: Twig 3.30 breaks escaping
 
@@ -220,26 +220,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
     defines as a new paragraph of the type. To decide.
 - **Fix idea:** skip the template's children for a field that gets children.
 
-## F23: A past unpublish date blocks publishing
-
-- **Found:** 2026-09-27, 13e.
-- **Symptom:** a paragraph's "Unpublish on" date passes, and cron hasn't run
-  yet. Publishing the host fails with "The 'unpublish on' date must be in the
-  future." until cron has unpublished the paragraph.
-- **Cause:** scheduler's `SchedulerUnpublishOnConstraintValidator` rejects every
-  past unpublish date; unlike `publish_past_date`, there's no setting for it.
-  blökkli validates the host's paragraphs when publishing
-  (`ParagraphsBlokkliEditState.php:772-794`).
-- **Reproduced** at the validation level (`$paragraph->validate()` returns the
-  violation). The site's only editor is user 1, who has "publish paragraphs
-  blokkli edit state with validation errors" and skips validation
-  (`ParagraphsBlokkliManager.php:181-185`); other editors hit it.
-- **Since 2026-10-12** the edit state validates nested paragraphs too, so a
-  nested paragraph with a past date blocks the publishing as well.
-- **Fix idea:** paragraphs_blokkli ignores scheduler's date constraints on
-  paragraphs that cron will process, or processes due paragraphs before
-  validating.
-
 ## F24: Paragraph schedules apply to one translation
 
 - **Found:** 2026-09-27, 13e.
@@ -251,8 +231,25 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   (`Mutation/SetParagraphSchedule.php:120-133`). All three are translatable. The
   dialog doesn't mention languages.
 - **Impact:** a notice scheduled to disappear stays in the other languages.
-- **Fix idea:** set the dates and the status on every translation, or show the
-  language in the dialog.
+- **Depends on the site:** it takes translatable fields, the default. Scheduler
+  defines both dates as translatable, core the status; a site can make each one
+  shared in its content translation settings. The sandbox keeps the defaults.
+  - All three shared: one value for every language, no F24.
+  - All three per language: F24.
+  - Dates shared, status per language: the date is set everywhere, but only the
+    edit's language is hidden; the others are live before the date.
+  - Status shared, dates per language: hidden everywhere, but only one language
+    has the date; cron publishes all of them at that date.
+  - Scheduler's cron handles each translation's dates on their own.
+- **Fix idea:** a new version of `set_paragraph_schedule` that sets the dates
+  and the status on every translation. That's right for shared fields as well,
+  but rules out schedules per language, which the dialog can't set today either.
+  Or schedules per language, with the language in the dialog.
+- **Parked** (the user, 2026-10-14): part of the plan for publish status per
+  language ([README](README.md), "Features that need their own plan"), with F26.
+  Tests can use the Scheduler module since the fix of F23:
+  `paragraphs_blokkli_scheduler_test` gives it the paragraphs, as the sandbox's
+  patch does.
 
 ## F25: An empty change description keeps the old log
 

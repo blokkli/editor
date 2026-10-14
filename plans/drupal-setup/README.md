@@ -53,6 +53,9 @@ Not started, and not to be patched in the meantime.
   today). The editor must show clearly that only some languages are published,
   whichever language the user is in. Open: where the status lives. It sits next
   to the title today, the language switcher at the toolbar's other end.
+  - It includes the paragraphs' schedules (F24, parked into this plan on
+    2026-10-14): whether a schedule is per language or for the whole paragraph,
+    and how the schedule dialog shows it.
 
 ## Upstream bugs
 
