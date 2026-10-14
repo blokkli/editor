@@ -1457,10 +1457,6 @@ type FieldItemListEntityReferenceRevisions implements FieldItemList {
 
   "Get the entity the field belongs to."
   entity: Entity
-
-  name: String!
-  targetBundles: [Entity]
-  canEdit: Boolean
 }
 
 "Entity reference revisions"
