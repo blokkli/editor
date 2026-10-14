@@ -52,7 +52,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F102 | [The library search fails for an empty list of types](#f102-the-library-search-fails-for-an-empty-list-of-types)                                                            | `paragraphs_blokkli` | low      | open       |
 | F103 | [A preview misses a change that is made before its first poll](#f103-a-preview-misses-a-change-that-is-made-before-its-first-poll)                                          | editor               | low      | open       |
 | F104 | [A refused machine translation answers "Internal server error"](#f104-a-refused-machine-translation-answers-internal-server-error)                                          | `paragraphs_blokkli` | low      | open       |
-| F106 | [Templates and imported paragraphs don't keep the published state](#f106-templates-and-imported-paragraphs-dont-keep-the-published-state)                                   | `paragraphs_blokkli` | low      | to verify  |
 | F107 | [A duplicate drops nested paragraphs in fields that blökkli doesn't manage](#f107-a-duplicate-drops-nested-paragraphs-in-fields-that-blökkli-doesnt-manage)                 | `paragraphs_blokkli` | low      | to verify  |
 | F108 | [A template of a new library item's paragraph saves the item early](#f108-a-template-of-a-new-library-items-paragraph-saves-the-item-early)                                 | `paragraphs_blokkli` | low      | to verify  |
 | F110 | [The Search API lists show what the index returns](#f110-the-search-api-lists-show-what-the-index-returns)                                                                  | `paragraphs_blokkli` | low      | to verify  |
@@ -849,28 +848,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   request is refused; its error names the wrong reason.
 - **Fix idea:** a result that may be null, as the editor's other mutations have,
   or an error that says "Access denied".
-
-## F106: Templates and imported paragraphs don't keep the published state
-
-- **Found:** 2026-10-12, by reading, in a review of the plan for F70. Fixed on
-  2026-10-14 for the copies that mutations make: `duplicate` and
-  `duplicate_multiple` since their version 3, and the copies that
-  `copy_from_existing` and `detach_reusable` store (`getDuplicateData()` of the
-  helper, with `withStatus`). Not reproduced for templates and imports.
-- **Symptom:** a template made of an unpublished paragraph holds a published
-  one, and so does a page that the template is added to. Paragraphs that are
-  exported from a page and imported into another are published.
-- **Cause:**
-  - `BlokkliParagraphTemplateService::cloneParagraphForTemplate()`
-    (`modules/paragraphs_blokkli_template/src/BlokkliParagraphTemplateService.php`
-    at `f24e0a0`) duplicates without the status.
-  - Adding a template and importing paragraphs go through the serialized format,
-    which leaves `status` out (`SERIALIZED_PARAGRAPH_SKIP_FIELDS`,
-    `src/SerializedParagraphProducerTrait.php`).
-- **Open question:** whether a template or an export should keep it at all: both
-  are the start of new content, on another page or another site.
-- **Fix idea:** keep `status` per translation in the serialized format, and when
-  a template is made. Data that was stored without it stays published.
 
 ## F107: A duplicate drops nested paragraphs in fields that blökkli doesn't manage
 
