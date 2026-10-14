@@ -72,7 +72,7 @@ independently from the content data.
 ## Prerequisites
 
 - **Drupal 10 or 11** with the Paragraphs module
-- **Nuxt 3** with `nuxt-graphql-middleware`
+- **Nuxt 4.4 or later** with `nuxt-graphql-middleware`
 - A GraphQL server module for Drupal (e.g., `graphql_core_schema`)
 
 ## Next Steps

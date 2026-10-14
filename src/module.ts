@@ -37,7 +37,7 @@ export default defineNuxtModule<ModuleOptions>({
     configKey: 'blokkli',
     version,
     compatibility: {
-      nuxt: '>=3.15.0',
+      nuxt: '>=4.4.0',
     },
   },
   defaults: {

@@ -1,6 +1,6 @@
 # blökkli Docs
 
-blökkli is an interactive page builder for Nuxt.
+blökkli is an interactive page builder for Nuxt. It requires Nuxt 4.4 or later.
 
 ## Install package
 
