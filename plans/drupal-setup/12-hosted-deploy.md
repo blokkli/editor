@@ -74,9 +74,9 @@ How the hosted instance works: the `sandbox` skill, "Hosting", and
 - [ ] Re-bake regularly (e.g. weekly), not only on deploy, so that the seeded
       dates stay current (14a: they're relative to the bake): a cron job on the
       server that runs `ddev deploy`.
-- [x] Deploy script: `ddev deploy` (`.ddev/commands/host/deploy`, 2026-10-14).
-      A push to `dev` runs it (`.github/workflows/deploy-sandbox.yml`, 12a). Not run on a
-      server yet: only its guards are tried.
+- [x] Deploy script: `ddev deploy` (`.ddev/commands/host/deploy`, 2026-10-14). A
+      push to `dev` runs it (`.github/workflows/deploy-sandbox.yml`, 12a). Not
+      run on a server yet: only its guards are tried.
 - [ ] Entry point: a "Try blökkli" link on blokk.li that goes to the claim page
       on the apex.
 - [ ] Monitoring: disk usage from sandboxes, error logs, and an alert when the

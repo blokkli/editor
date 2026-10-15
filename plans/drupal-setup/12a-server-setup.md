@@ -214,9 +214,10 @@ curl -sI https://blokkli-control.dev-sandbox.blokk.li -H 'X-Forwarded-Host: evil
 
 - Weekly re-bake:
   `0 4 * * 1 cd /home/liip/sandbox && /usr/bin/ddev deploy >> ~/sandbox-deploy.log 2>&1`
-- The GitHub workflow (set up 2026-10-15): `.github/workflows/deploy-sandbox.yml`
-  deploys on every push to `dev` (and by hand: "Run workflow"). Its secrets
-  `SANDBOX_SSH_KEY` and `SANDBOX_KNOWN_HOSTS` hold a key of its own, whose entry
-  in `liip`'s `authorized_keys` forces the command:
+- The GitHub workflow (set up 2026-10-15):
+  `.github/workflows/deploy-sandbox.yml` deploys on every push to `dev` (and by
+  hand: "Run workflow"). Its secrets `SANDBOX_SSH_KEY` and `SANDBOX_KNOWN_HOSTS`
+  hold a key of its own, whose entry in `liip`'s `authorized_keys` forces the
+  command:
   `command="flock /tmp/blokkli-deploy.lock sh -c \"cd /home/liip/sandbox && /usr/bin/ddev deploy\"",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ssh-ed25519 … github-actions deploy blokkli/editor`.
   Every push deletes all sandboxes, premium ones included.
