@@ -40,19 +40,26 @@ bun run dev          # http://localhost:3000
 3. `ddev ssh`, then `bun install`. All bun and node tooling for this stack runs
    in the container. The first install sometimes fails with "Fail extracting
    tarball from @nuxt/devtools" (bun 1.3.14); run it again.
-4. `ddev bake` installs the site from `sandbox/drupal/config/sync`, with the
+4. Still in the container: `bun run dev:prepare` and `bun run styles:build`,
+   then `ddev nuxt restart` (on the host). The frontend uses blökkli from
+   source, which needs the root `.nuxt/` (without it: "Failed to load tsconfig
+   '.nuxt/tsconfig.app.json'") and the compiled editor CSS
+   `src/runtime/editor/css/output.css` (without it: "ENOENT … output.css"). Both
+   are gitignored. Revert the change `dev:prepare` makes to
+   `playground/app/options-schema.json`.
+5. `ddev bake` installs the site from `sandbox/drupal/config/sync`, with the
    German and French interface translations from drupal.org, and seeds the
    content of `sandbox/drupal/content`. It takes about 20 seconds. The first
    install logs "Couldn't write .htaccess file" for `public://` once, which is
    harmless.
-5. `ddev drush uli` prints a login link for the admin. The test users log in
+6. `ddev drush uli` prints a login link for the admin. The test users log in
    with `ddev drush uli --name="Anna Keller"` (editor), `Marc Brunner` (head of
    department, reviews), `Élodie Favre` (French translator) and `Jonas Weber`
    (restricted editor: no new sections, and he may not add, change or delete
    charts). Logged in, a page shows Drupal's toolbar and its tabs (Edit,
    Translate…) above it; Drupal renders everything with Gin, also the pages that
    aren't admin pages (the login, a user's page).
-6. Visitors who aren't logged in get "This sandbox is private", on the dev site
+7. Visitors who aren't logged in get "This sandbox is private", on the dev site
    as in a sandbox. The link of "Preview (with smartphone)" lets them see that
    page. Only for them does Nuxt render on the server: to see real pages
    rendered that way, put `$settings['blokkli_playground_public'] = TRUE;` in

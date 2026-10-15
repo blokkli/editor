@@ -537,10 +537,14 @@ outgoing allowlist, monitoring): `plans/drupal-setup/12-hosted-deploy.md`.
 - **The Nuxt apps run their production builds** (`nuxt-daemon.sh`:
   `node sandbox/<app>/.output/server/index.mjs`), never a dev server, which
   serves any file of the repository and runs Nitro's tasks for anyone.
-  `bun run sandbox:build` builds both (about 20 s). A production build has its
-  own build directory (`$production.buildDir`, under `node_modules/.cache`), so
-  it can run next to the dev servers; `nuxi build` empties its build directory.
-  To try a build locally, start it on a spare port in the container
+  `bun run sandbox:build` builds both (about 20 s). It first runs
+  `sandbox:prepare`, for a fresh checkout: the gitignored `output.css` and
+  `changelog.json`, and the `.nuxt` folders that the `tsconfig.json` files
+  reference (the build fails without them, though it builds elsewhere). A
+  production build has its own build directory (`$production.buildDir`, under
+  `node_modules/.cache`), so it can run next to the dev servers; `nuxi build`
+  empties its build directory. To try a build locally, start it on a spare port
+  in the container
   (`NITRO_HOST=127.0.0.1 NITRO_PORT=3010 node sandbox/frontend/.output/server/index.mjs`)
   and ask it with curl and the `X-Forwarded-*` headers that nginx sends.
 - **What else changes when hosted:** settings.php throws without
