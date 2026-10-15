@@ -26,14 +26,17 @@ records exist (Netlify, zone `blokk.li`, 2026-10-14): A and AAAA for
 `*.blokkli.dev-sandbox`. `sandbox.blokk.li` stays free for the public instance.
 
 How the hosted instance works: the `sandbox` skill, "Hosting", and
-`CONTRIBUTING.md`, "Hosting".
+`CONTRIBUTING.md`, "Hosting". The steps on the server, and what's there:
+`12a-server-setup.md`.
 
 ## Tasks
 
-- [ ] Isolate the sandbox on the Hetzner server. If other things run there, give
-      the sandbox its own VM. The firewall allows only 80, 443 and SSH. Two
-      reasons: ddev's router also publishes dev tools such as Mailpit on
-      8025/8026, and the web container gives its user passwordless sudo.
+- [ ] Isolate the sandbox on the Hetzner server. The internal instance shares
+      `starterkit.blokk.li` with other ddev projects, and that host has no
+      firewall of its own (12a). If other things run there, give the sandbox its
+      own VM. The firewall allows only 80, 443 and SSH. Two reasons: ddev's
+      router also publishes dev tools such as Mailpit on 8025/8026, and the web
+      container gives its user passwordless sudo.
 - [ ] ddev in hosted mode:
   - [x] one nginx config for both: the domain comes from `project_tld`, and
         nginx tells hosted from local by it (2026-10-14)
@@ -47,6 +50,9 @@ How the hosted instance works: the `sandbox` skill, "Hosting", and
   - [ ] a dedicated provider key for the agent, with a spend limit set at the
         provider (moved from 11)
 - [ ] TLS with wildcard certificates via the DNS-01 challenge:
+  - With `use_letsencrypt`, ddev writes `Host()` rules and breaks the wildcard
+    hostname (seen on the server, 2026-10-15). 12a: lego, the certificate as a
+    file in the router's config, and our own router config.
   - ddev's built-in Let's Encrypt uses TLS-ALPN-01 (the router's static config
     has `acme-tlsChallenge`), which can't issue wildcards. A certificate per
     subdomain would hit Let's Encrypt's limit of 50 certificates per registered
@@ -69,7 +75,7 @@ How the hosted instance works: the `sandbox` skill, "Hosting", and
       dates stay current (14a: they're relative to the bake): a cron job on the
       server that runs `ddev deploy`.
 - [x] Deploy script: `ddev deploy` (`.ddev/commands/host/deploy`, 2026-10-14).
-      Run it manually at first; a GitHub Action can come later. Not run on a
+      A push to `dev` runs it (`.github/workflows/deploy-sandbox.yml`, 12a). Not run on a
       server yet: only its guards are tried.
 - [ ] Entry point: a "Try blökkli" link on blokk.li that goes to the claim page
       on the apex.
