@@ -7,6 +7,7 @@ dependencies:
     - paragraphs.paragraphs_type.video
   module:
     - media_library
+    - media_library_edit
 id: paragraph.video.default
 targetEntityType: paragraph
 bundle: video
@@ -18,7 +19,10 @@ content:
     region: content
     settings:
       media_types: {  }
-    third_party_settings: {  }
+    third_party_settings:
+      media_library_edit:
+        show_edit: true
+        edit_form_mode: default
 hidden:
   created: true
   publish_on: true

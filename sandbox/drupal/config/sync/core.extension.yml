@@ -42,6 +42,7 @@ module:
   masquerade: 0
   media: 0
   media_library: 0
+  media_library_edit: 0
   menu_breadcrumb: 0
   menu_link_content: 0
   menu_ui: 0

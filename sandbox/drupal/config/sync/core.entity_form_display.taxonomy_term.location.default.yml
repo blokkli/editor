@@ -8,6 +8,7 @@ dependencies:
     - taxonomy.vocabulary.location
   module:
     - media_library
+    - media_library_edit
 id: taxonomy_term.location.default
 targetEntityType: taxonomy_term
 bundle: location
@@ -27,7 +28,10 @@ content:
     region: content
     settings:
       media_types: {  }
-    third_party_settings: {  }
+    third_party_settings:
+      media_library_edit:
+        show_edit: true
+        edit_form_mode: default
   langcode:
     type: language_select
     weight: 2

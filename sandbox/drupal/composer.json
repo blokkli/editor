@@ -38,6 +38,7 @@
         "drupal/graphql": "^5",
         "drupal/graphql_core_schema": "^1.0",
         "drupal/masquerade": "^2.0@beta",
+        "drupal/media_library_edit": "^3.0",
         "drupal/menu_breadcrumb": "~2.0",
         "drupal/office_hours": "^1.29",
         "drupal/paragraphs": "^1.23",

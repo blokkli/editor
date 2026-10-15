@@ -238,6 +238,10 @@ Traefik sends every hostname to the web container's nginx on port 80.
   it's ticked, through `#states` (`MediaFormHooks`). The upload dialog applies
   such states; this is the site's example, on every site so that it can always
   be tried. Neither is a field, so neither is saved.
+- Editing a selected media: `media_library_edit` puts a pencil on the media in
+  every media library widget (`show_edit`, a third-party setting of the widget),
+  which opens the media's form in a dialog. The seeded media belong to the
+  admin, so both editor roles have `edit any <type> media`.
 - Alt texts: `PlaceholderAltTextGenerator` gives the upload dialog's "Generate"
   button a text for every image, a placeholder that says what it is (this site
   has no service that describes images). It's on every site, so that the button

@@ -17,6 +17,7 @@ dependencies:
     - datetime_range
     - link
     - media_library
+    - media_library_edit
     - paragraphs
     - path
     - scheduler
@@ -49,7 +50,10 @@ content:
     region: content
     settings:
       media_types: {  }
-    third_party_settings: {  }
+    third_party_settings:
+      media_library_edit:
+        show_edit: true
+        edit_form_mode: default
   field_lead:
     type: string_textarea
     weight: -4
