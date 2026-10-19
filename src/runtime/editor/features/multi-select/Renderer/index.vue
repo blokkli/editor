@@ -104,6 +104,12 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
 
     for (let i = 0; i < rects.length; i++) {
       const rect = rects[i]!
+
+      // Skip selection box border rectangles (type 0): they are not blocks.
+      if (rect.id.startsWith('select-rect-')) {
+        continue
+      }
+
       if (intersects(box, rect)) {
         if (rect.isNested) {
           nested.push(rect.id)
