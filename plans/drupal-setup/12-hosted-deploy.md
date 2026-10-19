@@ -71,9 +71,10 @@ How the hosted instance works: the `sandbox` skill, "Hosting", and
       the AAAA records or change Docker's setup.
 - [ ] Public, later: two ddev projects, `main` and `dev`, each with its own
       domain.
-- [ ] Re-bake regularly (e.g. weekly), not only on deploy, so that the seeded
+- [x] Re-bake regularly (e.g. weekly), not only on deploy, so that the seeded
       dates stay current (14a: they're relative to the bake): a cron job on the
-      server that runs `ddev deploy`.
+      server that runs `ddev deploy`, Mondays 04:00, after renewing the
+      certificate when due (12a, 2026-10-16). Not run yet.
 - [x] Deploy script: `ddev deploy` (`.ddev/commands/host/deploy`, 2026-10-14). A
       push to `dev` runs it (`.github/workflows/deploy-sandbox.yml`, 12a). Not
       run on a server yet: only its guards are tried.

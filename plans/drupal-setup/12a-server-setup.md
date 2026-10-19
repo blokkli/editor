@@ -212,8 +212,22 @@ curl -sI https://blokkli-control.dev-sandbox.blokk.li -H 'X-Forwarded-Host: evil
 
 ### 8. Later
 
-- Weekly re-bake:
-  `0 4 * * 1 cd /home/liip/sandbox && /usr/bin/ddev deploy >> ~/sandbox-deploy.log 2>&1`
+- Weekly (set up 2026-10-16): `~/bin/sandbox-weekly.sh` renews the wildcard
+  certificate when it has less than 30 days left (lego `renew --days 30`),
+  copies it into `.ddev/traefik/certs/`, starts the project if it doesn't run,
+  and runs `ddev deploy`, whose restart hands the certificate to the router. It
+  logs to `~/sandbox-cron.log`. `liip`'s crontab, under the GitHub deploy's
+  lock:
+  `0 4 * * 1 /usr/bin/flock /tmp/blokkli-deploy.lock /home/liip/bin/sandbox-weekly.sh`
+  (Mondays 04:00, Europe/Zurich). It deletes every sandbox.
+- After a reboot (2026-10-19): unattended-upgrades reboots the server at 02:00
+  for a new kernel (`Automatic-Reboot-Time`), and nothing started the project
+  again, so the first weekly run found it down. `@reboot` now runs
+  `~/bin/sandbox-boot.sh` (waits for Docker, `ddev start`), under the same lock.
+- One deploy at a time: `ddev deploy` gives up while another one runs
+  (`/tmp/blokkli-deploy-running.lock`). The first GitHub deploy (2026-10-15)
+  failed because a manual deploy ran at the same time: both baked into
+  `db/site.sqlite`, and the seed found no bundles.
 - The GitHub workflow (set up 2026-10-15):
   `.github/workflows/deploy-sandbox.yml` deploys on every push to `dev` (and by
   hand: "Run workflow"). Its secrets `SANDBOX_SSH_KEY` and `SANDBOX_KNOWN_HOSTS`

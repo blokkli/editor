@@ -36,6 +36,13 @@ for variable in DRUPAL_HASH_SALT NUXT_SANDBOX_LOGIN_SECRET NUXT_ADMIN_PASSWORD; 
   [ -n "$(web_env "$variable")" ] || fail "$variable isn't set (.ddev/.env.web)."
 done
 
+# Two deploys at once bake into the same database: one deletes it while the
+# other seeds ("there's no taxonomy_term type …"). The GitHub workflow and the
+# weekly cron job wait for each other under their own lock
+# (/tmp/blokkli-deploy.lock); this one makes any second deploy give up.
+exec 9>/tmp/blokkli-deploy-running.lock
+flock -n 9 || fail "another deploy is running."
+
 echo "== Code"
 git pull --ff-only
 git submodule update --init
