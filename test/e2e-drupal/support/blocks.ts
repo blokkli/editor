@@ -22,6 +22,15 @@ export function selectBlocks(page: Page, uuids: string[]): Promise<void> {
   return emitEvent(page, 'select', uuids)
 }
 
+/** A block's rectangle in viewport coordinates, as the canvas hit-tests it. */
+export function blockViewportRect(page: Page, uuid: string) {
+  return page.evaluate((uuid) => {
+    const app = window.__BLOKKLI__!.app!
+    const rect = app.dom.getBlockRect(uuid, true)
+    return rect ? app.ui.getViewportRelativeRect(rect) : null
+  }, uuid)
+}
+
 /** Whether a block is still present in the editor state. */
 export function blockExists(page: Page, uuid: string): Promise<boolean> {
   return page.evaluate(
@@ -331,7 +340,7 @@ export function dropAddAction(
 
 /** Resolve after two animation frames — long enough for an instant artboard
  *  pan + re-render to settle so freshly-read rects reflect the new position. */
-function nextFrames(page: Page): Promise<void> {
+export function nextFrames(page: Page): Promise<void> {
   return page.evaluate(
     () =>
       new Promise<void>((resolve) =>
