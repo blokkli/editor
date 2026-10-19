@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto'
 import { mkdirSync } from 'node:fs'
 import { DatabaseSync } from 'node:sqlite'
 
@@ -22,11 +23,26 @@ export type InvitationRow = {
   sandbox: string | null
 }
 
+// A link that logs into a premium sandbox again, as often as needed
+// (server/routes/access/[token].get.ts).
+export type AccessLinkRow = {
+  token: string
+  sandbox: string
+  // The test user's name.
+  user: string
+  note: string
+  created: number
+  revoked: number | null
+  last_used: number | null
+  uses: number
+}
+
 let database: DatabaseSync | undefined
 
 /**
- * The app's database: the sandboxes it created, and the invitations. Times
- * are Unix timestamps. Sandboxes made with drush (dev, E2E) aren't in it.
+ * The app's database: the sandboxes it created, the invitations and the
+ * access links. Times are Unix timestamps. Sandboxes made with drush (dev,
+ * E2E) aren't in it.
  *
  * node:sqlite is synchronous: a check and a write without an await between
  * them can't interleave with another request.
@@ -54,9 +70,38 @@ export function getDatabase(): DatabaseSync {
         used INTEGER,
         sandbox TEXT
       );
+      CREATE TABLE IF NOT EXISTS access_links (
+        token TEXT PRIMARY KEY,
+        sandbox TEXT NOT NULL,
+        user TEXT NOT NULL,
+        note TEXT NOT NULL,
+        created INTEGER NOT NULL,
+        revoked INTEGER,
+        last_used INTEGER,
+        uses INTEGER NOT NULL DEFAULT 0
+      );
+      CREATE INDEX IF NOT EXISTS access_links_sandbox ON access_links (sandbox);
     `)
   }
   return database
+}
+
+/**
+ * A new access link to a sandbox, for one of its test users. Its token is the
+ * link: 128 random bits, as an invitation's.
+ */
+export function insertAccessLink(
+  sandbox: string,
+  user: string,
+  note: string,
+): string {
+  const token = randomBytes(16).toString('base64url')
+  getDatabase()
+    .prepare(
+      'INSERT INTO access_links (token, sandbox, user, note, created) VALUES (?, ?, ?, ?, ?)',
+    )
+    .run(token, sandbox, user, note, now())
+  return token
 }
 
 /**

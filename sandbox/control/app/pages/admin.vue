@@ -47,6 +47,42 @@
     </section>
 
     <section class="flex flex-col gap-4">
+      <h2 class="font-serif text-h2">Access links</h2>
+      <p class="max-w-content">
+        Each link logs into its premium sandbox as its user, as often as needed
+        and in any browser, until it's revoked or the sandbox is deleted. Anyone
+        with the link can edit the sandbox. Revoking ends the link, not the
+        sessions it already opened. Link previews (Slack, Teams, mail scanners)
+        count as openings.
+      </p>
+      <p v-if="!premiumSandboxes.length" class="text-muted">
+        No premium sandboxes.
+      </p>
+      <div
+        v-for="sandbox in premiumSandboxes"
+        :key="sandbox.id"
+        class="flex flex-col gap-3 border-t-2 border-line pt-4"
+      >
+        <h3 class="text-h3">
+          <a :href="sandbox.url" class="underline">{{ sandbox.id }}</a>
+          <span v-if="sandbox.invitationNote" class="font-normal">
+            – {{ sandbox.invitationNote }}
+          </span>
+        </h3>
+        <p class="text-small text-muted">
+          Content: {{ sandbox.source }} · expires
+          {{ formatTime(sandbox.expires) }}
+        </p>
+        <AdminAccessLinks
+          :id="sandbox.id"
+          :access-links="sandbox.accessLinks"
+          :users="data?.users ?? []"
+          @change="refresh"
+        />
+      </div>
+    </section>
+
+    <section class="flex flex-col gap-4">
       <h2 class="font-serif text-h2">Sandboxes</h2>
       <p class="max-w-content">
         The sandboxes this app created, newest first. Those made with drush
@@ -88,7 +124,7 @@
 </template>
 
 <script lang="ts" setup>
-// The admin page: invitations and sandboxes. server/middleware/admin.ts asks
+// The admin page: invitations, access links and sandboxes. server/middleware/admin.ts asks
 // for the password. Fetched in the browser, so that times are in its zone.
 useHead({ title: 'Sandboxes', htmlAttrs: { lang: 'en' } })
 
@@ -97,20 +133,19 @@ const td = 'border-b border-line py-2 pr-4 text-left align-top'
 
 const { data, refresh } = useFetch('/api/admin/overview', { server: false })
 
+// The premium sandboxes that are still there: those with access links.
+const premiumSandboxes = computed(
+  () =>
+    data.value?.sandboxes.filter(
+      (sandbox) => sandbox.premium && !sandbox.deleted,
+    ) ?? [],
+)
+
 const origin = useRequestURL().origin
 const note = ref('')
 
 function invitationLink(token: string): string {
   return `${origin}/?invitation=${token}`
-}
-
-function formatTime(time: number | null): string {
-  return time
-    ? new Date(time * 1000).toLocaleString('en-GB', {
-        dateStyle: 'short',
-        timeStyle: 'short',
-      })
-    : '–'
 }
 
 async function invite() {

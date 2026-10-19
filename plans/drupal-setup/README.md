@@ -9,7 +9,6 @@ is removed.
 | --- | ------------------------------------ | --------------- |
 | 12  | [Hosted deploy](12-hosted-deploy.md) | in progress     |
 | 13j | [Skill tests](13j-skill-tests.md)    | todo (deferred) |
-| 14  | [Access links](14-access-links.md)   | todo            |
 
 Statuses: `todo`, `in progress`.
 
@@ -35,6 +34,14 @@ Statuses: `todo`, `in progress`.
   `blokkli-setup-drupal` skill covers: the same-origin requirement, the GraphQL
   server config (extensions, `bundles`, `fields`), GraphQL access, the explicit
   allowed types, the library item route, and the header forwarding.
+- **Access links, later** (from chunk 14, done 2026-10-19): the invitation link
+  could log into its sandbox once used, through its access link; extending a
+  premium sandbox's lifetime from the admin page; "Revoke and log out" (a
+  `blokkli-sandbox:logout <id> <user>` drush command), since revoking leaves the
+  sessions a link opened.
+- **Deploys that keep premium sandboxes.** `ddev deploy` deletes every sandbox,
+  on every push to `dev` and weekly, and with them their access links. Premium
+  sandboxes (7 days, handed to customers) need to survive it: a plan of its own.
 
 ## Features that need their own plan
 

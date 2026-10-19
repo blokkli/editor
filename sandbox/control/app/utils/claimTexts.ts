@@ -1,5 +1,5 @@
 import type { Language } from '../../../frontend/shared/utils/languages'
-import type { ClaimError } from '../../shared/utils/claim'
+import type { AccessError, ClaimError } from '../../shared/utils/claim'
 
 type Texts = {
   site: string
@@ -12,6 +12,8 @@ type Texts = {
   submit: string
   pending: string
   errors: Record<ClaimError, string>
+  // An access link that didn't log in (?access=…).
+  access: Record<AccessError, string>
 }
 
 // The claim page's strings. German: formal, Swiss spelling. English: British.
@@ -37,6 +39,11 @@ export const CLAIM_TEXTS: Record<Language, Texts> = {
       full: 'All sandboxes are in use at the moment. Please try again later.',
       invitation: 'This invitation has already been used, or doesn’t exist.',
       failed: 'The sandbox couldn’t be created. Please try again.',
+    },
+    access: {
+      unknown:
+        'This access link isn’t valid any more. Please ask the person who sent it for a new one.',
+      gone: 'The sandbox of this access link no longer exists.',
     },
   },
   de: {
@@ -64,6 +71,11 @@ export const CLAIM_TEXTS: Record<Language, Texts> = {
       failed:
         'Die Sandbox konnte nicht erstellt werden. Bitte versuchen Sie es noch einmal.',
     },
+    access: {
+      unknown:
+        'Dieser Zugangslink ist nicht mehr gültig. Bitte fragen Sie die Person, die ihn Ihnen geschickt hat, nach einem neuen.',
+      gone: 'Die Sandbox dieses Zugangslinks gibt es nicht mehr.',
+    },
   },
   fr: {
     site: 'Bloquens',
@@ -86,6 +98,11 @@ export const CLAIM_TEXTS: Record<Language, Texts> = {
       full: 'Toutes les sandboxes sont occupées pour le moment. Veuillez réessayer plus tard.',
       invitation: 'Cette invitation a déjà été utilisée, ou elle n’existe pas.',
       failed: 'La sandbox n’a pas pu être créée. Veuillez réessayer.',
+    },
+    access: {
+      unknown:
+        'Ce lien d’accès n’est plus valable. Veuillez en demander un nouveau à la personne qui vous l’a envoyé.',
+      gone: 'La sandbox de ce lien d’accès n’existe plus.',
     },
   },
 }

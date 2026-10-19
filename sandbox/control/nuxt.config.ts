@@ -1,6 +1,6 @@
-// The control app: the claim page, the premium invitations, the admin pages,
-// and the cleanup of expired sandboxes. It runs inside ddev as the "control"
-// daemon (`ddev nuxt control`), behind nginx at
+// The control app: the claim page, the premium invitations and access links,
+// the admin pages, and the cleanup of expired sandboxes. It runs inside ddev as
+// the "control" daemon (`ddev nuxt control`), behind nginx at
 // https://blokkli-control.ddev.site: the dev server locally, the production
 // build (`bun run sandbox:build`) when hosted.
 import { fileURLToPath } from 'node:url'
@@ -26,7 +26,7 @@ export default defineNuxtConfig({
     turnstileSecretKey: '',
     // The Drupal site (its drush and its sandboxes).
     drupalRoot: fileURLToPath(new URL('../drupal', import.meta.url)),
-    // The app's database: sandboxes and invitations.
+    // The app's database: sandboxes, invitations and access links.
     dataDirectory: fileURLToPath(new URL('./.data', import.meta.url)),
     claimsPerIpPerHour: 3,
     maxActiveSandboxes: 100,

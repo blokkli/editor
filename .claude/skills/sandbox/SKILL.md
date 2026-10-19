@@ -402,12 +402,26 @@ host, with ddev running: `bun run test:e2e-drupal` or
      claims see each other);
   5. runs `drush blokkli-sandbox:create <random 10-char id> --source=…` with
      `--expires` and `--idle=7200` (24 h, 2 h idle) or `--premium` (7 days);
-  6. returns a login URL for Anna Keller with
-     `?destination=<welcome page in the source language>`. Errors carry a code
-     (`shared/utils/claim.ts`) that the page translates.
+  6. with an invitation, creates an access link for Anna Keller with the
+     invitation's note;
+  7. returns a login URL for Anna Keller with
+     `?destination=<welcome page in the source language>` (`sandboxLoginUrl()`).
+     Errors carry a code (`shared/utils/claim.ts`) that the page translates.
 - **`/admin`** (basic auth with `NUXT_ADMIN_PASSWORD`; open locally without one,
-  503 when hosted): the sandboxes and the invitations; makes invitation links
-  (`/?invitation=<token>`), each good for one premium sandbox.
+  503 when hosted): the sandboxes, the invitations and the access links; makes
+  invitation links (`/?invitation=<token>`), each good for one premium sandbox,
+  and access links. Requests to `/admin` and `/api/admin` other than GET are
+  refused when `Sec-Fetch-Site` (or `Origin`) says another site: browsers resend
+  basic auth with any request.
+- **Access links** (`/access/<token>`, table `access_links`): log into a premium
+  sandbox as one of the test users (`shared/utils/testUsers.ts`, compared with
+  the content by a unit test), as often as needed, until revoked or the sandbox
+  is gone. Each opening makes a fresh 5-minute login to the welcome page
+  (`accessLinkTarget()`); Drupal never sees the access link's token. Unknown,
+  revoked or gone: the claim page with `?access=unknown|gone`. The token is the
+  credential: nginx doesn't log `/access/`, revoking posts it in the body.
+  Revoking ends the link, not the sessions it opened. Access links die with
+  their sandbox, and `ddev deploy` deletes every sandbox.
 - **The task `sandbox:cleanup`** runs every 5 minutes: it deletes sandboxes past
   `min(created + 24 h, last use + 2 h)` (premium: created + 7 days) and marks
   rows of sandboxes that are gone. Rows are never removed.

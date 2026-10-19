@@ -82,6 +82,7 @@ control_routes=(
   "/de control"
   "/admin control"
   "/api/claim control"
+  "/access/x control"
   "/user/login control"
 )
 

@@ -20,6 +20,13 @@
         {{ texts.premium }}
       </p>
       <p v-else>{{ texts.lifetime }}</p>
+      <p
+        v-if="accessError"
+        role="alert"
+        class="border-l-4 border-error bg-error-light px-4 py-3"
+      >
+        {{ texts.access[accessError] }}
+      </p>
 
       <nav aria-labelledby="language" class="mt-2 flex flex-col gap-3">
         <h2 id="language" class="text-h3">{{ texts.languageTitle }}</h2>
@@ -109,7 +116,8 @@ import type { ClaimError } from '../../shared/utils/claim'
 
 // The claim page, in each language: /de, /fr, /en (server/middleware/language.ts
 // redirects / here). The page's language is also the content's: the language
-// boxes switch both. With ?invitation=…, it creates a premium sandbox.
+// boxes switch both. With ?invitation=…, it creates a premium sandbox. With
+// ?access=…, it says why an access link didn't log in.
 definePageMeta({
   validate: (route) => isLanguage(route.params.lang),
 })
@@ -121,6 +129,10 @@ const language = computed<Language>(() =>
 const texts = computed(() => CLAIM_TEXTS[language.value])
 const invitation = computed(() =>
   typeof route.query.invitation === 'string' ? route.query.invitation : '',
+)
+// An access link that didn't log in (server/routes/access/[token].get.ts).
+const accessError = computed(() =>
+  isAccessError(route.query.access) ? route.query.access : null,
 )
 const invitationQuery = computed(() =>
   invitation.value ? `?invitation=${encodeURIComponent(invitation.value)}` : '',

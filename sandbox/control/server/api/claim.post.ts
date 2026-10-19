@@ -1,6 +1,5 @@
 import { createHmac } from 'node:crypto'
 import { isLanguage } from '../../../frontend/shared/utils/languages'
-import { WELCOME_PATHS } from '../../../frontend/shared/utils/welcome'
 import type { ClaimError } from '../../shared/utils/claim'
 
 function claimError(statusCode: number, code: ClaimError) {
@@ -11,8 +10,8 @@ function claimError(statusCode: number, code: ClaimError) {
  * Creates a sandbox and answers with the URL that logs its visitor in and
  * opens the welcome page, in the content's language (the claim page's).
  *
- * With an invitation, a premium sandbox: the invitation is used up, and the
- * checks are skipped. Otherwise, Turnstile, the per-IP limit and the cap on
+ * With an invitation, a premium sandbox: the invitation is used up, the checks
+ * are skipped, and the sandbox gets an access link. Otherwise, Turnstile, the per-IP limit and the cap on
  * active sandboxes. The row is written before the copy, without an await in
  * between: parallel claims see each other.
  */
@@ -103,16 +102,23 @@ export default defineEventHandler(async (event) => {
     throw claimError(500, 'failed')
   }
 
-  // Only for the redirect that follows. Drupal's login opens the editor;
-  // `destination` replaces that (core's RedirectResponseSubscriber).
-  const token = createLoginToken(
-    config.sandboxLoginSecret,
-    id,
-    SANDBOX_USER,
-    now() + 300,
-  )
-  const destination = encodeURIComponent(WELCOME_PATHS[source])
+  // Every premium sandbox gets an access link: the admin page hands it out, to
+  // come back and for colleagues.
+  if (invitation) {
+    const row = database
+      .prepare('SELECT note FROM invitations WHERE token = ?')
+      .get(invitation)
+    insertAccessLink(id, SANDBOX_USER, String(row?.note ?? ''))
+  }
+
   return {
-    url: `${sandboxUrl(id)}/blokkli-sandbox/login/${token}?destination=${destination}`,
+    url: sandboxLoginUrl({
+      secret: config.sandboxLoginSecret,
+      sandbox: id,
+      baseUrl: sandboxUrl(id),
+      user: SANDBOX_USER,
+      source,
+      time: now(),
+    }),
   }
 })
