@@ -3,21 +3,13 @@ import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
 import { withApp, BLOCKS_EDITOR_PATH, openEditor } from './support/session'
 import { emitEvent } from './support/events'
+import { blockViewportRect } from './support/blocks'
 import {
   resetSandbox,
   sandboxHost,
   seedUuid,
   workerSandbox,
 } from './support/sandbox'
-
-/** A block's rectangle in viewport coordinates, as the canvas hit-tests it. */
-function blockViewportRect(page: Page, uuid: string) {
-  return page.evaluate((uuid) => {
-    const app = window.__BLOKKLI__!.app!
-    const rect = app.dom.getBlockRect(uuid, true)
-    return rect ? app.ui.getViewportRelativeRect(rect) : null
-  }, uuid)
-}
 
 /** Whether a block is entirely inside the viewport. */
 function isInViewport(page: Page, uuid: string): Promise<boolean> {
