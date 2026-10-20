@@ -315,7 +315,10 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
   `[data-test="artboard-tooltip-close"]` instead.
 - Timeouts are tight: `testTimeout: 15s`, `hookTimeout: 30s` (the hooks reset
   sandboxes). If you're tempted to bump them, fix the underlying race — almost
-  always the cleanup checklist above.
+  always the cleanup checklist above. On GitHub (`GITHUB_ACTIONS`) they're 45 s
+  and 60 s, with 2 workers instead of 4: its runners are several times slower.
+  `expect.poll` gives up after 5 s (vitest's default is 1 s); check the DOM with
+  a poll too, not once right after a poll on the data.
 - **Responsive-preview iframe sync**: same-origin iframe (`?blokkliPreview`).
   Reach via
   `(await page.locator('[data-test="preview-iframe"]').elementHandle()).contentFrame()`,

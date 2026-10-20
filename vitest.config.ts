@@ -2,6 +2,10 @@ import path from 'node:path'
 import { defineConfig } from 'vitest/config'
 import { defineVitestProject } from '@nuxt/test-utils/config'
 
+// GitHub's runners have 4 cores for the tests, Drupal, nginx, Nuxt and the
+// browsers: a test takes several times as long there.
+const onGitHub = process.env.GITHUB_ACTIONS === 'true'
+
 export default defineConfig({
   test: {
     projects: [
@@ -53,9 +57,12 @@ export default defineConfig({
           include: ['test/e2e-drupal/**/*.{test,spec}.ts'],
           environment: 'node',
           globalSetup: ['test/e2e-drupal/globalSetup.ts'],
-          testTimeout: 15000,
-          hookTimeout: 30000,
-          maxWorkers: 4,
+          testTimeout: onGitHub ? 45000 : 15000,
+          hookTimeout: onGitHub ? 60000 : 30000,
+          maxWorkers: onGitHub ? 2 : 4,
+          // A poll that holds returns at once; one that doesn't fails after 5 s
+          // instead of vitest's 1 s.
+          expect: { poll: { timeout: 5000 } },
         },
       },
       await defineVitestProject({

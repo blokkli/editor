@@ -391,6 +391,7 @@ describe('The comments feature', async () => {
     await expect
       .poll(async () => (await loadComments(page)).some((c) => c.uuid === uuid))
       .toBe(false)
-    expect(await commentThread(page, uuid).count()).toBe(0)
+    // The thread re-renders after the comments are loaded.
+    await expect.poll(() => commentThread(page, uuid).count()).toBe(0)
   })
 })
