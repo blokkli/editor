@@ -15,7 +15,7 @@ compatibility: >-
   plus a custom module and access to the Drupal backend (drush, config export).
 metadata:
   author: blokkli
-  version: '1.0.0'
+  version: '1.0.1'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/features/transform
 ---
@@ -131,29 +131,62 @@ final class SearchAndReplace extends ParagraphTransformPluginBase implements Par
 ### Transforms in translations
 
 - **By default, a transform is only offered in the host's source language:**
-  most restructure paragraphs, which a translation can't. A transform that only
-  changes the text of the translation being edited, like the one above,
-  overrides `applies()`:
+  most restructure paragraphs, which a translation can't.
+- **A transform gets no language.** One that only changes the text, like the one
+  above, is derived: one plugin per language, which `applies()` in its language
+  and changes that translation. Don't take the language from the request: the
+  edit state covers every language and every request replays it, so the
+  replacement would move to whichever language publishes. The deriver:
+
+  ```php
+  namespace Drupal\my_module\Plugin\Derivative;
+
+  use Drupal\Component\Plugin\Derivative\DeriverBase;
+  use Drupal\Core\Language\LanguageManagerInterface;
+  use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
+  use Symfony\Component\DependencyInjection\ContainerInterface;
+
+  final class SearchAndReplaceDeriver extends DeriverBase implements ContainerDeriverInterface {
+
+    public function __construct(
+      protected readonly LanguageManagerInterface $languageManager,
+    ) {}
+
+    public static function create(ContainerInterface $container, $base_plugin_id): static {
+      return new static($container->get('language_manager'));
+    }
+
+    public function getDerivativeDefinitions($base_plugin_definition): array {
+      foreach (array_keys($this->languageManager->getLanguages()) as $langcode) {
+        $this->derivatives[$langcode] = ['langcode' => $langcode] + $base_plugin_definition;
+      }
+      return $this->derivatives;
+    }
+
+  }
+  ```
+
+  The attribute gets `deriver: SearchAndReplaceDeriver::class`, and the plugin
+  reads its language from the definition. A paragraph without that translation
+  keeps its text:
 
   ```php
   public function applies(FieldableEntityInterface $hostEntity, string $langcode): bool {
-    return TRUE;
+    return $langcode === $this->pluginDefinition['langcode'];
   }
+
+  // In transform(), for each paragraph:
+  $langcode = $this->pluginDefinition['langcode'];
+  if (!$paragraph->hasTranslation($langcode)) {
+    continue;
+  }
+  $paragraph = $paragraph->getTranslation($langcode);
   ```
 
-- **`transform()` gets no langcode,** and the proxy's paragraph is the source
-  language. Take the language from the request and edit that translation:
+  The plugin IDs get the langcode: `search_and_replace:de`.
 
-  ```php
-  $langcode = $this->languageManager->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)->getId();
-  if ($paragraph->hasTranslation($langcode)) {
-    $paragraph = $paragraph->getTranslation($langcode);
-  }
-  ```
-
-  That works when the editor's GraphQL requests carry the language, e.g.
-  `/de/graphql`, as in projects based on the starterkit (the GraphQL
-  middleware's `graphqlEndpoint` server option).
+- **A transform whose `applies()` is TRUE in every language changes every
+  language.**
 
 ## 3. Conversion plugins
 
@@ -260,8 +293,8 @@ mistakes in these plugins.
 - **A new or changed plugin doesn't show up:** `drush cr` (section 1).
 - **A transform is missing while editing a translation:** `applies()` (section
   2).
-- **A transform in a translation changes the source language:** `transform()`
-  gets no langcode (section 2).
+- **A transform in a translation changes the source language, or its change is
+  lost when another language publishes:** derive it per language (section 2).
 - **After a conversion, a translation links to the other language's page:**
   build URLs in `$paragraph->language()` (section 3).
 - **A transform breaks links:** it replaced text in the markup instead of the

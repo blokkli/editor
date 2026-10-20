@@ -1,5 +1,10 @@
 <template>
-  <div class="bk bk-transform-overlay" @keydown.stop @keyup.stop>
+  <div
+    class="bk bk-transform-overlay"
+    data-test="transform-dialog"
+    @keydown.stop
+    @keyup.stop
+  >
     <div ref="el" class="bk-transform-overlay-dialog" @wheel.passive="onWheel">
       <div class="bk-transform-overlay-dialog-inner">
         <div class="bk-transform-overlay-dialog-inner-content">
@@ -43,6 +48,7 @@
             <button
               class="bk-button bk-scheme-orange"
               :disabled
+              data-test="transform-dialog-submit"
               @click.prevent="onClickSubmit"
             >
               {{ $t('transformDialogButtonApply', 'Apply changes') }}

@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Drupal\blokkli_playground\Plugin\ParagraphsBlokkli\Transform;
 
-use Drupal\Component\Uuid\UuidInterface;
+use Drupal\blokkli_playground\Plugin\Derivative\SearchAndReplaceDeriver;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\FieldableEntityInterface;
-use Drupal\Core\Language\LanguageInterface;
-use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\paragraphs_blokkli\Model\PluginConfig\PluginConfigBuilder;
@@ -16,12 +14,16 @@ use Drupal\paragraphs_blokkli\ParagraphMutationContextInterface;
 use Drupal\paragraphs_blokkli\ParagraphsBlokkliUserInputPluginInterface;
 use Drupal\paragraphs_blokkli_transform\Attribute\ParagraphTransform;
 use Drupal\paragraphs_blokkli_transform\ParagraphTransformPluginBase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Replaces a text in text and title paragraphs, e.g. a renamed office.
  *
  * Only the text is replaced, not the markup: a link's URL stays as it is.
+ *
+ * Also in translations, unlike most transforms: it changes the text, not the
+ * paragraphs' structure. A transform gets no language, so there's one per
+ * language (SearchAndReplaceDeriver), which is offered and changes the text in
+ * its language only.
  */
 #[ParagraphTransform(
   id: 'search_and_replace',
@@ -29,33 +31,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
   description: new TranslatableMarkup('Replaces a text everywhere in the selected blocks.'),
   bundles: ['text', 'title'],
   allowPreview: TRUE,
+  deriver: SearchAndReplaceDeriver::class,
 )]
 final class SearchAndReplace extends ParagraphTransformPluginBase implements ParagraphsBlokkliUserInputPluginInterface {
 
   use StringTranslationTrait;
-
-  public function __construct(
-    array $configuration,
-    $plugin_id,
-    array $plugin_definition,
-    UuidInterface $uuidHelper,
-    protected readonly LanguageManagerInterface $languageManager,
-  ) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition, $uuidHelper);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): static {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('uuid'),
-      $container->get('language_manager'),
-    );
-  }
 
   /**
    * {@inheritdoc}
@@ -70,12 +50,9 @@ final class SearchAndReplace extends ParagraphTransformPluginBase implements Par
 
   /**
    * {@inheritdoc}
-   *
-   * Also in translations, unlike most transforms: it changes the text of the
-   * current translation, not the paragraphs' structure.
    */
   public function applies(FieldableEntityInterface $hostEntity, string $langcode): bool {
-    return TRUE;
+    return $langcode === $this->pluginDefinition['langcode'];
   }
 
   /**
@@ -88,18 +65,14 @@ final class SearchAndReplace extends ParagraphTransformPluginBase implements Par
       return;
     }
 
-    // The editor's language. The transform mutation passes none, but its
-    // request has the language's prefix.
-    $langcode = $this->languageManager->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)->getId();
-
+    $langcode = $this->pluginDefinition['langcode'];
     foreach ($uuids as $uuid) {
       $paragraph = $context->getProxy($uuid)?->getParagraph();
-      if (!$paragraph) {
+      // A paragraph without a translation keeps its text.
+      if (!$paragraph?->hasTranslation($langcode)) {
         continue;
       }
-      if ($paragraph->hasTranslation($langcode)) {
-        $paragraph = $paragraph->getTranslation($langcode);
-      }
+      $paragraph = $paragraph->getTranslation($langcode);
 
       if ($paragraph->hasField('field_text')) {
         foreach ($paragraph->get('field_text') as $item) {

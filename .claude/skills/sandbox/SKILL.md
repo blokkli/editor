@@ -218,7 +218,8 @@ Traefik sends every hostname to the web container's nginx on port 80.
 - The access policy above; class-based hooks (`src/Hook`): previews of
   unpublished entities, menu access, an event's `unpublish_on` from its date.
 - Editor plugins: conversions (link → text, text ↔ title) and the transform
-  "search and replace".
+  "search and replace", derived per language (`search_and_replace:de`): a
+  transform gets no language.
 - What's rendered differs from what's stored, as on real sites; the agent's
   `processed-text` E2E tests rely on it:
   - A text filter on `basic_html`, after `filter_html` (which would remove its

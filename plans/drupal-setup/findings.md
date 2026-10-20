@@ -23,7 +23,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F29  | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                                                                                | `paragraphs_blokkli` | low      | workaround |
 | F30  | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                                                                               | `paragraphs_blokkli` | low      | open       |
 | F32  | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                                                                         | `paragraphs_blokkli` | medium   | open       |
-| F33  | [Transform plugins don't get the language](#f33-transform-plugins-dont-get-the-language)                                                                                    | both                 | low      | workaround |
 | F35  | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)                                                        | `@blokkli/editor`    | low      | open       |
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                     | `paragraphs_blokkli` | low      | open       |
 | F41  | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                                                                                 | `paragraphs_blokkli` | low      | open       |
@@ -365,21 +364,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   `string_long`, so a lead (`field_lead`) never shows below the title. This is
   13c's note on `getEntityText()`. The other half of that note doesn't hold:
   unchecked text fields are stored as `0`, and `hasField('0')` skips them.
-
-## F33: Transform plugins don't get the language
-
-- **Found:** 2026-09-27, 13g, with the "Search and replace" transform.
-- **Symptom:** a transform that `applies()` in a translation changes the
-  paragraph's source language, not the translation being edited.
-- **Cause:** `applies()` gets the langcode, but `transform()` doesn't: the
-  `Transform` mutation (`Transform.php:123`) has no langcode argument. The
-  frontend's `pbApplyTransformPlugin`
-  (`src/modules/drupal/graphql/features/transform.graphql:25-43`, in this
-  repository) declares `$langcode` but never passes it.
-- **Workaround:** `SearchAndReplace` in `blokkli_playground` takes the current
-  content language from the request, which has the language's prefix.
-- **Fix idea:** a `langcode` argument on the `transform` field, passed to
-  `transform()` (or set on the mutation context).
 
 ## F35: A data source's colour overrides apply to one language
 
