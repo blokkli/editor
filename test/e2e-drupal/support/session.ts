@@ -95,6 +95,10 @@ export async function openPage(
  *
  * Until the overlay detaches it covers the viewport and intercepts pointer
  * input — `.click()` auto-retries past it but raw mouse drags don't.
+ *
+ * After a navigation inside the app (the language switcher), this can see the
+ * old editor, which stays mounted until the new one replaces it: use
+ * `switchLanguage` (support/translations).
  */
 export async function waitForEditorReady(page: Page): Promise<void> {
   await page.waitForFunction(() => Boolean(window.__BLOKKLI__?.app))

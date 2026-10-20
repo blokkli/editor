@@ -6,6 +6,38 @@ import {
 import { buildPo } from '../../../src/runtime/editor/features/translations/CsvDialog/po'
 import { openAppMenu, appMenuButton } from './menu'
 import { dialog } from './overlays'
+import { waitForEditorReady } from './session'
+
+/**
+ * Switch to the translation in `langcode` with the toolbar's language switcher
+ * and wait for its editor. The switcher is a dropdown (opened by its toggle) or
+ * inline buttons; the option's `data-test` is the same in both.
+ *
+ * The switcher navigates inside the app: the old editor stays mounted, and
+ * stays `window.__BLOKKLI__.app`, until the translation's replaces it. So wait
+ * for another app whose layout is in the document before its init overlay.
+ */
+export async function switchLanguage(
+  page: Page,
+  langcode: string,
+): Promise<void> {
+  const previous = await page.evaluateHandle(() => window.__BLOKKLI__!.app!)
+  const toggle = page.locator('[data-test="language-switcher-toggle"]')
+  if ((await toggle.count()) > 0) {
+    await toggle.click()
+  }
+  await page
+    .locator(`[data-test="language-switcher-option-${langcode}"]`)
+    .click()
+  await page.waitForFunction((previous) => {
+    const app = window.__BLOKKLI__?.app
+    return (
+      !!app && app !== previous && !!app.ui.mainLayoutElement.value?.isConnected
+    )
+  }, previous)
+  await previous.dispose()
+  await waitForEditorReady(page)
+}
 
 /**
  * Open the batch-translate dialog via the app menu and wait until its fields

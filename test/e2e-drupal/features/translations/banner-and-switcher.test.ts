@@ -8,6 +8,7 @@ import {
   openEditor,
 } from '../../support/session'
 import { nextMutation } from '../../support/mutations'
+import { switchLanguage } from '../../support/translations'
 import {
   resetSandbox,
   sandboxHost,
@@ -67,18 +68,10 @@ describe('Banner & language switcher', async () => {
       .poll(() => withApp(page, (app) => app.state.editMode.value))
       .toBe('editing')
 
-    // The switcher is either a dropdown (needs opening) or inline buttons. The
-    // language option's `data-test` is the same in both variants. If a toggle
-    // exists, click it first so the option becomes interactive.
-    const toggle = page.locator('[data-test="language-switcher-toggle"]')
-    if ((await toggle.count()) > 0) {
-      await toggle.click()
-    }
-    await page.locator('[data-test="language-switcher-option-de"]').click()
+    await switchLanguage(page, 'de')
 
     // The translation's alias, in the editor.
     await page.waitForURL(/\/de\/bibliothek\?/)
-    await waitForEditorReady(page)
     await expect
       .poll(() => withApp(page, (app) => app.state.editMode.value))
       .toBe('translating')

@@ -16,6 +16,7 @@ import {
   openEditor,
 } from './support/session'
 import { emitEvent } from './support/events'
+import { switchLanguage } from './support/translations'
 import { resetSandbox, sandboxHost, workerSandbox } from './support/sandbox'
 
 /** The page "Library" (content/nodes/translated.yml): it has a German translation. */
@@ -124,14 +125,8 @@ describe('Sidebar containers', async () => {
       .waitFor({ state: 'visible' })
     expect(await container.isVisible()).toBe(true)
 
-    // Switch to DE via the language switcher (dropdown or inline variant).
-    const toggle = page.locator('[data-test="language-switcher-toggle"]')
-    if ((await toggle.count()) > 0) {
-      await toggle.click()
-    }
-    await page.locator('[data-test="language-switcher-option-de"]').click()
+    await switchLanguage(page, 'de')
     await page.waitForURL(/\/de\/bibliothek\?/)
-    await waitForEditorReady(page)
     await expect
       .poll(() => withApp(page, (app) => app.state.editMode.value))
       .toBe('translating')
