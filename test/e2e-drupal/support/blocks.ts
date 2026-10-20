@@ -73,6 +73,13 @@ export async function isBlockMuted(page: Page, uuid: string): Promise<boolean> {
   return muted === 'true'
 }
 
+/** What `addBlock` stores in the page, per call. */
+type AddBlockOutcome = { uuid?: string | null; error?: string }
+
+type AddBlockWindow = { __e2eAddBlock?: Map<number, AddBlockOutcome> }
+
+let addBlockCalls = 0
+
 /**
  * Add a block programmatically — the cheap way to get a real mutation when a
  * test just needs pending changes (most do). This runs the same adapter call
@@ -87,13 +94,20 @@ export async function isBlockMuted(page: Page, uuid: string): Promise<boolean> {
  * registered field, so this works at any nesting level. For testing the drag
  * gesture itself, use `dragNewBlockIntoPage` instead. Resolves with the new
  * block's uuid (diffed from the document before/after the mutation).
+ *
+ * The mutation runs in the page, which stores its outcome; the test polls for
+ * it. With a slow CPU (GitHub's runners), Chromium sometimes drops the promise
+ * a `page.evaluate` waits on, although the mutation completes: "Promise was
+ * collected", which Playwright reports as "Execution context was destroyed,
+ * most likely because of a navigation".
  */
-export function addBlock(
+export async function addBlock(
   page: Page,
   opts: { bundle?: string; fieldName?: string; hostUuid?: string } = {},
 ): Promise<string | null> {
-  return page.evaluate(
-    async ({ bundle, fieldName, hostUuid }) => {
+  const id = ++addBlockCalls
+  await page.evaluate(
+    ({ id, bundle, fieldName, hostUuid }) => {
       const app = window.__BLOKKLI__!.app!
 
       let host: { type: string; uuid: string; fieldName: string }
@@ -119,18 +133,46 @@ export function addBlock(
         }
       }
 
+      const outcomes = ((window as AddBlockWindow).__e2eAddBlock ??= new Map())
       const before = new Set(app.state.getAllUuids())
-      await app.state.mutateWithLoadingState(() =>
-        app.adapter.addNewBlock({ bundle, host, afterUuid: null }),
-      )
-      return app.state.getAllUuids().find((uuid) => !before.has(uuid)) ?? null
+      app.state
+        .mutateWithLoadingState(() =>
+          app.adapter.addNewBlock({ bundle, host, afterUuid: null }),
+        )
+        .then(
+          () => {
+            outcomes.set(id, {
+              uuid:
+                app.state.getAllUuids().find((uuid) => !before.has(uuid)) ??
+                null,
+            })
+          },
+          (e) => {
+            outcomes.set(id, { error: String(e) })
+          },
+        )
     },
     {
+      id,
       bundle: opts.bundle ?? 'text',
       fieldName: opts.fieldName ?? 'field_paragraphs',
       hostUuid: opts.hostUuid,
     },
   )
+  await page.waitForFunction(
+    (id) => !!(window as AddBlockWindow).__e2eAddBlock?.has(id),
+    id,
+  )
+  const outcome = await page.evaluate((id) => {
+    const outcomes = (window as AddBlockWindow).__e2eAddBlock!
+    const outcome = outcomes.get(id)!
+    outcomes.delete(id)
+    return outcome
+  }, id)
+  if (outcome.error) {
+    throw new Error(`addBlock: ${outcome.error}`)
+  }
+  return outcome.uuid ?? null
 }
 
 /**

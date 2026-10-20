@@ -100,7 +100,8 @@ describe('Search and replace in translations', async () => {
     await emitEvent(enPage, 'select:unselect')
   })
 
-  // Last: publishing leaves the English editor.
+  // Last: publishing leaves the English editor. It loads the editor twice more
+  // and publishes: about 5 s here, and 7 times as long on GitHub's runners.
   test('a replacement in German is published from the English editor', async () => {
     await selectBlock(dePage, TEXT)
     await expect.poll(() => transformActionIds(dePage)).toHaveLength(1)
@@ -137,5 +138,5 @@ describe('Search and replace in translations', async () => {
     const text = await storedFieldValue(dePage, TEXT, 'field_text')
     expect(text).toContain('Rathaus')
     expect(text).not.toContain('Schulhaus')
-  })
+  }, 45000)
 })
