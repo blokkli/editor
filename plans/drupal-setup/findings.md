@@ -21,7 +21,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F28  | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                                                                      | `@blokkli/editor`    | low      | workaround |
 | F29  | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                                                                                | `paragraphs_blokkli` | low      | workaround |
 | F30  | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                                                                               | `paragraphs_blokkli` | low      | open       |
-| F32  | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                                                                         | `paragraphs_blokkli` | medium   | open       |
 | F35  | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)                                                        | `@blokkli/editor`    | low      | open       |
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                     | `paragraphs_blokkli` | low      | open       |
 | F43  | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                                                                              | both                 | low      | open       |
@@ -338,20 +337,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   `EditParagraphForm` extends `ParagraphsBlokkliFormBase`, a plain form.
 - **Fix idea:** hide untranslatable fields in the translation form, or mark
   them.
-
-## F32: Content search results in the source language
-
-- **Found:** 2026-09-27, 13g, in the editor.
-- **Results aren't translated:** `EntityQuery` (the `entity_query` search
-  plugin) matches the label in any translation (`EntityQuery.php:125`), but maps
-  the loaded entity as it is (`:130`, `:160`). In the German editor, "rathaus"
-  finds the town hall, listed as "Town hall". The provider's label, a config
-  override, is translated. **Fix idea:** the entity repository's
-  `getTranslationFromContext()` in `mapEntity()`.
-- **No text for `string_long` fields:** `TEXT_FIELD_TYPES` (`:46`) lacks
-  `string_long`, so a lead (`field_lead`) never shows below the title. This is
-  13c's note on `getEntityText()`. The other half of that note doesn't hold:
-  unchecked text fields are stored as `0`, and `hasField('0')` skips them.
 
 ## F35: A data source's colour overrides apply to one language
 
