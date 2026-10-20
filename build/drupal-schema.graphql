@@ -6338,7 +6338,10 @@ type ParagraphsBlokkliComment {
   "ISO 8601 timestamp of when the comment was created."
   created: String!
 
-  "ISO 8601 timestamp of when the comment was last updated, if available."
+  """
+  ISO 8601 timestamp of when the comment's text was last edited, NULL when it
+  never was.
+  """
   updated: String
 
   "The author of the comment. NULL for anonymous."

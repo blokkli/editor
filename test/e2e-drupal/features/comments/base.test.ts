@@ -328,9 +328,13 @@ describe('The comments feature', async () => {
     await commentThread(page, uuid).waitFor({ state: 'visible' })
   })
 
-  test('editing an own comment updates the body', async () => {
+  test('editing an own comment updates the body and marks it as edited', async () => {
     await openComments(page)
     const uuid = await addSidebarComment(page, 'ORIGINAL_BODY_MARKER')
+    // A new comment isn't edited.
+    expect(
+      (await loadComments(page)).find((c) => c.uuid === uuid)?.updated,
+    ).toBeUndefined()
 
     await commentEl(page, uuid)
       .locator('[data-test="comment-action-edit"]')

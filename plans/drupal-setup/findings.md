@@ -25,12 +25,10 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F32  | [Content search results in the source language](#f32-content-search-results-in-the-source-language)                                                                         | `paragraphs_blokkli` | medium   | open       |
 | F35  | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)                                                        | `@blokkli/editor`    | low      | open       |
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                     | `paragraphs_blokkli` | low      | open       |
-| F41  | [Every comment is marked as edited](#f41-every-comment-is-marked-as-edited)                                                                                                 | `paragraphs_blokkli` | low      | open       |
 | F43  | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                                                                              | both                 | low      | open       |
 | F44  | [No approval step](#f44-no-approval-step)                                                                                                                                   | both                 | low      | open       |
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                    | both                 | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                         | `texts`              | low      | open       |
-| F52  | [A comment's label throws](#f52-a-comments-label-throws)                                                                                                                    | `paragraphs_blokkli` | low      | open       |
 | F64  | [A template or a copy places a library item its user may not view](#f64-a-template-or-a-copy-places-a-library-item-its-user-may-not-view)                                   | `paragraphs_blokkli` | low      | to verify  |
 | F68  | [An old copy from another page gives its new paragraphs a new UUID on every replay](#f68-an-old-copy-from-another-page-gives-its-new-paragraphs-a-new-uuid-on-every-replay) | `paragraphs_blokkli` | low      | open       |
 | F70  | [A library item shares its paragraph with the page's earlier revisions](#f70-a-library-item-shares-its-paragraph-with-the-pages-earlier-revisions)                          | `paragraphs_blokkli` | low      | open       |
@@ -58,6 +56,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F113 | [The comment module's schema extension needs the GraphQL submodule](#f113-the-comment-modules-schema-extension-needs-the-graphql-submodule)                                 | `paragraphs_blokkli` | low      | to verify  |
 | F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                                                                         | `paragraphs_blokkli` | low      | open       |
 | F115 | [A violation of a host's paragraphs field names no entity](#f115-a-violation-of-a-hosts-paragraphs-field-names-no-entity)                                                   | `paragraphs_blokkli` | low      | to verify  |
+| F116 | [A comment can be edited or deleted through any page](#f116-a-comment-can-be-edited-or-deleted-through-any-page)                                                            | `paragraphs_blokkli` | low      | open       |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it), `parked` (part of a plan of its own, in
@@ -392,16 +391,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Workaround:** mention the reviewer (the demo's flow, 13h).
 - **Fix idea:** notify the edit state's owner of new comments on their page.
 
-## F41: Every comment is marked as edited
-
-- **Found:** 2026-09-28, 13h.
-- **Symptom:** every comment and reply shows "(edited)" in the editor, right
-  after it was posted.
-- **Cause:** the GraphQL field `updated` returns the `changed` time whenever it
-  exists, and it's set on every save
-  (`modules/paragraphs_blokkli_comment/src/Plugin/GraphQL/SchemaExtension/ParagraphsBlokkliCommentExtension.php:174-180`).
-- **Fix idea:** return `NULL` while `changed` equals `created`.
-
 ## F43: Translators can't be limited to translating
 
 - **Found:** 2026-09-28, 13h, with the French translator.
@@ -460,19 +449,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   the app's operations name their keys as literals
   (`app/graphql/fragment.easyTexts.graphql`).
 - **Fix idea:** create keys only with a permission, or only in development.
-
-## F52: A comment's label throws
-
-- **Found:** 2026-10-06, 09c, with a drush script that printed a seeded
-  comment's label.
-- **Symptom:** `BlokkliComment::label()` calls `$this->t()`, but the entity
-  doesn't use `StringTranslationTrait`
-  (`modules/paragraphs_blokkli_comment/src/Entity/BlokkliComment.php:78` at
-  `b00b2d7`). Anything that asks a comment for its label fails with "Call to
-  undefined method BlokkliComment::t()": e.g. an entity reference to a comment,
-  or a log message with the label.
-- **Fix idea:** `use StringTranslationTrait;` in the entity, or
-  `new TranslatableMarkup()`.
 
 ## F64: A template or a copy places a library item its user may not view
 
@@ -977,3 +953,17 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Impact:** low: only with the validation of fields on, and the message is
   still shown.
 - **Fix idea:** rebuild those violations as `setValidFieldValue()` does.
+
+## F116: A comment can be edited or deleted through any page
+
+- **Found:** 2026-10-20, by reading, when F41 was fixed. Not reproduced.
+- **Symptom (by reading):** resolving a comment and ticking one of its tasks
+  check that the comment belongs to the page of the edit state they're given.
+  Editing and deleting it don't (`EditComment`, `DeleteComment` in
+  `modules/paragraphs_blokkli_comment/src/Plugin/GraphQL/DataProducer/`): they
+  only check update or delete access to the comment, which its author has. So an
+  author can edit or delete their own comment on a page they may no longer view,
+  through the edit state of any page they can open.
+- **Impact:** low: only the author's own comments (or any comment, for a user
+  with `administer blokkli_comment`, who may do that anyway).
+- **Fix idea:** the same check as `ResolveComment`.

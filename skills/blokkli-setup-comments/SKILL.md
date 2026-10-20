@@ -14,7 +14,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.0'
+  version: '1.0.1'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/configuration#paragraphs-blokkli-comment
 ---
@@ -103,7 +103,7 @@ With two users who can comment, e.g. an editor and a reviewer:
 - **The mention list is empty:** `load id and name of blokkli users` is missing,
   or the other users' roles have neither edit nor review permission.
 - **Nobody is notified of a new comment:** it has no mention.
-- **Every comment says "(edited)":** the module reports every comment's last
-  change as an edit; ignore it.
+- **An edited comment doesn't say "(edited)":** it was edited before the
+  module's update 10005, which doesn't know when.
 - **Every text format gets a disabled `blokkli_comment_html` filter** when
   saved: added by the comment module. It does nothing.
