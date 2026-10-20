@@ -5,9 +5,14 @@
 ## Example: "ddev deploy"
 
 # Only on the hosted instance (IS_DDEV_HOSTED=true, a project_tld of its own).
-# It pulls the checked-out branch, updates the submodule and replaces the
-# site's database: locally that would undo work in progress. Run it again every
-# week or so, so that the seeded dates (relative to the bake) stay current.
+# It moves the checked-out branch to GitHub's, even when that was rewritten,
+# updates the submodule and replaces the site's database: locally that would
+# undo work in progress. Run it again every week or so, so that the seeded
+# dates (relative to the bake) stay current.
+#
+# The running Nuxt apps keep serving while the new ones are built and the
+# templates baked, so a failed build or bake leaves them running. Drupal runs
+# the new code from the update on.
 
 set -euo pipefail
 
@@ -43,22 +48,62 @@ done
 exec 9>/tmp/blokkli-deploy-running.lock
 flock -n 9 || fail "another deploy is running."
 
+# The Nuxt apps that this deploy stopped. If it fails, it starts them again.
+stopped=()
+
+nuxt_app() {
+  if [ "$1" = control ]; then
+    ddev nuxt control "$2"
+  else
+    ddev nuxt "$2"
+  fi
+}
+
+stop_app() {
+  # Stopping one that doesn't run fails.
+  nuxt_app "$1" stop || true
+  stopped+=("$1")
+}
+
+restart_stopped() {
+  local status=$?
+  if [ "$status" -ne 0 ] && [ "${#stopped[@]}" -gt 0 ]; then
+    echo "ddev deploy: failed, starting the Nuxt apps again." >&2
+    for app in "${stopped[@]}"; do
+      nuxt_app "$app" start || true
+    done
+  fi
+}
+trap restart_stopped EXIT
+
 echo "== Code"
-git pull --ff-only
+git fetch origin
+upstream=$(git rev-parse --abbrev-ref --symbolic-full-name '@{upstream}')
+if ! git merge --ff-only "$upstream"; then
+  # The branch was rewritten (an amend, a rebase). Nobody works or commits in
+  # this checkout, so it takes GitHub's, unless something was changed here.
+  git diff --quiet HEAD ||
+    fail "the checkout has local changes, and $upstream can't be fast-forwarded to."
+  echo "$upstream was rewritten: resetting to it."
+  git reset --hard "$upstream"
+fi
 git submodule update --init
 
-# Their builds get replaced: nginx shows its 502 page meanwhile. Stopping one
-# that doesn't run fails.
-echo "== Stopping the Nuxt apps"
-ddev nuxt stop || true
-ddev nuxt control stop || true
-
+# The running apps don't need either: their builds are self-contained.
 echo "== Dependencies"
 ddev composer install --no-interaction
 ddev exec -d /var/www/html bun install --frozen-lockfile
 
+# Next to the running builds (.output), which the swap below replaces.
 echo "== Building the Nuxt apps"
-ddev exec -d /var/www/html bun run sandbox:build
+for app in frontend control; do
+  rm -rf "sandbox/$app/.output-next"
+done
+ddev exec -d /var/www/html env SANDBOX_OUTPUT_DIR=.output-next bun run sandbox:build
+
+# The control app hands out sandboxes, which are copies of the templates.
+echo "== Stopping the claim page"
+stop_app control
 
 # Every language with a template. The default site is only what the templates
 # are made of: nginx doesn't serve it when hosted.
@@ -66,6 +111,14 @@ echo "== Baking the templates"
 ddev bake --source=de
 ddev bake --source=fr
 ddev bake
+
+# nginx shows its 502 page from here on.
+echo "== Swapping in the new builds"
+stop_app frontend
+for app in frontend control; do
+  rm -rf "sandbox/$app/.output"
+  mv "sandbox/$app/.output-next" "sandbox/$app/.output"
+done
 
 # They're copies of the old templates, made with the old code. The control
 # app's cleanup marks their rows deleted.
@@ -77,5 +130,6 @@ done
 # nginx's config, and the Nuxt apps with their new builds.
 echo "== Restarting"
 ddev restart
+stopped=()
 
 echo "Deployed $(git rev-parse --short HEAD) (paragraphs_blokkli $(git -C sandbox/drupal/paragraphs_blokkli rev-parse --short HEAD))."

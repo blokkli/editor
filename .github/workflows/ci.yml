@@ -1,0 +1,176 @@
+# Checks every push and pull request: the gates of `bun run verify`, the
+# production build of the sandbox's Nuxt apps, a bake of the sandbox's content
+# and the E2E tests against sandboxes of the ddev site. A push to dev that passes
+# deploys the hosted sandbox (dev-sandbox.blokk.li), unless it only changes what
+# isn't deployed.
+#
+# The deploy's key (SANDBOX_SSH_KEY) may only run `ddev deploy` on the server:
+# its entry in liip@starterkit.blokk.li's authorized_keys has a forced command
+# (under flock, so that deploys never overlap). The server pulls the branch
+# itself. A deploy deletes every sandbox (plans/drupal-setup/12a-server-setup.md).
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Checks and E2E tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    # A newer push to the same branch replaces the run, and its deploy.
+    concurrency:
+      group: checks-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      # paragraphs_blokkli comes from drupal.org: a module commit that isn't
+      # pushed there yet fails here.
+      - uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      # phpcs and phpstan run here, on the vendor that ddev's composer
+      # installs. The PHP of .ddev/config.yaml.
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          coverage: none
+
+      - run: bun install --frozen-lockfile
+
+      # What `ddev deploy` builds. It also writes what the dev servers need:
+      # the editor's CSS, the changelog and the apps' .nuxt.
+      - name: Production build of the sandbox's Nuxt apps
+        run: bun run sandbox:build
+
+      - name: Prepare the module and the playground
+        run: |
+          bun run dev:prepare
+          # It rewrites the playground's options schema.
+          git checkout -- playground/app/options-schema.json
+
+      # The agent's secret, for its E2E tests in premium sandboxes. The others
+      # have local defaults. No key for DeepL, Rokka or a model: E2E sandboxes
+      # never use them.
+      - name: Secrets
+        run:
+          printf 'NUXT_BLOKKLI_AGENT_AUTH_SECRET=%s\n' "$(openssl rand -hex 32)"
+          > .ddev/.env.web
+
+      # Starts the project: composer install, and the Nuxt dev servers.
+      - uses: ddev/github-action-setup-ddev@v1
+
+      - name: Wait for the Nuxt dev servers
+        run: |
+          ready() {
+            local code
+            code=$(curl -sk -o /dev/null -w '%{http_code}' --max-time 30 "$1" || true)
+            [ "$code" != 000 ] && [ "$code" != 502 ]
+          }
+          for url in https://blokkli.ddev.site/de https://blokkli-control.ddev.site/; do
+            for _ in $(seq 60); do
+              ready "$url" && break
+              sleep 5
+            done
+            ready "$url" || { echo "$url doesn't answer."; exit 1; }
+          done
+
+      - name: Gates
+        run: bun run verify -- ci
+
+      # The E2E tests bake their own template, from their own fixtures. This
+      # checks the content that the deploy bakes.
+      - name: Bake the sandbox's content
+        run: ddev bake
+
+      - name: Chromium
+        run:
+          node node_modules/playwright-core/cli.js install --with-deps chromium
+          chromium-headless-shell
+
+      # The dev server compiles the editor on its first request, which can take
+      # longer than a test may. One spec warms it up; the full run has it again.
+      - name: Warm up the dev server
+        continue-on-error: true
+        run: bun run test:e2e-drupal -- test/e2e-drupal/features/changelog
+
+      - name: E2E tests
+        run: bun run test:e2e-drupal
+
+      - name: Logs
+        if: failure()
+        run: |
+          mkdir -p tmp/ci-logs
+          ddev exec cat /tmp/nuxt-frontend.log > tmp/ci-logs/nuxt-frontend.log || true
+          ddev exec cat /tmp/nuxt-control.log > tmp/ci-logs/nuxt-control.log || true
+          ddev logs > tmp/ci-logs/web.log 2>&1 || true
+
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs
+          path: |
+            tmp/verify-output/
+            tmp/ci-logs/
+          if-no-files-found: ignore
+
+  deploy:
+    name: Deploy the hosted sandbox
+    needs: checks
+    if: >-
+      github.repository == 'blokkli/editor' && github.ref == 'refs/heads/dev' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Never cancelled: a deploy that stops halfway leaves the instance half
+    # updated.
+    concurrency:
+      group: deploy-sandbox
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # A push that only changes what isn't deployed keeps everyone's sandboxes.
+      # A deploy by hand always deploys, and so does a push whose previous
+      # commit is gone (a force-push).
+      - name: What changed
+        id: changes
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          deploy=true
+          if [ "$GITHUB_EVENT_NAME" = push ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            if ! git diff --name-only "$BEFORE" "$GITHUB_SHA" | grep -v -E '^(plans|docs|skills|\.claude|test)/' | grep -q .; then
+              deploy=false
+              echo "Only plans/, docs/, skills/, .claude/ or test/ changed: no deploy."
+            fi
+          fi
+          echo "deploy=$deploy" >> "$GITHUB_OUTPUT"
+
+      - name: SSH key
+        if: steps.changes.outputs.deploy == 'true'
+        run: |
+          install -m 700 -d ~/.ssh
+          echo "${{ secrets.SANDBOX_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          echo "${{ secrets.SANDBOX_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+
+      - name: ddev deploy
+        if: steps.changes.outputs.deploy == 'true'
+        run: ssh -o BatchMode=yes liip@starterkit.blokk.li

@@ -177,9 +177,17 @@ web_environment:
   refuses to run without the first two. Give the agent's API key a spend limit,
   and don't set the Rokka keys.
 - **`ddev deploy`** updates the code, builds both Nuxt apps for production,
-  bakes the templates, deletes all sandboxes and restarts. Run it again every
-  week or so: the seeded dates are relative to the bake. It refuses to run
-  locally.
+  bakes the templates, deletes all sandboxes and restarts. The running apps keep
+  serving until the new builds are swapped in, so a failed build or bake leaves
+  them running. Run it again every week or so: the seeded dates are relative to
+  the bake. It refuses to run locally.
+- **GitHub deploys `dev`** (`.github/workflows/ci.yml`): every push and pull
+  request runs the gates (`bun run verify -- ci`), the production build, a bake
+  and the E2E tests. A push to `dev` that passes them deploys, unless it only
+  changes `plans/`, `docs/`, `skills/`, `.claude/` or `test/`. A rewritten `dev`
+  (an amend, a rebase) is deployed too: the server resets its checkout to it.
+  Push the module's commits to drupal.org first: the checkout fetches them from
+  there.
 - Hosted, the Nuxt apps run their production builds (never the dev servers,
   which serve any file of the repository), nginx doesn't serve the dev site, and
   only Nuxt's server reaches Drupal's GraphQL endpoint.

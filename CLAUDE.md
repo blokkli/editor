@@ -119,6 +119,9 @@ bun run verify -- e2e-drupal   # E2E against Drupal sandboxes (host, ddev runnin
 bun run verify -- <gate>       # One gate only: format, lint, typecheck,
                                # typecheck:runtime (etc.), php, unit,
                                # e2e-drupal
+bun run verify -- ci           # What GitHub runs (.github/workflows/ci.yml):
+                               # checks instead of fixes, fails instead of
+                               # skipping
 bun run test:unit:watch        # Unit tests in watch mode
 ```
 

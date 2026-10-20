@@ -66,6 +66,11 @@ export default defineNuxtConfig({
     // A build empties its build directory first: its own, so that it can run
     // next to the dev server.
     buildDir: 'node_modules/.cache/nuxt-production',
+    // `ddev deploy` builds next to the build that runs (.output), and swaps
+    // them once the templates are baked.
+    nitro: {
+      output: { dir: process.env.SANDBOX_OUTPUT_DIR || '.output' },
+    },
   },
 
   compatibilityDate: '2026-10-02',

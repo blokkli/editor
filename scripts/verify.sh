@@ -8,6 +8,9 @@
 # Usage:
 #   bun run verify              # all gates EXCEPT e2e-drupal
 #   bun run verify -- <gate>    # run a single gate
+#   bun run verify -- ci        # GitHub's workflow (.github/workflows/ci.yml):
+#                               # the same gates, checking instead of fixing,
+#                               # and failing instead of skipping
 #
 # Gates:
 #   format      format:fix (oxfmt + prettier, writes fixes)
@@ -35,6 +38,8 @@ FAILED=()
 E2E_SKIPPED=0
 SANDBOX_SKIPPED=()
 PHP_SKIPPED=0
+# 1 in ci mode: a gate that can't run fails instead of being skipped.
+STRICT=0
 
 run_gate() {
   local name="$1"
@@ -88,6 +93,11 @@ gate_e2e_drupal() {
 gate_typecheck_sandbox() {
   local app="$1"
   if [ ! -f "sandbox/$app/.nuxt/tsconfig.app.json" ]; then
+    if [ "$STRICT" -eq 1 ]; then
+      printf '  ✗ typecheck:sandbox-%s FAILED: no sandbox/%s/.nuxt\n' "$app" "$app"
+      FAILED+=("typecheck:sandbox-$app (no .nuxt)")
+      return
+    fi
     printf '  - typecheck:sandbox-%s SKIPPED (no sandbox/%s/.nuxt)\n' "$app" "$app"
     SANDBOX_SKIPPED+=("typecheck:sandbox-$app")
     return
@@ -99,6 +109,11 @@ gate_typecheck_sandbox() {
 # install in ddev; PHP from the host or the container, wherever this runs.
 gate_php() {
   if ! command -v php >/dev/null 2>&1 || [ ! -f sandbox/drupal/vendor/bin/phpcs ]; then
+    if [ "$STRICT" -eq 1 ]; then
+      printf '  ✗ phpcs, phpstan FAILED: no php or no sandbox/drupal/vendor\n'
+      FAILED+=("phpcs, phpstan (no php or vendor)")
+      return
+    fi
     printf '  - phpcs, phpstan SKIPPED (no php or no sandbox/drupal/vendor)\n'
     PHP_SKIPPED=1
     return
@@ -139,6 +154,19 @@ case "$GATE" in
     run_gate "test:unit" bun run test:unit
     E2E_SKIPPED=1
     ;;
+  ci)
+    STRICT=1
+    run_gate "format" bun run format
+    run_gate "lint" bun run lint
+    run_gate "typecheck:build" bun run typecheck:build
+    run_gate "typecheck:runtime" bun run typecheck:runtime
+    run_gate "typecheck:server" bun run typecheck:server
+    run_gate "typecheck:playground" bun run typecheck:playground
+    gate_typecheck_sandbox frontend
+    gate_typecheck_sandbox control
+    gate_php
+    run_gate "test:unit" bun run test:unit
+    ;;
   format | format:fix)
     gate_format
     ;;
@@ -173,7 +201,7 @@ case "$GATE" in
     printf 'Valid gates: format, lint, typecheck, typecheck:build,\n' >&2
     printf 'typecheck:runtime, typecheck:server, typecheck:playground,\n' >&2
     printf 'typecheck:sandbox-frontend, typecheck:sandbox-control,\n' >&2
-    printf 'php, unit, e2e-drupal\n' >&2
+    printf 'php, unit, e2e-drupal, ci\n' >&2
     exit 2
     ;;
 esac
@@ -196,5 +224,10 @@ if [ "$PHP_SKIPPED" -eq 1 ]; then
   printf '      sandbox/drupal/vendor (ddev composer install).\n'
 fi
 printf 'Full output: %s\n' "$LOG_FILE"
+# GitHub's log is all there is of a run.
+if [ "$STRICT" -eq 1 ] && [ "${#FAILED[@]}" -gt 0 ]; then
+  printf '\n'
+  cat "$LOG_FILE"
+fi
 
 [ "${#FAILED[@]}" -eq 0 ]

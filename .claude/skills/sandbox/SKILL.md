@@ -570,18 +570,29 @@ outgoing allowlist, monitoring): `plans/drupal-setup/12-hosted-deploy.md`.
   `DRUPAL_HASH_SALT` and `NUXT_SANDBOX_LOGIN_SECRET`, also for drush; `/admin`
   answers 503 without `NUXT_ADMIN_PASSWORD`; the frontend renders no page on the
   server.
-- **`ddev deploy`** (a host command): pulls the checked-out branch, updates the
-  submodule, stops the Nuxt apps, runs composer and bun, builds both apps, bakes
-  the de, fr and en templates, deletes every sandbox and restarts. It refuses to
-  run without `IS_DDEV_HOSTED=true`, with `ddev.site` hostnames, or without the
+- **`ddev deploy`** (a host command): moves the checked-out branch to GitHub's
+  (a rewritten one is reset to, unless the checkout has local changes), updates
+  the submodule, runs composer and bun, and builds both apps into `.output-next`
+  (`SANDBOX_OUTPUT_DIR`) while the running ones keep serving `.output`. Then it
+  stops the control app (no claims while the templates change), bakes the de, fr
+  and en templates, stops the frontend, swaps the builds, deletes every sandbox
+  and restarts. A failure starts the apps it stopped again. It refuses to run
+  without `IS_DDEV_HOSTED=true`, with `ddev.site` hostnames, or without the
   three secrets above, so it can't run locally. Run it again every week or so:
   seeded dates are relative to the bake.
+- **GitHub** (`.github/workflows/ci.yml`) runs it after every push to `dev` that
+  passes the checks (below), unless the push only changes `plans/`, `docs/`,
+  `skills/`, `.claude/` or `test/`.
 
 ## Checks
 
 - `bun run verify` (host or container) runs the formatters, linters, all
   typechecks, phpcs/phpstan over `web/modules/custom` and the unit tests. On a
   failure, read `tmp/verify-output/<timestamp>.txt`.
+- GitHub (`.github/workflows/ci.yml`) checks every push and pull request:
+  `bun run verify -- ci` (checks instead of fixes, fails instead of skipping),
+  `bun run sandbox:build`, `ddev bake` and the E2E tests, with ddev on the
+  runner and a random agent secret in `.ddev/.env.web`.
 - `typecheck:sandbox-frontend` and `:sandbox-control` check app and server code
   and need the `.nuxt` folders the daemons generate.
 - `typecheck:playground` fails in the container when the host's `bun run dev`
