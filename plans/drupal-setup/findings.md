@@ -17,7 +17,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F19  | [Template and library search](#f19-template-and-library-search)                                                                                                             | both                 | low      | open       |
 | F20  | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                                                                           | `paragraphs_blokkli` | low      | open       |
 | F24  | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                                                                           | `paragraphs_blokkli` | medium   | parked     |
-| F25  | [An empty change description keeps the old log](#f25-an-empty-change-description-keeps-the-old-log)                                                                         | `paragraphs_blokkli` | low      | open       |
 | F26  | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation)                                                     | both                 | medium   | parked     |
 | F28  | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                                                                      | `@blokkli/editor`    | low      | workaround |
 | F29  | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                                                                                | `paragraphs_blokkli` | low      | workaround |
@@ -248,16 +247,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   Tests can use the Scheduler module since the fix of F23:
   `paragraphs_blokkli_scheduler_test` gives it the paragraphs, as the sandbox's
   patch does.
-
-## F25: An empty change description keeps the old log
-
-- **Found:** 2026-09-27, 13e.
-- **Symptom:** publish with a change description, then publish again without
-  one. The second revision has the first one's log message.
-- **Cause:** the manager sets the log only when the message isn't empty
-  (`ParagraphsBlokkliManager.php:169`), and `setNewRevision()` keeps the loaded
-  revision's log. Drupal's entity form clears it; blökkli doesn't.
-- **Fix idea:** always set the log message on a new revision, empty or not.
 
 ## F26: "Publish if unpublished" acts on the default translation
 
