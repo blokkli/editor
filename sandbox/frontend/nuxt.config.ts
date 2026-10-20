@@ -262,10 +262,49 @@ export default defineNuxtConfig({
 
   vite: {
     plugins: [tailwindcss()],
-    // Imported on the first run of the language analyzer
-    // (app/blokkli/analyzers): found only then, Vite would reload the editor.
+    // What the editor and the app import lazily, e.g. `eld/extrasmall` on the
+    // first run of the language analyzer (app/blokkli/analyzers). Found only
+    // then, Vite would bundle it and reload every open page: with an empty
+    // cache (a fresh checkout, GitHub's runner), in the middle of the E2E
+    // tests. Vite names what it found at runtime in the dev server's log
+    // ("Vite discovered new dependencies at runtime", "New dependencies
+    // found").
     optimizeDeps: {
-      include: ['eld/extrasmall'],
+      include: [
+        '@floating-ui/dom',
+        '@tiptap/core',
+        '@tiptap/extension-emoji',
+        '@tiptap/extension-mention',
+        '@tiptap/extension-task-item',
+        '@tiptap/extension-task-list',
+        '@tiptap/starter-kit',
+        '@tiptap/vue-3',
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        'artboard-deluxe',
+        'axe-core',
+        'echarts/charts',
+        'echarts/components',
+        'echarts/core',
+        'echarts/renderers',
+        'eld/extrasmall',
+        'fzf',
+        'get-video-id',
+        'html-diff-ts',
+        'json5',
+        'mammoth',
+        'marked',
+        'mitt',
+        'papaparse',
+        'pofile',
+        'qrcode.vue',
+        'syllable',
+        'turndown',
+        'twgl.js',
+        'vue-echarts',
+        'vue3-click-away',
+        'zod',
+      ],
     },
     server: {
       // Requests arrive through nginx with the site's Host (and, later, the
