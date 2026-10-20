@@ -42,13 +42,6 @@ Statuses: `todo`, `in progress`.
 - **Deploys that keep premium sandboxes.** `ddev deploy` deletes every sandbox,
   on every push to `dev` and weekly, and with them their access links. Premium
   sandboxes (7 days, handed to customers) need to survive it: a plan of its own.
-- **Fixing a seeded image's alt text** (the user, 2026-10-20). The analyzer
-  reports an image without an alt text, but editors can't fix it: the seeded
-  media belong to the admin, and the editor roles only have
-  `edit own <type> media`. `edit any <type> media` was added for it
-  (`353eba0aa`) and taken back (the E2E tests need an entity that an editor may
-  view but not edit). To decide: how an editor fixes it, and what the referenced
-  entities test uses then.
 
 ## Features that need their own plan
 

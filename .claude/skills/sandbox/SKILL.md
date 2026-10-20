@@ -143,12 +143,12 @@ Traefik sends every hostname to the web container's nginx on port 80.
 - **Roles and test users** (`content/users.yml`, no passwords:
   `ddev drush uli --name="Anna Keller"`; `ddev drush uli` is the admin, uid 1):
 
-  | User         | Role                                 | Can                                                             |
-  | ------------ | ------------------------------------ | --------------------------------------------------------------- |
-  | Anna Keller  | `content_editor` ("Editor")          | everything editorial, templates, library, scheduling, the agent |
-  | Marc Brunner | `reviewer` ("Head of department")    | view, comment, review; no editing                               |
-  | Élodie Favre | `translator` ("Translator (French)") | translate, edit translations; can't take over an edit state     |
-  | Jonas Weber  | `restricted_editor`                  | edit, but not charts, and can't add or delete sections          |
+  | User         | Role                                 | Can                                                                        |
+  | ------------ | ------------------------------------ | -------------------------------------------------------------------------- |
+  | Anna Keller  | `content_editor` ("Editor")          | everything editorial, any media, templates, library, scheduling, the agent |
+  | Marc Brunner | `reviewer` ("Head of department")    | view, comment, review; no editing                                          |
+  | Élodie Favre | `translator` ("Translator (French)") | translate, edit translations; can't take over an edit state                |
+  | Jonas Weber  | `restricted_editor`                  | edit, but not charts or others' media, and can't add or delete sections    |
 
   All four have `view any unpublished content` (contrib `view_unpublished`),
   `use paragraphs blokkli agent` and `view any blokkli entity label` (the list
@@ -242,8 +242,10 @@ Traefik sends every hostname to the web container's nginx on port 80.
 - Editing a selected media: `media_library_edit` puts a pencil on the media in
   every media library widget (`show_edit`, a third-party setting of the widget),
   which opens the media's form in a dialog. Only on a media that the user may
-  update: the editor roles have `edit own <type> media`, and the seeded media
-  belong to the admin.
+  update. The seeded media belong to the admin: the editor (the claim page's
+  user) has `edit any <type> media`, so that she can fix a missing alt text that
+  the analyzer reports; the restricted editor only `edit own <type> media`,
+  which the referenced entities E2E test needs.
 - Alt texts: `PlaceholderAltTextGenerator` gives the upload dialog's "Generate"
   button a text for every image, a placeholder that says what it is (this site
   has no service that describes images). It's on every site, so that the button

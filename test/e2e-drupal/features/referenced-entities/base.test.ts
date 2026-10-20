@@ -28,10 +28,12 @@ const TEASER = seedUuid('paragraph', 'reading-teaser')
  * form only for the ones that the user may edit. An entry without it shows
  * what the block references, but can't be opened.
  *
- * Page lifecycle: two editor pages for Anna Keller, opened in parallel. On the
- * page "Downloads" a link points to a document, which an editor may view but
- * not edit. On the page "Reading" a teaser links to a page, which she may
- * edit. No test changes anything; `afterEach` deselects on both pages.
+ * Page lifecycle: two editor pages, opened in parallel. On the page
+ * "Downloads" a link points to a document, which Jonas Weber may view but not
+ * edit: the restricted editor only edits his own media, and the seeded ones
+ * are the admin's (an editor edits any media). On the page "Reading" a teaser
+ * links to a page, which Anna Keller may edit. No test changes anything;
+ * `afterEach` deselects on both pages.
  */
 describe('The referenced entities feature', async () => {
   const sandbox = workerSandbox()
@@ -54,7 +56,7 @@ describe('The referenced entities feature', async () => {
     ;[downloads, reading] = await Promise.all([
       openEditor(
         sandbox,
-        'Anna Keller',
+        'Jonas Weber',
         editorPath('/en/downloads', 'downloads'),
       ),
       openEditor(sandbox, 'Anna Keller', editorPath('/en/reading', 'reading')),
