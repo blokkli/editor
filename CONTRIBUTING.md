@@ -183,11 +183,12 @@ web_environment:
   the bake. It refuses to run locally.
 - **GitHub deploys `dev`** (`.github/workflows/ci.yml`): every push and pull
   request runs the gates (`bun run verify -- ci`), the production build, a bake
-  and the E2E tests. A push to `dev` that passes them deploys, unless it only
-  changes `plans/`, `docs/`, `skills/`, `.claude/` or `test/`. A rewritten `dev`
-  (an amend, a rebase) is deployed too: the server resets its checkout to it.
-  Push the module's commits to drupal.org first: the checkout fetches them from
-  there.
+  and the E2E tests. They run against an E2E build of the frontend, a production
+  build with the agent's mock that is never deployed. A push to `dev` that
+  passes them deploys, unless it only changes `plans/`, `docs/`, `skills/`,
+  `.claude/` or `test/`. A rewritten `dev` (an amend, a rebase) is deployed too:
+  the server resets its checkout to it. Push the module's commits to drupal.org
+  first: the checkout fetches them from there.
 - Hosted, the Nuxt apps run their production builds (never the dev servers,
   which serve any file of the repository), nginx doesn't serve the dev site, and
   only Nuxt's server reaches Drupal's GraphQL endpoint.

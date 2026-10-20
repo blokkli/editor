@@ -331,9 +331,10 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
 
 ## The `test-cases` feature
 
-`sandbox/frontend/blokkli/features/test-cases/` backs `.test`. It is `devOnly`:
-the dev server has it, the hosted production build doesn't. Its scenarios name
-the sandbox's fields (`field_lead`, `title.field_title`, `text.field_text`).
+`sandbox/frontend/blokkli/features/test-cases/` backs `.test`. The dev server
+and the E2E build that GitHub runs the tests against have it, the hosted build
+doesn't (`ignore` in `nuxt.config.ts`). Its scenarios name the sandbox's fields
+(`field_lead`, `title.field_title`, `text.field_text`).
 
 `index.vue` registers the feature + `PluginSidebar` + the
 `window.__BLOKKLI__.test` lifecycle (assign on mount, delete on unmount). One

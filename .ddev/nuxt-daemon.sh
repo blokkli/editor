@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Runs a Nuxt server in the web container: the sandbox frontend
 # (`nuxt-daemon.sh frontend 3000`) or the control app (`control 3001`). The dev
-# server locally, the production build when hosted (IS_DDEV_HOSTED=true).
+# server locally, the production build when hosted (IS_DDEV_HOSTED=true) or
+# asked for (SANDBOX_SERVE_BUILD=true, on GitHub: nothing else of hosting).
 # Started by supervisor as a ddev web_extra_daemon (see config.yaml); control
 # them with `ddev nuxt [control]`.
 set -euo pipefail
@@ -18,7 +19,7 @@ cd /var/www/html
 # Never a dev server when hosted: it serves any file of the repository (the
 # databases, .ddev/.env.web) and runs Nitro's tasks for anyone. `ddev deploy`
 # builds the apps (`bun run sandbox:build`).
-if [ "${IS_DDEV_HOSTED:-}" = true ]; then
+if [ "${IS_DDEV_HOSTED:-}" = true ] || [ "${SANDBOX_SERVE_BUILD:-}" = true ]; then
   server="sandbox/$app/.output/server/index.mjs"
   # Wait instead of exiting: supervisor gives up after a few quick failures.
   while [ ! -f "$server" ]; do

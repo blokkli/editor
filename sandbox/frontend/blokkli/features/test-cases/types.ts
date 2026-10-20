@@ -2,7 +2,7 @@ import type { AgentToolMap, AgentToolName } from '#blokkli-build/agent-client'
 
 /**
  * Imperative test API exposed on `window.__BLOKKLI__.test` by the sandbox's
- * `test-cases` feature, in development builds only.
+ * `test-cases` feature, in the dev server and the E2E build only.
  *
  * Each method drives one test scenario and resolves when it finishes, so E2E
  * tests can trigger the exact same flow as the sidebar buttons without relying

@@ -5,7 +5,7 @@ import type { BlokkliTestApi } from './types'
 // the interface.
 declare module '#blokkli/editor/composables/useGlobalBlokkliObject' {
   interface BlokkliGlobalWindowObject {
-    /** Imperative test API. Only in development builds. */
+    /** Imperative test API. Only in the dev server and the E2E build. */
     test?: BlokkliTestApi
   }
 }

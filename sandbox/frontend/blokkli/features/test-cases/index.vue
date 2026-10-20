@@ -34,9 +34,8 @@ defineBlokkliFeature({
   description:
     'Triggers for editor flows used by manual testing and the E2E tests.',
   icon: 'bk_mdi_science',
-  // Only in development builds: the E2E tests run against the dev server, the
-  // hosted sandbox runs a production build.
-  devOnly: true,
+  // Only in the dev server and the E2E build: nuxt.config.ts ignores it in the
+  // hosted one.
 })
 
 // Each case component contributes its part of the imperative test API; we merge

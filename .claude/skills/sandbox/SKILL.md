@@ -382,8 +382,9 @@ host, with ddev running: `bun run test:e2e-drupal` or
   `nodes/broken.yml` has a title in a gallery. Users and nodes marked
   `deleted: true` are deleted after seeding: Nora Huber's comment has no author,
   the notification about `nodes/removed.yml` no page.
-- **They run against the dev server** (`ddev nuxt`), which has the Test Cases
-  sidebar, and typecheck with the frontend: `typecheck:sandbox-frontend` covers
+- **They run against the dev server** (`ddev nuxt`) locally, and against the E2E
+  build on GitHub (see Checks): both have the agent's mock and the Test Cases
+  sidebar. They typecheck with the frontend: `typecheck:sandbox-frontend` covers
   `test/e2e-drupal/`.
 
 ## The control app (`sandbox/control/`)
@@ -507,11 +508,13 @@ host, with ddev running: `bun run test:e2e-drupal` or
   `tools/get_town_data`, `prompts/`), next to `nuxt.config.ts`, not in `app/`.
   Their DE/FR strings are in `blokkli.translations` in `nuxt.config.ts`.
   `enableMock` lets a client replay a scripted conversation instead of the
-  model: on for the dev server, off in a production build (`NODE_ENV`).
+  model: on for the dev server and the E2E build (`SANDBOX_E2E_BUILD=true`), off
+  in the hosted build. The config refuses to make an E2E build when hosted.
 - **The Test Cases sidebar** (`blokkli/features/test-cases/`): triggers for
   flows that are hard to reach otherwise, also `window.__BLOKKLI__.test` for the
-  E2E specs (the `e2e-testing` skill). `devOnly`: the dev server has it, a
-  production build doesn't.
+  E2E specs (the `e2e-testing` skill). Only where the agent's mock is: the
+  hosted build ignores its folder (Nuxt's `ignore`; `devOnly` would leave it out
+  of the E2E build too).
 - **Server:** `/api/chart-data[/id]` (the charts' data sources, also used by the
   agent's tool); `server/graphqlMiddleware.serverOptions.ts` picks the endpoint
   by the client context's language. `app/graphqlMiddleware.clientOptions.ts` has
@@ -594,6 +597,17 @@ outgoing allowlist, monitoring): `plans/drupal-setup/12-hosted-deploy.md`.
   `bun run verify -- ci` (checks instead of fixes, fails instead of skipping),
   `bun run sandbox:build`, `ddev bake` and the E2E tests, with ddev on the
   runner and a random agent secret in `.ddev/.env.web`.
+- **On GitHub, the E2E tests run against builds:** the frontend's E2E build
+  (`SANDBOX_E2E_BUILD=true`), which replaces its deploy build, and the control
+  app's build. `SANDBOX_SERVE_BUILD=true` in `.ddev/.env.web` makes
+  `nuxt-daemon.sh` serve them, without the rest of hosting. The dev server
+  compiles every module on its first request, too slowly for a test on GitHub's
+  runners, and reloads the pages when it finds a new dependency.
+- **To run them against the builds locally:**
+  `ddev exec -d /var/www/html env SANDBOX_E2E_BUILD=true node_modules/.bin/nuxi build sandbox/frontend`,
+  the same without the variable for `sandbox/control`, then a
+  `.ddev/config.<name>.yaml` with `web_environment: [SANDBOX_SERVE_BUILD=true]`
+  and `ddev restart`. Delete the file and restart again for the dev servers.
 - `typecheck:sandbox-frontend` and `:sandbox-control` check app and server code
   and need the `.nuxt` folders the daemons generate.
 - `typecheck:playground` fails in the container when the host's `bun run dev`

@@ -1,6 +1,7 @@
 // The sandbox's Nuxt app. It runs inside ddev as the "nuxt" daemon
 // (`ddev nuxt`), behind nginx at https://blokkli.ddev.site: the dev server
-// locally, the production build (`bun run sandbox:build`) when hosted.
+// locally, the production build (`bun run sandbox:build`) when hosted, and the
+// E2E build on GitHub.
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import { pathPrefix } from 'nuxt-language-negotiation/negotiators'
@@ -25,6 +26,17 @@ const schemaPath = fileURLToPath(
 const optionsSchemaPath = fileURLToPath(
   new URL('../drupal/blokkli-options-schema.json', import.meta.url),
 )
+
+// The E2E build (`SANDBOX_E2E_BUILD=true`): a production build with what the
+// E2E tests need from the dev server, the agent's mock and the Test Cases
+// sidebar. GitHub runs the tests against it (.github/workflows/ci.yml).
+const e2eBuild = process.env.SANDBOX_E2E_BUILD === 'true'
+if (e2eBuild && process.env.IS_DDEV_HOSTED === 'true') {
+  throw new Error(
+    'SANDBOX_E2E_BUILD is never hosted: its agent mock lets any client skip the API key.',
+  )
+}
+const testSeams = process.env.NODE_ENV !== 'production' || e2eBuild
 
 export default defineNuxtConfig({
   // nuxt-graphql-middleware must come before blökkli, vuepal before
@@ -227,10 +239,10 @@ export default defineNuxtConfig({
       agent({
         provider: 'anthropic',
         // Lets a client replay a scripted conversation instead of the model
-        // (E2E tests, against the dev server). Never in a production build:
-        // any client could skip the API key and have the server run the tool
-        // calls of its choosing.
-        enableMock: process.env.NODE_ENV !== 'production',
+        // (E2E tests). Only in the dev server and the E2E build, never in the
+        // hosted one: any client could skip the API key and have the server
+        // run the tool calls of its choosing.
+        enableMock: testSeams,
         // Prices in USD per million tokens, from Anthropic's pricing page.
         models: [
           {
@@ -265,8 +277,8 @@ export default defineNuxtConfig({
     // What the editor and the app import lazily, e.g. `eld/extrasmall` on the
     // first run of the language analyzer (app/blokkli/analyzers). Found only
     // then, Vite would bundle it and reload every open page: with an empty
-    // cache (a fresh checkout, GitHub's runner), in the middle of the E2E
-    // tests. Vite names what it found at runtime in the dev server's log
+    // cache (a fresh checkout), in the middle of the E2E tests. Vite names
+    // what it found at runtime in the dev server's log
     // ("Vite discovered new dependencies at runtime", "New dependencies
     // found").
     optimizeDeps: {
@@ -328,6 +340,11 @@ export default defineNuxtConfig({
       include: ['../blokkli/features/**/*', '../../../test/e2e-drupal/**/*'],
     },
   },
+
+  // The Test Cases sidebar (blokkli/features/test-cases), only where the
+  // agent's mock is. blökkli finds its features through Nuxt, which skips what
+  // it ignores; `devOnly` would leave it out of the E2E build too.
+  ignore: testSeams ? [] : ['blokkli/features/test-cases'],
 
   $production: {
     // A build empties its build directory first: its own, so that it can run

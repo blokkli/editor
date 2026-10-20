@@ -1,6 +1,7 @@
 # Checks every push and pull request: the gates of `bun run verify`, the
 # production build of the sandbox's Nuxt apps, a bake of the sandbox's content
-# and the E2E tests against sandboxes of the ddev site. A push to dev that passes
+# and the E2E tests against sandboxes of the ddev site, which serves an E2E
+# build of the frontend instead of the dev server. A push to dev that passes
 # deploys the hosted sandbox (dev-sandbox.blokk.li), unless it only changes what
 # isn't deployed.
 #
@@ -52,10 +53,19 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
-      # What `ddev deploy` builds. It also writes what the dev servers need:
-      # the editor's CSS, the changelog and the apps' .nuxt.
+      # What `ddev deploy` builds, as a check: the E2E build replaces the
+      # frontend's. It also writes what the gates need: the editor's CSS, the
+      # changelog and the apps' .nuxt.
       - name: Production build of the sandbox's Nuxt apps
         run: bun run sandbox:build
+
+      # A production build with the agent's mock and the Test Cases sidebar,
+      # which the E2E tests use (sandbox/frontend/nuxt.config.ts). The dev
+      # server compiles every module on its first request, which takes longer
+      # than a test may on GitHub's runners, and reloads the pages when it
+      # finds a new dependency.
+      - name: E2E build of the frontend
+        run: SANDBOX_E2E_BUILD=true bunx nuxi build sandbox/frontend
 
       - name: Prepare the module and the playground
         run: |
@@ -65,16 +75,19 @@ jobs:
 
       # The agent's secret, for its E2E tests in premium sandboxes. The others
       # have local defaults. No key for DeepL, Rokka or a model: E2E sandboxes
-      # never use them.
-      - name: Secrets
-        run:
-          printf 'NUXT_BLOKKLI_AGENT_AUTH_SECRET=%s\n' "$(openssl rand -hex 32)"
-          > .ddev/.env.web
+      # never use them. The Nuxt daemons serve the builds, without the rest of
+      # hosting (.ddev/nuxt-daemon.sh).
+      - name: The web container's environment
+        run: |
+          {
+            printf 'NUXT_BLOKKLI_AGENT_AUTH_SECRET=%s\n' "$(openssl rand -hex 32)"
+            echo SANDBOX_SERVE_BUILD=true
+          } > .ddev/.env.web
 
-      # Starts the project: composer install, and the Nuxt dev servers.
+      # Starts the project: composer install, and the Nuxt servers.
       - uses: ddev/github-action-setup-ddev@v1
 
-      - name: Wait for the Nuxt dev servers
+      - name: Wait for the Nuxt servers
         run: |
           ready() {
             local code
@@ -101,12 +114,6 @@ jobs:
         run:
           node node_modules/playwright-core/cli.js install --with-deps chromium
           chromium-headless-shell
-
-      # The dev server compiles the editor on its first request, which can take
-      # longer than a test may. One spec warms it up; the full run has it again.
-      - name: Warm up the dev server
-        continue-on-error: true
-        run: bun run test:e2e-drupal -- test/e2e-drupal/features/changelog
 
       - name: E2E tests
         run: bun run test:e2e-drupal
