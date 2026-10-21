@@ -47,7 +47,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F103 | [A preview misses a change that is made before its first poll](#f103-a-preview-misses-a-change-that-is-made-before-its-first-poll)                                          | editor               | low      | open       |
 | F104 | [A refused machine translation answers "Internal server error"](#f104-a-refused-machine-translation-answers-internal-server-error)                                          | `paragraphs_blokkli` | low      | open       |
 | F107 | [A duplicate drops nested paragraphs in fields that blökkli doesn't manage](#f107-a-duplicate-drops-nested-paragraphs-in-fields-that-blökkli-doesnt-manage)                 | `paragraphs_blokkli` | low      | to verify  |
-| F108 | [A template of a new library item's paragraph saves the item early](#f108-a-template-of-a-new-library-items-paragraph-saves-the-item-early)                                 | `paragraphs_blokkli` | low      | to verify  |
 | F110 | [The Search API lists show what the index returns](#f110-the-search-api-lists-show-what-the-index-returns)                                                                  | `paragraphs_blokkli` | low      | to verify  |
 | F111 | [A new target resets the options of a link](#f111-a-new-target-resets-the-options-of-a-link)                                                                                | `paragraphs_blokkli` | low      | to verify  |
 | F112 | [A text update of a link field does nothing, and is stored](#f112-a-text-update-of-a-link-field-does-nothing-and-is-stored)                                                 | `paragraphs_blokkli` | low      | open       |
@@ -794,21 +793,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   are proxies only for the fields that `getAvailableHostFieldNames()` returns.
 - **Fix idea:** copy the paragraphs of the fields that have no proxies with the
   paragraph, as `Paragraph::createDuplicate()` does.
-
-## F108: A template of a new library item's paragraph saves the item early
-
-- **Found:** 2026-10-12, by reading, in a review of the plan for F70. Not
-  reproduced.
-- **Symptom:** in one edit state a paragraph is added to the library, and a
-  template is made of the paragraph that shows the new library item. The
-  template is saved at once, and the library item with it, before the page is
-  published. Publishing then saves a library item with the same UUID again.
-- **Cause:** `BlokkliParagraphTemplateService::cloneParagraphForTemplate()`
-  (`modules/paragraphs_blokkli_template/src/BlokkliParagraphTemplateService.php`
-  at `70608d0`) copies the paragraph's fields, and the reference to an unsaved
-  library item is the item itself. Saving the template saves what it references.
-- **Fix idea:** refuse a template of a paragraph that shows a library item which
-  isn't saved yet.
 
 ## F110: The Search API lists show what the index returns
 
