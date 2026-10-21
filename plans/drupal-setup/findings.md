@@ -46,7 +46,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F102 | [The library search fails for an empty list of types](#f102-the-library-search-fails-for-an-empty-list-of-types)                                                            | `paragraphs_blokkli` | low      | open       |
 | F103 | [A preview misses a change that is made before its first poll](#f103-a-preview-misses-a-change-that-is-made-before-its-first-poll)                                          | editor               | low      | open       |
 | F104 | [A refused machine translation answers "Internal server error"](#f104-a-refused-machine-translation-answers-internal-server-error)                                          | `paragraphs_blokkli` | low      | open       |
-| F107 | [A duplicate drops nested paragraphs in fields that blökkli doesn't manage](#f107-a-duplicate-drops-nested-paragraphs-in-fields-that-blökkli-doesnt-manage)                 | `paragraphs_blokkli` | low      | to verify  |
 | F110 | [The Search API lists show what the index returns](#f110-the-search-api-lists-show-what-the-index-returns)                                                                  | `paragraphs_blokkli` | low      | to verify  |
 | F111 | [A new target resets the options of a link](#f111-a-new-target-resets-the-options-of-a-link)                                                                                | `paragraphs_blokkli` | low      | to verify  |
 | F112 | [A text update of a link field does nothing, and is stored](#f112-a-text-update-of-a-link-field-does-nothing-and-is-stored)                                                 | `paragraphs_blokkli` | low      | open       |
@@ -54,6 +53,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                                                                         | `paragraphs_blokkli` | low      | open       |
 | F115 | [A violation of a host's paragraphs field names no entity](#f115-a-violation-of-a-hosts-paragraphs-field-names-no-entity)                                                   | `paragraphs_blokkli` | low      | to verify  |
 | F116 | [A comment can be edited or deleted through any page](#f116-a-comment-can-be-edited-or-deleted-through-any-page)                                                            | `paragraphs_blokkli` | low      | open       |
+| F117 | [An add or a move into a field that blökkli doesn't manage is lost](#f117-an-add-or-a-move-into-a-field-that-blökkli-doesnt-manage-is-lost)                                 | `paragraphs_blokkli` | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it), `parked` (part of a plan of its own, in
@@ -499,7 +499,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   By reading (a review of the plan), the duplicate must also:
   - keep the published state, per translation: `duplicateParagraph()` of the
     helper with `withStatus`;
-  - keep the nested paragraphs in fields that blökkli doesn't manage (F107);
   - cope with nested paragraphs that the first run didn't see:
     `duplicateChildren()` does.
 
@@ -779,21 +778,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** a result that may be null, as the editor's other mutations have,
   or an error that says "Access denied".
 
-## F107: A duplicate drops nested paragraphs in fields that blökkli doesn't manage
-
-- **Found:** 2026-10-12, by reading, in a review of the plan for F70. Not
-  reproduced; no test has `restrict_fields`.
-- **Symptom:** with "Restrict paragraph fields" on, blökkli manages no
-  paragraphs field of a paragraph type: the settings form only offers the fields
-  of the host types. A paragraph then keeps its nested paragraphs as they are
-  stored. Its duplicate has none.
-- **Cause:** `extractFieldValues()` (`src/ParagraphsBlokkliHelper.php` at
-  `70608d0`) leaves every paragraphs field out of a duplicate, because
-  `duplicateChildren()` copies the nested paragraphs from their proxies. There
-  are proxies only for the fields that `getAvailableHostFieldNames()` returns.
-- **Fix idea:** copy the paragraphs of the fields that have no proxies with the
-  paragraph, as `Paragraph::createDuplicate()` does.
-
 ## F110: The Search API lists show what the index returns
 
 - **Found:** 2026-10-13, by reading, when the lists from an entity query got
@@ -925,3 +909,20 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Impact:** low: only the author's own comments (or any comment, for a user
   with `administer blokkli_comment`, who may do that anyway).
 - **Fix idea:** the same check as `ResolveComment`.
+
+## F117: An add or a move into a field that blökkli doesn't manage is lost
+
+- **Found:** 2026-10-21, by reading, in a review of the plan for F107. Not
+  reproduced.
+- **Symptom (by reading):** with "Restrict paragraph fields" on, blökkli manages
+  only the enabled paragraphs fields of a host bundle. A mutation that adds or
+  moves a paragraph into one of the others is accepted, and the edit state lists
+  the paragraph there, but publishing doesn't save it. A moved paragraph is
+  lost.
+- **Cause:** the check of the mutations,
+  `ParagraphsBlokkliHelper::checkAllowedParagraphBundles()`
+  (`src/ParagraphsBlokkliHelper.php` at `1b08d60`), only requires a paragraphs
+  field. `ParagraphsBlokkliEditState::rebuildFields()` writes the fields of
+  `getAvailableHostFieldNames()`.
+- **Fix idea:** refuse a field that blökkli doesn't manage, when the mutation
+  runs for the first time.
