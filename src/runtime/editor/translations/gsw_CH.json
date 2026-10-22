@@ -643,6 +643,7 @@
   "iframesEditorBreakpoints": "Breakpoints",
   "iframesEditorNotRendered": "Dr Block muess uf dr Site dargstellt si, bevor d Iframe-Höchine chöi iigstellt wärde.",
   "iframesEditorPresets": "Voriistellige",
+  "iframesEditorUnsafeSource": "Do chönne nur Adrässe aazeigt wärde, wo mit http oder https aafönge.",
   "image": "Bild",
   "import": "Importieren",
   "importExistingDescription": "Vonere bestehende Sitte importiere",

@@ -76,9 +76,9 @@ import type {
 import {
   buildFileMapEvent,
   buildMapBundleEvents,
+  cleanPastedHtml,
   groupFileBundles,
   narrowFileGroups,
-  sanitizeHtml,
 } from './helpers'
 import type {
   BlokkliFieldElement,
@@ -862,7 +862,7 @@ const handlePastedText = async (text: string) => {
 
   const div = parseHtml(text.replace(/&nbsp;|<br>/g, ''))
 
-  sanitizeHtml(div)
+  cleanPastedHtml(div)
   if (div.textContent) {
     const itemBundles = normalizeBundles(
       adapter.clipboardMapBundle({

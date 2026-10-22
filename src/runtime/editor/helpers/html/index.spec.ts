@@ -42,6 +42,24 @@ describe('sanitizeHtml', () => {
     ).toBe('<p>A</p>')
   })
 
+  it('removes base, link and meta elements', () => {
+    expect(
+      sanitizeHtml(
+        '<base href="https://example.com/"><link rel="stylesheet" href="/a.css"><meta name="a" content="b"><p>A</p>',
+        'richText',
+      ),
+    ).toBe('<p>A</p>')
+  })
+
+  it('removes the URLs of links with other protocols', () => {
+    expect(
+      sanitizeHtml(
+        '<p><a href="javascript:void(0)">a</a> <a href="data:text/plain,b">b</a></p>',
+        'richText',
+      ),
+    ).toBe('<p><a>a</a> <a>b</a></p>')
+  })
+
   it('removes SVG and custom elements', () => {
     expect(
       sanitizeHtml(

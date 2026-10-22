@@ -643,6 +643,7 @@
   "iframesEditorBreakpoints": "Breakpoints",
   "iframesEditorNotRendered": "Der Block muss auf der Seite dargestellt sein, bevor die Iframe-Höhen eingestellt werden können.",
   "iframesEditorPresets": "Voreinstellungen",
+  "iframesEditorUnsafeSource": "Hier können nur Adressen angezeigt werden, die mit http oder https beginnen.",
   "image": "Bild",
   "import": "Importieren",
   "importExistingDescription": "Von einer bestehenden Seite importieren",

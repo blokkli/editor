@@ -48,8 +48,15 @@ becomes markup again when the editor reads it back with `textContent`.
   diffs, the translate dialog and the paste use it. The other places parse with
   `DOMParser` (the Drupal adapter, `clipboardData`, `enrichRichContent`, the
   readability checks, `translations/violations.ts`).
-- The clipboard's `sanitizeHtml()` removes every attribute but `href` from
-  pasted HTML.
+- **Pasted HTML** (since X12's fix): `cleanPastedHtml()` removes images and
+  every attribute but the `href` of a link to a web page or an email address;
+  the drop preview sanitises it with `richText`.
+- **URLs** (since X12's fix): `sanitizeHtml()` removes `javascript:` and other
+  URLs that run (DOMPurify's own URL check). Where the editor binds a URL from
+  content outside it, `isSafeUrl()` (`src/runtime/editor/helpers/url`) checks it
+  with the browser's `URL` parser: the paste's links and the iframes module's
+  editor, which frames only `http(s):` sources. The other URLs the editor binds
+  or opens come from the adapter or its config.
 - **Previews** (since X4's fix): the editable field override
   (`useEditableFieldOverride()`) sanitises a formatted field's value and every
   diff before they reach the page, a project's props or `<BlokkliEditable>`; the
@@ -67,7 +74,6 @@ becomes markup again when the editor reads it back with `textContent`.
 | X9  | [Agent conversations are stored as the client sends them](#x9-agent-conversations-are-stored-as-the-client-sends-them) | both                 | low      | to verify |
 | X10 | [Imports and kept formats skip the format check](#x10-imports-and-kept-formats-skip-the-format-check)                  | `paragraphs_blokkli` | low      | to verify |
 | X11 | [The docs and the playground render titles with `v-html`](#x11-the-docs-and-the-playground-render-titles-with-v-html)  | docs                 | medium   | to verify |
-| X12 | [`javascript:` URLs reach links and frames](#x12-javascript-urls-reach-links-and-frames)                               | editor               | low      | to verify |
 
 ## X7: Message listeners accept any window
 
@@ -173,24 +179,6 @@ becomes markup again when the editor reads it back with `textContent`.
   - A short docs section on what projects may rely on: blökkli sanitises what it
     previews (since X4's fix).
 
-## X12: `javascript:` URLs reach links and frames
-
-- **Found:** 2026-10-22, by reading. Not reproduced.
-- **Cause:**
-  - **Pasted HTML** keeps `href`
-    (`src/runtime/editor/features/clipboard/helpers.ts:10`) and is shown with
-    `v-html` in the drop preview
-    (`features/clipboard/DropElement/index.vue:18`). Drupal filters it when it's
-    saved.
-  - **Comment bodies:** fixed with X3. Drupal's comment format and the editor's
-    `comment` profile both drop `javascript:` links.
-  - **The iframes module's editor** sets `:src` from the block's value
-    (`src/modules/iframes/runtime/features/iframes/Editor/index.vue:12`).
-- **Impact:** low: someone has to click, or the project's iframe source has to
-  come from content.
-- **Fix idea:** the sanitiser allows only `http(s):`, `mailto:` and relative
-  URLs. The iframe source is checked the same way.
-
 ## Smaller things
 
 - **Violation messages** reach `v-html`
@@ -292,7 +280,7 @@ Researched on 2026-10-22.
     and `reloadNuxtApp()` with `javascript:`/`data:` URLs, `<NoScript>`, and
     `useHeadSafe()` in server islands
     ([advisories](https://github.com/nuxt/nuxt/security/advisories)).
-  - Since 4.6.0 Nuxt checks URLs with the browser's `URL` parser. X12 follows
+  - Since 4.6.0 Nuxt checks URLs with the browser's `URL` parser. `isSafeUrl()`
     that.
   - We have 4.6.1. The islands fix is in 4.6.2, but nothing here uses server
     islands.
@@ -440,7 +428,22 @@ One finding per round.
        should be escaped;
      - a new canary test, `import-preview`, checks it. It failed with the old
        `DiffValue`.
-5. **X12:** `isSafeUrl()` with the `URL` parser.
+5. **X12** (done 2026-10-22):
+   - `isSafeUrl(url, 'link' | 'frame')` reads the protocol with the browser's
+     `URL` parser, against the page's address (not the document's base URL):
+     `http(s):` and `mailto:` for links, `http(s):` for frames;
+   - the clipboard's cleaner (`cleanPastedHtml()`, formerly a second
+     `sanitizeHtml()`) keeps an `href` only on links, and only if it's safe. It
+     also removes nested images now, which it skipped;
+   - the drop preview sanitises the pasted HTML with `richText`: it kept every
+     element, `<style>` and a `<base>` with its `href` among them, which would
+     change how the page resolves relative URLs while it's shown. Links in it
+     couldn't be clicked (`pointer-events: none`);
+   - the iframes module's editor frames the block's source only if it's safe,
+     and says so otherwise. The project's own `<iframe>` in `<BlokkliIframe>`
+     loads the same source on the page: that's for the docs (step 9);
+   - unit tests, no canary: the canary's payload didn't run in the paste preview
+     before the fix either.
 6. **X7:** sender checks.
 7. **The module:** X8, X10, X9.
 8. **The CSP:**
@@ -448,4 +451,6 @@ One finding per round.
      locales, nonces for what it injects);
    - the sandbox gets one, from Nitro and from Drupal;
    - the directives the editor needs are documented.
-9. **Docs:** X11, and what projects may rely on.
+9. **Docs:** X11, and what projects may rely on. That includes the iframes
+   module: the project checks the source it frames itself (`<BlokkliIframe>`
+   only passes it to the editor).

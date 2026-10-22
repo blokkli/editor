@@ -54,6 +54,15 @@
         </div>
       </div>
 
+      <div v-else-if="blockSrc" class="text-mono-500 p-20 text-center">
+        {{
+          $t(
+            'iframesEditorUnsafeSource',
+            'Only addresses that start with http or https can be shown here.',
+          )
+        }}
+      </div>
+
       <div v-else class="text-mono-500 p-20 text-center">
         {{
           $t(
@@ -146,6 +155,7 @@ import { ref, computed, onBeforeUnmount, useBlokkli } from '#imports'
 import type { IframeHeightMap } from '../../../types'
 import { VIEWPORTS } from '#blokkli-build/iframes-config'
 import { DEFAULT_IFRAME_HEIGHT } from '../../../constants'
+import { isSafeUrl } from '#blokkli/editor/helpers/url'
 
 const props = defineProps<{
   data: IframeHeightMap | null
@@ -155,8 +165,15 @@ const props = defineProps<{
 
 const { directive, $t } = useBlokkli()
 
-const iframeSrc = computed(
+// The source as the project passes it to BlokkliIframe.
+const blockSrc = computed(
   () => directive.getValueElement(props.uuid, 'iframe') || '',
+)
+
+// Framed only if it's a web page: a `javascript:` URL, for example, would run
+// in the editor.
+const iframeSrc = computed(() =>
+  isSafeUrl(blockSrc.value, 'frame') ? blockSrc.value : '',
 )
 
 // Initialize from existing data. If empty, seed from viewport presets.

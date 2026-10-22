@@ -12,11 +12,11 @@
         :key="i"
         class="bk-clipboard-drop-element-item"
       >
-        <!-- eslint-disable vue/no-v-html -- X12 in plans/xss: pasted HTML without event handlers, its URLs unchecked -->
+        <!-- eslint-disable vue/no-v-html -- pasted HTML, sanitised -->
         <div
           v-if="item.type === 'text' && item.data"
           class="bk-clipboard-drop-element-text"
-          v-html="item.data"
+          v-html="sanitizeHtml(item.data, 'richText')"
         />
         <!-- eslint-enable vue/no-v-html -->
         <template v-else-if="item.type === 'video' && item.videoId">
@@ -43,6 +43,7 @@
 <script lang="ts" setup>
 import { useBlokkli, computed } from '#imports'
 import { Icon, ItemIconBox } from '#blokkli/editor/components'
+import { sanitizeHtml } from '#blokkli/editor/helpers/html'
 import ClipboardItemVideo from './Video.vue'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 

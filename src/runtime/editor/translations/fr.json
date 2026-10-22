@@ -107,6 +107,7 @@
   "iframesEditorBreakpoints": "Points de rupture",
   "iframesEditorNotRendered": "Le bloc doit être affiché sur la page avant de pouvoir configurer les hauteurs de l'iframe.",
   "iframesEditorPresets": "Préréglages",
+  "iframesEditorUnsafeSource": "Seules les adresses commençant par http ou https peuvent être affichées ici.",
   "importExistingDescription": "Importer d’une page existante",
   "importExistingDialogLead": "Importez du contenu d’une page existante. Les éléments seront ajoutés à la fin de la liste. Cette action peut être annulée.",
   "importExistingDialogSubmit": "Importer le contenu",

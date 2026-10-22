@@ -1,4 +1,5 @@
 import { getUploadType } from '#blokkli/editor/helpers/uploads'
+import { isSafeUrl } from '#blokkli/editor/helpers/url'
 import type { UploadType } from '#blokkli/editor/types/uploads'
 import type {
   ClipboardFileGroup,
@@ -7,32 +8,27 @@ import type {
   ClipboardMapBundleEventPlaintext,
 } from './types'
 
-const ALLOWED_HTML_ATTRIBUTES = ['href']
-
-function removeAllAttrs(element: Element) {
-  for (let i = element.attributes.length; i-- > 0; ) {
-    const attribute = element.attributes[i]!
-    if (!ALLOWED_HTML_ATTRIBUTES.includes(attribute.name)) {
-      element.removeAttributeNode(attribute)
-    }
-  }
-}
-
 /**
- * Recursively remove all attributes (except allowed ones) from an element
- * and its children. Removes IMG and BR elements entirely.
+ * Clean the pasted markup in the container: remove its images and line breaks,
+ * and every attribute but the `href` of a link to a web page or an email
+ * address.
+ *
+ * It's what's pasted, not what's shown: the drop preview sanitises it.
  */
-export function sanitizeHtml(el: Element) {
-  if (el.tagName === 'IMG' || el.tagName === 'BR') {
-    el.remove()
-    return
-  }
-  const children = el.children
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i]!
-    removeAllAttrs(child)
-    if (child.children.length) {
-      sanitizeHtml(child)
+export function cleanPastedHtml(container: Element) {
+  for (const el of [...container.querySelectorAll('*')]) {
+    if (el.tagName === 'IMG' || el.tagName === 'BR') {
+      el.remove()
+      continue
+    }
+    for (const attribute of [...el.attributes]) {
+      if (
+        el.tagName !== 'A' ||
+        attribute.name !== 'href' ||
+        !isSafeUrl(attribute.value)
+      ) {
+        el.removeAttributeNode(attribute)
+      }
     }
   }
 }

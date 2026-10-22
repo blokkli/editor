@@ -2726,6 +2726,10 @@ msgctxt "iframesEditorPresets"
 msgid "Presets"
 msgstr ""
 
+msgctxt "iframesEditorUnsafeSource"
+msgid "Only addresses that start with http or https can be shown here."
+msgstr ""
+
 msgctxt "image"
 msgid "Image"
 msgstr ""
