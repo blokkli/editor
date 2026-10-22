@@ -398,6 +398,10 @@ async function applySelected(data: DiffApplyPayload) {
         after: appliedByItemId[item.id]!,
         mode: (fs?.mode || 'full') as 'full' | 'patch',
         operations,
+        plain:
+          props.params.fields.find(
+            (f) => f.uuid === item.uuid && f.fieldName === item.fieldName,
+          )?.fieldType === 'plain',
       }
     })
 

@@ -54,6 +54,8 @@ const { $t, state, context: entityContext, types } = blokkli
 
 const phase = ref<'loading' | 'approving'>('loading')
 const approvalItems = ref<ApprovalItem[]>([])
+/** The `uuid:fieldName` keys of the plain fields, for the details. */
+const plainKeys = new Set<string>()
 
 // `requestTranslation`, `loadTextFieldValuesForLanguage`, and
 // `importTranslationsBatched` are guaranteed by `requiredAdapterMethods` on the
@@ -153,6 +155,9 @@ onMounted(async () => {
     const uuid = result.key.substring(0, separatorIndex)
     const fieldName = result.key.substring(separatorIndex + 1)
     const source = byKey.get(result.key)
+    if (source?.fieldType === 'plain') {
+      plainKeys.add(result.key)
+    }
     // Use the source-language value as `before` so rejecting a translated
     // chunk restores the source-language chunk at the same position (the
     // user explicitly chose this behaviour over all-or-nothing).
@@ -235,6 +240,7 @@ async function onApply(data: DiffApplyPayload) {
       fieldLabel: item.fieldLabel,
       before: '',
       after: updatesByItem.get(`${item.uuid}:${item.fieldName}`)!,
+      plain: plainKeys.has(`${item.uuid}:${item.fieldName}`),
     }))
 
   const editedByUser: Record<string, Record<string, { value: string }>> = {}

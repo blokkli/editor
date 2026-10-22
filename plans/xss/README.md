@@ -62,48 +62,12 @@ becomes markup again when the editor reads it back with `textContent`.
 
 | #   | Finding                                                                                                                | Project              | Severity | Status    |
 | --- | ---------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | --------- |
-| X5  | [The diff views render values unfiltered](#x5-the-diff-views-render-values-unfiltered)                                 | editor               | medium   | to verify |
 | X7  | [Message listeners accept any window](#x7-message-listeners-accept-any-window)                                         | editor               | medium   | to verify |
 | X8  | [The content search returns labels with their markup](#x8-the-content-search-returns-labels-with-their-markup)         | `paragraphs_blokkli` | low      | open      |
 | X9  | [Agent conversations are stored as the client sends them](#x9-agent-conversations-are-stored-as-the-client-sends-them) | both                 | low      | to verify |
 | X10 | [Imports and kept formats skip the format check](#x10-imports-and-kept-formats-skip-the-format-check)                  | `paragraphs_blokkli` | low      | to verify |
 | X11 | [The docs and the playground render titles with `v-html`](#x11-the-docs-and-the-playground-render-titles-with-v-html)  | docs                 | medium   | to verify |
 | X12 | [`javascript:` URLs reach links and frames](#x12-javascript-urls-reach-links-and-frames)                               | editor               | low      | to verify |
-
-## X5: The diff views render values unfiltered
-
-- **Found:** 2026-10-22, by reading. Not reproduced.
-- **Symptom:** none seen. By reading: a translation file from someone else with
-  `<img onerror>` in a value runs when the file is selected, before anything is
-  applied.
-- **Cause:** `DiffValue` and `DiffDisplay` render with `v-html`
-  (`src/runtime/editor/components/DiffViewer/DiffValue.vue:2`, `:17`;
-  `DiffDisplay/index.vue:8`, `:14`, `:18`). They're fed by:
-  - the "Changes" sidebar (beta) and the transform dialog's preview, with the
-    blocks' props (`DiffViewer/State.vue`);
-  - the CSV/PO import's preview: the file's values against the raw current
-    values (`features/translations/CsvDialog/Import/index.vue:104`, `:129`);
-  - the translate dialog: raw values, and the translation service's output;
-  - the agent's `FieldDiffDetails`.
-- **Plain fields** (moved here from X1, fixed otherwise on 2026-10-22):
-  - `computeDiff()` and `computeInsertion()` treat both values as HTML, whatever
-    the field type (`src/runtime/editor/helpers/diff/index.ts:371`, `:399`).
-  - `setDiffHtml()` writes the result with `innerHTML`, plain fields included
-    (`src/runtime/editor/composables/useEditableFieldOverride.ts:300`).
-    Sanitised since X4's fix, but still as HTML: markup in a plain value shows
-    as markup, not as text.
-  - `splitIntoSegments()` returns `null` for plain fields
-    (`helpers/diff/index.ts:647`).
-- **The diff view's default:** props are rendered as HTML (`mapDiffProps`,
-  `src/global/types/definitions.ts:191`). `State.vue` passes strings as they
-  are; it escapes the JSON of objects since X1's fix.
-- **Impact:** medium. It needs a file from someone else, or stored raw markup.
-- **Fix idea:**
-  - `sanitizeHtml()` (from X4's fix), on both values before diffing.
-  - For plain fields, escape both values first (`escapeHtml()`).
-  - The diff view's props: strings are HTML, sanitised like the values, both by
-    default and from `mapDiffProps` (decided). The docs then say so
-    (`docs/define-blokkli/editor.md`, `src/global/types/definitions.ts:191`).
 
 ## X7: Message listeners accept any window
 
@@ -374,14 +338,17 @@ One finding per round.
        editor stores it), a title paragraph (`heading`);
      - as raw markup: a text (`raw-text`), a comment (`comment`);
      - in the agent's mock script and prompt: `agent-reply`, `agent-prompt`, and
-       `update_text_fields`'s value (`agent-rewrite`).
+       `update_text_fields`'s value (`agent-rewrite`);
+     - in a CSV file to import: as text for a title (`import-title`), as raw
+       markup for a text (`import-text`).
    - **Places:** page search, the command palette, analyze's heading structure
      (`text-as-html`), the content search (`content-search`, after publishing
      the title), the translate dialog (`raw-markup`), the comments sidebar
-     (`comments`), and the agent's rewrite preview, prompt and reply (`agent`).
-   - **Not covered yet:** alt texts, the conversations admin, the CSV/PO import,
-     the ownership banner, the `markup` inline editor (not reachable with
-     Drupal), the frame messages (X7).
+     (`comments`), the agent's rewrite preview, prompt and reply (`agent`), and
+     the import's preview (`import-preview`, added with X5's fix).
+   - **Not covered yet:** alt texts, the conversations admin, the ownership
+     banner, the `markup` inline editor (not reachable with Drupal), the frame
+     messages (X7).
    - **Assertions:** each test checks what happens today, that its id ran, after
      the place rendered the value. Unlike `it.fails`, a broken setup can't pass
      for a fix. A run with an empty payload went through every step of all 9
@@ -459,6 +426,20 @@ One finding per round.
        Drupal's format allows it, plus the emoji's name), before
        `enrichRichContent()` adds the checkboxes;
      - the canary's `comments` test checks the fix.
+   - **X5** (done 2026-10-22), which finishes step 4:
+     - `DiffValue` and `DiffDisplay` sanitise what they show with `richText`:
+       the finished diff, both sides of the side-by-side view, the "after only"
+       view. Images stay, the diff view styles them;
+     - **plain fields as text:** the views' `plain` prop escapes both values
+       before diffing. The translate dialog and the CSV/PO import pass it from
+       the field's type, the agent's details from `FieldDiffDetailItem.plain`
+       (set by the three tools that build them; stored conversations without it
+       are sanitised as HTML), and the approval overrides escape before
+       `setDiffHtml()`;
+     - `mapDiffProps`'s docs say its strings are HTML, sanitised, and that text
+       should be escaped;
+     - a new canary test, `import-preview`, checks it. It failed with the old
+       `DiffValue`.
 5. **X12:** `isSafeUrl()` with the `URL` parser.
 6. **X7:** sender checks.
 7. **The module:** X8, X10, X9.

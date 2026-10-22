@@ -31,6 +31,8 @@ export type CanaryId =
   | 'agent-prompt'
   | 'agent-reply'
   | 'agent-rewrite'
+  | 'import-title'
+  | 'import-text'
 
 /**
  * The payload for `id`: markup that calls `window.__bkXss(id)` when the

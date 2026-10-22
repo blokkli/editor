@@ -10,6 +10,7 @@ import {
   reassembleValue,
   renderSegmentDiff,
 } from '#blokkli/editor/helpers/diff'
+import { escapeHtml } from '#blokkli/editor/helpers/string'
 import type { ApprovalItem } from './types'
 
 export type ApprovalOverrides = {
@@ -184,19 +185,26 @@ export function useApprovalOverrides(options: {
     return options.selected[String(item.id)] !== false ? 'all' : 'none'
   }
 
-  function diffHtml(item: ApprovalItem, rawOriginalValue: string): string {
+  function diffHtml(
+    item: ApprovalItem,
+    override: EditableFieldOverride,
+  ): string {
     if (item.segments) {
       return renderSegmentDiff(item.segments, {
         insertionsOnly: options.insertionsOnly(),
         acceptedById: acceptedBySegmentId(item),
       })
     }
+    // A plain field's values are text: markup in them is shown, not rendered
+    // (plans/xss, X5). Only markup fields are segmented.
+    const toDiffed = (value: string) =>
+      override.fieldType === 'plain' ? escapeHtml(value) : value
     return options.insertionsOnly()
-      ? computeInsertion(item.value)
+      ? computeInsertion(toDiffed(item.value))
       : // Diffed against the STORED value: `item.value` is a stored value too,
         // so using the rendered `originalValue` here would paint every bit of
         // markup the backend's filters injected as a user-visible deletion.
-        computeDiff(rawOriginalValue, item.value)
+        computeDiff(toDiffed(override.rawOriginalValue), toDiffed(item.value))
   }
 
   /**
@@ -235,12 +243,12 @@ export function useApprovalOverrides(options: {
     }
 
     if (item.segments) {
-      override.setDiffHtml(diffHtml(item, override.rawOriginalValue))
+      override.setDiffHtml(diffHtml(item, override))
       return
     }
 
     if (state === 'all') {
-      override.setDiffHtml(diffHtml(item, override.rawOriginalValue))
+      override.setDiffHtml(diffHtml(item, override))
     } else {
       override.restore()
     }

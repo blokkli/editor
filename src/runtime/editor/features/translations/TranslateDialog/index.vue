@@ -112,6 +112,7 @@
                       v-if="effectiveValue(item) !== undefined"
                       :before="currentValues.get(item.key) || ''"
                       :after="effectiveValue(item)!"
+                      :plain="item.fieldType === 'plain'"
                       :after-only="
                         !currentValues.get(item.key) ||
                         currentValues.get(item.key) === item.value

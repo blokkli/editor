@@ -190,9 +190,8 @@ export type BlokkliDefinitionInputEditorBase<
   /**
    * Define how this component's props should be rendered in the diff view.
    *
-   * By default, the diff feature assumes all props to be text and will render
-   * plaintext props as HTML and convert complex props (such as arrays or objects)
-   * to string using JSON.stringify().
+   * By default, the diff view renders string and number props as HTML, and
+   * complex props (such as arrays or objects) as their JSON.
    *
    * You can instead return a string representation of each prop that is used
    * to display the prop instead.
@@ -200,8 +199,9 @@ export type BlokkliDefinitionInputEditorBase<
    * For example, if the prop is an image, you may return the filename of the
    * image instead. If the prop is a number, you can return the formatted number.
    *
-   * You can also return HTML as the value. The feature uses an HTML differ to
-   * render the diff.
+   * The strings are HTML: the feature uses an HTML differ to render the diff.
+   * The editor sanitises it, removing scripts, event handlers and the like.
+   * Escape text that should show as text, such as a title in your markup.
    */
   mapDiffProps?: (props?: PropsType) => Record<string, string>
 }

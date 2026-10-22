@@ -104,6 +104,7 @@
                   <DiffValue
                     :before="singleLangChange(row).current"
                     :after="singleLangChange(row).imported"
+                    :plain="singleLangChange(row).plain"
                     :after-only="
                       !singleLangChange(row).current ||
                       singleLangChange(row).current === row.source
@@ -129,6 +130,7 @@
                     <DiffValue
                       :before="row.changes[lang]!.current"
                       :after="row.changes[lang]!.imported"
+                      :plain="row.changes[lang]!.plain"
                       :after-only="
                         !row.changes[lang]!.current ||
                         row.changes[lang]!.current === row.source
@@ -188,6 +190,7 @@ import {
   Icon,
 } from '#blokkli/editor/components'
 import { emitMessage } from '#blokkli/editor/events'
+import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 import { parseCsv, type CsvRow } from '../csv'
 import { parsePo } from '../po'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
@@ -203,6 +206,8 @@ type ImportChange = {
   source: string
   current: string
   imported: string
+  /** The field is plain text: the file's value is shown as text. */
+  plain: boolean
 }
 
 const props = defineProps<{
@@ -297,11 +302,11 @@ function toggleAll() {
 
 async function loadCurrentValues(
   langcode: string,
-): Promise<Map<string, string>> {
-  const map = new Map<string, string>()
+): Promise<Map<string, TextFieldValue>> {
+  const map = new Map<string, TextFieldValue>()
   const values = await adapter.loadTextFieldValuesForLanguage!(langcode)
   for (const v of values) {
-    map.set(`${v.uuid}:${v.fieldName}`, v.value)
+    map.set(`${v.uuid}:${v.fieldName}`, v)
   }
   return map
 }
@@ -370,15 +375,17 @@ async function processPoFiles(files: File[]) {
   for (const lang of langs) {
     const currentMap = await loadCurrentValues(lang)
     for (const row of rowsByLang.get(lang)!.values()) {
-      const current = currentMap.get(row.key) ?? ''
-      if (row.translation !== current && row.translation !== '') {
+      const current = currentMap.get(row.key)
+      const currentValue = current?.value ?? ''
+      if (row.translation !== currentValue && row.translation !== '') {
         const change: ImportChange = {
           id: `${lang}:${row.key}`,
           key: row.key,
           langcode: lang,
           source: row.source,
-          current,
+          current: currentValue,
           imported: row.translation,
+          plain: current?.fieldType === 'plain',
         }
         newChanges.push(change)
         selected.value[change.id] = true
@@ -401,15 +408,17 @@ async function processCsvFile(file: File) {
 
     const newChanges: ImportChange[] = []
     for (const row of parsed.rows) {
-      const current = currentMap.get(row.key) ?? ''
-      if (row.translation !== current && row.translation !== '') {
+      const current = currentMap.get(row.key)
+      const currentValue = current?.value ?? ''
+      if (row.translation !== currentValue && row.translation !== '') {
         const change: ImportChange = {
           id: `${lang}:${row.key}`,
           key: row.key,
           langcode: lang,
           source: row.source,
-          current,
+          current: currentValue,
           imported: row.translation,
+          plain: current?.fieldType === 'plain',
         }
         newChanges.push(change)
         selected.value[change.id] = true
@@ -420,7 +429,7 @@ async function processCsvFile(file: File) {
     changes.value = newChanges
   } else {
     // Multi-language CSV → one change per language per field.
-    const currentMaps = new Map<string, Map<string, string>>()
+    const currentMaps = new Map<string, Map<string, TextFieldValue>>()
     for (const lang of parsed.languages) {
       currentMaps.set(lang, await loadCurrentValues(lang))
     }
@@ -429,15 +438,17 @@ async function processCsvFile(file: File) {
     for (const row of parsed.rows) {
       for (const lang of parsed.languages) {
         const translation = row.translations[lang] ?? ''
-        const current = currentMaps.get(lang)?.get(row.key) ?? ''
-        if (translation !== current && translation !== '') {
+        const current = currentMaps.get(lang)?.get(row.key)
+        const currentValue = current?.value ?? ''
+        if (translation !== currentValue && translation !== '') {
           const change: ImportChange = {
             id: `${lang}:${row.key}`,
             key: row.key,
             langcode: lang,
             source: row.source,
-            current,
+            current: currentValue,
             imported: translation,
+            plain: current?.fieldType === 'plain',
           }
           newChanges.push(change)
           selected.value[change.id] = true

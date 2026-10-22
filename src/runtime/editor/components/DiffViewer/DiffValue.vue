@@ -1,23 +1,31 @@
 <template>
-  <!-- eslint-disable-next-line vue/no-v-html -- X5 in plans/xss: the values are unfiltered -->
+  <!-- eslint-disable-next-line vue/no-v-html -- the diff, sanitised -->
   <div class="bk-diff-value bk-diff-markup-style" v-html="diffHtml" />
 </template>
 
 <script lang="ts" setup>
 import { computed } from '#imports'
 import { computeDiff } from '#blokkli/editor/helpers/diff'
+import { sanitizeHtml } from '#blokkli/editor/helpers/html'
+import { escapeHtml } from '#blokkli/editor/helpers/string'
 
 const props = defineProps<{
   before: string
   after: string
   afterOnly?: boolean
+  /** The values are text, e.g. of a plain field: markup in them is shown. */
+  plain?: boolean
 }>()
 
+// The values can come from anywhere: a file to import, a translation service,
+// the raw stored value (plans/xss, X5).
 const diffHtml = computed(() => {
-  if (props.afterOnly) {
-    return '<ins>' + props.after + '</ins>'
-  }
-  return computeDiff(props.before, props.after)
+  const before = props.plain ? escapeHtml(props.before) : props.before
+  const after = props.plain ? escapeHtml(props.after) : props.after
+  const html = props.afterOnly
+    ? '<ins>' + after + '</ins>'
+    : computeDiff(before, after)
+  return sanitizeHtml(html, 'richText')
 })
 </script>
 
