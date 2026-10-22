@@ -38,7 +38,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F77  | ["Add to" is offered for link fields with several values](#f77-add-to-is-offered-for-link-fields-with-several-values)                                                       | editor               | low      | to verify  |
 | F78  | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                             | `paragraphs_blokkli` | low      | to verify  |
 | F85  | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                       | editor               | low      | to verify  |
-| F88  | [The form of a paragraph hides a link that its user may not open](#f88-the-form-of-a-paragraph-hides-a-link-that-its-user-may-not-open)                                     | `paragraphs_blokkli` | low      | to verify  |
 | F89  | [Building an edit state empties the fields of the cached entities](#f89-building-an-edit-state-empties-the-fields-of-the-cached-entities)                                   | `paragraphs_blokkli` | low      | open       |
 | F95  | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                          | both                 | low      | open       |
 | F96  | [The editor reads field values through a detached element](#f96-the-editor-reads-field-values-through-a-detached-element)                                                   | editor               | low      | to verify  |
@@ -636,28 +635,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Also open:** the rejection in `delegate_text_rewrite` has no spec of its
   own. It shares `applyFieldDiffs()` with `update_text_fields`, whose spec
   covers it.
-
-## F88: The form of a paragraph hides a link that its user may not open
-
-- **Found:** 2026-10-12, in a screenshot while fixing the links to media (the
-  former F82): as Anna Keller, the form of a link to a document showed "Link"
-  empty.
-- **Symptom:** the form of a paragraph shows a link field without its target
-  when the user may not access the page of the target: a page that they may not
-  view, or a media that no entity mapping allows in that field. By reading, not
-  reproduced: a required field then refuses the form, as the sandbox's would,
-  and one that isn't required is saved empty: the link is gone.
-- **Cause:** Drupal's link widget (`LinkWidget::formElement()`,
-  `core/modules/link/src/Plugin/Field/FieldWidget/LinkWidget.php:218-221`)
-  leaves the default value out for a user who may neither `link to any page` nor
-  access the link. `EditParagraphForm` stores the fields that the form changed,
-  and an emptied link is a change.
-- **Fixed for** the links that an entity mapping allows and whose target the
-  user may view: `ParagraphsBlokkliFormBase::showAllowedEntityLinks()` shows
-  them.
-- **Impact:** low: the page forms of Drupal do the same.
-- **Fix idea:** leave a link field out of the stored changes when the form
-  didn't show its value, or disable it in the form with a hint.
 
 ## F89: Building an edit state empties the fields of the cached entities
 
