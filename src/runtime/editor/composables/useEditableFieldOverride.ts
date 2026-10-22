@@ -1,6 +1,7 @@
 import type { EntityContext } from '#blokkli/types'
 import { useBlokkli } from '#imports'
 import { itemEntityType } from '#blokkli-build/config'
+import { sanitizeHtml } from '#blokkli/editor/helpers/html'
 import type { PropsFieldMapping } from './../../../global/types/definitions'
 
 export type EditableFieldOverride = {
@@ -26,9 +27,16 @@ export type EditableFieldOverride = {
   rawOriginalValue: string
   /** The field type (plain or markup). */
   fieldType: 'plain' | 'markup'
-  /** Apply a value — updates live preview via the correct strategy. */
+  /**
+   * Apply a value — updates live preview via the correct strategy. A formatted
+   * field's value is sanitised first: the preview shows its markup, but never
+   * runs it.
+   */
   setValue(value: string): void
-  /** Apply pre-built diff HTML (with <ins>/<del> tags) to the DOM element. */
+  /**
+   * Apply pre-built diff HTML (with <ins>/<del> tags) to the DOM element,
+   * sanitised.
+   */
   setDiffHtml(html: string): void
   /** Restore the original value (shorthand for setValue(originalValue)). */
   restore(): void
@@ -87,6 +95,14 @@ export function useEditableFieldOverride(
 
   const fieldType: 'plain' | 'markup' =
     config.type === 'frame' || config.type === 'markup' ? 'markup' : 'plain'
+
+  /**
+   * A value as the page shows it. Markup is sanitised: it's the raw stored
+   * value or one nobody has approved yet (plans/xss, X4).
+   */
+  function toShown(value: string): string {
+    return fieldType === 'markup' ? sanitizeHtml(value, 'richText') : value
+  }
 
   // Determine the props mapping (element-independent).
   function findMatchingProp(
@@ -215,7 +231,7 @@ export function useEditableFieldOverride(
       originalValue,
       rawOriginalValue,
       fieldType,
-      setValue: setMutatedProp,
+      setValue: (value) => setMutatedProp(toShown(value)),
       // Diff markup needs an element to render into; a prop can only carry a
       // real value (the component may escape it, e.g. via v-text).
       setDiffHtml() {},
@@ -251,7 +267,7 @@ export function useEditableFieldOverride(
     if (property === 'textContent') {
       element.textContent = value
     } else {
-      // eslint-disable-next-line no-restricted-syntax -- X4 and X5 in plans/xss: the value or its diff, unfiltered
+      // eslint-disable-next-line no-restricted-syntax -- a formatted field's value or a diff, sanitised
       element.innerHTML = value
     }
     writtenNodes = Array.from(element.childNodes)
@@ -281,7 +297,10 @@ export function useEditableFieldOverride(
     element.removeAttribute('data-bk-diff-active')
 
     if (usesDirectDom) {
-      writeDom(config.type === 'plain' ? 'textContent' : 'innerHTML', value)
+      writeDom(
+        fieldType === 'plain' ? 'textContent' : 'innerHTML',
+        toShown(value),
+      )
       return
     }
 
@@ -290,14 +309,14 @@ export function useEditableFieldOverride(
     reattachOriginalNodes()
 
     if (usesMutatedProps) {
-      setMutatedProp(value)
+      setMutatedProp(toShown(value))
     }
 
     if (isComponent) {
       eventBus.emit('editable:update', {
         name: fieldName,
         entityUuid: host.uuid,
-        value,
+        value: toShown(value),
       })
     }
   }
@@ -310,7 +329,7 @@ export function useEditableFieldOverride(
     // in between, e.g. the editable overlay opened from the diff) and are
     // re-inserted verbatim by restore(), so Vue's vnode references survive and
     // there is no VDOM/DOM mismatch to repair afterwards.
-    writeDom('innerHTML', html)
+    writeDom('innerHTML', sanitizeHtml(html, 'richText'))
   }
 
   function restore(): void {

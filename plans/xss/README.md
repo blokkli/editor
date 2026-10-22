@@ -50,6 +50,11 @@ becomes markup again when the editor reads it back with `textContent`.
   readability checks, `translations/violations.ts`).
 - The clipboard's `sanitizeHtml()` removes every attribute but `href` from
   pasted HTML.
+- **Previews** (since X4's fix): the editable field override
+  (`useEditableFieldOverride()`) sanitises a formatted field's value and every
+  diff before they reach the page, a project's props or `<BlokkliEditable>`; the
+  stored and proposed values keep their markup. So does the inline editor of the
+  `markup` type, with the stored value it shows.
 - The sandbox's own components render plain text with `{{ }}`, and `v-html` only
   for `processed` rich text.
 
@@ -59,7 +64,6 @@ becomes markup again when the editor reads it back with `textContent`.
 | --- | ---------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | --------- |
 | X2  | [The agent renders markdown without a sanitiser](#x2-the-agent-renders-markdown-without-a-sanitiser)                   | editor               | high     | open      |
 | X3  | [Comment bodies come back unfiltered](#x3-comment-bodies-come-back-unfiltered)                                         | both                 | high     | open      |
-| X4  | [The editor writes unfiltered values into the page](#x4-the-editor-writes-unfiltered-values-into-the-page)             | editor               | high     | open      |
 | X5  | [The diff views render values unfiltered](#x5-the-diff-views-render-values-unfiltered)                                 | editor               | medium   | to verify |
 | X7  | [Message listeners accept any window](#x7-message-listeners-accept-any-window)                                         | editor               | medium   | to verify |
 | X8  | [The content search returns labels with their markup](#x8-the-content-search-returns-labels-with-their-markup)         | `paragraphs_blokkli` | low      | open      |
@@ -130,61 +134,6 @@ becomes markup again when the editor reads it back with `textContent`.
     already covers mentions and task items.
   - Sanitise in the editor too, for other adapters.
 
-## X4: The editor writes unfiltered values into the page
-
-- **Found:** 2026-10-22, by reading. Reproduced the same day by the canary's
-  rewrite test (`features/xss/agent`), once X6 was fixed: the approval UI
-  renders no markup, so the preview in the page runs the payload.
-- **Symptom:** none seen. By reading:
-  - A prompt injection that makes the model write `<img onerror>` into a rewrite
-    runs in the page during the preview, before anyone approves it.
-  - Raw markup stored with a request made by hand runs in every diff that shows
-    it as the value before.
-- **Cause:** the editor previews values in the page before they're saved.
-  - **Direct DOM:** `setValue()` writes markup and frame fields with `innerHTML`
-    (`src/runtime/editor/composables/useEditableFieldOverride.ts:279`).
-  - **Diffs:** `setDiffHtml()` writes the diff with `innerHTML` (`:300`).
-    - The diff keeps every attribute of both values: `html-diff-ts` copies the
-      tokens verbatim, and `serializeOpenTag()` writes all attributes back
-      (`src/runtime/editor/helpers/diff/index.ts:226`).
-    - The value before is the raw stored value (`rawOriginalValue`). It comes
-      from `textFieldValues`, which returns `->value`
-      (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/TextFieldValues.php:135`).
-      So markup that Drupal would filter goes into the page unfiltered.
-  - **Props and slots:**
-    - Fields mapped through `propsFieldMapping`, and `<BlokkliEditable>`, get
-      the value itself (`useEditableFieldOverride.ts:285`).
-    - The project renders it, usually with `v-html`, expecting Drupal's filtered
-      `processed`.
-  - **Where the values come from:**
-    - The agent's rewrites. `delegate_text_rewrite` streams into the page before
-      approval
-      (`src/modules/agent/runtime/app/tools/delegate_text_rewrite/useFieldRewriteStream.ts:165`,
-      `:201`).
-    - Machine translations: `features/translations/AutoTranslate`, and the
-      editable field's translate
-      (`features/editable-field/Overlay/index.vue:329`).
-    - The approval overrides
-      (`src/runtime/editor/components/DiffApproval/useApprovalOverrides.ts:199`,
-      `:226`).
-    - The editable field's live preview (`Overlay/index.vue:429`; also see X7).
-  - **Writes without approval:**
-    - `update_text_fields` with `requireApproval: false`
-      (`src/modules/agent/runtime/app/tools/update_text_fields/Component.vue:91`)
-      and `add_paragraphs` (`tools/add_paragraphs/index.ts:566`) store the value
-      raw.
-    - From then on it reaches everyone through X5 and the diffs above.
-  - **The inline editor of the `markup` type** shows the raw stored value with
-    `v-html` (`features/editable-field/Overlay/Contenteditable/index.vue:8`,
-    `Overlay/index.vue:486`). The Drupal adapter uses `frame` instead, so only
-    other adapters reach it.
-- **Impact:** high. A prompt injection needs no request made by hand.
-- **Fix idea:**
-  - Sanitise every value before blökkli writes it into the page or hands it to a
-    prop or a slot. Projects then get what they expect from `processed`.
-  - Sanitise the diff's output as well.
-  - The allowlist is an open question.
-
 ## X5: The diff views render values unfiltered
 
 - **Found:** 2026-10-22, by reading. Not reproduced.
@@ -205,6 +154,8 @@ becomes markup again when the editor reads it back with `textContent`.
     the field type (`src/runtime/editor/helpers/diff/index.ts:371`, `:399`).
   - `setDiffHtml()` writes the result with `innerHTML`, plain fields included
     (`src/runtime/editor/composables/useEditableFieldOverride.ts:300`).
+    Sanitised since X4's fix, but still as HTML: markup in a plain value shows
+    as markup, not as text.
   - `splitIntoSegments()` returns `null` for plain fields
     (`helpers/diff/index.ts:647`).
 - **The diff view's default:** props are rendered as HTML (`mapDiffProps`,
@@ -212,9 +163,11 @@ becomes markup again when the editor reads it back with `textContent`.
   are; it escapes the JSON of objects since X1's fix.
 - **Impact:** medium. It needs a file from someone else, or stored raw markup.
 - **Fix idea:**
-  - The same sanitiser as X4, on both values before diffing.
+  - `sanitizeHtml()` (from X4's fix), on both values before diffing.
   - For plain fields, escape both values first (`escapeHtml()`).
-  - `mapDiffProps`: decide whether its strings are text or HTML (open question).
+  - The diff view's props: strings are HTML, sanitised like the values, both by
+    default and from `mapDiffProps` (decided). The docs then say so
+    (`docs/define-blokkli/editor.md`, `src/global/types/definitions.ts:191`).
 
 ## X7: Message listeners accept any window
 
@@ -222,8 +175,9 @@ becomes markup again when the editor reads it back with `textContent`.
 - **Symptom:** none seen. By reading:
   - **Text field editors:** any frame in the page, e.g. an embed from another
     origin, can post `blokkli__editable_field_update_formatted` while a text
-    field's editor is open. The markup goes into the page (X4). Posting
-    `blokkli__editable_field_update` sets the value that is then saved.
+    field's editor is open. The markup goes into the page, sanitised since X4's
+    fix. Posting `blokkli__editable_field_update` sets the value that is then
+    saved.
   - **The responsive preview:** in the preview page, every `blokkli__…` message
     reaches its event bus, whoever sent it.
 - **Cause:**
@@ -297,8 +251,9 @@ becomes markup again when the editor reads it back with `textContent`.
   - high on a site with `full_html`, or another format that keeps scripts.
 - **Fix idea:**
   - Resolve formats on import as the mutations do.
-  - For updates: refuse a field whose format the user may not use, or switch it
-    to an allowed one (open question).
+  - For updates: refuse a field whose format the user may not use (decided),
+    when the mutation first runs, as the link text's check does; stored
+    mutations replay as they did.
 
 ## X11: The docs and the playground render titles with `v-html`
 
@@ -316,7 +271,8 @@ becomes markup again when the editor reads it back with `textContent`.
     itself.
 - **Fix idea:**
   - `{{ }}` for plain text.
-  - A short docs section on what projects may rely on, once X4 is fixed.
+  - A short docs section on what projects may rely on: blökkli sanitises what it
+    previews (since X4's fix).
 
 ## X12: `javascript:` URLs reach links and frames
 
@@ -388,6 +344,28 @@ Made with the user on 2026-10-22.
     `<p>`;
   - `$t()` texts with `<strong>`: the values put into them are escaped.
 - **`InfoBox`'s `text` is text.** Markup goes into its slot.
+- **DOMPurify is a dependency** (before step 4). The browsers' `setHTML()` isn't
+  in every browser yet. It goes behind `sanitizeHtml()` in
+  `src/runtime/editor/helpers/html`, with a profile for each kind of markup, so
+  a switch to `setHTML()` later changes one file: `richText` now, which covers
+  diffs too (`<ins>` and `<del>` are HTML), and one for markdown with X2. Only
+  editor code imports it. The clipboard's `sanitizeHtml()`, which removes
+  attributes, gets another name.
+- **X4's allowlist is generic:** DOMPurify's HTML profile (no scripts, event
+  handlers, `javascript:` URLs, SVG or MathML; classes and data attributes
+  stay). It also drops style elements and form controls, which rich text doesn't
+  need: a `<style>` would restyle the editor, a form could ask for a password. A
+  text format's own list would only bring the previews closer to what Drupal
+  renders; consider it if they visibly differ from the saved page.
+  `<drupal-media>` disappears from the previews, where it shows nothing today.
+- **The diff view's props are HTML, sanitised** (X5): escaping them would show a
+  text's rich text as tags. A title with a `<` shows filtered, and nothing in it
+  runs.
+- **X10: an update of a field whose format the user may not use is refused,** as
+  core's widget disables such a field. Switching the format would strip what the
+  format allowed (an embed, an iframe) from content someone with more rights
+  wrote, for a typo fix. In the sandbox it never triggers: every user may use
+  `basic_html` and `table`. Later, the editor could show such a field as locked.
 
 ## Vue and Nuxt
 
@@ -505,9 +483,20 @@ One finding per round.
      `element[property]` no more, which the rule couldn't see;
    - the canary's `raw-markup` test checks the fix. Its rewrite test now shows
      X4 on its own.
-4. **`sanitizeHtml()` (DOMPurify)** in the editor chunk, with profiles for rich
-   text, markdown and diffs. Then X4 (the handover), X2, X3 (editor side) and
-   X5, one at a time.
+4. **`sanitizeHtml()` (DOMPurify)** in `src/runtime/editor/helpers/html`. Then
+   X4 (the handover), X2, X3 (editor side) and X5, one at a time.
+   - **X4** (done 2026-10-22):
+     - DOMPurify 3.4.17 is a dependency. `sanitizeHtml(html, 'richText')` uses
+       an instance of its own; where DOMPurify can't run, it escapes instead of
+       returning the markup as it is;
+     - `useEditableFieldOverride()` sanitises what it shows: a formatted field's
+       value in every strategy (the element, the props, `<BlokkliEditable>`),
+       and every diff. Plain values still go in as text;
+     - the `markup` type's inline editor sanitises the stored value it shows;
+     - the canary's rewrite test checks the fix;
+     - unit tests for the profile. They run in jsdom: DOMPurify doesn't work in
+       happy-dom (it drops the first element and keeps forbidden ones), so the
+       unit tests moved to jsdom, and happy-dom is gone.
 5. **X12:** `isSafeUrl()` with the `URL` parser.
 6. **X7:** sender checks.
 7. **Drupal:** X3, X8, X10, X9.
@@ -517,12 +506,3 @@ One finding per round.
    - the sandbox gets one, from Nitro and from Drupal;
    - the directives the editor needs are documented.
 9. **Docs:** X11, and what projects may rely on.
-
-## Open questions
-
-- **The sanitiser:** is DOMPurify OK as a dependency? (Needed before step 4.)
-- **X4's allowlist:** a generic one first, the field's text format's later?
-  (Needed before step 4.)
-- `mapDiffProps`: text or HTML? (X5.)
-- **X10, for updates of a field whose format the user may not use:** refuse the
-  update, or switch the format?

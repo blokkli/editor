@@ -23,6 +23,7 @@ import {
   canaryRawHtml,
   canaryText,
   installCanary,
+  settledCanaries,
 } from '../../support/xss'
 
 // The first text of the page "Blocks" (content/nodes/blocks.yml).
@@ -36,9 +37,10 @@ const TEXT = seedUuid('paragraph', 'first-text')
  * - X2: the chat renders markdown with `marked`, which keeps raw HTML, into
  *   `v-html`: the model's reply, and the user's own prompt.
  * - X4: `update_text_fields` previews its value in the page before anyone
- *   approves it: it writes the diff into the paragraph with `innerHTML`. Its
- *   split (`splitIntoSegments()`) parsed the value in the live document too,
- *   until X6's fix.
+ *   approves it: it writes the diff into the paragraph with `innerHTML`. The
+ *   editable field override now sanitises it first. Its split
+ *   (`splitIntoSegments()`) parsed the value in the live document too, until
+ *   X6's fix.
  *
  * The rewrite runs first: it needs the `test-cases` sidebar, which the agent's
  * panel replaces.
@@ -70,7 +72,7 @@ describe('XSS canary: what the agent writes (X2, X4)', async () => {
     await page.close()
   })
 
-  test("a rewrite's preview runs its value before approval", async () => {
+  test("a rewrite's preview shows its value without running it", async () => {
     await openSidebar(page, 'test-cases')
     const done = runComponentTool(page, 'update_text_fields', {
       updates: [
@@ -86,8 +88,12 @@ describe('XSS canary: what the agent writes (X2, X4)', async () => {
       .waitFor({ state: 'visible' })
 
     try {
-      // Runs today. The fix flips this to `not.toContain`.
-      await expect.poll(() => canariesRan(page)).toContain('agent-rewrite')
+      const paragraph = page.locator(`[data-bk-uuid="${TEXT}"]`)
+      await expect
+        .poll(async () => (await paragraph.textContent()) ?? '')
+        .toContain(CANARY_WORD)
+
+      expect(await settledCanaries(page)).not.toContain('agent-rewrite')
     } finally {
       // Ends the tool, whatever the check found.
       await cancelDiff(page)
