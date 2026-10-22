@@ -62,47 +62,14 @@ becomes markup again when the editor reads it back with `textContent`.
 
 | #   | Finding                                                                                                                | Project              | Severity | Status    |
 | --- | ---------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | --------- |
-| X2  | [The agent renders markdown without a sanitiser](#x2-the-agent-renders-markdown-without-a-sanitiser)                   | editor               | high     | open      |
 | X3  | [Comment bodies come back unfiltered](#x3-comment-bodies-come-back-unfiltered)                                         | both                 | high     | open      |
 | X5  | [The diff views render values unfiltered](#x5-the-diff-views-render-values-unfiltered)                                 | editor               | medium   | to verify |
 | X7  | [Message listeners accept any window](#x7-message-listeners-accept-any-window)                                         | editor               | medium   | to verify |
 | X8  | [The content search returns labels with their markup](#x8-the-content-search-returns-labels-with-their-markup)         | `paragraphs_blokkli` | low      | open      |
-| X9  | [Agent conversations are stored as the client sends them](#x9-agent-conversations-are-stored-as-the-client-sends-them) | both                 | medium   | to verify |
+| X9  | [Agent conversations are stored as the client sends them](#x9-agent-conversations-are-stored-as-the-client-sends-them) | both                 | low      | to verify |
 | X10 | [Imports and kept formats skip the format check](#x10-imports-and-kept-formats-skip-the-format-check)                  | `paragraphs_blokkli` | low      | to verify |
 | X11 | [The docs and the playground render titles with `v-html`](#x11-the-docs-and-the-playground-render-titles-with-v-html)  | docs                 | medium   | to verify |
 | X12 | [`javascript:` URLs reach links and frames](#x12-javascript-urls-reach-links-and-frames)                               | editor               | low      | to verify |
-
-## X2: The agent renders markdown without a sanitiser
-
-- **Found:** 2026-10-22, by reading. Reproduced the same day by the canary
-  (`features/xss/agent`): the prompt and the model's reply.
-- **Symptom:** none seen. By reading:
-  - `<img src=x onerror=…>` typed into a chat message runs for its writer. It is
-    stored with the conversation, so it also runs for an admin who opens that
-    conversation.
-  - A prompt injection can make the model write it into its reply. Its source
-    can be page content, a `web_fetch` result or pasted text.
-- **Cause:**
-  - `renderMarkdown()` uses `marked` without a sanitiser
-    (`src/modules/agent/runtime/app/helpers/markdown.ts:8`). `marked` passes raw
-    HTML through.
-  - `components/Markdown/index.vue:2` puts the result into `v-html`.
-  - It's fed by:
-    - the model's replies, while they stream
-      (`components/Conversation/Item/Assistant/index.vue:6`);
-    - the user's own messages
-      (`components/Conversation/Item/User/index.vue:59`);
-    - other users' conversations in the conversations admin
-      (`features/agent/ConversationsAdmin/SplitView/ConversationDetail.vue:41`).
-  - Dropped `.html` attachments are shown raw with `v-html` when their chip is
-    clicked (`components/Attachment/PreviewHtml/index.vue:2`,
-    `features/agent/Panel/DropHandler/index.vue:145`).
-- **Impact:** high. It works through the normal UI, and the conversations admin
-  reaches the users with the most permissions.
-- **Fix idea:**
-  - Sanitise `marked`'s output with an allowlist for markdown.
-  - Also escape raw HTML in the markdown (marked's `html` renderer).
-  - Show `.html` attachments as text, or in a sandboxed `srcdoc` frame.
 
 ## X3: Comment bodies come back unfiltered
 
@@ -217,7 +184,8 @@ becomes markup again when the editor reads it back with `textContent`.
 
 - **Found:** 2026-10-22, by reading. Not reproduced.
 - **Symptom:** none seen. By reading: a conversation uploaded with a crafted
-  `dataUser` runs for an admin who opens it in the conversations admin (X2).
+  `dataUser` ran for an admin who opened it in the conversations admin, until
+  X2's fix.
 - **Cause:**
   - `AgentConversationUpsert` stores `title`, `hash`, `dataUser` and
     `dataServer` as sent
@@ -226,12 +194,10 @@ becomes markup again when the editor reads it back with `textContent`.
   - Drupal never checks the hash.
   - The agent server's HMAC covers `messages` and `activatedLazyTools`, not
     `dataUser` (`src/modules/agent/runtime/server/helpers/security.ts:57`).
-- **Impact:** medium. It needs a request made by hand from anyone who may use
-  the agent. X2's fix covers the rendering.
-- **Fix idea:**
-  - X2.
-  - Separately, decide whether the tamper check should cover what the admin view
-    shows.
+- **Impact:** low since X2's fix, which covers the rendering. It needs a request
+  made by hand from anyone who may use the agent.
+- **Fix idea:** decide whether the tamper check should cover what the admin view
+  shows.
 
 ## X10: Imports and kept formats skip the format check
 
@@ -347,10 +313,10 @@ Made with the user on 2026-10-22.
 - **DOMPurify is a dependency** (before step 4). The browsers' `setHTML()` isn't
   in every browser yet. It goes behind `sanitizeHtml()` in
   `src/runtime/editor/helpers/html`, with a profile for each kind of markup, so
-  a switch to `setHTML()` later changes one file: `richText` now, which covers
-  diffs too (`<ins>` and `<del>` are HTML), and one for markdown with X2. Only
-  editor code imports it. The clipboard's `sanitizeHtml()`, which removes
-  attributes, gets another name.
+  a switch to `setHTML()` later changes one file: `richText`, which covers diffs
+  too (`<ins>` and `<del>` are HTML), and `markdown`. Only editor code imports
+  it. The clipboard's `sanitizeHtml()`, which removes attributes, gets another
+  name.
 - **X4's allowlist is generic:** DOMPurify's HTML profile (no scripts, event
   handlers, `javascript:` URLs, SVG or MathML; classes and data attributes
   stay). It also drops style elements and form controls, which rich text doesn't
@@ -497,6 +463,19 @@ One finding per round.
      - unit tests for the profile. They run in jsdom: DOMPurify doesn't work in
        happy-dom (it drops the first element and keeps forbidden ones), so the
        unit tests moved to jsdom, and happy-dom is gone.
+   - **X2** (done 2026-10-22):
+     - `renderMarkdown()` sanitises marked's output with the `markdown` profile:
+       only what markdown renders (task lists' disabled checkboxes included) and
+       the block chips, without images, which could send data out in their URL.
+       A spec runs marked's output for every construct through it;
+     - the chat, the welcome text and the conversations admin all render through
+       it;
+     - `.html` attachments are sanitised with `richText`;
+     - raw HTML in markdown is sanitised, not escaped: the block chips
+       (`linkifyBlockUuids()`) are raw HTML in the markdown. So a tag typed into
+       the chat still shows as markup, filtered;
+     - the canary's prompt and reply tests check the fix
+       (`data-test="agent-user-message"` is new).
 5. **X12:** `isSafeUrl()` with the `URL` parser.
 6. **X7:** sender checks.
 7. **Drupal:** X3, X8, X10, X9.

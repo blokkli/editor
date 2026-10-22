@@ -26,13 +26,59 @@ export function parseHtml(html: string): HTMLDivElement {
  * - `richText`: a formatted field's value, and a diff of one. HTML without
  *   scripts, event handlers, `javascript:` URLs, SVG or MathML; style elements
  *   and forms aren't rich text either. Classes and data attributes stay.
+ * - `markdown`: what `marked` renders, a chat message. Only the elements that
+ *   markdown produces, without images: an image loads when it's shown, so a
+ *   prompt injection could send data out in its URL. The disabled checkboxes of
+ *   task lists stay; without a form, they send nothing.
  */
-export type SanitizeProfile = 'richText'
+export type SanitizeProfile = 'richText' | 'markdown'
 
 const PROFILES: Record<SanitizeProfile, Config> = {
   richText: {
     USE_PROFILES: { html: true },
     FORBID_TAGS: ['style', 'form', 'input', 'button', 'select', 'textarea'],
+  },
+  markdown: {
+    ALLOWED_TAGS: [
+      'a',
+      'blockquote',
+      'br',
+      'code',
+      'del',
+      'em',
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
+      'hr',
+      'input',
+      'li',
+      'ol',
+      'p',
+      'pre',
+      'span',
+      'strong',
+      'table',
+      'tbody',
+      'td',
+      'th',
+      'thead',
+      'tr',
+      'ul',
+    ],
+    ALLOWED_ATTR: [
+      'align',
+      'checked',
+      'class',
+      'disabled',
+      'href',
+      'start',
+      'title',
+      'type',
+    ],
+    ALLOW_DATA_ATTR: false,
   },
 }
 

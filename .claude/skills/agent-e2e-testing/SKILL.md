@@ -271,6 +271,7 @@ Add new ones following `data-test="agent-<thing>"`:
 | `[data-test="agent-submit"]`               | The send button.                                                               |
 | `[data-test="agent-new-conversation"]`     | "Start new conversation" button — only visible when `hasConversation` is true. |
 | `[data-test="agent-assistant-message"]`    | Each assistant message bubble. Use `.last()` to grab the most recent.          |
+| `[data-test="agent-user-message"]`         | Each user message bubble.                                                      |
 | `[data-test="agent-ask-question"]`         | The `ask_question` tool card wrapper. Wait for it to know the UI rendered.     |
 | `[data-test="agent-ask-question-confirm"]` | The Confirm button inside the `ask_question` card.                             |
 

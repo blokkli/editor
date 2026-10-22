@@ -1,5 +1,8 @@
 <template>
-  <div class="bk-agent-message bk-is-user group/message relative">
+  <div
+    class="bk-agent-message bk-is-user group/message relative"
+    data-test="agent-user-message"
+  >
     <InlineActions
       v-if="!isEditing && (canRollback || content)"
       class="absolute top-[7px] right-10 opacity-0 group-hover/message:opacity-100 focus-within:opacity-100"

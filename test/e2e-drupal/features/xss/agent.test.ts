@@ -19,7 +19,6 @@ import {
 import { BLOCKS_EDITOR_PATH, openEditor } from '../../support/session'
 import {
   CANARY_WORD,
-  canariesRan,
   canaryRawHtml,
   canaryText,
   installCanary,
@@ -35,7 +34,8 @@ const TEXT = seedUuid('paragraph', 'first-text')
  * payload; the mock script stands in for it.
  *
  * - X2: the chat renders markdown with `marked`, which keeps raw HTML, into
- *   `v-html`: the model's reply, and the user's own prompt.
+ *   `v-html`: the model's reply, and the user's own prompt. `renderMarkdown()`
+ *   now sanitises it.
  * - X4: `update_text_fields` previews its value in the page before anyone
  *   approves it: it writes the diff into the paragraph with `innerHTML`. The
  *   editable field override now sanitises it first. Its split
@@ -101,18 +101,20 @@ describe('XSS canary: what the agent writes (X2, X4)', async () => {
     }
   })
 
-  test('the chat shows the prompt as markup', async () => {
+  test('the chat shows the prompt without running it', async () => {
     await openAgentPanel(page)
     await submitAgentPrompt(page, prompt)
+    const message = page.locator('[data-test="agent-user-message"]').last()
+    await expect
+      .poll(async () => (await message.textContent()) ?? '')
+      .toContain(CANARY_WORD)
 
-    // Runs today. The fix flips this to `not.toContain`.
-    await expect.poll(() => canariesRan(page)).toContain('agent-prompt')
+    expect(await settledCanaries(page)).not.toContain('agent-prompt')
   })
 
-  test("the chat shows the model's reply as markup", async () => {
+  test("the chat shows the model's reply without running it", async () => {
     await waitForAgentReply(page, CANARY_WORD)
 
-    // Runs today. The fix flips this to `not.toContain`.
-    await expect.poll(() => canariesRan(page)).toContain('agent-reply')
+    expect(await settledCanaries(page)).not.toContain('agent-reply')
   })
 })

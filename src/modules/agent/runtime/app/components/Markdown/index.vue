@@ -1,5 +1,5 @@
 <template>
-  <!-- eslint-disable-next-line vue/no-v-html -- X2 in plans/xss: marked keeps raw HTML -->
+  <!-- eslint-disable-next-line vue/no-v-html -- markdown, sanitised by renderMarkdown() -->
   <div v-html="html" />
 </template>
 
