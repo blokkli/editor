@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable-next-line vue/no-v-html -- X5 in plans/xss: the values are unfiltered -->
   <div class="bk-diff-value bk-diff-markup-style" v-html="diffHtml" />
 </template>
 

@@ -117,9 +117,11 @@ exported from `#blokkli/analyzer`:
 
 ### Result and node fields
 
-Descriptions of results and nodes are rendered as HTML. A result can carry a
-`link` to documentation, and a node can carry a `link` that helps resolving the
-finding directly, e.g. the edit form of a referenced media entity.
+Descriptions of results and nodes are rendered as HTML. Escape anything you take
+from the page, such as a heading's text or an attribute's value: an editor can
+write markup into it. A result can carry a `link` to documentation, and a node
+can carry a `link` that helps resolving the finding directly, e.g. the edit form
+of a referenced media entity.
 
 ### Excluding content
 

@@ -10,6 +10,7 @@
           :key="tab + item.id"
           ref="listItems"
           class="bk bk-search-item bk-is-content"
+          data-test="search-content-result"
           :class="{ 'bk-is-active': i === index }"
           :data-sortli-id="i"
           @mouseenter="index = i"
@@ -22,17 +23,14 @@
             <ItemIcon v-else :bundle="item.targetBundles[0]" />
           </div>
           <div class="bk-search-item-content">
-            <div
-              class="bk-search-item-title bk-highlight"
-              v-html="item.title"
-            />
+            <div class="bk-search-item-title bk-highlight">
+              {{ item.title }}
+            </div>
 
-            <div class="bk-search-item-text bk-highlight" v-html="item.text" />
-            <div
-              v-if="item.context"
-              class="text-xs uppercase font-medium mt-5"
-              v-html="item.context"
-            />
+            <div class="bk-search-item-text bk-highlight">{{ item.text }}</div>
+            <div v-if="item.context" class="text-xs uppercase font-medium mt-5">
+              {{ item.context }}
+            </div>
           </div>
         </button>
       </Sortli>

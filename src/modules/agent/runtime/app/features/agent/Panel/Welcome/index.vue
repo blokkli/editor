@@ -25,7 +25,10 @@
         @click.prevent="emit('promptDefinition', prompt)"
       />
     </div>
-    <InfoBox :text="disclaimer" class="mt-20" small />
+    <InfoBox class="mt-20" small>
+      <!-- eslint-disable-next-line vue/no-v-html -- a translated text with the module's agent name, escaped -->
+      <p class="text-pretty" v-html="disclaimer" />
+    </InfoBox>
   </div>
 </template>
 
@@ -35,6 +38,7 @@ import welcomeMdEn from './en.md?raw'
 import welcomeMdDe from './de.md?raw'
 import { defaultPrompts } from '#blokkli-build/agent-client'
 import { InfoBox } from '#blokkli/editor/components'
+import { escapeHtml } from '#blokkli/editor/helpers/string'
 import Markdown from '#blokkli/agent/app/components/Markdown/index.vue'
 import PromptButton from './PromptButton/index.vue'
 import { resolveAgentPrompts } from '#blokkli/agent/app/helpers/resolveAgentPrompts'
@@ -66,7 +70,7 @@ const disclaimer = computed(() => {
   return $t(
     'aiAgentWelcomeDisclaimer',
     `@agent can make mistakes! Always check the output. <strong>Do not enter sensitive information.</strong>`,
-  ).replace('@agent', props.agentName)
+  ).replace('@agent', escapeHtml(props.agentName))
 })
 </script>
 

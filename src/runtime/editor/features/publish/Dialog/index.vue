@@ -108,12 +108,14 @@
         </FormItem>
         <FormItem v-if="publishMode !== 'save' && scheduledBlocks.length">
           <InfoBox data-test="publish-scheduled-blocks-notice">
+            <!-- eslint-disable vue/no-v-html -- a translated text with the date, escaped -->
             <p
               v-for="(text, index) in scheduledBlocks"
               :key="'infobox' + index"
               data-test="publish-scheduled-block"
               v-html="text"
             />
+            <!-- eslint-enable vue/no-v-html -->
           </InfoBox>
         </FormItem>
       </PanelSection>
@@ -204,6 +206,7 @@ import {
   InfoBox,
 } from '#blokkli/editor/components'
 import { emitMessage } from '#blokkli/editor/events'
+import { escapeHtml } from '#blokkli/editor/helpers/string'
 import Item from './Item.vue'
 import PublishOption, { type PublishOptionProps } from './PublishOption.vue'
 import Summary from './Summary.vue'
@@ -306,7 +309,7 @@ const scheduledBlocks = computed(() => {
           )
     return message
       .replace('@count', count.toString())
-      .replace('@date', `<strong>${formattedDate}</strong>`)
+      .replace('@date', `<strong>${escapeHtml(formattedDate)}</strong>`)
   })
 })
 

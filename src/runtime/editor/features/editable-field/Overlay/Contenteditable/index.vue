@@ -1,5 +1,6 @@
 <template>
   <div class="bk-editable-field-contenteditable">
+    <!-- eslint-disable vue/no-v-html -- X4 in plans/xss: the raw stored value -->
     <div
       ref="input"
       contenteditable
@@ -7,6 +8,7 @@
       @input="onInput"
       v-html="original"
     />
+    <!-- eslint-enable vue/no-v-html -->
   </div>
 </template>
 

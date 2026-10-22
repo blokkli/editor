@@ -28,8 +28,9 @@
           'text-sm': !small,
         }"
         data-test="tooltip-label"
-        v-html="label"
-      />
+      >
+        {{ label }}
+      </div>
       <slot name="shortcut" />
     </div>
     <div
@@ -37,7 +38,7 @@
       class="font-normal mt-5 text-xs"
       data-test="tooltip-description"
     >
-      <div v-if="description" v-html="description" />
+      <div v-if="description">{{ description }}</div>
     </div>
     <slot name="status" />
   </div>

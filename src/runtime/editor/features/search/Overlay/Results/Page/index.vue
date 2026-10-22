@@ -5,6 +5,7 @@
       :key="item.item.uuid"
       ref="listItems"
       class="bk-search-item"
+      data-test="search-page-result"
       :class="{ 'bk-is-active': i === index }"
       @click.stop="clickItem"
       @mouseenter="index = i"

@@ -5,16 +5,19 @@
       <div class="bk-diff-prop-label">
         {{ $t('diffBefore', 'Before') }}
       </div>
+      <!-- eslint-disable-next-line vue/no-v-html -- X5 in plans/xss: the values are unfiltered -->
       <div class="bk-diff-prop-content bk-diff-markup-style" v-html="before" />
     </div>
     <div class="bk-diff-prop-after">
       <div class="bk-diff-prop-label">
         {{ $t('after', 'After') }}
       </div>
+      <!-- eslint-disable-next-line vue/no-v-html -- X5 in plans/xss: the values are unfiltered -->
       <div class="bk-diff-prop-content bk-diff-markup-style" v-html="after" />
     </div>
   </div>
   <div v-else-if="mode === 'after'" class="bk-diff-prop-after-only">
+    <!-- eslint-disable-next-line vue/no-v-html -- X5 in plans/xss: the values are unfiltered -->
     <div class="bk-diff-prop-content bk-diff-markup-style" v-html="after" />
   </div>
 </template>

@@ -18,7 +18,7 @@
     :style="styleLabel"
   >
     <Icon name="bk_mdi_drag_pan" />
-    <p v-html="currentActiveLabel" />
+    <p>{{ currentActiveLabel }}</p>
   </div>
 </template>
 

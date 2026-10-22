@@ -9,7 +9,7 @@ export default defineEditorComponent({
   component: InfoBox,
   backgroundClass: '_bk_bg-white',
   description:
-    'Inline notice block with a leading icon and a content area. Pass plain text via the `text` prop (rendered with `v-html`, so simple inline markup works) or use the default slot for richer content. The `color` prop accepts any blökkli theme color (`accent`, `mono`, `teal`, `yellow`, `red`, `lime`, `orange`) and resolves to the matching `bk-scheme-*` class.',
+    'Inline notice block with a leading icon and a content area. Pass plain text via the `text` prop (rendered as text) or use the default slot for markup and richer content. The `color` prop accepts any blökkli theme color (`accent`, `mono`, `teal`, `yellow`, `red`, `lime`, `orange`) and resolves to the matching `bk-scheme-*` class.',
   variants: [
     {
       label: 'Yellow (default)',
@@ -74,11 +74,20 @@ export default defineEditorComponent({
       },
     },
     {
-      label: 'Inline markup via text',
+      label: 'Inline markup via the slot',
       description:
-        'The `text` prop is rendered with `v-html`, so inline tags like `<strong>` or `<code>` work.',
-      props: {
-        text: 'Run <code>npm run material-icons</code> after referencing a new <strong>bk_mdi_*</strong> icon.',
+        'The `text` prop is rendered as text. Inline tags like `<strong>` or `<code>` go into the default slot.',
+      props: {},
+      slots: {
+        default: () => [
+          h('p', [
+            'Run ',
+            h('code', 'npm run material-icons'),
+            ' after referencing a new ',
+            h('strong', 'bk_mdi_*'),
+            ' icon.',
+          ]),
+        ],
       },
     },
     {

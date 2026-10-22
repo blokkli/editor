@@ -1,24 +1,9 @@
+import { escapeHtml } from '#blokkli/editor/helpers/string'
+
 const UUID_PATTERN =
   /(?<![\w#-])[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?![\w-])/gi
 
 const CODE_REGION_PATTERN = /```[\s\S]*?```|`[^`\n]*`/g
-
-function escapeHtml(value: string): string {
-  return value.replace(/[&<>"']/g, (c) => {
-    switch (c) {
-      case '&':
-        return '&amp;'
-      case '<':
-        return '&lt;'
-      case '>':
-        return '&gt;'
-      case '"':
-        return '&quot;'
-      default:
-        return '&#39;'
-    }
-  })
-}
 
 /**
  * Replace bare block UUIDs in markdown text with clickable chips. Known UUIDs

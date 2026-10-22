@@ -11,6 +11,7 @@
         id="pb_search_input"
         ref="input"
         v-model="search"
+        data-test="search-input"
         type="text"
         :placeholder="$t('searchBoxPlaceholder', 'Enter search term')"
         autocomplete="off"
@@ -29,6 +30,8 @@
         :class="{ 'bk-is-active': tabIndex === i }"
       >
         <button
+          data-test="search-tab"
+          :data-test-search-tab="item.key"
           :disabled="!item.enabled"
           @click="item.enabled ? (tabIndex = i) : undefined"
         >

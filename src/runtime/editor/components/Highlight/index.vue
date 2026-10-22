@@ -1,10 +1,15 @@
 <template>
-  <!-- eslint-disable-next-line vue/no-v-text-v-html-on-component -->
-  <Component :is="tag || 'div'" class="bk-highlight" v-html="markup" />
+  <Component :is="tag || 'div'" class="bk-highlight">
+    <template v-for="(segment, i) in segments" :key="i">
+      <em v-if="segment.match">{{ segment.text }}</em>
+      <template v-else>{{ segment.text }}</template>
+    </template>
+  </Component>
 </template>
 
 <script lang="ts" setup>
 import { computed } from '#imports'
+import { falsy } from '#blokkli/helpers'
 
 const props = defineProps<{
   /**
@@ -28,67 +33,87 @@ const props = defineProps<{
   tag?: string
 }>()
 
-const highlightPositions = (text: string, positions: number[]): string => {
-  let result = ''
-  let inTag = false // Flag to indicate if we are currently adding text inside <em></em>.
+type Segment = {
+  text: string
+  match: boolean
+}
+
+/**
+ * Splits the text into runs of matched and unmatched characters.
+ */
+function segmentsFromPositions(text: string, positions: number[]): Segment[] {
+  const matched = new Set(positions)
+  const segments: Segment[] = []
 
   for (let i = 0; i < text.length; i++) {
-    // Check if the current character's index is in the positions array.
-    if (positions.includes(i)) {
-      // If the previous character was not a match, we start a new <em>.
-      if (!inTag) {
-        result += '<em>'
-        inTag = true
-      }
-      result += text[i]
+    const match = matched.has(i)
+    const last = segments.at(-1)
+    if (last && last.match === match) {
+      last.text += text[i]
     } else {
-      // If the previous character was a match, we close the <em> tag.
-      if (inTag) {
-        result += '</em>'
-        inTag = false
-      }
-      result += text[i]
+      segments.push({ text: text[i]!, match })
     }
   }
 
-  // Close the <em> tag if the last character in text was a match.
-  if (inTag) {
-    result += '</em>'
-  }
-
-  return result
+  return segments
 }
 
-const markup = computed(() => {
+/**
+ * Splits the text at the regex's matches. A regex without the `g` flag
+ * matches once.
+ */
+function segmentsFromRegex(text: string, regex: RegExp): Segment[] {
+  const matches = regex.global
+    ? [...text.matchAll(regex)]
+    : [text.match(regex)].filter(falsy)
+  const segments: Segment[] = []
+  let cursor = 0
+
+  for (const match of matches) {
+    const index = match.index ?? 0
+    if (!match[0]) {
+      continue
+    }
+    if (index > cursor) {
+      segments.push({ text: text.substring(cursor, index), match: false })
+    }
+    segments.push({ text: match[0], match: true })
+    cursor = index + match[0].length
+  }
+
+  if (cursor < text.length) {
+    segments.push({ text: text.substring(cursor), match: false })
+  }
+
+  return segments
+}
+
+const segments = computed<Segment[]>(() => {
   if (props.positions?.length) {
-    return highlightPositions(props.text, props.positions)
+    return segmentsFromPositions(props.text, props.positions)
   }
 
   if (!props.regex) {
-    return props.text
+    return [{ text: props.text, match: false }]
   }
 
-  // Find the first occurrence index of any word.
-  const firstMatch = props.text.match(props.regex)
-  const index = firstMatch
-    ? props.text.toLowerCase().indexOf(firstMatch[0].toLowerCase())
-    : -1
+  const segments = segmentsFromRegex(props.text, props.regex)
+  const first = segments.findIndex((v) => v.match)
 
   // If no match is found, return the original text.
-  if (index === -1) {
-    return props.text
+  if (first === -1) {
+    return [{ text: props.text, match: false }]
   }
 
-  // Extract the part of the text before the first match.
-  const before = props.text.substring(Math.max(0, index - 30), index)
+  // Start with at most 30 characters before the first match.
+  const before = segments[first - 1]
+  if (!before) {
+    return segments.slice(first)
+  }
 
-  // Replace each occurrence with the highlighted version.
-  const highlighted = props.text
-    .substring(index)
-    .replace(props.regex, (match) => {
-      return `<em>${match}</em>`
-    })
-
-  return before + highlighted
+  return [
+    { text: before.text.substring(before.text.length - 30), match: false },
+    ...segments.slice(first),
+  ]
 })
 </script>

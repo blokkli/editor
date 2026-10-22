@@ -40,7 +40,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F85  | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                       | editor               | low      | to verify  |
 | F89  | [Building an edit state empties the fields of the cached entities](#f89-building-an-edit-state-empties-the-fields-of-the-cached-entities)                                   | `paragraphs_blokkli` | low      | open       |
 | F95  | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                          | both                 | low      | open       |
-| F96  | [The editor reads field values through a detached element](#f96-the-editor-reads-field-values-through-a-detached-element)                                                   | editor               | low      | to verify  |
+| F96  | [The editor reads field values through a detached element](#f96-the-editor-reads-field-values-through-a-detached-element)                                                   | editor               | low      | open       |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                           | `paragraphs_blokkli` | low      | to verify  |
 | F102 | [The library search fails for an empty list of types](#f102-the-library-search-fails-for-an-empty-list-of-types)                                                            | `paragraphs_blokkli` | low      | open       |
 | F103 | [A preview misses a change that is made before its first poll](#f103-a-preview-misses-a-change-that-is-made-before-its-first-poll)                                          | editor               | low      | open       |
@@ -677,7 +677,8 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 ## F96: The editor reads field values through a detached element
 
 - **Found:** 2026-10-12, by reading, when a violation's message had to become
-  plain text. Not reproduced.
+  plain text. Reproduced on 2026-10-22 by the XSS plan's canary
+  (`test/e2e-drupal/features/xss/raw-markup.test.ts`).
 - **Symptom:** none seen. By reading: a browser loads the images of markup that
   is assigned to an element's `innerHTML`, attached to the page or not, and runs
   their `onerror`. A field value with such an image would run its script for
@@ -694,6 +695,8 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** parse with `DOMParser`, whose document is inert, as
   `getViolationText()` does
   (`src/runtime/editor/features/translations/violations.ts`).
+- **Plan:** part of [the XSS plan](../xss/README.md) as X6, which also lists the
+  other places that parse this way.
 
 ## F97: The edit extension still requires the entity query extension
 

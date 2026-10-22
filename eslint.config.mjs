@@ -123,4 +123,12 @@ export default createConfigForNuxt(
       ],
     },
   })
+  .append({
+    // The editor renders content: text goes into `{{ }}`. Each `v-html` that
+    // stays says why in its disable comment (plans/xss).
+    files: ['src/**/*.vue'],
+    rules: {
+      'vue/no-v-html': 'error',
+    },
+  })
   .append(...oxlint.buildFromOxlintConfigFile('./.oxlintrc.json'))

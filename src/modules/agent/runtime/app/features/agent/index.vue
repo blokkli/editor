@@ -38,6 +38,7 @@
       @submit="openAgent"
     >
       <Icon name="stars" class="bk-is-animated" />
+      <!-- eslint-disable-next-line vue/no-v-html -- a translated text with the module's agent name, escaped -->
       <p v-html="popupText" />
     </Popup>
   </Teleport>
@@ -64,6 +65,7 @@ import {
 import { PluginSidebar } from '#blokkli/editor/plugins'
 import { Icon, Popup, BlokkliTransition } from '#blokkli/editor/components'
 import { agentName } from '#blokkli-build/agent-prompts'
+import { escapeHtml } from '#blokkli/editor/helpers/string'
 import {
   defineItemDropdownAction,
   defineMenuButton,
@@ -142,7 +144,7 @@ const popupText = computed(() => {
   return $t(
     'aiAgentIntroPopup',
     'Need help editing? @name is your AI assistant — it can add, move, and update blocks and much more. Give it a try!',
-  ).replace('@name', `<em>${agentName}</em>`)
+  ).replace('@name', `<em>${escapeHtml(agentName)}</em>`)
 })
 
 const tooltipTitle = computed(() => {

@@ -12,6 +12,9 @@ export type AnalyzeNodeTargetMapped = {
 }
 
 export type AnalyzeNode = {
+  /**
+   * Rendered as HTML: escape what comes from the page.
+   */
   description?: string
   impact?: AnalyzeImpact
   /**
@@ -61,6 +64,9 @@ export type AnalyzeResult = {
   id: string
   title: string
   category: AnalyzeCategory
+  /**
+   * Rendered as HTML: escape what comes from the page.
+   */
   description: string
   link?: string
   status: AnalyzeStatus

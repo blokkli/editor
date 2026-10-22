@@ -27,14 +27,17 @@
         }"
       >
         <li>
+          <!-- eslint-disable vue/no-v-html -- descriptions are HTML (docs/adapter/getAnalyzers.md); the analyzers escape what they take from the page -->
           <p
             v-if="group.description && group.description !== 'NONE'"
             class="text-xs text-mono-700 px-10 mb-3"
             :class="{
               'pt-10': isSingle,
             }"
+            data-test="analyze-node-description"
             v-html="group.description"
           />
+          <!-- eslint-enable vue/no-v-html -->
           <ul>
             <li
               v-for="(node, j) in group.nodes"

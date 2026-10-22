@@ -12,11 +12,13 @@
         :key="i"
         class="bk-clipboard-drop-element-item"
       >
+        <!-- eslint-disable vue/no-v-html -- X12 in plans/xss: pasted HTML without event handlers, its URLs unchecked -->
         <div
           v-if="item.type === 'text' && item.data"
           class="bk-clipboard-drop-element-text"
           v-html="item.data"
         />
+        <!-- eslint-enable vue/no-v-html -->
         <template v-else-if="item.type === 'video' && item.videoId">
           <ClipboardItemVideo
             :data="item.data || ''"

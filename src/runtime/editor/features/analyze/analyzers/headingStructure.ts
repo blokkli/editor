@@ -1,5 +1,6 @@
 import type { AnalyzeResult } from '#blokkli/analyzer/types'
 import { falsy } from '#blokkli/helpers'
+import { escapeHtml } from '#blokkli/editor/helpers/string'
 import { defineAnalyzer } from './defineAnalyzer'
 import { hashString } from './helpers/hashString'
 import { isSkipped } from './helpers/skip'
@@ -20,6 +21,9 @@ const ROOT_LEVEL = 1
 type Heading = {
   element: HTMLElement
   level: number
+  /**
+   * The heading's text content. Escape it for a description, which is HTML.
+   */
   text: string
 }
 
@@ -69,7 +73,7 @@ export default defineAnalyzer(() => {
           status: 'violation' as const,
           impact: 'serious' as const,
           nodes: h1Elements.map((h) => ({
-            description: h.text,
+            description: escapeHtml(h.text),
             targets: h.element,
           })),
         })
@@ -133,13 +137,13 @@ export default defineAnalyzer(() => {
             const previousLevel = previous ? previous.level : ROOT_LEVEL
             return {
               description: previous
-                ? `${previous.element.tagName} → ${tag}: "${current.text}"`
+                ? `${previous.element.tagName} → ${tag}: "${escapeHtml(current.text)}"`
                 : $t(
                     'analyzeHeadingSkippedLevelsFirst',
                     'First heading is @tag: "@text"',
                   )
                     .replace('@tag', tag)
-                    .replace('@text', current.text),
+                    .replace('@text', escapeHtml(current.text)),
               impact: 'moderate' as const,
               identifier: hashString(
                 previousLevel + '>' + current.level + ':' + current.text,
@@ -193,7 +197,7 @@ export default defineAnalyzer(() => {
                 ).replace('@count', String(h2Elements.length)),
           status: 'pass' as const,
           nodes: allHeadings.map((h) => ({
-            description: `${h.element.tagName}: ${h.text}`,
+            description: `${h.element.tagName}: ${escapeHtml(h.text)}`,
             targets: h.element,
           })),
         })

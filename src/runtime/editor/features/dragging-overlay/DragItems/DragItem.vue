@@ -12,6 +12,7 @@
       '--bk-dragging-radius': Math.max(props.borderRadius, 4),
     }"
   >
+    <!-- eslint-disable-next-line vue/no-v-html -- a copy of an element in the page -->
     <div v-if="markup" class="bk-dragging-overlay-markup" v-html="markup" />
     <div v-else class="bk-dragging-overlay-fallback">
       <div :style="{ transform: `scale(${1 / to.scaleX})` }">

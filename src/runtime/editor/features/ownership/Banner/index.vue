@@ -16,6 +16,7 @@
 <script setup lang="ts">
 import { computed, useBlokkli, onMounted, onBeforeUnmount } from '#imports'
 import { Banner, BannerInner } from '#blokkli/editor/components'
+import { escapeHtml } from '#blokkli/editor/helpers/string'
 
 const props = defineProps<{
   canTakeOwnership: boolean
@@ -30,7 +31,7 @@ const { state, $t, ui } = useBlokkli()
 const name = computed(() => {
   const v = state.owner.value?.name
   if (v) {
-    return `<strong>${v}</strong>`
+    return `<strong>${escapeHtml(v)}</strong>`
   }
 
   return ''

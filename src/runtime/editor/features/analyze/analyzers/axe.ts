@@ -8,10 +8,15 @@ import type {
 } from 'axe-core'
 import type { AnalyzeNode, AnalyzeResult, AnalyzeStatus } from './types'
 import { falsy } from '#blokkli/helpers'
+import { escapeHtml } from '#blokkli/editor/helpers/string'
 
+// Descriptions are HTML, axe's texts are text: its help names elements
+// ("<dl> elements must…"), and its summaries quote the page's values.
 function mapAxeNode(node: NodeResult): AnalyzeNode {
   return {
-    description: node.failureSummary,
+    description: node.failureSummary
+      ? escapeHtml(node.failureSummary)
+      : undefined,
     impact: node.impact ?? undefined,
     targets: node.target
       .map((v) => {
@@ -29,7 +34,7 @@ function mapAxeResult(result: Result, status: AnalyzeStatus): AnalyzeResult {
     id: result.id,
     title: result.description,
     category: 'accessibility',
-    description: result.help,
+    description: escapeHtml(result.help),
     link: result.helpUrl,
     status,
     impact: result.impact ?? undefined,

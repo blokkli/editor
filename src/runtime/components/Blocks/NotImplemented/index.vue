@@ -1,6 +1,7 @@
 <template>
   <div class="bk bk-block-not-implemented">
     <Icon name="bk_mdi_warning" />
+    <!-- eslint-disable-next-line vue/no-v-html -- a translated text with the bundle, escaped -->
     <div v-html="text" />
   </div>
 </template>
@@ -9,6 +10,7 @@
 import { computed, useBlokkli } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import { useBlockRegistration } from '#blokkli/editor/composables'
+import { escapeHtml } from '#blokkli/editor/helpers/string'
 
 const props = defineProps<{
   uuid: string
@@ -21,7 +23,7 @@ const text = computed(() => {
   return $t(
     'blockNotImplemented',
     'Missing component for block bundle <strong>@bundle</strong>.',
-  ).replace('@bundle', props.bundle)
+  ).replace('@bundle', escapeHtml(props.bundle))
 })
 
 useBlockRegistration(dom, props.uuid)

@@ -50,6 +50,7 @@
           >
             {{ item.fieldLabel }}
           </div>
+          <!-- eslint-disable-next-line vue/no-v-html -- the adapter's markup: Drupal escapes the values in it -->
           <div v-html="item.violation.message" />
         </button>
       </li>

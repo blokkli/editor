@@ -88,6 +88,7 @@ import {
 import type { DiffDisplayMode } from './DiffDisplay/index.vue'
 import type { ThemeColorName } from './../../../../global/types/theme'
 import type { MappedState, MutatedField } from '#blokkli/editor/types/state'
+import { escapeHtml } from '#blokkli/editor/helpers/string'
 
 const props = defineProps<{
   stateBefore: MappedState
@@ -137,7 +138,7 @@ function getProps(bundle: string, props: any): Record<string, string> {
           try {
             // Fallback to a JSON representation of the data.
             const json = JSON.stringify(value, null, 2)
-            acc[key] = `<pre>${json}</pre>`
+            acc[key] = `<pre>${escapeHtml(json)}</pre>`
           } catch {
             // Noop.
           }

@@ -1,5 +1,21 @@
 export const HORIZONTAL_ELLIPSIS = '…'
 
+const HTML_ESCAPES: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+}
+
+/**
+ * Escape text for use in markup: in an element's content or in a quoted
+ * attribute value.
+ */
+export function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (c) => HTML_ESCAPES[c]!)
+}
+
 /**
  * Truncate a string to a maximum length, appending an ellipsis when truncated.
  *

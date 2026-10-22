@@ -1,10 +1,12 @@
 <template>
+  <!-- eslint-disable vue/no-v-html -- X3 in plans/xss: comment bodies, unfiltered -->
   <div
     class="bk-rich-content break-words select-text"
     :class="{ 'bk-tasks-togglable': taskTogglable }"
     @click="onClick"
     v-html="enriched"
   />
+  <!-- eslint-enable vue/no-v-html -->
 </template>
 
 <script lang="ts" setup>

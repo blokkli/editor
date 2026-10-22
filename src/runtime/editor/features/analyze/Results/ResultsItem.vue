@@ -24,11 +24,13 @@
       </div>
     </div>
     <h3 class="font-semibold text-base">{{ title }}</h3>
+    <!-- eslint-disable vue/no-v-html -- descriptions are HTML (docs/adapter/getAnalyzers.md); the analyzers escape what they take from the page -->
     <div
       v-if="description"
       class="text-sm text-mono-600 mt-5 bk-content"
       v-html="description"
     />
+    <!-- eslint-enable vue/no-v-html -->
 
     <ResultsItemNodes :nodes :result-id="id" />
   </div>
