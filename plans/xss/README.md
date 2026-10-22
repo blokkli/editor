@@ -43,11 +43,13 @@ becomes markup again when the editor reads it back with `textContent`.
 - The Search API provider strips tags from what it returns.
 - Uploads need a CSRF header token. graphql 5 refuses mutations sent as
   `text/plain` or with GET.
-- The editor already parses with `DOMParser` in several places (the Drupal
-  adapter, `clipboardData`, `enrichRichContent`, the readability checks,
-  `translations/violations.ts`).
-- The clipboard's `sanitizeHtml()` removes the event handlers from pasted HTML
-  before an image can fail to load.
+- **Parsing** (since X6's fix): `parseHtml()`
+  (`src/runtime/editor/helpers/html`) parses in a document without a window; the
+  diffs, the translate dialog and the paste use it. The other places parse with
+  `DOMParser` (the Drupal adapter, `clipboardData`, `enrichRichContent`, the
+  readability checks, `translations/violations.ts`).
+- The clipboard's `sanitizeHtml()` removes every attribute but `href` from
+  pasted HTML.
 - The sandbox's own components render plain text with `{{ }}`, and `v-html` only
   for `processed` rich text.
 
@@ -57,9 +59,8 @@ becomes markup again when the editor reads it back with `textContent`.
 | --- | ---------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | --------- |
 | X2  | [The agent renders markdown without a sanitiser](#x2-the-agent-renders-markdown-without-a-sanitiser)                   | editor               | high     | open      |
 | X3  | [Comment bodies come back unfiltered](#x3-comment-bodies-come-back-unfiltered)                                         | both                 | high     | open      |
-| X4  | [The editor writes unfiltered values into the page](#x4-the-editor-writes-unfiltered-values-into-the-page)             | editor               | high     | to verify |
+| X4  | [The editor writes unfiltered values into the page](#x4-the-editor-writes-unfiltered-values-into-the-page)             | editor               | high     | open      |
 | X5  | [The diff views render values unfiltered](#x5-the-diff-views-render-values-unfiltered)                                 | editor               | medium   | to verify |
-| X6  | [The editor parses markup in the live document](#x6-the-editor-parses-markup-in-the-live-document)                     | editor               | medium   | open      |
 | X7  | [Message listeners accept any window](#x7-message-listeners-accept-any-window)                                         | editor               | medium   | to verify |
 | X8  | [The content search returns labels with their markup](#x8-the-content-search-returns-labels-with-their-markup)         | `paragraphs_blokkli` | low      | open      |
 | X9  | [Agent conversations are stored as the client sends them](#x9-agent-conversations-are-stored-as-the-client-sends-them) | both                 | medium   | to verify |
@@ -131,9 +132,9 @@ becomes markup again when the editor reads it back with `textContent`.
 
 ## X4: The editor writes unfiltered values into the page
 
-- **Found:** 2026-10-22, by reading. The canary's rewrite test
-  (`features/xss/agent`) runs its payload, but X6's parse when the approval UI
-  mounts comes first: it doesn't show X4 on its own.
+- **Found:** 2026-10-22, by reading. Reproduced the same day by the canary's
+  rewrite test (`features/xss/agent`), once X6 was fixed: the approval UI
+  renders no markup, so the preview in the page runs the payload.
 - **Symptom:** none seen. By reading:
   - A prompt injection that makes the model write `<img onerror>` into a rewrite
     runs in the page during the preview, before anyone approves it.
@@ -172,7 +173,7 @@ becomes markup again when the editor reads it back with `textContent`.
       (`src/modules/agent/runtime/app/tools/update_text_fields/Component.vue:91`)
       and `add_paragraphs` (`tools/add_paragraphs/index.ts:566`) store the value
       raw.
-    - From then on it reaches everyone through X5 and X6.
+    - From then on it reaches everyone through X5 and the diffs above.
   - **The inline editor of the `markup` type** shows the raw stored value with
     `v-html` (`features/editable-field/Overlay/Contenteditable/index.vue:8`,
     `Overlay/index.vue:486`). The Drupal adapter uses `frame` instead, so only
@@ -214,35 +215,6 @@ becomes markup again when the editor reads it back with `textContent`.
   - The same sanitiser as X4, on both values before diffing.
   - For plain fields, escape both values first (`escapeHtml()`).
   - `mapDiffProps`: decide whether its strings are text or HTML (open question).
-
-## X6: The editor parses markup in the live document
-
-- **Found:** 2026-10-12 for the translate dialog (F96 in
-  [the drupal-setup findings](../drupal-setup/findings.md)). Extended
-  2026-10-22, and reproduced the same day by the canary
-  (`features/xss/raw-markup`): opening "Translate texts".
-- **Symptom:** none seen. By reading:
-  - `document.createElement('div').innerHTML = …` loads the images of the markup
-    and runs their `onerror`, attached to the page or not.
-  - With X2 or X4, a prompt injection runs here first.
-- **Cause:**
-  - **Diffs:** `parseBlocks()` and `parseListItems()`
-    (`src/runtime/editor/helpers/diff/index.ts:234`, `:463`) parse every diff
-    (`computeDiff()`, `computeInsertion()`, `splitIntoSegments()`).
-    `update_text_fields` calls `splitIntoSegments()` when its component mounts,
-    before anything is shown
-    (`src/modules/agent/runtime/app/tools/update_text_fields/Component.vue:247`).
-  - **The translate dialog:** `stripHtml()`
-    (`features/translations/TranslateDialog/index.vue:386`) runs on every source
-    value and current value when the dialog opens (`:92`, `:125`).
-  - **The clipboard** (`features/clipboard/index.vue:863`): `sanitizeHtml()`
-    removes the attributes straight afterwards (`:865`), before an image's error
-    event. Probably harmless.
-- **Impact:** medium on its own: it takes raw stored markup or a machine
-  translation.
-- **Fix idea:** parse with `DOMParser` or a `<template>`, whose content is
-  inert, as `getViolationText()` does
-  (`features/translations/violations.ts:11`).
 
 ## X7: Message listeners accept any window
 
@@ -519,7 +491,20 @@ One finding per round.
    - **Note:** the sandbox's dev server missed an edit and served the old file
      (the content search's results). After editing many files,
      `ddev nuxt restart` before trusting a run.
-3. **X6:** a `parseHtml()` helper with `DOMParser`.
+3. **X6** (done 2026-10-22):
+   - `parseHtml()` (`src/runtime/editor/helpers/html`) parses into a `<div>` of
+     a document without a window (`document.implementation.createHTMLDocument`).
+     It parses as a `<div>`'s `innerHTML` does, so the diffs split as before;
+     `DOMParser` would move a leading `<style>` into `<head>`;
+   - the diffs (`parseBlocks()`, `parseListItems()`), the translate dialog's
+     `stripHtml()` and the paste use it;
+   - `no-restricted-syntax` flags `innerHTML` and `outerHTML` assignments and
+     `insertAdjacentHTML()` in `src/`. The ones that stay say why: the parsed
+     documents, the copy of a block while dragging, and the editable field
+     override's write into the page (X4, X5). The override writes through
+     `element[property]` no more, which the rule couldn't see;
+   - the canary's `raw-markup` test checks the fix. Its rewrite test now shows
+     X4 on its own.
 4. **`sanitizeHtml()` (DOMPurify)** in the editor chunk, with profiles for rich
    text, markdown and diffs. Then X4 (the handover), X2, X3 (editor side) and
    X5, one at a time.

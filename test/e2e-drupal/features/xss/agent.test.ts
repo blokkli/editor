@@ -29,21 +29,21 @@ import {
 const TEXT = seedUuid('paragraph', 'first-text')
 
 /**
- * X2, X4 and X6 (plans/xss), for what the model writes. A prompt injection (in
+ * X2 and X4 (plans/xss), for what the model writes. A prompt injection (in
  * the page's content, a fetched page, pasted text) can make the model write the
  * payload; the mock script stands in for it.
  *
  * - X2: the chat renders markdown with `marked`, which keeps raw HTML, into
  *   `v-html`: the model's reply, and the user's own prompt.
- * - X4 and X6: `update_text_fields` previews its value in the page before
- *   anyone approves it. It splits the value in the live document when its
- *   approval UI mounts (`splitIntoSegments()`), then writes the diff into the
- *   paragraph with `innerHTML`.
+ * - X4: `update_text_fields` previews its value in the page before anyone
+ *   approves it: it writes the diff into the paragraph with `innerHTML`. Its
+ *   split (`splitIntoSegments()`) parsed the value in the live document too,
+ *   until X6's fix.
  *
  * The rewrite runs first: it needs the `test-cases` sidebar, which the agent's
  * panel replaces.
  */
-describe('XSS canary: what the agent writes (X2, X4, X6)', async () => {
+describe('XSS canary: what the agent writes (X2, X4)', async () => {
   const sandbox = workerSandbox()
   await setup({ host: sandboxHost(sandbox) })
 

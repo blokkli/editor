@@ -131,4 +131,21 @@ export default createConfigForNuxt(
       'vue/no-v-html': 'error',
     },
   })
+  .append({
+    // Markup set on an element of the page loads and runs, even while the
+    // element is detached (plans/xss, X6).
+    files: ['src/**/*.ts', 'src/**/*.vue'],
+    ignores: ['**/*.spec.ts'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            "AssignmentExpression[left.property.name=/^(innerHTML|outerHTML)$/], CallExpression[callee.property.name='insertAdjacentHTML']",
+          message:
+            "Parse markup with parseHtml() from '#blokkli/editor/helpers/html'. To render markup, say why in a disable comment.",
+        },
+      ],
+    },
+  })
   .append(...oxlint.buildFromOxlintConfigFile('./.oxlintrc.json'))

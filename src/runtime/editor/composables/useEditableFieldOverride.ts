@@ -248,7 +248,12 @@ export function useEditableFieldOverride(
   /** Write into the element, keeping Vue's nodes aside on the first write. */
   function writeDom(property: 'textContent' | 'innerHTML', value: string) {
     savedNodes ??= Array.from(element.childNodes)
-    element[property] = value
+    if (property === 'textContent') {
+      element.textContent = value
+    } else {
+      // eslint-disable-next-line no-restricted-syntax -- X4 and X5 in plans/xss: the value or its diff, unfiltered
+      element.innerHTML = value
+    }
     writtenNodes = Array.from(element.childNodes)
   }
 

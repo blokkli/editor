@@ -243,6 +243,7 @@ import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 import SelectionTable from '../SelectionTable/index.vue'
 import RowError from '../RowError/index.vue'
+import { parseHtml } from '#blokkli/editor/helpers/html'
 import { getViolationText, matchViolationsToTexts } from '../violations'
 import Editor from './Editor/index.vue'
 
@@ -384,9 +385,7 @@ function toggleAll() {
 }
 
 function stripHtml(text: string): string {
-  const div = document.createElement('div')
-  div.innerHTML = text
-  return div.textContent || ''
+  return parseHtml(text).textContent || ''
 }
 
 /**

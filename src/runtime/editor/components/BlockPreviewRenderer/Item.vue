@@ -48,6 +48,7 @@ onMounted(() => {
   width.value = element.getBoundingClientRect().width
 
   const markup = dom.getDropElementMarkup(item)
+  // eslint-disable-next-line no-restricted-syntax -- a copy of an element in the page
   itemEl.value.innerHTML = markup
 
   // Emit background color from first rendered item

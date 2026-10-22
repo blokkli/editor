@@ -46,6 +46,7 @@ import {
 import { onlyUnique } from '#blokkli/helpers'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
+import { parseHtml } from '#blokkli/editor/helpers/html'
 import type getVideoIdSync from 'get-video-id'
 import type { DropElementItem } from './DropElement/index.vue'
 import type { BlokkliIcon } from '#blokkli-build/icons'
@@ -859,8 +860,7 @@ const handlePastedText = async (text: string) => {
     return
   }
 
-  const div = document.createElement('div')
-  div.innerHTML = text.replace(/&nbsp;|<br>/g, '')
+  const div = parseHtml(text.replace(/&nbsp;|<br>/g, ''))
 
   sanitizeHtml(div)
   if (div.textContent) {

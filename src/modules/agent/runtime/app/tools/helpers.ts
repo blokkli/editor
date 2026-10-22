@@ -322,6 +322,7 @@ export function applySelectorOperation(
     // reproduces the input exactly — otherwise the field would be rewritten
     // around the edit.
     if (doc.body.innerHTML === html) {
+      // eslint-disable-next-line no-restricted-syntax -- an element of the parsed document, which is inert
       el.innerHTML = replacement
       return doc.body.innerHTML
     }
