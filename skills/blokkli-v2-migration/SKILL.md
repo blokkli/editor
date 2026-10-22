@@ -9,10 +9,10 @@ license: MIT
 compatibility: >-
   Requires a Nuxt project using @blokkli/editor ^1 with nuxt-graphql-middleware,
   and access to its Drupal backend (composer, drush) running paragraphs_blokkli
-  1.x.
+  1.x. @blokkli/editor 2.x needs Nuxt 4.4 or later.
 metadata:
   author: blokkli
-  version: '1.0.6'
+  version: '1.0.7'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li
 disable-model-invocation: true
@@ -31,6 +31,17 @@ Only read the file of the phase you are currently working on.
 
 Phase 3 is optional and incremental: after phase 2, the project already works
 with V2. Phase 3 only removes deprecated usage and enables better live previews.
+
+## Nuxt 4.4 first
+
+`@blokkli/editor` 2.x needs Nuxt 4.4 or later. On an older Nuxt the dev server
+only warns "Module `@blokkli/editor` is disabled due to incompatibility issues"
+and starts without the editor.
+
+Check the project's `nuxt` version before phase 1. If it's older, upgrading Nuxt
+is a migration of its own (Nuxt 3 to 4:
+[Nuxt's upgrade guide](https://nuxt.com/docs/getting-started/upgrade)) and not
+part of this one: stop and let the developer know, who upgrades Nuxt first.
 
 ## Why Drupal first
 

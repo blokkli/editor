@@ -10,12 +10,12 @@ description: >-
   because the GraphQL schema lacks them.
 license: MIT
 compatibility: >-
-  Requires @blokkli/editor 2.x with the drupal module, paragraphs_blokkli 2.x,
-  graphql_core_schema and nuxt-graphql-middleware, plus access to the Drupal
-  backend (composer, drush) and the Nuxt project.
+  Requires @blokkli/editor 2.x with the drupal module (Nuxt 4.4 or later),
+  paragraphs_blokkli 2.x, graphql_core_schema and nuxt-graphql-middleware, plus
+  access to the Drupal backend (composer, drush) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.10'
+  version: '1.0.11'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/overview
 ---
@@ -53,6 +53,10 @@ Find out, from the code and config or by asking:
   common)
 - whether Drupal and Nuxt already share one origin, and how requests are routed
 - where the Nuxt project gets its GraphQL schema from (download or a file)
+- the Nuxt version: `@blokkli/editor` 2.x needs Nuxt 4.4 or later. On an older
+  one the dev server only warns "Module `@blokkli/editor` is disabled due to
+  incompatibility issues" and starts without the editor. Upgrading Nuxt is the
+  developer's decision, before this setup.
 
 ## 1. One origin for Drupal and Nuxt
 

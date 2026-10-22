@@ -1,6 +1,7 @@
 # Phase 2: Nuxt module (@blokkli/editor)
 
 Requires phase 1 to be done: the frontend relies on the updated GraphQL schema.
+It also requires Nuxt 4.4 or later (see "Nuxt 4.4 first" in `SKILL.md`).
 
 ## nuxt.config.ts
 
