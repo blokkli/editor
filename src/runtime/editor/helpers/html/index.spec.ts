@@ -51,3 +51,24 @@ describe('sanitizeHtml', () => {
     ).toBe('<p>A</p>')
   })
 })
+
+describe("sanitizeHtml's comment profile", () => {
+  it('keeps what the comment editor writes', () => {
+    const html = [
+      '<p>Hi <span class="bk-richtext-mention" data-type="mention" data-id="2" data-label="Martin">@Martin</span>, <strong>b</strong> <em>i</em> <u>u</u> <s>s</s> <code>c</code> <a href="https://example.com/">link</a> <span data-type="emoji" data-name="smile">😄</span><br>next</p>',
+      '<blockquote><p>Quote</p></blockquote>',
+      '<ul><li><p>One</p><ol><li><p>Two</p></li></ol></li></ul>',
+      '<ul data-type="taskList"><li data-type="taskItem" data-checked="true"><p>Done</p></li></ul>',
+    ].join('')
+    expect(sanitizeHtml(html, 'comment')).toBe(html)
+  })
+
+  it('removes what the comment editor never writes, keeping its text', () => {
+    expect(
+      sanitizeHtml(
+        '<h2>Title</h2><p style="color: red" data-x="1">A <img src="https://example.com/a.png">b</p><table><tbody><tr><td>c</td></tr></tbody></table>',
+        'comment',
+      ),
+    ).toBe('Title<p>A b</p>c')
+  })
+})

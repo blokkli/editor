@@ -14,10 +14,11 @@ import {
   waitForEditorReady,
 } from '../../support/session'
 import {
-  canariesRan,
+  CANARY_WORD,
   canaryRawHtml,
   installCanary,
   resetCanary,
+  settledCanaries,
   storeComment,
 } from '../../support/xss'
 
@@ -25,9 +26,10 @@ import {
 const TEXT = seedUuid('paragraph', 'first-text')
 
 /**
- * X3 (plans/xss): Drupal stores a comment's body as it gets it and returns
+ * X3 (plans/xss): Drupal stores a comment's body as it gets it, and returned
  * the raw value (`getBody()`), although it's stored with the format
- * `blokkli_comment`. The sidebar renders it with `v-html`. The comment editor
+ * `blokkli_comment`. The sidebar renders it with `v-html`. Drupal now returns
+ * the body as the format filters it (`getProcessedBody()`). The comment editor
  * doesn't produce such a body: the spec sends it through the adapter, as a
  * request made by hand would.
  */
@@ -51,15 +53,14 @@ describe('XSS canary: comment bodies (X3)', async () => {
     await page.close()
   })
 
-  test('the sidebar shows the body as markup', async () => {
+  test('the sidebar shows the body without running it', async () => {
     await resetCanary(page)
     await openSidebar(page, 'comments')
-    await page
-      .locator('[data-test="comment"]')
-      .first()
-      .waitFor({ state: 'visible' })
+    const comment = page.locator('[data-test="comment"]').first()
+    await expect
+      .poll(async () => (await comment.textContent()) ?? '')
+      .toContain(CANARY_WORD)
 
-    // Runs today. The fix flips this to `not.toContain`.
-    await expect.poll(() => canariesRan(page)).toContain('comment')
+    expect(await settledCanaries(page)).not.toContain('comment')
   })
 })

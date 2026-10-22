@@ -30,8 +30,11 @@ export function parseHtml(html: string): HTMLDivElement {
  *   markdown produces, without images: an image loads when it's shown, so a
  *   prompt injection could send data out in its URL. The disabled checkboxes of
  *   task lists stay; without a form, they send nothing.
+ * - `comment`: what the comment editor (`RichText/Editor`) writes: formatting,
+ *   lists, task items, links, mentions and emoji. As Drupal's comment format
+ *   allows it, plus the emoji's name.
  */
-export type SanitizeProfile = 'richText' | 'markdown'
+export type SanitizeProfile = 'richText' | 'markdown' | 'comment'
 
 const PROFILES: Record<SanitizeProfile, Config> = {
   richText: {
@@ -77,6 +80,35 @@ const PROFILES: Record<SanitizeProfile, Config> = {
       'start',
       'title',
       'type',
+    ],
+    ALLOW_DATA_ATTR: false,
+  },
+  comment: {
+    ALLOWED_TAGS: [
+      'a',
+      'blockquote',
+      'br',
+      'code',
+      'em',
+      'li',
+      'ol',
+      'p',
+      'pre',
+      's',
+      'span',
+      'strong',
+      'u',
+      'ul',
+    ],
+    ALLOWED_ATTR: [
+      'class',
+      'data-checked',
+      'data-id',
+      'data-label',
+      'data-name',
+      'data-type',
+      'href',
+      'hreflang',
     ],
     ALLOW_DATA_ATTR: false,
   },

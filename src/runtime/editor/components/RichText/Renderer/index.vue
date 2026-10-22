@@ -1,5 +1,5 @@
 <template>
-  <!-- eslint-disable vue/no-v-html -- X3 in plans/xss: comment bodies, unfiltered -->
+  <!-- eslint-disable vue/no-v-html -- a comment's body, sanitised -->
   <div
     class="bk-rich-content break-words select-text"
     :class="{ 'bk-tasks-togglable': taskTogglable }"
@@ -11,6 +11,7 @@
 
 <script lang="ts" setup>
 import { computed } from '#imports'
+import { sanitizeHtml } from '#blokkli/editor/helpers/html'
 import { enrichRichContent } from './enrichRichContent'
 
 const props = withDefaults(
@@ -29,7 +30,12 @@ const emit = defineEmits<{
   (e: 'toggleTask', taskIndex: number): void
 }>()
 
-const enriched = computed(() => enrichRichContent(props.body))
+// The body comes from the adapter. Drupal filters it with the comment's text
+// format; another backend may return it as stored (plans/xss, X3). Sanitised
+// first: the enrichment adds the checkboxes and the links' target.
+const enriched = computed(() =>
+  enrichRichContent(sanitizeHtml(props.body, 'comment')),
+)
 
 function onClick(e: MouseEvent) {
   if (!props.taskTogglable) return

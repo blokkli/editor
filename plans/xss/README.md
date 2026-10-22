@@ -62,7 +62,6 @@ becomes markup again when the editor reads it back with `textContent`.
 
 | #   | Finding                                                                                                                | Project              | Severity | Status    |
 | --- | ---------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | --------- |
-| X3  | [Comment bodies come back unfiltered](#x3-comment-bodies-come-back-unfiltered)                                         | both                 | high     | open      |
 | X5  | [The diff views render values unfiltered](#x5-the-diff-views-render-values-unfiltered)                                 | editor               | medium   | to verify |
 | X7  | [Message listeners accept any window](#x7-message-listeners-accept-any-window)                                         | editor               | medium   | to verify |
 | X8  | [The content search returns labels with their markup](#x8-the-content-search-returns-labels-with-their-markup)         | `paragraphs_blokkli` | low      | open      |
@@ -70,36 +69,6 @@ becomes markup again when the editor reads it back with `textContent`.
 | X10 | [Imports and kept formats skip the format check](#x10-imports-and-kept-formats-skip-the-format-check)                  | `paragraphs_blokkli` | low      | to verify |
 | X11 | [The docs and the playground render titles with `v-html`](#x11-the-docs-and-the-playground-render-titles-with-v-html)  | docs                 | medium   | to verify |
 | X12 | [`javascript:` URLs reach links and frames](#x12-javascript-urls-reach-links-and-frames)                               | editor               | low      | to verify |
-
-## X3: Comment bodies come back unfiltered
-
-- **Found:** 2026-10-22, by reading. Reproduced the same day by the canary
-  (`features/xss/comments`).
-- **Symptom:** none seen. By reading:
-  - A comment whose body has `<img src=x onerror=…>` runs for everyone who opens
-    its thread. The body has to be sent with `paragraphsBlokkliAddComment` (or
-    the edit mutation) by hand: the comment editor doesn't produce one.
-  - A mention's link opens the comments sidebar by itself (`?blokkliComment=`).
-- **Cause:**
-  - **Stored with a format:** the body is stored with the format
-    `blokkli_comment`
-    (`modules/paragraphs_blokkli_comment/src/Plugin/GraphQL/DataProducer/AddComment.php:69`).
-  - **Returned raw:** `body` resolves to `getBody()`, the raw `value`
-    (`modules/paragraphs_blokkli_comment/src/Plugin/GraphQL/SchemaExtension/ParagraphsBlokkliCommentExtension.php:161`,
-    `src/Entity/BlokkliComment.php:251`). The schema says "The format-processed
-    comment body markup"
-    (`graphql/paragraphs_blokkli_comment.base.graphqls:17`). The format's filter
-    (`src/Plugin/Filter/BlokkliCommentHtml.php`) never runs on this path.
-  - **Rendered with `v-html`** in the editor
-    (`src/runtime/editor/components/RichText/Renderer/index.vue:6`).
-    `enrichRichContent()` parses inertly, but it serialises everything back
-    (`enrichRichContent.ts:58`). `<a href="javascript:…">` passes too.
-- **Impact:** high. It needs a request made by hand, but anyone who may post
-  comments can send it, reviewers included. It runs for editors and admins.
-- **Fix idea:**
-  - Resolve `body` through its format (`processed`). The format's allowlist
-    already covers mentions and task items.
-  - Sanitise in the editor too, for other adapters.
 
 ## X5: The diff views render values unfiltered
 
@@ -249,7 +218,8 @@ becomes markup again when the editor reads it back with `textContent`.
     `v-html` in the drop preview
     (`features/clipboard/DropElement/index.vue:18`). Drupal filters it when it's
     saved.
-  - **Comment bodies** (X3).
+  - **Comment bodies:** fixed with X3. Drupal's comment format and the editor's
+    `comment` profile both drop `javascript:` links.
   - **The iframes module's editor** sets `:src` from the block's value
     (`src/modules/iframes/runtime/features/iframes/Editor/index.vue:12`).
 - **Impact:** low: someone has to click, or the project's iframe source has to
@@ -293,8 +263,9 @@ becomes markup again when the editor reads it back with `textContent`.
 
 Made with the user on 2026-10-22.
 
-- **The editor first.** The Drupal side (X3, X8, X9, X10), the CSP and the docs
-  come after it.
+- **blökkli first:** the editor and its Drupal module, `paragraphs_blokkli`. A
+  finding is fixed where it's caused, in the module too. What projects do (their
+  components, their CSP) comes after.
 - **Projects need `v-html` only for rich text** (a formatted field's
   `processed`). Together with a strict CSP and Drupal's text formats, that's
   enough for the public site. blökkli offers no sanitiser for it for now.
@@ -314,9 +285,9 @@ Made with the user on 2026-10-22.
   in every browser yet. It goes behind `sanitizeHtml()` in
   `src/runtime/editor/helpers/html`, with a profile for each kind of markup, so
   a switch to `setHTML()` later changes one file: `richText`, which covers diffs
-  too (`<ins>` and `<del>` are HTML), and `markdown`. Only editor code imports
-  it. The clipboard's `sanitizeHtml()`, which removes attributes, gets another
-  name.
+  too (`<ins>` and `<del>` are HTML), `markdown` and `comment`. Only editor code
+  imports it. The clipboard's `sanitizeHtml()`, which removes attributes, gets
+  another name.
 - **X4's allowlist is generic:** DOMPurify's HTML profile (no scripts, event
   handlers, `javascript:` URLs, SVG or MathML; classes and data attributes
   stay). It also drops style elements and form controls, which rich text doesn't
@@ -450,7 +421,7 @@ One finding per round.
    - the canary's `raw-markup` test checks the fix. Its rewrite test now shows
      X4 on its own.
 4. **`sanitizeHtml()` (DOMPurify)** in `src/runtime/editor/helpers/html`. Then
-   X4 (the handover), X2, X3 (editor side) and X5, one at a time.
+   X4 (the handover), X2, X3 (in the module first) and X5, one at a time.
    - **X4** (done 2026-10-22):
      - DOMPurify 3.4.17 is a dependency. `sanitizeHtml(html, 'richText')` uses
        an instance of its own; where DOMPurify can't run, it escapes instead of
@@ -476,9 +447,21 @@ One finding per round.
        the chat still shows as markup, filtered;
      - the canary's prompt and reply tests check the fix
        (`data-test="agent-user-message"` is new).
+   - **X3** (done 2026-10-22):
+     - **The cause, in the module:** Drupal stored a comment's body as the
+       client sent it and returned it raw, although the schema promised the
+       processed body. `body` now resolves to `getProcessedBody()`, the body as
+       its format (`blokkli_comment`) filters it. The mutations, the mentions
+       and the task toggles keep working on the raw body. A kernel test checks
+       it (`CommentExtensionResolversTest::testBodyIsFiltered()`);
+     - **the editor too,** for other adapters: the comment renderer sanitises
+       the body with the `comment` profile, what the comment editor writes (as
+       Drupal's format allows it, plus the emoji's name), before
+       `enrichRichContent()` adds the checkboxes;
+     - the canary's `comments` test checks the fix.
 5. **X12:** `isSafeUrl()` with the `URL` parser.
 6. **X7:** sender checks.
-7. **Drupal:** X3, X8, X10, X9.
+7. **The module:** X8, X10, X9.
 8. **The CSP:**
    - blökkli works under a strict CSP (no `'unsafe-eval'` for axe-core's
      locales, nonces for what it injects);
