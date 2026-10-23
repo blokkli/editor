@@ -54,7 +54,7 @@ language.
 | Path                                            | What                                                                                                                                        |
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `.ddev/config.yaml`                             | Hostnames, the two daemons, SQLite (no db container), `composer install` on start                                                           |
-| `.ddev/nginx_full/`                             | `nginx-site.conf` (all routing), `proxy.inc`, `headers.inc` (CSP), the 502 and "unknown sandbox" pages                                      |
+| `.ddev/nginx_full/`                             | `nginx-site.conf` (all routing), `proxy.inc`, `headers.inc` (the CSP of responses without one), the 502 and "unknown sandbox" pages         |
 | `.ddev/commands/web/{bake,bake-e2e,reset,nuxt}` | Container commands                                                                                                                          |
 | `.ddev/commands/host/check-routes`              | The routing test table (also read by a unit test)                                                                                           |
 | `.ddev/commands/host/deploy`                    | `ddev deploy`, on the hosted instance only (see "Hosting")                                                                                  |
@@ -94,8 +94,20 @@ Traefik sends every hostname to the web container's nginx on port 80.
   `sandbox-unknown.html` (links to the claim page). A sandbox's public files are
   served only on its own host.
 - **Every response** has `X-Blokkli-Upstream` (`nuxt`, `drupal`, `control`,
-  `nginx`, `sandbox-unknown`) and the CSP from `headers.inc`
-  (`connect-src 'self'`, which covers the WebSockets).
+  `nginx`, `sandbox-unknown`) and a Content-Security-Policy:
+  - the frontend's comes from nuxt-security, in strict mode
+    (`sandbox/frontend/nuxt.config.ts`): a nonce per response,
+    `'strict-dynamic'`, no `'unsafe-inline'` or `'unsafe-eval'`. The dev server
+    allows inline styles, for Nuxt devtools and the error overlay; a build
+    doesn't. Builds also send `Cross-Origin-Embedder-Policy: require-corp`, so
+    the Drupal pages the editor frames send it too
+    (`sandbox/drupal/services.yml`, `paragraphs_blokkli.frame_embedder_policy`);
+  - every other response gets nginx's from `headers.inc`, only if the upstream
+    sent none: Drupal's pages (a loose one), the control app's, nginx's own.
+  - nuxt-security's XSS validator is off for the editor's routes (it refuses
+    markup), its rate limiter off everywhere (behind nginx every request comes
+    from 127.0.0.1). `xss` is pinned to 1.0.15 (`overrides` in the root
+    `package.json`): 1.0.16 crashes the validator (nuxt-security#767).
 - **Adding a Drupal path** means three places: the regex in `nginx-site.conf`,
   `sandbox/frontend/app/utils/drupalPath.ts` (`SiteLink` uses it to leave the
   SPA), and the table in `check-routes`. `test/unit/drupal-path.test.ts`

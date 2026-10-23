@@ -3,6 +3,7 @@ import { createPage, setup } from '@nuxt/test-utils/e2e'
 import type { Page } from 'playwright-core'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { addBlock } from '../../support/blocks'
+import { installCspCheck } from '../../support/csp'
 import { dialog } from '../../support/overlays'
 import {
   ROOT,
@@ -193,6 +194,7 @@ describe('The preview link', async () => {
 
     // A page of its own has a browser context of its own: no session.
     visitor = await createPage(undefined, { ignoreHTTPSErrors: true })
+    await installCspCheck(visitor)
     await visitor.goto(previewUrl)
   })
 

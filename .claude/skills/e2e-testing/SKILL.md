@@ -151,6 +151,21 @@ was sent: `countMutations(page, name)` returns a counter of the mutation's
 requests from then on. `storedFieldValue(page, uuid, field)` reads the raw value
 the adapter supplies, not the rendered one.
 
+## The CSP check
+
+The frontend sends a strict Content-Security-Policy (the sandbox skill,
+"Requests"). A test fails on any violation of it that isn't known:
+`support/csp.ts` records the violations of every document of a page, and
+`setup.ts` checks after every test and every file. `openEditor` and `openPage`
+install it; a page made with `createPage` needs `installCspCheck(page)`.
+
+- A violation the editor causes today is in `KNOWN`, with its fix. The fix
+  removes the entry.
+- Markup can't run script under the policy: a place that renders content as
+  markup shows up as a blocked inline handler, rather than as a canary that ran.
+- The dev server allows inline styles (Nuxt devtools, the error overlay), so a
+  style violation only fails against the build, which GitHub runs.
+
 ## `data-test-*` — the DOM contract
 
 **Specs select on `data-test-*` ONLY.** No ids, no `bk-*` classes (mangled), no

@@ -113,6 +113,7 @@ $databases['default']['default'] = [
 $settings['cache']['bins']['entity'] = 'cache.backend.memory';
 
 $settings['config_sync_directory'] = dirname($app_root) . '/config/sync';
+$settings['container_yamls'][] = dirname($app_root) . '/services.yml';
 
 // Requests come through ddev's router and this container's nginx, both on
 // private networks. Only the X-Forwarded headers they set are trusted: a

@@ -143,9 +143,6 @@ becomes markup again when the editor reads it back with `textContent`.
 - Options and behaviour settings are stored without a schema check (F11 in
   [the drupal-setup findings](../drupal-setup/findings.md)). Rendering them is
   up to the site's components.
-- **CSP:** the sandbox sends `script-src 'self' 'unsafe-inline' 'unsafe-eval'`
-  (`.ddev/nginx_full/nginx-site.conf:100`), so inline handlers run. Nuxt's
-  inline payload needs `'unsafe-inline'` unless it uses nonces or hashes.
 - **Not XSS, unverified:**
   - Sibling sandboxes are same-site to each other.
   - The middleware's mutation endpoint reads any content type
@@ -516,11 +513,228 @@ One finding per round.
        hash the frontend's), and the agent docs' architecture and adapter pages.
        The adapter page's type comments called the hash part of the server
        state.
-8. **The CSP:**
-   - blökkli works under a strict CSP (no `'unsafe-eval'` for axe-core's
-     locales, nonces for what it injects);
-   - the sandbox gets one, from Nitro and from Drupal;
-   - the directives the editor needs are documented.
+8. **The CSP** (surveyed 2026-10-23). The goal: the strictest policy, so that
+   blökkli works on projects that have one.
+   - **Today:** nginx sends `script-src 'self' 'unsafe-inline' 'unsafe-eval'`
+     for every response (`.ddev/nginx_full/nginx-site.conf:100`), so inline
+     handlers run.
+   - **The probe:**
+     - a temporary Nitro plugin in `sandbox/frontend` (deleted again) sent the
+       policy below in report-only mode, with a nonce per response. It added the
+       nonce to the tags of Nuxt's head and body append, and a
+       `<meta property="csp-nonce">` for Vite;
+     - the whole E2E suite ran under it on the dev server: 1,718 reports, kept
+       in `tmp/csp-probe/reports.jsonl` (gitignored). One agent spec
+       (`features/agent/ask-then-add`) timed out under the extra requests and
+       passes alone;
+     - the policy:
+
+       ```
+       default-src 'none'; script-src 'nonce-…' 'strict-dynamic';
+       style-src 'self' 'nonce-…'; img-src 'self'; font-src 'self';
+       connect-src 'self'; frame-src 'self'; media-src 'self';
+       manifest-src 'self'; form-action 'self'; frame-ancestors 'self';
+       base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'
+       ```
+
+     - Nuxt's inline scripts and every chunk loaded with the nonce and
+       `'strict-dynamic'`. Once its styles are fixed, blökkli needs no nonce of
+       its own: the plan's premise ("nonces for what it injects") was wrong;
+     - vue-echarts' styles weren't reported: CSP doesn't cover constructable
+       stylesheets (`adoptedStyleSheets`). Nothing needed `data:`, a worker or
+       another host, except the YouTube thumbnail below.
+
+   - **blökkli's scripts:**
+     - zod 4 tries `new Function` once per editor load (`allowsEval`), and
+       compiled an object schema on three pages. Enforced, it falls back, but
+       every load sends a report. zod's switch for strict CSPs is
+       `z.config({ jitless: true })`;
+     - axe-core compiles a German, French or Italian locale's `failureSummaries`
+       with `new Function` in `axe.configure()`
+       (`features/analyze/analyzers/axe.ts:101`). Checked in Node: two calls per
+       locale, none for English or for the locale's other parts. Enforced, the
+       accessibility check fails on those pages. The suite doesn't run into it.
+   - **blökkli's styles:**
+     - TipTap adds its base CSS as a `<style>` element (`injectCSS`, on by
+       default; `components/RichText/Editor/index.vue:320`);
+     - `icons/svg/loader.svg` has a `<style>` element (its animation),
+       `icons/svg/spinner.svg` a `style="opacity: 0.3"`. The icons are rendered
+       as markup, so both are blocked.
+   - **blökkli's images:**
+     - `blob:` for the previews of the upload dialog and the clipboard;
+     - the clipboard's YouTube preview loads
+       `http://i3.ytimg.com/vi/<id>/hqdefault.jpg`
+       (`features/clipboard/DropElement/Video.vue:26`): over http, and a request
+       to Google for every pasted link.
+   - **Trusted Types** (Baseline since February 2026), sinks without a policy:
+     - blökkli's: `parseHtml()` (`helpers/html/index.ts:16`), the editable field
+       override (`composables/useEditableFieldOverride.ts:170`), and `DOMParser`
+       in `features/analyze/readability/chunkHtml.ts:96`, the readability
+       indicator
+       (`features/editable-field/Overlay/ReadabilityIndicator/index.vue:62`),
+       `features/translations/violations.ts:9` and the Drupal adapter
+       (`src/modules/drupal/runtime/adapter/index.ts:180`);
+     - the dependencies': TipTap and ProseMirror (`DOMParser`, the style
+       element), turndown (`DOMParser`), ECharts (`innerHTML = ''`) and zod
+       (`Function`). Only a `default` policy covers those, and that's the
+       project's;
+     - `v-html` goes through Vue's policy `vue`, which passes everything.
+       DOMPurify has its own.
+   - **Not blökkli's:**
+     - dev tooling, which doesn't ship: Nuxt devtools' web component (its
+       styles), Nuxt's dev error overlay (inline styles, and its markup and
+       script through `innerHTML` and `textContent`), Vue devtools (a script);
+     - Drupal's pages weren't in the probe. The node form has no inline script
+       that runs (only JSON blocks, and scripts from its own origin) and no
+       style attributes, so `script-src 'self'` covers them. The module's own JS
+       and templates add nothing inline. CKEditor 5 needs
+       `style-src 'unsafe-inline'`
+       ([CKEditor's CSP page](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/csp.html)).
+       The `csp` module's repository has a change that adds it with CKEditor's
+       libraries; not checked against a release.
+   - **Not covered yet:** the production build (Vite's preload links read the
+     nonce from `<meta property="csp-nonce">`), the framed Drupal forms (only
+     nginx's policy), ECharts' tooltips (HTML with style attributes), axe in
+     German, French or Italian.
+   - **The order** (corrected after the decisions: enforcing everything at once
+     would break the sandbox and every spec until the fixes are in):
+     1. the sandbox gets its policy from nuxt-security: `nonce: true`, the
+        policy above without Trusted Types in the build, the looser one in
+        `$development`. Its XSS validator and rate limiter are off for the
+        editor's routes, its request size limit stays as projects have it. nginx
+        stops sending its policy for Nuxt's responses. The E2E suite fails a
+        spec on any violation (`securitypolicyviolation`), except a list of the
+        known ones, each tied to its fix. The run against the build checks
+        Vite's preloading, since nuxt-security adds the `<meta>` only in dev.
+        **In progress (2026-10-23):**
+        - written: nuxt-security 2.6.0 in strict mode with the policy
+          (`sandbox/frontend/nuxt.config.ts`; the dev server's styles are
+          computed from `NODE_ENV`, since `$development` would merge the
+          arrays), HSTS off (the proxy's), the rate limiter off (behind nginx
+          every request comes from 127.0.0.1), the XSS validator off for
+          `/api/graphql_middleware/**` and `/api/blokkli/agent/**`. nginx adds
+          its policy only to responses without one
+          (`$upstream_http_content_security_policy`): Drupal's, the control
+          app's, its own. The check: `test/e2e-drupal/support/csp.ts` (the known
+          list) and `test/e2e-drupal/setup.ts` (after every test and file);
+          `openEditor`, `openPage` and the preview grant's visitor install it.
+          Proved by taking zod's entry out: the spec failed with its violation;
+        - the dev server: 431 of 431 pass. The build: 424 of 431 pass, no
+          unknown violation. Vite's preloading works without the `<meta>`;
+        - **COEP** (decided and built 2026-10-23, option 2). Strict mode sends
+          `Cross-Origin-Embedder-Policy: require-corp` in builds (its default
+          mode sends `credentialless`). Chromium then refuses to frame Drupal's
+          pages (`net::ERR_BLOCKED_BY_RESPONSE`): the frame editor, the edit
+          forms, the backend editor in the translate dialog. The seven failing
+          tests all time out on those frames. A framed page that sends COEP
+          (`credentialless` or `require-corp`) loads; checked with a faked
+          header, same origin only. Investigated (option 2: the module sends
+          COEP on the pages the editor frames):
+          - the framed pages are the module's routes under
+            `/paragraphs_blokkli/`, with `?paragraphsBlokkli=true`, and
+            `paragraphs_blokkli.redirect`, where saved forms end up.
+            `paragraphs_blokkli_preprocess_html()` already treats them as
+            framed. The module doesn't touch `X-Frame-Options`, so core's
+            `SAMEORIGIN` limits it to the same origin today;
+          - a matrix in Chromium 150 and Firefox 150 (Playwright, routes faked):
+            under an embedder with `require-corp` or `credentialless`, a framed
+            page without COEP is blocked, on any origin. On another origin (same
+            site or another site) it also needs
+            `Cross-Origin-Resource-Policy: cross-origin`. Inside the framed
+            page, Firefox blocks a cross-origin image without CORP under
+            `require-corp` and loads it under `credentialless`. Chromium loaded
+            it either way, which faked responses may cause;
+          - Safari has no `credentialless` (MDN's compat data; Chrome 96,
+            Firefox 119). It reads a framed page's `credentialless` as no COEP,
+            so under an embedder with `require-corp` (nuxt-security's strict
+            mode, which Safari supports since 15.2) it blocks the frame. An
+            embedder's `credentialless` (nuxt-security's default) it ignores, so
+            the frames load. WebKit doesn't run here (missing system libraries),
+            so that's from the docs only;
+          - two COEP headers count as none in both browsers, even with the same
+            value: a site whose web server or CDN already adds one has to turn
+            the module's off;
+          - built in the module: `FrameEmbedderPolicySubscriber` sends the
+            container parameter `paragraphs_blokkli.frame_embedder_policy`
+            (default `credentialless`; `require-corp`, or `false` for none) with
+            the main response of a route under `/paragraphs_blokkli/` or a
+            request with `paragraphsBlokkli`, error pages included, and leaves a
+            header the response already has. The module's README has a section
+            on it. `FrameEmbedderPolicySubscriberTest` (14 cases) and
+            `FrameEmbedderPolicyTest` (through the kernel; two of three failed
+            without the service);
+          - the sandbox sets `require-corp` in `sandbox/drupal/services.yml`
+            (`container_yamls` in settings.php), to match its frontend and
+            Safari. The E2E template's fingerprint now covers both service
+            files: the template caches the container. The build: 431 of 431
+            pass;
+        - found on the way: nuxt-security 2.6.0's XSS validator crashes every
+          request it checks with `xss` 1.0.16 (published 2026-10-20,
+          nuxt-security#767): `xss` is pinned to 1.0.15 in the root
+          `package.json`'s `overrides`, until nuxt-security fixes it. Its
+          `removeLoggers` does nothing under Vite 8 (it sets esbuild's `drop`,
+          which oxc ignores);
+     2. blökkli's fixes, one per round, each removing its entries from the list:
+        zod (`jitless`), axe (the locale without `failureSummaries`, the summary
+        from the translated check messages), TipTap (`injectCSS: false`, its
+        rules in the editor's CSS), the icons (the animation in the editor's
+        CSS, the opacity as an attribute), the YouTube thumbnail (https and a
+        documented host, or none);
+     3. Trusted Types: a `blokkli` policy for the editor's sinks, and a
+        DOMPurify `default` policy in the sandbox for the dependencies, as a
+        project that enforces them would have. Then the build's policy gets
+        `require-trusted-types-for 'script'`;
+     4. Drupal's pages get their policy from the `csp` module;
+     5. the docs: the directives the editor needs, and for nuxt-security the
+        routes that need its XSS validator and rate limiter off, and that it
+        adds the nonce to the rendered page too. COEP: what the module sends and
+        when to change its parameter (`require-corp` for Safari under a
+        `require-corp` frontend, `false` when the web server adds the header),
+        and that a Drupal on another origin also needs CORP and has to allow the
+        framing.
+   - **Decided** with the user, one at a time:
+     - **decided 2026-10-23:** Trusted Types are enforced in the end state.
+       blökkli's sinks get a policy `blokkli` (its parsers pass through, the
+       page gets DOMPurify's TrustedHTML). Projects need
+       `trusted-types vue dompurify blokkli default` and a `default` policy for
+       TipTap/ProseMirror, turndown and ECharts; the sandbox defines one with
+       DOMPurify, as a project would;
+     - **decided 2026-10-23:** the dev server gets a looser policy, so that Nuxt
+       devtools and the error overlay keep working: styles with
+       `'unsafe-inline'` and without the nonce, no Trusted Types. Scripts stay
+       strict (nonce and `'strict-dynamic'`), which the dev tooling passes. What
+       counts is the E2E suite against a build, which gets the full policy.
+       Found while deciding:
+       - Vite 8's overlay works under the full policy (`createElement`, and the
+         nonce from the `<meta>`);
+       - Nuxt's overlay (`my-bad`) fails on Trusted Types (Nuxt's plugin mounts
+         it with `template.innerHTML`, `my-bad` renders with `innerHTML`) and on
+         its `<style>` without a nonce; its script loaded in Chromium. Nuxt
+         devtools fails on its web component's styles and Vue devtools' injected
+         script;
+       - nuxt-security and Nuxt's pending CSP support (nuxt/nuxt#32242) keep
+         `style-src 'self' https: 'unsafe-inline'` in their strict mode, and
+         have no Trusted Types. Next.js's docs relax the policy in development;
+     - **decided 2026-10-23:** the sandbox uses nuxt-security, which is how Nuxt
+       projects mostly get a strict CSP, so its quirks show up in the sandbox.
+       Its other features are configuration (`rateLimiter: false`,
+       `xssValidator: false`, per route through `routeRules`). Found while
+       deciding (`src/runtime/nitro/plugins/40-cspSsrNonce.ts`,
+       `src/runtime/server/middleware/xssValidator.ts`; Nuxt's pending CSP
+       support has the same nonce plugin):
+       - it adds the nonce to every `<script>`, `<style>` and `<link>` of the
+         page, the rendered `body` included: a `<script>` that reaches a
+         server-rendered page through `v-html` gets the nonce and runs. The
+         editor's SPA shell has an empty `body`;
+       - it adds the `<meta property="csp-nonce">` only in dev;
+       - its XSS validator turns every GET's query and POST's body into JSON,
+         runs the `xss` library's filter over it and answers 400 if anything
+         changed: a `class` on a `<p>`, a mention's `data-` attributes, the
+         diff's `<ins>`/`<del>`, or the `<` in "Fish & Chips <3". It would
+         refuse most of the editor's GraphQL requests, which go through
+         nuxt-graphql-middleware's routes;
+       - its rate limiter allows 150 requests per IP in 5 minutes.
+
 9. **Docs:** X11, and what projects may rely on. That includes the iframes
    module: the project checks the source it frames itself (`<BlokkliIframe>`
    only passes it to the editor).

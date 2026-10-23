@@ -38,6 +38,38 @@ if (e2eBuild && process.env.IS_DDEV_HOSTED === 'true') {
 }
 const testSeams = process.env.NODE_ENV !== 'production' || e2eBuild
 
+// The dev server, as opposed to a build.
+const devServer = process.env.NODE_ENV !== 'production'
+
+// The Content-Security-Policy: the strictest that the site and the editor work
+// under, so that blökkli works on projects that have one (plans/xss, step 8).
+// nuxt-security gives Nuxt's own scripts, styles and links a nonce per
+// response. Uploads and pasted images are previewed from blob: URLs. On the dev
+// server, styles go without the nonce and may be inline, for Nuxt devtools and
+// the error overlay: what counts is the build, which GitHub runs the E2E tests
+// against. The E2E tests fail on any violation they don't know
+// (test/e2e-drupal/support/csp.ts).
+const contentSecurityPolicy = {
+  'default-src': ["'none'"],
+  'script-src': ["'nonce-{{nonce}}'", "'strict-dynamic'", "'report-sample'"],
+  'script-src-attr': ["'none'"],
+  'style-src': devServer
+    ? ["'self'", "'unsafe-inline'"]
+    : ["'self'", "'nonce-{{nonce}}'", "'report-sample'"],
+  'img-src': ["'self'", 'blob:'],
+  'font-src': ["'self'"],
+  'connect-src': ["'self'"],
+  'frame-src': ["'self'"],
+  'media-src': ["'self'"],
+  'manifest-src': ["'self'"],
+  'worker-src': false as const,
+  'form-action': ["'self'"],
+  'frame-ancestors': ["'self'"],
+  'base-uri': ["'none'"],
+  'object-src': ["'none'"],
+  'upgrade-insecure-requests': true,
+}
+
 export default defineNuxtConfig({
   // nuxt-graphql-middleware must come before blökkli, vuepal before
   // nuxt-language-negotiation.
@@ -47,8 +79,31 @@ export default defineNuxtConfig({
     'vuepal',
     'nuxt-language-negotiation',
     'nuxt-svg-icon-sprite',
+    'nuxt-security',
     '../../src/module',
   ],
+
+  // The headers of nuxt-security's strict mode, with the policy above.
+  security: {
+    strict: true,
+    headers: {
+      contentSecurityPolicy,
+      // TLS is the proxy's: ddev's router locally, the server's when hosted.
+      strictTransportSecurity: false,
+    },
+    // Behind nginx every request comes from 127.0.0.1: one limit for all
+    // users, which the E2E tests' workers exceed in minutes.
+    rateLimiter: false,
+  },
+
+  routeRules: {
+    // The editor's requests carry markup: texts, comments and imports in its
+    // GraphQL operations, and the agent's prompts. nuxt-security's XSS
+    // validator answers 400 to any request whose markup its filter would
+    // change.
+    '/api/graphql_middleware/**': { security: { xssValidator: false } },
+    '/api/blokkli/agent/**': { security: { xssValidator: false } },
+  },
 
   // Self-hosted fonts: Source Serif 4 with its optical size axis.
   css: [

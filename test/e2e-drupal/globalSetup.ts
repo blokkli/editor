@@ -15,8 +15,11 @@ const SOURCES = [
   'sandbox/drupal/web/modules/custom/blokkli_playground/src/Seed',
   // The template command (blokkli-playground:template).
   'sandbox/drupal/web/modules/custom/blokkli_playground/src/Drush',
-  // The container is baked too, with the test modules' service changes.
+  // The container is baked too, with the test modules' service changes, the
+  // module's services and parameters, and the site's parameters.
   'sandbox/drupal/paragraphs_blokkli/modules/paragraphs_blokkli_deepl/tests/modules',
+  'sandbox/drupal/paragraphs_blokkli/paragraphs_blokkli.services.yml',
+  'sandbox/drupal/services.yml',
   'sandbox/drupal/web/modules/custom/blokkli_playground/tests/modules',
   'test/e2e-drupal/content',
   '.ddev/commands/web/bake-e2e',

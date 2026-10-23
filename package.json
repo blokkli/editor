@@ -210,6 +210,7 @@
     "nuxt-easy-texts": "^2.2.0",
     "nuxt-graphql-middleware": "^5.4.0",
     "nuxt-language-negotiation": "^2.0.2",
+    "nuxt-security": "^2.6.0",
     "nuxt-svg-icon-sprite": "^2.0.2",
     "openai": "^6.17.0",
     "oxc-parser": "^0.135.0",
@@ -291,7 +292,8 @@
   },
   "overrides": {
     "lodash": "^4.17.24",
-    "vue": "^3.5.34"
+    "vue": "^3.5.34",
+    "xss": "1.0.15"
   },
   "engines": {
     "node": ">=18.0.0"

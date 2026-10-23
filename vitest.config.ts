@@ -57,6 +57,7 @@ export default defineConfig({
           include: ['test/e2e-drupal/**/*.{test,spec}.ts'],
           environment: 'node',
           globalSetup: ['test/e2e-drupal/globalSetup.ts'],
+          setupFiles: ['test/e2e-drupal/setup.ts'],
           testTimeout: onGitHub ? 45000 : 15000,
           hookTimeout: onGitHub ? 60000 : 30000,
           maxWorkers: onGitHub ? 2 : 4,

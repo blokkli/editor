@@ -3,6 +3,7 @@ import type { JSHandle, Page } from 'playwright-core'
 import type { MockScript } from '#blokkli/agent/shared/types'
 import type { BlokkliApp } from '../../../src/runtime/editor/types/app'
 import type { EntityContext } from '../../../src/runtime/types'
+import { installCspCheck } from './csp'
 import { loginPath, seedUuid } from './sandbox'
 
 /** The users of the fixtures (content/users.yml), one per role. */
@@ -60,6 +61,7 @@ export async function openEditor(
     ignoreHTTPSErrors: true,
     timezoneId: opts.timezoneId,
   })
+  await installCspCheck(page)
   await page.addInitScript(
     ({ script, entries }) => {
       localStorage.setItem('blokkli:popup:agent:closed', 'true')
@@ -83,6 +85,7 @@ export async function openPage(
   path: string,
 ): Promise<Page> {
   const page = await createPage(undefined, { ignoreHTTPSErrors: true })
+  await installCspCheck(page)
   await page.goto(url(loginPath(sandbox, user, path)))
   return page
 }
