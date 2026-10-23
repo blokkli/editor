@@ -126,7 +126,12 @@ restored:
 
 - After each turn, the server sends a `conversation_state` snapshot
 - The snapshot includes all messages, activated lazy tools, and an HMAC hash
-- On restore, the server validates the hash to prevent tampering
+- On restore, the server validates the hash to prevent tampering: the model
+  never sees a history that the client changed
+- The client saves what its panel shows alongside (`clientState`). No hash
+  covers it: it's what the user's editor saved, and a conversations admin that
+  shows it shows the user's version. The editor renders it as text and sanitised
+  markdown; don't derive anything from it
 - Conversations are limited to 7 turns for storage efficiency
 
 ## Built-in Tools

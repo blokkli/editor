@@ -151,9 +151,9 @@ agentConversations?: {
 type AgentConversationData = {
   uuid: string
   title: string
-  clientState: string // JSON-encoded client state
-  serverState: string // JSON-encoded server state (messages + hash)
-  hash: string // HMAC integrity hash
+  clientState: string // JSON-encoded client state: what the panel shows
+  serverState: string // JSON-encoded server state: messages and lazy tools
+  hash: string // The agent server's HMAC of the server state
 }
 
 type AgentConversationSummary = {
@@ -176,4 +176,6 @@ type AgentConversationSummary = {
 
 The backend is responsible for managing `createdAt` and `updatedAt` timestamps.
 The `hash` field ensures conversation integrity — the server generates it and
-validates it when restoring.
+validates it when restoring. It covers the server state only, which is what the
+model sees. The client state is what the user's editor saved, and nothing
+verifies it: a backend should store it as it is and derive nothing from it.

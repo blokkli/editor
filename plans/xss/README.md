@@ -48,6 +48,12 @@ becomes markup again when the editor reads it back with `textContent`.
   host's update access is checked for every mutation, when GraphQL loads the
   host. What a plugin changes is the site's to check; the plugin learns the
   first run (`isFirstRun()`) and uses the helper's checks.
+- **Agent conversations** (X9, accepted): the agent server refuses to restore a
+  conversation whose messages don't match its hash, so the model never sees a
+  history that a user made up. What the panel and the conversations admin show
+  (`dataUser`) is what the user's editor saved; it's rendered as text and
+  sanitised markdown (since X2's fix). The module's README, the schema and the
+  agent docs say so.
 - **Imported values** (since X14's fix) are validated as an update's are
   (`setValidFieldValue()`), in every language. What a field refuses is left out
   and listed in the import's summary.
@@ -88,29 +94,9 @@ becomes markup again when the editor reads it back with `textContent`.
 
 ## Findings
 
-| #   | Finding                                                                                                                | Project | Severity | Status    |
-| --- | ---------------------------------------------------------------------------------------------------------------------- | ------- | -------- | --------- |
-| X9  | [Agent conversations are stored as the client sends them](#x9-agent-conversations-are-stored-as-the-client-sends-them) | both    | low      | to verify |
-| X11 | [The docs and the playground render titles with `v-html`](#x11-the-docs-and-the-playground-render-titles-with-v-html)  | docs    | medium   | to verify |
-
-## X9: Agent conversations are stored as the client sends them
-
-- **Found:** 2026-10-22, by reading. Not reproduced.
-- **Symptom:** none seen. By reading: a conversation uploaded with a crafted
-  `dataUser` ran for an admin who opened it in the conversations admin, until
-  X2's fix.
-- **Cause:**
-  - `AgentConversationUpsert` stores `title`, `hash`, `dataUser` and
-    `dataServer` as sent
-    (`modules/paragraphs_blokkli_agent/src/Plugin/GraphQL/DataProducer/AgentConversationUpsert.php:124`,
-    `:146`).
-  - Drupal never checks the hash.
-  - The agent server's HMAC covers `messages` and `activatedLazyTools`, not
-    `dataUser` (`src/modules/agent/runtime/server/helpers/security.ts:57`).
-- **Impact:** low since X2's fix, which covers the rendering. It needs a request
-  made by hand from anyone who may use the agent.
-- **Fix idea:** decide whether the tamper check should cover what the admin view
-  shows.
+| #   | Finding                                                                                                               | Project | Severity | Status    |
+| --- | --------------------------------------------------------------------------------------------------------------------- | ------- | -------- | --------- |
+| X11 | [The docs and the playground render titles with `v-html`](#x11-the-docs-and-the-playground-render-titles-with-v-html) | docs    | medium   | to verify |
 
 ## X11: The docs and the playground render titles with `v-html`
 
@@ -207,6 +193,14 @@ Made with the user on 2026-10-22.
 - **The diff view's props are HTML, sanitised** (X5): escaping them would show a
   text's rich text as tags. A title with a `<` shows filtered, and nothing in it
   runs.
+- **X9: a conversation's displayed part stays unverified** (2026-10-23). A user
+  can make the conversations admin show replies the agent never gave, in their
+  own conversations. Nothing runs since X2, and a user could mislead moderators
+  with feedback as easily. Verifying in Drupal would mean reproducing the
+  browser's `JSON.stringify()` byte for byte, or changing the hash between the
+  agent server, the client and Drupal, and would still only cover the server's
+  messages, not what moderators look at. Only the agent server storing
+  conversations itself would make that trustworthy.
 - **X15: the module checks what the editor offers a transform for, not what the
   plugin changes** (2026-10-23). That's site code, which may deliberately allow
   things. The helper has the checks that the mutations run, and the plugin bases
@@ -441,7 +435,7 @@ One finding per round.
    - `features/xss/messages.test.ts` posts a text field's messages and an option
      change from a frame of its own. Both tests failed without the editor's
      checks, and the set-value check failed without `rich-text.js`'s.
-7. **The module:** X8, X10, X14, X15, X9.
+7. **The module** (done 2026-10-23): X8, X10, X14, X15, X9.
    - **X8** (done 2026-10-23):
      - the schema describes the search items' and media items' titles, texts and
        contexts as plain text;
@@ -510,6 +504,18 @@ One finding per round.
        paragraph in one, an undeclared type, a missing paragraph, too few and
        too many paragraphs, and the first run of both kinds of plugin. Eight of
        nine failed with the old mutations; a stored transform replays as it did.
+   - **X9** (accepted 2026-10-23):
+     - confirmed: the upsert stores everything as sent, and Drupal doesn't check
+       the hash, though it knows the secret (`auth_secret`, which the tokens use
+       too). The agent server checks the hash on restore
+       (`restore_conversation`). Only the owner and the two admin permissions
+       read a conversation; the admin's detail renders `dataUser` through the
+       panel's history, whose markdown goes through the sanitiser;
+     - documented in the module's README ("Conversations"), the schema's
+       descriptions of `hash`, `dataUser` and `dataServer` (which called the
+       hash the frontend's), and the agent docs' architecture and adapter pages.
+       The adapter page's type comments called the hash part of the server
+       state.
 8. **The CSP:**
    - blökkli works under a strict CSP (no `'unsafe-eval'` for axe-core's
      locales, nonces for what it injects);
