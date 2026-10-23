@@ -8,7 +8,8 @@
 # The deploy's key (SANDBOX_SSH_KEY) may only run `ddev deploy` on the server:
 # its entry in liip@starterkit.blokk.li's authorized_keys has a forced command
 # (under flock, so that deploys never overlap). The server pulls the branch
-# itself. A deploy deletes every sandbox (plans/drupal-setup/12a-server-setup.md).
+# itself. A deploy updates premium sandboxes and deletes the others
+# (plans/drupal-setup/12a-server-setup.md).
 name: CI
 
 on:

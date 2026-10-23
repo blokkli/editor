@@ -78,6 +78,76 @@ final class SandboxManager {
   }
 
   /**
+   * Copies a sandbox's database aside, so a failed update can be undone.
+   *
+   * Checkpoints the write-ahead log first: the copy is the whole database.
+   * ddev deploy does this for a premium sandbox before drush deploy.
+   */
+  public function snapshot(string $id): void {
+    $this->validate($id);
+    $database = $this->directory($id) . '/db.sqlite';
+    if (!is_file($database)) {
+      throw new \InvalidArgumentException("There's no sandbox '$id'.");
+    }
+    $target = $this->snapshotPath($id);
+    if (is_file($target)) {
+      unlink($target);
+    }
+    // A raw connection is enough: checkpointing doesn't rebuild indexes, so it
+    // doesn't need their collations. The first column is 0 when the log was
+    // fully folded into the file; otherwise the copy would be missing writes.
+    $pdo = new \PDO('sqlite:' . $database);
+    $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+    $pdo->exec('PRAGMA busy_timeout=5000');
+    $checkpoint = $pdo->query('PRAGMA wal_checkpoint(TRUNCATE)');
+    $row = $checkpoint instanceof \PDOStatement ? $checkpoint->fetch(\PDO::FETCH_NUM) : FALSE;
+    $checkpointed = is_array($row) && (int) ($row[0] ?? 1) === 0;
+    // Close first. SQLite's copy is the main file once the log is folded in
+    // and no connection has it open.
+    unset($pdo);
+    $copied = $checkpointed && copy($database, $target);
+    if (!$copied) {
+      if (is_file($target)) {
+        unlink($target);
+      }
+      throw new \RuntimeException("Couldn't snapshot the sandbox '$id'.");
+    }
+  }
+
+  /**
+   * Puts a sandbox's database back from the snapshot taken by snapshot().
+   *
+   * Drops the database the failed update wrote, including its write-ahead log.
+   */
+  public function restore(string $id): void {
+    $this->validate($id);
+    $database = $this->directory($id) . '/db.sqlite';
+    $snapshot = $this->snapshotPath($id);
+    if (!is_file($snapshot)) {
+      throw new \RuntimeException("There's no snapshot of the sandbox '$id'.");
+    }
+    foreach ([$database, "$database-wal", "$database-shm"] as $file) {
+      if (is_file($file)) {
+        unlink($file);
+      }
+    }
+    if (!rename($snapshot, $database)) {
+      throw new \RuntimeException("Couldn't restore the sandbox '$id'.");
+    }
+  }
+
+  /**
+   * Deletes a sandbox's snapshot, after its update succeeded.
+   */
+  public function discardSnapshot(string $id): void {
+    $this->validate($id);
+    $snapshot = $this->snapshotPath($id);
+    if (is_file($snapshot)) {
+      unlink($snapshot);
+    }
+  }
+
+  /**
    * The ids of the sandboxes.
    *
    * @return string[]
@@ -100,9 +170,7 @@ final class SandboxManager {
    *   NULL for a sandbox that doesn't expire (made with drush).
    */
   public function lifetime(string $id): ?array {
-    $this->validate($id);
-    $file = $this->directory($id) . '/lifetime.json';
-    $lifetime = file_exists($file) ? json_decode((string) file_get_contents($file), TRUE) : NULL;
+    $lifetime = $this->readLifetime($id);
     if (!is_int($lifetime['expires'] ?? NULL)) {
       return NULL;
     }
@@ -110,6 +178,51 @@ final class SandboxManager {
       'expires' => $lifetime['expires'],
       'idle' => is_int($lifetime['idle'] ?? NULL) ? $lifetime['idle'] : NULL,
     ];
+  }
+
+  /**
+   * Whether the sandbox is premium.
+   *
+   * This is the flag settings.php reads to decide whether the sandbox gets
+   * the agent: "premium" is true in lifetime.json. A premium sandbox survives
+   * ddev deploy; the others are deleted.
+   */
+  public function isPremium(string $id): bool {
+    $lifetime = $this->readLifetime($id);
+    return ($lifetime['premium'] ?? FALSE) === TRUE;
+  }
+
+  /**
+   * The decoded lifetime file, or NULL when the sandbox has none.
+   *
+   * Throws when the file exists but can't be read: a deploy must stop rather
+   * than treat an unreadable sandbox as not premium and delete it.
+   *
+   * @return array<string, mixed>|null
+   *   The file's JSON, or NULL when there is no file.
+   */
+  private function readLifetime(string $id): ?array {
+    $this->validate($id);
+    $file = $this->directory($id) . '/lifetime.json';
+    if (!is_file($file)) {
+      return NULL;
+    }
+    $contents = file_get_contents($file);
+    if ($contents === FALSE) {
+      throw new \RuntimeException("Couldn't read the lifetime of the sandbox '$id'.");
+    }
+    $lifetime = json_decode($contents, TRUE);
+    if (!is_array($lifetime)) {
+      throw new \RuntimeException("The lifetime of the sandbox '$id' isn't valid JSON.");
+    }
+    return $lifetime;
+  }
+
+  /**
+   * The snapshot of a sandbox's database, next to the database.
+   */
+  private function snapshotPath(string $id): string {
+    return $this->directory($id) . '/db.sqlite.snapshot';
   }
 
   /**

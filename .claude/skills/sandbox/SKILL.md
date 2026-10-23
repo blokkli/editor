@@ -282,6 +282,14 @@ sandbox/drupal/web/sites/default/files/sandboxes/<id>/   its public files
   writes `lifetime.json` when there's an expiry or `--premium`, and copies the
   database last (`.tmp`, then a rename): an existing `db.sqlite` means a
   complete sandbox. **Deleting** removes `db.sqlite` first.
+- **On deploy**, sandboxes that aren't premium are deleted. A premium one
+  (`"premium": true` in `lifetime.json`) keeps its content and files. The
+  deploy snapshots its database (`db.sqlite.snapshot`, after a checkpoint) and
+  runs `drush deploy` on it: database updates and config import. A failed
+  update restores the snapshot and stops the deploy. Its row in the control
+  app and its access links stay. The cleanup marks only the deleted sandboxes.
+  A weekly deploy still refreshes the templates' seeded dates; a premium
+  sandbox keeps the content it was created with.
 - **`lifetime.json`** (`{expires, idle, premium}`) is for Drupal: the `sandbox`
   query (the "Sandbox" button) and the agent. The agent's secret is only set on
   the dev site and in sandboxes with `"premium": true`; without it,
@@ -426,7 +434,8 @@ host, with ddev running: `bun run test:e2e-drupal` or
   revoked or gone: the claim page with `?access=unknown|gone`. The token is the
   credential: nginx doesn't log `/access/`, revoking posts it in the body.
   Revoking ends the link, not the sessions it opened. Access links die with
-  their sandbox, and `ddev deploy` deletes every sandbox.
+  their sandbox. `ddev deploy` keeps premium sandboxes, so their access links
+  stay, and deletes the others.
 - **The task `sandbox:cleanup`** runs every 5 minutes: it deletes sandboxes past
   `min(created + 24 h, last use + 2 h)` (premium: created + 21 days) and marks
   rows of sandboxes that are gone. Rows are never removed.
@@ -581,8 +590,10 @@ outgoing allowlist, monitoring): `plans/drupal-setup/12-hosted-deploy.md`.
   the submodule, runs composer and bun, and builds both apps into `.output-next`
   (`SANDBOX_OUTPUT_DIR`) while the running ones keep serving `.output`. Then it
   stops the control app (no claims while the templates change), bakes the de, fr
-  and en templates, stops the frontend, swaps the builds, deletes every sandbox
-  and restarts. A failure starts the apps it stopped again. It refuses to run
+  and en templates, stops the frontend, swaps the builds, updates premium
+  sandboxes and deletes the others, and restarts. A failure starts the apps it
+  stopped again. A failed update of a premium sandbox restores its database
+  and stops the deploy. It refuses to run
   without `IS_DDEV_HOSTED=true`, with `ddev.site` hostnames, or without the
   three secrets above, so it can't run locally. Run it again every week or so:
   seeded dates are relative to the bake.

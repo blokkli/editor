@@ -71,14 +71,60 @@ final class SandboxCommands extends DrushCommands {
   }
 
   /**
+   * Copies a sandbox's database aside, so a failed update can be undone.
+   */
+  #[CLI\Command(name: 'blokkli-sandbox:snapshot')]
+  #[CLI\Argument(name: 'id', description: 'The sandbox.')]
+  #[CLI\Usage(name: 'drush blokkli-sandbox:snapshot a1', description: 'Snapshot the database of a1.')]
+  public function snapshotSandbox(string $id): void {
+    $this->sandboxManager->snapshot($id);
+    $this->logger()->success("Wrote a snapshot of the sandbox $id.");
+  }
+
+  /**
+   * Puts a sandbox's database back from the snapshot.
+   */
+  #[CLI\Command(name: 'blokkli-sandbox:restore')]
+  #[CLI\Argument(name: 'id', description: 'The sandbox.')]
+  #[CLI\Usage(name: 'drush blokkli-sandbox:restore a1', description: 'Restore the database of a1.')]
+  public function restoreSandbox(string $id): void {
+    $this->sandboxManager->restore($id);
+    $this->logger()->success("Restored the database of the sandbox $id.");
+  }
+
+  /**
+   * Deletes a sandbox's snapshot, after its update succeeded.
+   */
+  #[CLI\Command(name: 'blokkli-sandbox:discard-snapshot')]
+  #[CLI\Argument(name: 'id', description: 'The sandbox.')]
+  #[CLI\Usage(name: 'drush blokkli-sandbox:discard-snapshot a1', description: 'Discard the snapshot of a1.')]
+  public function discardSnapshot(string $id): void {
+    $this->sandboxManager->discardSnapshot($id);
+    $this->logger()->success("Discarded the snapshot of the sandbox $id.");
+  }
+
+  /**
    * Lists the sandboxes.
    */
   #[CLI\Command(name: 'blokkli-sandbox:list')]
-  #[CLI\FieldLabels(labels: ['id' => 'Id', 'url' => 'URL'])]
-  public function listSandboxes(array $options = ['format' => 'table']): RowsOfFields {
+  #[CLI\FieldLabels(labels: ['id' => 'Id', 'url' => 'URL', 'premium' => 'Premium'])]
+  #[CLI\Option(name: 'premium', description: 'Only the premium sandboxes.')]
+  #[CLI\Usage(name: 'drush blokkli-sandbox:list --premium', description: 'List the premium sandboxes.')]
+  public function listSandboxes(array $options = ['format' => 'table', 'premium' => FALSE]): RowsOfFields {
+    $ids = $this->sandboxManager->list();
+    if ($options['premium']) {
+      $ids = array_values(array_filter(
+        $ids,
+        fn (string $id): bool => $this->sandboxManager->isPremium($id),
+      ));
+    }
     return new RowsOfFields(array_map(
-      fn (string $id): array => ['id' => $id, 'url' => $this->url($id)],
-      $this->sandboxManager->list(),
+      fn (string $id): array => [
+        'id' => $id,
+        'url' => $this->url($id),
+        'premium' => $this->sandboxManager->isPremium($id) ? 'yes' : 'no',
+      ],
+      $ids,
     ));
   }
 

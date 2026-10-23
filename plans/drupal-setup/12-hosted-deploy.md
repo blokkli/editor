@@ -175,7 +175,8 @@ From chunk 09 (2026-10-02):
   - the Turnstile keys
 - **`sandbox/control/.data/`** holds the sandboxes and the invitations. It must
   survive deploys.
-- **The deploy deletes all sandboxes.** The cleanup then marks their rows as
-  deleted.
+- **The deploy deletes sandboxes that aren't premium.** A premium one keeps
+  its content and files; the deploy updates its database. The cleanup then
+  marks the deleted rows. A premium sandbox's row and access links stay.
 - **Nitro's dev server runs tasks at `/_nitro/tasks/<name>`,** for anyone. It's
   one more reason never to run `nuxi dev` hosted.

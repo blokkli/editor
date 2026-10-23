@@ -219,7 +219,8 @@ curl -sI https://blokkli-control.dev-sandbox.blokk.li -H 'X-Forwarded-Host: evil
   logs to `~/sandbox-cron.log`. `liip`'s crontab, under the GitHub deploy's
   lock:
   `0 4 * * 1 /usr/bin/flock /tmp/blokkli-deploy.lock /home/liip/bin/sandbox-weekly.sh`
-  (Mondays 04:00, Europe/Zurich). It deletes every sandbox.
+  (Mondays 04:00, Europe/Zurich). It updates premium sandboxes and deletes the
+  others.
 - After a reboot (2026-10-19): unattended-upgrades reboots the server at 02:00
   for a new kernel (`Automatic-Reboot-Time`), and nothing started the project
   again, so the first weekly run found it down. `@reboot` now runs
@@ -235,4 +236,4 @@ curl -sI https://blokkli-control.dev-sandbox.blokk.li -H 'X-Forwarded-Host: evil
   workflow"). Its secrets `SANDBOX_SSH_KEY` and `SANDBOX_KNOWN_HOSTS` hold a key
   of its own, whose entry in `liip`'s `authorized_keys` forces the command:
   `command="flock /tmp/blokkli-deploy.lock sh -c \"cd /home/liip/sandbox && /usr/bin/ddev deploy\"",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ssh-ed25519 … github-actions deploy blokkli/editor`.
-  Every deploy deletes all sandboxes, premium ones included.
+  A deploy updates premium sandboxes and deletes the others.

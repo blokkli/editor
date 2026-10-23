@@ -39,9 +39,6 @@ Statuses: `todo`, `in progress`.
   premium sandbox's lifetime from the admin page; "Revoke and log out" (a
   `blokkli-sandbox:logout <id> <user>` drush command), since revoking leaves the
   sessions a link opened.
-- **Deploys that keep premium sandboxes.** `ddev deploy` deletes every sandbox,
-  on every push to `dev` and weekly, and with them their access links. Premium
-  sandboxes (21 days, handed to customers) need to survive it: a plan of its own.
 
 ## Features that need their own plan
 
