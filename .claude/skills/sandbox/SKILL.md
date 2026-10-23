@@ -99,9 +99,13 @@ Traefik sends every hostname to the web container's nginx on port 80.
     (`sandbox/frontend/nuxt.config.ts`): a nonce per response,
     `'strict-dynamic'`, no `'unsafe-inline'` or `'unsafe-eval'`. The dev server
     allows inline styles, for Nuxt devtools and the error overlay; a build
-    doesn't. Builds also send `Cross-Origin-Embedder-Policy: require-corp`, so
-    the Drupal pages the editor frames send it too
-    (`sandbox/drupal/services.yml`, `paragraphs_blokkli.frame_embedder_policy`);
+    doesn't. A build enforces Trusted Types
+    (`trusted-types vue dompurify blokkli default`): the editor's markup comes
+    with its policy, the dependencies' through the page's `default` policy
+    (`app/plugins/trustedTypes.client.ts`, DOMPurify). Builds also send
+    `Cross-Origin-Embedder-Policy: require-corp`, so the Drupal pages the editor
+    frames send it too (`sandbox/drupal/services.yml`,
+    `paragraphs_blokkli.frame_embedder_policy`);
   - every other response gets nginx's from `headers.inc`, only if the upstream
     sent none: Drupal's pages (a loose one), the control app's, nginx's own.
   - nuxt-security's XSS validator is off for the editor's routes (it refuses

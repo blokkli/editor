@@ -68,16 +68,17 @@ const contentSecurityPolicy = {
   'frame-ancestors': ["'self'"],
   'base-uri': ["'none'"],
   'object-src': ["'none'"],
+  // Trusted Types: the editor's markup comes with its policy, `blokkli`, its
+  // dependencies' through the page's `default`
+  // (app/plugins/trustedTypes.client.ts). Vue's and DOMPurify's own policies
+  // are `vue` and `dompurify`. Not on the dev server, where Nuxt's error
+  // overlay and devtools pass strings.
+  'require-trusted-types-for': devServer ? (false as const) : "'script'",
+  'trusted-types': devServer
+    ? (false as const)
+    : ['vue', 'dompurify', 'blokkli', 'default'],
   'upgrade-insecure-requests': true,
 }
-
-// Trusted Types (plans/xss, step 8.3), reported but not enforced yet: the E2E
-// tests against the build list what would throw. nuxt-security sends no
-// report-only policy, so it's a header of its own.
-const trustedTypesReportOnly = [
-  "require-trusted-types-for 'script'",
-  'trusted-types vue dompurify blokkli default',
-].join('; ')
 
 export default defineNuxtConfig({
   // nuxt-graphql-middleware must come before blökkli, vuepal before
@@ -112,15 +113,6 @@ export default defineNuxtConfig({
     // change.
     '/api/graphql_middleware/**': { security: { xssValidator: false } },
     '/api/blokkli/agent/**': { security: { xssValidator: false } },
-    ...(devServer
-      ? {}
-      : {
-          '/**': {
-            headers: {
-              'Content-Security-Policy-Report-Only': trustedTypesReportOnly,
-            },
-          },
-        }),
   },
 
   // Self-hosted fonts: Source Serif 4 with its optical size axis.

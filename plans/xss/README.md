@@ -801,6 +801,25 @@ One finding per round.
           `BlockPreviewRenderer` ("make reusable", "create template") has a
           spec;
 
+        **Round 2, done (2026-10-23):**
+        - the sandbox's `default` policy (`app/plugins/trustedTypes.client.ts`)
+          gives a string DOMPurify's result, as a project's would. turndown
+          wraps its markup in `<x-turndown id="turndown-root">` and looks it up
+          again, so DOMPurify keeps that tag (`ADD_TAGS`). DOMPurify's own
+          policy (`dompurify`) parses for it, so the default policy doesn't call
+          itself;
+        - `support/csp.ts` wraps `trustedTypes.createPolicy()` for `default` in
+          the test's init script and records every call, with the sink, the
+          value's beginning and the calling frame. `DEPENDENCIES` expects
+          TipTap's, turndown's and ECharts'; any other call fails the test.
+          Checked against a build with `chunkHtml()` back on `new DOMParser()`:
+          the editor on the page "Blocks" reported its texts (the page "Blank"
+          has none, and passed);
+        - the build's policy has `require-trusted-types-for 'script'` and
+          `trusted-types vue dompurify blokkli default`, the dev server neither.
+          The report-only header is gone, and the known list is empty again;
+        - the build: 432 of 432 pass;
+
      4. Drupal's pages get their policy from the `csp` module;
      5. the docs: the directives the editor needs, and for nuxt-security the
         routes that need its XSS validator and rate limiter off, and that it
@@ -810,7 +829,9 @@ One finding per round.
         and that a Drupal on another origin also needs CORP and has to allow the
         framing. That the agent module sets zod's `jitless` for the whole
         client, and that the clipboard's YouTube thumbnail needs
-        `img-src https://i.ytimg.com`.
+        `img-src https://i.ytimg.com`. Trusted Types: `blokkli` in
+        `trusted-types` (and `vue` for Vue's), and a `default` policy for
+        TipTap, turndown (which needs its `<x-turndown>` kept) and ECharts.
 
    - **Decided** with the user, one at a time:
      - **decided 2026-10-23:** Trusted Types are enforced in the end state.

@@ -163,10 +163,11 @@ install it; a page made with `createPage` needs `installCspCheck(page)`.
   violates the policy: a `<style>` element or a `style` attribute in markup
   (`v-html`, the SVG icons; Vue's `:style` is fine), `new Function`, an image
   from another host.
-- The build also reports Trusted Types, without enforcing them: markup given to
-  `innerHTML` or `DOMParser` as a string. The editor's code goes through
+- The build enforces Trusted Types. The editor's code passes markup through
   `helpers/html` (`parseHtmlDocument()`, `setSanitizedHtml()`, …), which has its
-  policy; `KNOWN` has the dependencies' sinks.
+  policy. A string given to `innerHTML` or `DOMParser` goes to the page's
+  `default` policy instead: the check records every call of it, and only the
+  dependencies' (`DEPENDENCIES`: TipTap, turndown, ECharts) are expected.
 - Markup can't run script under the policy: a place that renders content as
   markup shows up as a blocked inline handler, rather than as a canary that ran.
 - The dev server allows inline styles (Nuxt devtools, the error overlay), so a
