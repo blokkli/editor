@@ -285,6 +285,15 @@
       @apply font-bold;
     }
 
+    /* A quote, in the titles' serif, set off by a line. */
+    blockquote {
+      @apply flex flex-col gap-4 border-l-4 border-primary pl-5 font-serif text-lead;
+
+      .on-dark & {
+        @apply border-on-dark;
+      }
+    }
+
     ul {
       @apply list-disc pl-6;
     }
