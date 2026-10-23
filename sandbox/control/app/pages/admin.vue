@@ -5,7 +5,7 @@
     <section class="flex flex-col gap-4">
       <h2 class="font-serif text-h2">Invitations</h2>
       <p class="max-w-content">
-        Each link creates one premium sandbox (7 days), without the captcha and
+        Each link creates one premium sandbox (21 days), without the captcha and
         the limits.
       </p>
       <form class="flex flex-wrap items-end gap-3" @submit.prevent="invite">

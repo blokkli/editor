@@ -25,7 +25,7 @@ export const CLAIM_TEXTS: Record<Language, Texts> = {
       'Get your own copy of the website of Blockingen, a fictional Swiss municipality, and edit it with blökkli. You work as Anna Keller, an editor.',
     lifetime:
       'Your sandbox is deleted after 24 hours, or after 2 hours without use. Nobody else has access to it.',
-    premium: 'Premium invitation: your sandbox lasts 7 days.',
+    premium: 'Premium invitation: your sandbox lasts 21 days.',
     languageTitle: 'Language',
     languageDescription:
       'Your sandbox’s content is written in this language. The other two are its translations.',
@@ -53,7 +53,7 @@ export const CLAIM_TEXTS: Record<Language, Texts> = {
       'Sie erhalten eine eigene Kopie der Website von Blockingen, einer fiktiven Schweizer Gemeinde, und bearbeiten sie mit blökkli. Sie arbeiten als Anna Keller, Redaktorin.',
     lifetime:
       'Ihre Sandbox wird nach 24 Stunden gelöscht, oder nach 2 Stunden ohne Nutzung. Niemand sonst hat Zugriff darauf.',
-    premium: 'Premium-Einladung: Ihre Sandbox bleibt 7 Tage bestehen.',
+    premium: 'Premium-Einladung: Ihre Sandbox bleibt 21 Tage bestehen.',
     languageTitle: 'Sprache',
     languageDescription:
       'Die Inhalte Ihrer Sandbox sind in dieser Sprache verfasst. Die anderen beiden sind Übersetzungen.',
@@ -84,7 +84,7 @@ export const CLAIM_TEXTS: Record<Language, Texts> = {
       'Vous recevez votre propre copie du site web de Bloquens, une commune suisse fictive, et vous la modifiez avec blökkli. Vous travaillez en tant qu’Anna Keller, rédactrice.',
     lifetime:
       'Votre sandbox est supprimée après 24 heures, ou après 2 heures sans utilisation. Personne d’autre n’y a accès.',
-    premium: 'Invitation premium : votre sandbox reste disponible 7 jours.',
+    premium: 'Invitation premium : votre sandbox reste disponible 21 jours.',
     languageTitle: 'Langue',
     languageDescription:
       'Les contenus de votre sandbox sont rédigés dans cette langue. Les deux autres en sont les traductions.',

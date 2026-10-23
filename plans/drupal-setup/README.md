@@ -41,7 +41,7 @@ Statuses: `todo`, `in progress`.
   sessions a link opened.
 - **Deploys that keep premium sandboxes.** `ddev deploy` deletes every sandbox,
   on every push to `dev` and weekly, and with them their access links. Premium
-  sandboxes (7 days, handed to customers) need to survive it: a plan of its own.
+  sandboxes (21 days, handed to customers) need to survive it: a plan of its own.
 
 ## Features that need their own plan
 
