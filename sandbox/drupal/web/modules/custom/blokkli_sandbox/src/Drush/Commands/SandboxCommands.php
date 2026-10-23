@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Drupal\blokkli_sandbox\Drush\Commands;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Consolidation\SiteAlias\SiteAlias;
+use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\blokkli_sandbox\SandboxManager;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
@@ -12,7 +14,7 @@ use Drush\Commands\DrushCommands;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Creates, deletes and lists the sandboxes.
+ * Creates, updates, deletes and lists the sandboxes.
  *
  * Run them on the default site (no --uri). A sandbox's URL is its id as a
  * subdomain of the default site's.
@@ -24,6 +26,7 @@ final class SandboxCommands extends DrushCommands {
   public function __construct(
     private readonly SandboxManager $sandboxManager,
     private readonly RequestStack $requestStack,
+    private readonly SiteAliasManagerInterface $siteAliasManager,
   ) {
     parent::__construct();
   }
@@ -68,6 +71,25 @@ final class SandboxCommands extends DrushCommands {
   public function deleteSandbox(string $id): void {
     $this->sandboxManager->delete($id);
     $this->logger()->success("Deleted the sandbox $id.");
+  }
+
+  /**
+   * Updates a sandbox to the code: `drush deploy` on its site.
+   *
+   * Database updates, config import, cache rebuild and deploy hooks. The
+   * sandbox keeps its content and files.
+   */
+  #[CLI\Command(name: 'blokkli-sandbox:update')]
+  #[CLI\Argument(name: 'id', description: 'The sandbox.')]
+  #[CLI\Usage(name: 'drush blokkli-sandbox:update a1', description: 'Update the sandbox a1.')]
+  public function updateSandbox(string $id): void {
+    if (!in_array($id, $this->sandboxManager->list(), TRUE)) {
+      throw new \InvalidArgumentException("There's no sandbox '$id'.");
+    }
+    $sandbox = new SiteAlias(['uri' => $this->url($id)] + $this->siteAliasManager->getSelf()->export(), "@$id");
+    $process = $this->processManager()->drush($sandbox, 'deploy', [], ['yes' => TRUE]);
+    $process->mustRun($process->showRealtime());
+    $this->logger()->success("Updated the sandbox $id.");
   }
 
   /**
