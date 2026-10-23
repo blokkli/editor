@@ -74,24 +74,11 @@ final class SandboxCommands extends DrushCommands {
    * Lists the sandboxes.
    */
   #[CLI\Command(name: 'blokkli-sandbox:list')]
-  #[CLI\FieldLabels(labels: ['id' => 'Id', 'url' => 'URL', 'premium' => 'Premium'])]
-  #[CLI\Option(name: 'premium', description: 'Only the premium sandboxes.')]
-  #[CLI\Usage(name: 'drush blokkli-sandbox:list --premium', description: 'List the premium sandboxes.')]
-  public function listSandboxes(array $options = ['format' => 'table', 'premium' => FALSE]): RowsOfFields {
-    $ids = $this->sandboxManager->list();
-    if ($options['premium']) {
-      $ids = array_values(array_filter(
-        $ids,
-        fn (string $id): bool => $this->sandboxManager->isPremium($id),
-      ));
-    }
+  #[CLI\FieldLabels(labels: ['id' => 'Id', 'url' => 'URL'])]
+  public function listSandboxes(array $options = ['format' => 'table']): RowsOfFields {
     return new RowsOfFields(array_map(
-      fn (string $id): array => [
-        'id' => $id,
-        'url' => $this->url($id),
-        'premium' => $this->sandboxManager->isPremium($id) ? 'yes' : 'no',
-      ],
-      $ids,
+      fn (string $id): array => ['id' => $id, 'url' => $this->url($id)],
+      $this->sandboxManager->list(),
     ));
   }
 

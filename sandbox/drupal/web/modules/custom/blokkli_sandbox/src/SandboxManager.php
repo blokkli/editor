@@ -100,7 +100,9 @@ final class SandboxManager {
    *   NULL for a sandbox that doesn't expire (made with drush).
    */
   public function lifetime(string $id): ?array {
-    $lifetime = $this->readLifetime($id);
+    $this->validate($id);
+    $file = $this->directory($id) . '/lifetime.json';
+    $lifetime = file_exists($file) ? json_decode((string) file_get_contents($file), TRUE) : NULL;
     if (!is_int($lifetime['expires'] ?? NULL)) {
       return NULL;
     }
@@ -108,44 +110,6 @@ final class SandboxManager {
       'expires' => $lifetime['expires'],
       'idle' => is_int($lifetime['idle'] ?? NULL) ? $lifetime['idle'] : NULL,
     ];
-  }
-
-  /**
-   * Whether the sandbox is premium.
-   *
-   * This is the flag settings.php reads to decide whether the sandbox gets
-   * the agent: "premium" is true in lifetime.json. A premium sandbox survives
-   * ddev deploy; the others are deleted.
-   */
-  public function isPremium(string $id): bool {
-    $lifetime = $this->readLifetime($id);
-    return ($lifetime['premium'] ?? FALSE) === TRUE;
-  }
-
-  /**
-   * The decoded lifetime file, or NULL when the sandbox has none.
-   *
-   * Throws when the file exists but can't be read: a deploy must stop rather
-   * than treat an unreadable sandbox as not premium and delete it.
-   *
-   * @return array<string, mixed>|null
-   *   The file's JSON, or NULL when there is no file.
-   */
-  private function readLifetime(string $id): ?array {
-    $this->validate($id);
-    $file = $this->directory($id) . '/lifetime.json';
-    if (!is_file($file)) {
-      return NULL;
-    }
-    $contents = file_get_contents($file);
-    if ($contents === FALSE) {
-      throw new \RuntimeException("Couldn't read the lifetime of the sandbox '$id'.");
-    }
-    $lifetime = json_decode($contents, TRUE);
-    if (!is_array($lifetime)) {
-      throw new \RuntimeException("The lifetime of the sandbox '$id' isn't valid JSON.");
-    }
-    return $lifetime;
   }
 
   /**
