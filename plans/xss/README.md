@@ -592,10 +592,11 @@ One finding per round.
        ([CKEditor's CSP page](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/csp.html)).
        The `csp` module's repository has a change that adds it with CKEditor's
        libraries; not checked against a release.
-   - **Not covered yet:** the production build (Vite's preload links read the
-     nonce from `<meta property="csp-nonce">`), the framed Drupal forms (only
-     nginx's policy), ECharts' tooltips (HTML with style attributes), axe in
-     German, French or Italian.
+   - **Not covered by the probe:** the production build (Vite's preload links
+     read the nonce from `<meta property="csp-nonce">`), the framed Drupal forms
+     (only nginx's policy), ECharts' tooltips (HTML with style attributes), axe
+     in German, French or Italian. The build is covered since step 1, axe in
+     German since step 2.
    - **The order** (corrected after the decisions: enforcing everything at once
      would break the sandbox and every spec until the fixes are in):
      1. the sandbox gets its policy from nuxt-security: `nonce: true`, the
@@ -606,7 +607,7 @@ One finding per round.
         spec on any violation (`securitypolicyviolation`), except a list of the
         known ones, each tied to its fix. The run against the build checks
         Vite's preloading, since nuxt-security adds the `<meta>` only in dev.
-        **In progress (2026-10-23):**
+        **Done (2026-10-23):**
         - written: nuxt-security 2.6.0 in strict mode with the policy
           (`sandbox/frontend/nuxt.config.ts`; the dev server's styles are
           computed from `NODE_ENV`, since `$development` would merge the
@@ -674,12 +675,57 @@ One finding per round.
           `package.json`'s `overrides`, until nuxt-security fixes it. Its
           `removeLoggers` does nothing under Vite 8 (it sets esbuild's `drop`,
           which oxc ignores);
-     2. blökkli's fixes, one per round, each removing its entries from the list:
-        zod (`jitless`), axe (the locale without `failureSummaries`, the summary
-        from the translated check messages), TipTap (`injectCSS: false`, its
-        rules in the editor's CSS), the icons (the animation in the editor's
-        CSS, the opacity as an attribute), the YouTube thumbnail (https and a
-        documented host, or none);
+     2. blökkli's fixes, each removing its entries from the list. **Done
+        (2026-10-23)**, all five in one round; the list is empty:
+        - zod: the agent module's client plugin
+          (`src/modules/agent/runtime/app/plugins/zod.ts`) sets
+          `z.config({ jitless: true })` when the app starts. In the agent
+          feature's setup it came too late: each schema reads the setting when
+          it's built, and the sandbox's `test-cases` feature imports every tool
+          (`mcpTools`) with the editor's main chunk. The editor's entry can't
+          set it either: the package is `"sideEffects": false`, so a bundler may
+          drop an import that's only there for its side effect. The setting is
+          zod's global one, on every page of the project (client only; the
+          server keeps compiling);
+        - axe: the locale's failure summaries are passed as functions, which axe
+          takes as they are (`withoutTemplates()` in
+          `features/analyze/analyzers/axe.ts`): the heading from the template,
+          then the messages as axe's template indents them. A summary of another
+          shape is left out, and axe uses its English one. `axe.spec.ts` runs
+          axe in jsdom with de, fr and it, compiled and not: the same summaries
+          of both kinds, no `new Function` (it failed with two calls per locale
+          without the fix). `test/e2e-drupal/features/analyze/axe.test.ts` runs
+          the analysis on the German translation under the policy (the button
+          got `data-test="analyze-run"`); without the fix it failed on the eval
+          violation and got no results;
+        - TipTap: `injectCSS: false`, its base CSS in
+          `css/partials/rich-text.css`. ProseMirror's classes are attribute
+          selectors (`[class~='ProseMirror-gapcursor']`): the build prefixes
+          every class selector that doesn't start with `bk-`. Checked in the
+          editor: the computed styles apply, and there's no style element;
+        - the icons: `loader.svg` animates with SMIL (`<animate>`), which CSP
+          doesn't cover; the radii match the CSS animation's at every 50 ms, in
+          Chromium and Firefox. `spinner.svg` has `opacity="0.3"`;
+        - the YouTube thumbnail comes over https from `i.ytimg.com` (decided
+          with the user: keep it). The sandbox's `img-src` allows the host, and
+          `openEditor` answers its requests with an image of the fixtures, so
+          the tests don't reach YouTube. An image that doesn't load (a policy
+          without the host) is hidden: the item shows the provider's icon and
+          the URL, as Vimeo's and TikTok's do. The paste spec checks that the
+          thumbnail loads; with the old `http://i3.ytimg.com` it failed (the
+          policy upgrades it to https, and blocks the host);
+        - the e2e-testing, styles and icons skills say what the policy blocks;
+        - found on the way:
+          - blökkli's Vite plugin finds an SFC's style blocks with a regex
+            (`src/build/mangleTransform.ts:380`), so the text `<style>` in a
+            script comment took the template for CSS, and the component didn't
+            compile. Worked around (the comment says "style element"), not
+            fixed;
+          - axe gets the content's language, not the interface's, and keeps the
+            locale of its first run when the language changes;
+          - the sandbox's pages have no `<title>` (axe's `document-title`);
+          - the placeholder rule in `rich-text.css` is dead: the rich text
+            editor has no placeholder extension;
      3. Trusted Types: a `blokkli` policy for the editor's sinks, and a
         DOMPurify `default` policy in the sandbox for the dependencies, as a
         project that enforces them would have. Then the build's policy gets
@@ -691,7 +737,9 @@ One finding per round.
         when to change its parameter (`require-corp` for Safari under a
         `require-corp` frontend, `false` when the web server adds the header),
         and that a Drupal on another origin also needs CORP and has to allow the
-        framing.
+        framing. That the agent module sets zod's `jitless` for the whole
+        client, and that the clipboard's YouTube thumbnail needs
+        `img-src https://i.ytimg.com`.
    - **Decided** with the user, one at a time:
      - **decided 2026-10-23:** Trusted Types are enforced in the end state.
        blökkli's sinks get a policy `blokkli` (its parsers pass through, the

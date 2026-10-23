@@ -44,7 +44,8 @@ const devServer = process.env.NODE_ENV !== 'production'
 // The Content-Security-Policy: the strictest that the site and the editor work
 // under, so that blökkli works on projects that have one (plans/xss, step 8).
 // nuxt-security gives Nuxt's own scripts, styles and links a nonce per
-// response. Uploads and pasted images are previewed from blob: URLs. On the dev
+// response. Uploads and pasted images are previewed from blob: URLs, a pasted
+// YouTube link with its thumbnail from YouTube's image host. On the dev
 // server, styles go without the nonce and may be inline, for Nuxt devtools and
 // the error overlay: what counts is the build, which GitHub runs the E2E tests
 // against. The E2E tests fail on any violation they don't know
@@ -56,7 +57,7 @@ const contentSecurityPolicy = {
   'style-src': devServer
     ? ["'self'", "'unsafe-inline'"]
     : ["'self'", "'nonce-{{nonce}}'", "'report-sample'"],
-  'img-src': ["'self'", 'blob:'],
+  'img-src': ["'self'", 'blob:', 'https://i.ytimg.com'],
   'font-src': ["'self'"],
   'connect-src': ["'self'"],
   'frame-src': ["'self'"],

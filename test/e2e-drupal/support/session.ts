@@ -4,7 +4,7 @@ import type { MockScript } from '#blokkli/agent/shared/types'
 import type { BlokkliApp } from '../../../src/runtime/editor/types/app'
 import type { EntityContext } from '../../../src/runtime/types'
 import { installCspCheck } from './csp'
-import { loginPath, seedUuid } from './sandbox'
+import { loginPath, ROOT, seedUuid } from './sandbox'
 
 /** The users of the fixtures (content/users.yml), one per role. */
 export type TestUser =
@@ -20,6 +20,8 @@ export type TestUser =
 export function editorPath(path: string, nodeKey: string): string {
   return `${path}?blokkliEditing=${seedUuid('node', nodeKey)}`
 }
+
+const YOUTUBE_THUMBNAIL = `${ROOT}test/e2e-drupal/content/files/images/hills.jpg`
 
 /** The page "Blocks" (content/nodes/blocks.yml) in the editor. */
 export const BLOCKS_EDITOR_PATH = editorPath('/en/blocks', 'blocks')
@@ -62,6 +64,11 @@ export async function openEditor(
     timezoneId: opts.timezoneId,
   })
   await installCspCheck(page)
+  // The clipboard's YouTube thumbnails (DropElement/Video.vue): an image of the
+  // fixtures, instead of a request to YouTube.
+  await page.route('https://i.ytimg.com/**', (route) =>
+    route.fulfill({ path: YOUTUBE_THUMBNAIL }),
+  )
   await page.addInitScript(
     ({ script, entries }) => {
       localStorage.setItem('blokkli:popup:agent:closed', 'true')

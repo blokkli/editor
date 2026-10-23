@@ -5,6 +5,7 @@
         <button
           class="bk-button bk-scheme-accent w-full"
           :disabled="buttonDisabled"
+          data-test="analyze-run"
           @click.prevent="onClick"
         >
           {{ $t('analyzeButtonLabel', 'Analyze Page') }}

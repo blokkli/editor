@@ -49,16 +49,56 @@ function mapAxeResults(
   return results.map((v) => mapAxeResult(v, status))
 }
 
-async function getLocale(langcode: string): Promise<Locale | null> {
+/**
+ * A locale as axe reads it. Its type leaves out the failure summaries: the
+ * text above a node's failing checks.
+ */
+type AxeLocale = Locale & {
+  failureSummaries?: Record<
+    string,
+    { failureMessage: string | ((messages: string[]) => string) }
+  >
+}
+
+/**
+ * The template of a locale's failure summary: the heading, then each message
+ * indented. axe compiles templates with `new Function`, which a strict
+ * Content-Security-Policy blocks (axe.configure then throws).
+ */
+const FAILURE_SUMMARY =
+  /^([^{]*)\{\{~it:value\}\}\n {2}\{\{=value\.split\('\\n'\)\.join\('\\n {2}'\)\}\}\{\{~\}\}$/
+
+/**
+ * Passes the failure summaries as functions, which axe takes as they are. A
+ * summary of another shape is left out: axe then uses its English one.
+ */
+export function withoutTemplates(locale: AxeLocale): AxeLocale {
+  const failureSummaries: NonNullable<AxeLocale['failureSummaries']> = {}
+  for (const [key, summary] of Object.entries(locale.failureSummaries ?? {})) {
+    const template = summary.failureMessage
+    const heading =
+      typeof template === 'string' ? template.match(FAILURE_SUMMARY)?.[1] : null
+    if (typeof heading === 'string') {
+      failureSummaries[key] = {
+        failureMessage: (messages) =>
+          heading +
+          messages.map((m) => '\n  ' + m.split('\n').join('\n  ')).join(''),
+      }
+    }
+  }
+  return { ...locale, failureSummaries }
+}
+
+async function getLocale(langcode: string): Promise<AxeLocale | null> {
   if (langcode === 'de') {
     const de = await import('axe-core/locales/de.json')
-    return de.default as unknown as Locale
+    return withoutTemplates(de.default as unknown as AxeLocale)
   } else if (langcode === 'fr') {
     const fr = await import('axe-core/locales/fr.json')
-    return fr.default as unknown as Locale
+    return withoutTemplates(fr.default as unknown as AxeLocale)
   } else if (langcode === 'it') {
     const it = await import('axe-core/locales/it.json')
-    return it.default as unknown as Locale
+    return withoutTemplates(it.default as unknown as AxeLocale)
   }
 
   return null

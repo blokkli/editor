@@ -26,36 +26,11 @@ declare global {
   }
 }
 
-/** The violations known today, each until its fix removes it. */
-const KNOWN: { fix: string; matches: (v: CspViolation) => boolean }[] = [
-  {
-    // It tries `new Function` once, and falls back.
-    fix: "zod's eval probe: z.config({ jitless: true })",
-    matches: (v) =>
-      v.blocked === 'eval' && v.sample.startsWith('(function anonymous(\n) {'),
-  },
-  {
-    fix: "TipTap's base CSS: injectCSS: false",
-    matches: (v) =>
-      v.directive === 'style-src-elem' && v.sample.startsWith('.ProseMirror {'),
-  },
-  {
-    fix: "loader.svg's <style>",
-    matches: (v) =>
-      v.directive === 'style-src-elem' && v.sample.startsWith('.spinner_b2T7{'),
-  },
-  {
-    fix: "spinner.svg's style attribute",
-    matches: (v) =>
-      v.directive === 'style-src-attr' && v.sample === 'opacity: 0.3',
-  },
-  {
-    fix: "the clipboard's YouTube thumbnail",
-    matches: (v) =>
-      v.directive === 'img-src' &&
-      /^https?:\/\/i3\.ytimg\.com\//.test(v.blocked),
-  },
-]
+/**
+ * The violations known today, each until its fix removes it: an entry names
+ * its fix and matches its violations. None at the moment.
+ */
+const KNOWN: { fix: string; matches: (v: CspViolation) => boolean }[] = []
 
 const violations: CspViolation[] = []
 

@@ -1,4 +1,4 @@
-import { addServerHandler, createResolver } from '@nuxt/kit'
+import { addPlugin, addServerHandler, createResolver } from '@nuxt/kit'
 import { fileURLToPath } from 'node:url'
 import * as path from 'node:path'
 import { defineBlokkliModule } from '../defineBlokkliModule'
@@ -201,6 +201,12 @@ export default defineNuxtConfig({
         mcpToolsCollector: mcpTools,
       }),
     )
+
+    // zod without compiling, for strict CSPs (runtime/app/plugins/zod.ts).
+    addPlugin({
+      src: moduleResolver.resolve('./runtime/app/plugins/zod'),
+      mode: 'client',
+    })
 
     // Add server handler for WebSocket
     addServerHandler({

@@ -159,8 +159,10 @@ The frontend sends a strict Content-Security-Policy (the sandbox skill,
 `setup.ts` checks after every test and every file. `openEditor` and `openPage`
 install it; a page made with `createPage` needs `installCspCheck(page)`.
 
-- A violation the editor causes today is in `KNOWN`, with its fix. The fix
-  removes the entry.
+- `KNOWN` lists violations that stay until their fix, each with its fix; it's
+  empty today. What violates the policy: a `<style>` element or a `style`
+  attribute in markup (`v-html`, the SVG icons; Vue's `:style` is fine),
+  `new Function`, an image from another host.
 - Markup can't run script under the policy: a place that renders content as
   markup shows up as a blocked inline handler, rather than as a canary that ran.
 - The dev server allows inline styles (Nuxt devtools, the error overlay), so a
@@ -200,7 +202,8 @@ matches either; assert exact: `getAttribute === 'true'`.
 - `openEditor(sandbox, user, path, { mockScript?, timezoneId?, localStorage? })`
   — logs the user in, pre-dismisses the `agent`/`tour` popups, always gives the
   agent a mock script (default `[]`; `[{ type: 'restore' }]` to test the restore
-  of a conversation), waits for the editor.
+  of a conversation), waits for the editor. It answers requests to YouTube's
+  image host (the clipboard's thumbnails) with an image of the fixtures.
 - `openPage(sandbox, user, path)` — logs the user in and opens the path outside
   the editor, e.g. to check what visitors see.
 - `editorPath('/en/blocks', 'blocks')` — a seeded node's path in the editor;

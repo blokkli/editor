@@ -186,7 +186,12 @@ element.classList.add(tw('flex pt-5'))
   apply them.
 - All CSS is **scoped to `.bk`** container via PostCSS replace plugin
 - Utility class selectors are mangled and scoped: `.flex` →
-  `.bk ._bk_flex, .bk._bk_flex`
+  `.bk ._bk_flex, .bk._bk_flex`. Every class that doesn't start with `bk-` is, a
+  library's too: select those with an attribute selector
+  (`[class~='ProseMirror-gapcursor']`, `css/partials/rich-text.css`)
+- No CSS at runtime: a strict Content-Security-Policy blocks `<style>` elements
+  and `style` attributes in markup (the SVG icons included). A library's CSS
+  goes into the editor's (TipTap's, with `injectCSS: false`)
 - `rem` units are converted to `px` (base 16px) during build
 - Tailwind preflight is **disabled** — custom preflight in
   `css/partials/preflight.css`

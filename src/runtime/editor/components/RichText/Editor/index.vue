@@ -320,6 +320,9 @@ onMounted(() => {
   editor.value = new Editor({
     content: props.initialValue,
     autofocus: props.autofocus ? 'end' : false,
+    // Its base CSS is in the editor's (css/partials/rich-text.css): TipTap
+    // would add a style element, which a strict CSP blocks.
+    injectCSS: false,
     editorProps: {
       attributes: {
         class: 'bk-rich-content bk-prose-mirror',
