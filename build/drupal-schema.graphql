@@ -7519,10 +7519,10 @@ type ParagraphsBlokkliMediaItem {
   ""
   mediaId: String!
 
-  ""
+  "The media's name, as plain text."
   label: String!
 
-  ""
+  "What tells the media apart from others with the same name, as plain text."
   context: String!
 
   ""
@@ -7950,7 +7950,7 @@ type ParagraphsBlokkliEntitiesSearchItem {
   ""
   uuid: String!
 
-  ""
+  "The entity's label, as plain text."
   label: String
 
   ""
@@ -7959,7 +7959,7 @@ type ParagraphsBlokkliEntitiesSearchItem {
   ""
   bundle: String!
 
-  ""
+  "What tells the entity apart from others with the same label, as plain text."
   context: String
 
   ""
@@ -8141,16 +8141,16 @@ type ParagraphsBlokkliSearchItem {
   ""
   entityId: String!
 
-  ""
+  "The title, as plain text."
   title: String!
 
-  ""
+  "A summary of the entity, as plain text."
   text: String
 
   ""
   imageUrl: String
 
-  ""
+  "What tells the result apart from others with the same title, as plain text."
   context: String
 
   ""

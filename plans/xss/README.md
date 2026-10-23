@@ -40,7 +40,9 @@ becomes markup again when the editor reads it back with `textContent`.
   format's HTML restrictions (`AddClipboardText`).
 - Violation messages come back as escaped markup. The editor renders `errors[]`
   and upload errors as text.
-- The Search API provider strips tags from what it returns.
+- **Search results** (since X8's fix) are plain text, as the schema says: the
+  providers convert only HTML (a formatted text, a context description's tokens)
+  and leave plain text as it is.
 - Uploads need a CSRF header token. graphql 5 refuses mutations sent as
   `text/plain` or with GET.
 - **Parsing** (since X6's fix): `parseHtml()`
@@ -75,31 +77,9 @@ becomes markup again when the editor reads it back with `textContent`.
 
 | #   | Finding                                                                                                                | Project              | Severity | Status    |
 | --- | ---------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | --------- |
-| X8  | [The content search returns labels with their markup](#x8-the-content-search-returns-labels-with-their-markup)         | `paragraphs_blokkli` | low      | open      |
 | X9  | [Agent conversations are stored as the client sends them](#x9-agent-conversations-are-stored-as-the-client-sends-them) | both                 | low      | to verify |
 | X10 | [Imports and kept formats skip the format check](#x10-imports-and-kept-formats-skip-the-format-check)                  | `paragraphs_blokkli` | low      | to verify |
 | X11 | [The docs and the playground render titles with `v-html`](#x11-the-docs-and-the-playground-render-titles-with-v-html)  | docs                 | medium   | to verify |
-
-## X8: The content search returns labels with their markup
-
-- **Found:** 2026-10-22, by reading. Reproduced the same day by the canary
-  (`features/xss/content-search`).
-- **Symptom:** a node or a media named `<img src=x onerror=…>` ran for an editor
-  whose content search found it: the editor rendered the results with `v-html`.
-  Fixed in the editor on 2026-10-22 (X1): it shows them as text, and the
-  canary's test checks that. What's left is Drupal's side.
-- **Cause:**
-  - The `EntityQuery` provider returns `$entity->label()` as the title
-    (`modules/paragraphs_blokkli_search/src/Plugin/ParagraphsBlokkli/Search/EntityQuery.php:170`).
-    Its text and context have their tags stripped.
-  - The Search API provider strips all three
-    (`modules/paragraphs_blokkli_search_api/src/Plugin/ParagraphsBlokkli/Search/SearchApi.php:199`).
-  - A context from `BlokkliSearchContextAwareEntityInterface` is returned as the
-    entity gives it.
-- **Impact:** low since the editor's fix: the providers disagree on what they
-  return, and tags stripped from a label mangle a label like "a < b".
-- **Fix idea:** define title, text and context as plain text in the schema, and
-  stop stripping tags.
 
 ## X9: Agent conversations are stored as the client sends them
 
@@ -171,6 +151,10 @@ becomes markup again when the editor reads it back with `textContent`.
   (`src/Controller/FormatTextFieldController.php:44`) processes text with any
   format the client names, without checking that the user may use it. Only the
   caller sees the result.
+- **Search API's fulltext fields:** the Search API provider skips a value that
+  isn't a scalar (`SearchApi::mapSearchItem()`). A field of the type "Fulltext"
+  gives `TextValue` objects, so a result whose title is mapped to one is
+  dropped. Not XSS; found by reading, with X8.
 - The agent's selector replace uses `String.replace()`
   (`src/modules/agent/runtime/app/tools/helpers.ts:316`), which interprets `$&`,
   `` $` `` and `$'` in the replacement. That's a correctness bug.
@@ -446,6 +430,22 @@ One finding per round.
      change from a frame of its own. Both tests failed without the editor's
      checks, and the set-value check failed without `rich-text.js`'s.
 7. **The module:** X8, X10, X9.
+   - **X8** (done 2026-10-23):
+     - the schema describes the search items' and media items' titles, texts and
+       contexts as plain text;
+     - plain text stays as it is: labels, a string field's text, the default
+       context and the one an entity provides. Stripping tags cut it: "a < b"
+       survived, but "a<b" became "a" and "Fish & Chips <3" lost its end;
+     - HTML becomes text, its tags stripped, then its entities decoded: a
+       formatted field's text, which the entity query decoded first and so lost
+       a typed `<b>`, and a context description, whose tokens Drupal escapes
+       (the editor showed `&amp;`);
+     - the Search API provider can't tell what an index field holds. It keeps
+       the title and the context, which the module's own processor indexes as
+       plain text, and treats the text as HTML;
+     - kernel tests: `SearchResultTextTest` (the entity query, the context) and
+       `SearchApiResultTextTest` (Search API, the context processor). All three
+       failed with the old code.
 8. **The CSP:**
    - blökkli works under a strict CSP (no `'unsafe-eval'` for axe-core's
      locales, nonces for what it injects);
