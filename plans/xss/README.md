@@ -38,6 +38,10 @@ becomes markup again when the editor reads it back with `textContent`.
   (`resolveTextFieldItem()`, `resolveTextFormat()`,
   `src/ParagraphsBlokkliHelper.php:202`, `:265`). Pasted HTML goes through the
   format's HTML restrictions (`AddClipboardText`).
+- **Kept formats** (since X10's fix): an import's texts get formats the user may
+  use. A field whose stored format the user may not use for it can't be written
+  (`checkTextFormatAccess()`), in any language and through any property, as
+  Drupal's widget disables it.
 - Violation messages come back as escaped markup. The editor renders `errors[]`
   and upload errors as text.
 - **Search results** (since X8's fix) are plain text, as the schema says: the
@@ -78,8 +82,9 @@ becomes markup again when the editor reads it back with `textContent`.
 | #   | Finding                                                                                                                | Project              | Severity | Status    |
 | --- | ---------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | --------- |
 | X9  | [Agent conversations are stored as the client sends them](#x9-agent-conversations-are-stored-as-the-client-sends-them) | both                 | low      | to verify |
-| X10 | [Imports and kept formats skip the format check](#x10-imports-and-kept-formats-skip-the-format-check)                  | `paragraphs_blokkli` | low      | to verify |
 | X11 | [The docs and the playground render titles with `v-html`](#x11-the-docs-and-the-playground-render-titles-with-v-html)  | docs                 | medium   | to verify |
+| X14 | [Imports skip the add mutations' validation](#x14-imports-skip-the-add-mutations-validation)                           | `paragraphs_blokkli` | medium   | open      |
+| X15 | [Transforms check no access](#x15-transforms-check-no-access)                                                          | `paragraphs_blokkli` | medium   | to verify |
 
 ## X9: Agent conversations are stored as the client sends them
 
@@ -100,28 +105,6 @@ becomes markup again when the editor reads it back with `textContent`.
 - **Fix idea:** decide whether the tamper check should cover what the admin view
   shows.
 
-## X10: Imports and kept formats skip the format check
-
-- **Found:** 2026-10-22, by reading. Not reproduced.
-- **Symptom:** none seen. By reading: someone stores HTML under a format they
-  may not use.
-- **Cause:**
-  - **Import:** an import (`transfer blokkli paragraphs`) sets field values with
-    the `format` they carry (`src/SerializedParagraphCreationTrait.php:114`),
-    without `resolveTextFieldItem()`.
-  - **Update:** an update keeps the field's current format
-    (`src/Plugin/ParagraphsBlokkli/UpdateFieldValueTrait.php:88`, `:223`). A
-    user who may not use that format can still change the field's HTML; core's
-    widget disables such a field.
-- **Impact:**
-  - low in the sandbox, where every format filters and there's no `full_html`;
-  - high on a site with `full_html`, or another format that keeps scripts.
-- **Fix idea:**
-  - Resolve formats on import as the mutations do.
-  - For updates: refuse a field whose format the user may not use (decided),
-    when the mutation first runs, as the link text's check does; stored
-    mutations replay as they did.
-
 ## X11: The docs and the playground render titles with `v-html`
 
 - **Found:** 2026-10-22, by reading.
@@ -140,6 +123,45 @@ becomes markup again when the editor reads it back with `textContent`.
   - `{{ }}` for plain text.
   - A short docs section on what projects may rely on: blökkli sanitises what it
     previews (since X4's fix).
+
+## X14: Imports skip the add mutations' validation
+
+- **Found:** 2026-10-23, with X10. Reproduced with a probe kernel test.
+- **Symptom:**
+  - an add refuses a link to `javascript:void(0)` ("The path … is invalid");
+  - an import stores it.
+- **Cause:** `Import` never calls `validateNewParagraph()`, which
+  `AddMutationBase` runs on the first run. So any value that the field's
+  constraints refuse gets in:
+  - a link's target;
+  - a reference that the field doesn't take;
+  - a text that's too long.
+- **Impact:**
+  - Drupal's `Url::fromUri()` throws on such a target, so the page breaks rather
+    than running it.
+  - A frontend that renders the raw `uri` would run it.
+- **Fix idea:** validate on the first run, as an add does. Open:
+  - refuse the import;
+  - or drop what doesn't validate and report it in the import summary, as is
+    done for references that don't resolve. The import is best effort.
+
+## X15: Transforms check no access
+
+- **Found:** 2026-10-23, by reading, with X10.
+- **Symptom:** none seen. By reading:
+  - anyone who may edit the edit state can transform paragraphs of a type they
+    may not update;
+  - the sandbox's search and replace changes only text nodes. In a `full_html`
+    field that includes the text of an existing script.
+- **Cause:** `Transform` and `HostTransform`
+  (`modules/paragraphs_blokkli_transform`) run the plugin on the paragraphs
+  they're given. They skip every check that other mutations run on the first
+  run: the paragraph type, the host, the field's access and the text format.
+- **Impact:**
+  - It depends on the site's plugins.
+  - It's about access rather than XSS, apart from the script's text.
+- **Fix idea:** on the first run, the checks that `bulk_update_field_values`
+  runs, for the paragraphs given. The module can't rely on the plugins to check.
 
 ## Smaller things
 
@@ -216,6 +238,11 @@ Made with the user on 2026-10-22.
   format allowed (an embed, an iframe) from content someone with more rights
   wrote, for a typo fix. In the sandbox it never triggers: every user may use
   `basic_html` and `table`. Later, the editor could show such a field as locked.
+  - The `.format` path is refused too (2026-10-23): core hides the format
+    selector, and blökkli never writes that path.
+  - An import coerces instead (2026-10-23): the paste is the editor's write, and
+    nothing tells a copy from a crafted payload. So an editor who pastes an
+    admin's `full_html` paragraph gets it in `basic_html`.
 
 ## Vue and Nuxt
 
@@ -429,7 +456,7 @@ One finding per round.
    - `features/xss/messages.test.ts` posts a text field's messages and an option
      change from a frame of its own. Both tests failed without the editor's
      checks, and the set-value check failed without `rich-text.js`'s.
-7. **The module:** X8, X10, X9.
+7. **The module:** X8, X10, X14, X15, X9.
    - **X8** (done 2026-10-23):
      - the schema describes the search items' and media items' titles, texts and
        contexts as plain text;
@@ -446,6 +473,25 @@ One finding per round.
      - kernel tests: `SearchResultTextTest` (the entity query, the context) and
        `SearchApiResultTextTest` (Search API, the context processor). All three
        failed with the old code.
+   - **X10** (done 2026-10-23):
+     - reproduced first with probe kernel tests, and with a second, independent
+       read of every path that writes a text;
+     - the update trait's two write methods refuse, on the first run, a field
+       whose stored format isn't one the user may use for it
+       (`checkTextFormatAccess()`, core's rule). The check runs after the
+       language is chosen, so a new translation's copied format counts. That
+       covers `update_field_value`, `update_host_entity_field_value`,
+       `bulk_update_field_values` and `bulk_translate_field_values`, through any
+       property;
+     - an import resolves every text of the envelope on the first run (every
+       language, non-translatable values, nested paragraphs), and stores the
+       result;
+     - `resolveTextFieldValue()` tells a list from a single item by its first
+       key, as Drupal does, so a list with other keys gets formats too;
+     - `UnusableTextFormatTest`: eight updates, the import and the list failed
+       with the old code. Someone who may use the format keeps writing, and
+       stored mutations replay as they did. `UpdateFieldValueTest` now installs
+       the filter config: its `plain_text` text didn't exist.
 8. **The CSP:**
    - blökkli works under a strict CSP (no `'unsafe-eval'` for axe-core's
      locales, nonces for what it injects);
