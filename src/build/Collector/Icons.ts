@@ -98,12 +98,27 @@ export class IconCollector extends Collector {
       '**/icon-blokkli-*.svg',
     )
 
+    // Also scan all Nuxt layer directories for icon SVGs.
+    const filesLayers: string[] = []
+    for (const layer of this.helper.nuxt.options._layers || []) {
+      const srcDir = layer.config?.srcDir
+      if (srcDir && srcDir !== this.helper.paths.srcDir) {
+        const files = await resolveFiles(srcDir, '**/icon-blokkli-*.svg')
+        filesLayers.push(...files)
+      }
+    }
+
     // Special "hack" when building module playground: We need to include the
     // icons from the playground itself.
     const filesPlayground = this.helper.isModuleBuild
       ? await resolveFiles('./playground', '**/icon-blokkli-*.svg')
       : []
-    const allFiles = [...filesModule, ...filesApp, ...filesPlayground]
+    const allFiles = [
+      ...filesModule,
+      ...filesApp,
+      ...filesLayers,
+      ...filesPlayground,
+    ]
     await Promise.all(allFiles.map((filePath) => this.addFile(filePath)))
     this.updateValidFileIconNames()
   }

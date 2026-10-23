@@ -1,5 +1,7 @@
 import { test, describe, expect } from 'vitest'
 import {
+  resolveLayerShadowing,
+  getIdentifier,
   validateBlockDefinition,
   validateMissingMainComponent,
   validateBundleOptionCompatibility,
@@ -1419,5 +1421,93 @@ describe('validateRenderForConflicts', () => {
     const conflicts = validateRenderForConflicts(files)
     expect(conflicts).toHaveLength(1)
     expect(conflicts[0]!.variation).toBe('block:button__f:sidebar')
+  })
+})
+
+// ============================================================================
+// resolveLayerShadowing
+// ============================================================================
+
+describe('resolveLayerShadowing', () => {
+  // App files (priority 0) win over layer files (priority 1).
+  const getPriority = (filePath: string): number =>
+    filePath.startsWith('/app/') ? 0 : 1
+
+  function createFileWithIdentifier(
+    filePath: string,
+    definition: BlockDefinitionInputBase,
+  ): CollectedBlockFile {
+    const file = new CollectedBlockFile(filePath, '')
+    ;(file as any).definition = definition
+    ;(file as any).identifier = getIdentifier(definition)
+    return file
+  }
+
+  test('shadows the lower-priority file when two files define the same block', () => {
+    const appFile = createFileWithIdentifier('/app/components/Text/index.vue', {
+      bundle: 'text',
+    })
+    const layerFile = createFileWithIdentifier(
+      '/layer/components/Text/index.vue',
+      {
+        bundle: 'text',
+      },
+    )
+
+    const result = resolveLayerShadowing([appFile, layerFile], getPriority)
+
+    expect(result.active).toEqual([appFile])
+    expect(result.shadowed).toEqual([layerFile])
+  })
+
+  test('keeps files with the same priority so duplicates still surface', () => {
+    const fileA = createFileWithIdentifier('/app/components/A/index.vue', {
+      bundle: 'text',
+    })
+    const fileB = createFileWithIdentifier('/app/components/B/index.vue', {
+      bundle: 'text',
+    })
+
+    const result = resolveLayerShadowing([fileA, fileB], getPriority)
+
+    expect(result.active).toEqual([fileA, fileB])
+    expect(result.shadowed).toEqual([])
+  })
+
+  test('shadows renderFor variants independently', () => {
+    const layerMain = createFileWithIdentifier(
+      '/layer/components/Text/index.vue',
+      {
+        bundle: 'text',
+      },
+    )
+    const layerNested = createFileWithIdentifier(
+      '/layer/components/Text/Nested/index.vue',
+      {
+        bundle: 'text',
+        renderFor: [{ parentBundle: 'collapsible' }],
+      },
+    )
+    // The app only overrides the main variant.
+    const appMain = createFileWithIdentifier('/app/components/Text/index.vue', {
+      bundle: 'text',
+    })
+
+    const result = resolveLayerShadowing(
+      [layerMain, layerNested, appMain],
+      getPriority,
+    )
+
+    expect(result.active).toEqual([layerNested, appMain])
+    expect(result.shadowed).toEqual([layerMain])
+  })
+
+  test('ignores files without a definition', () => {
+    const file = new CollectedBlockFile('/app/components/Text/index.vue', '')
+
+    const result = resolveLayerShadowing([file], getPriority)
+
+    expect(result.active).toEqual([file])
+    expect(result.shadowed).toEqual([])
   })
 })
