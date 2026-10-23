@@ -282,14 +282,12 @@ sandbox/drupal/web/sites/default/files/sandboxes/<id>/   its public files
   writes `lifetime.json` when there's an expiry or `--premium`, and copies the
   database last (`.tmp`, then a rename): an existing `db.sqlite` means a
   complete sandbox. **Deleting** removes `db.sqlite` first.
-- **On deploy**, sandboxes that aren't premium are deleted. A premium one
-  (`"premium": true` in `lifetime.json`, the same flag as the agent) keeps its
-  content and files, and `drush deploy` runs on it (database updates and
-  config import). The control app reads that file
-  (`scripts/premium-sandboxes.ts`). Its row and access links stay. The cleanup
-  marks only the deleted sandboxes. A weekly deploy still refreshes the
-  templates' seeded dates; a premium sandbox keeps the content it was created
-  with.
+- **On deploy**, sandboxes that aren't the control app's premium rows are
+  deleted. A premium one (`premium`, not deleted) keeps its content and files,
+  and `drush deploy` runs on it (database updates and config import). Its row
+  and access links stay. The cleanup marks only the deleted sandboxes. A
+  weekly deploy still refreshes the templates' seeded dates; a premium sandbox
+  keeps the content it was created with.
 - **`lifetime.json`** (`{expires, idle, premium}`) is for Drupal: the `sandbox`
   query (the "Sandbox" button) and the agent. The agent's secret is only set on
   the dev site and in sandboxes with `"premium": true`; without it,

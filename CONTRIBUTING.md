@@ -177,8 +177,9 @@ web_environment:
   refuses to run without the first two. Give the agent's API key a spend limit,
   and don't set the Rokka keys.
 - **`ddev deploy`** updates the code, builds both Nuxt apps for production,
-  bakes the templates and restarts. Sandboxes that aren't premium are deleted.
-  A premium one keeps its content and files, and `drush deploy` runs on it
+  bakes the templates and restarts. Sandboxes that aren't the control app's
+  premium rows are deleted. A premium one keeps its content and files, and
+  `drush deploy` runs on it
   (database updates and config import). A failed update stops the deploy. The
   running apps keep serving until the new builds are swapped in, so a failed
   build or bake leaves them running. Run it again every week or so: the seeded

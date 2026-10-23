@@ -14,11 +14,11 @@
 # templates baked, so a failed build or bake leaves them running. Drupal runs
 # the new code from the update on.
 #
-# Premium sandboxes (lifetime.json, "premium": true) keep their content and
-# files. The control app reads that file. `drush deploy` runs database
-# updates and config import on each one. Every other sandbox is deleted. The
-# control app's cleanup marks those rows deleted; a premium sandbox's row and
-# access links stay. A failed update stops the deploy; run it again.
+# The control app's premium rows (premium, not deleted) keep their content
+# and files. `drush deploy` runs database updates and config import on each.
+# Every other sandbox is deleted. The cleanup marks those rows deleted; a
+# premium sandbox's row and access links stay. A failed update stops the
+# deploy; run it again.
 
 set -euo pipefail
 
@@ -126,13 +126,14 @@ for app in frontend control; do
   mv "sandbox/$app/.output-next" "sandbox/$app/.output"
 done
 
-# Premium sandboxes keep their content. The control app reads lifetime.json,
-# the same flag as the agent. An unreadable file fails that read, so the
-# deploy stops with every sandbox still there. The others are copies of the
-# old templates.
+# The same rows the cleanup keeps. The others are copies of the old templates.
 echo "== Sandboxes"
 sandboxes=$(ddev drush blokkli-sandbox:list --format=tsv --fields=id,url | tr -d '\r')
-premium=$(ddev exec -d /var/www/html bun sandbox/control/scripts/premium-sandboxes.ts | tr -d '\r')
+premium=
+db=sandbox/control/.data/control.sqlite
+if [ -f "$db" ]; then
+  premium=$(ddev exec sqlite3 "$db" "SELECT id FROM sandboxes WHERE premium = 1 AND deleted IS NULL" | tr -d '\r')
+fi
 if [ -n "$sandboxes" ]; then
   while IFS=$'\t' read -r id url; do
     [ -n "$id" ] || continue
