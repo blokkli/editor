@@ -15,10 +15,10 @@
 # the new code from the update on.
 #
 # Premium sandboxes (lifetime.json, "premium": true) keep their content and
-# files. Each one is snapshotted, then `drush deploy` runs database updates
-# and config import on it. If that fails, the snapshot is restored and the
-# deploy stops. Every other sandbox is deleted. The control app's cleanup
-# marks those rows deleted; a premium sandbox's row and access links stay.
+# files. `drush deploy` runs database updates and config import on each one.
+# Every other sandbox is deleted. The control app's cleanup marks those rows
+# deleted; a premium sandbox's row and access links stay. A failed update
+# stops the deploy; run it again.
 
 set -euo pipefail
 
@@ -127,51 +127,20 @@ for app in frontend control; do
 done
 
 # Premium sandboxes keep their content. The others are copies of the old
-# templates. List both before deleting anything: an unreadable lifetime fails
-# the list, and the deploy stops with every sandbox still there.
+# templates. An unreadable lifetime fails the list, so the deploy stops with
+# every sandbox still there.
 echo "== Sandboxes"
-suffix=
-IFS=',' read -ra hosts <<< "$(web_env DDEV_HOSTNAME)"
-for host in "${hosts[@]}"; do
-  host=${host//[[:space:]]/}
-  if [[ $host == \*.* ]]; then
-    suffix=${host#\*}
-    break
-  fi
-done
-[ -n "$suffix" ] || fail "DDEV_HOSTNAME has no wildcard hostname for sandboxes."
-
-ids=$(ddev drush blokkli-sandbox:list --field=id | tr -d '\r')
-premium=$(ddev drush blokkli-sandbox:list --premium --field=id | tr -d '\r')
-
-is_premium() {
-  [ -n "$1" ] || return 1
-  [[ $'\n'$premium$'\n' == *$'\n'$1$'\n'* ]]
-}
-
-if [ -n "$ids" ]; then
-  while read -r id; do
+sandboxes=$(ddev drush blokkli-sandbox:list --format=tsv --fields=id,premium,url | tr -d '\r')
+if [ -n "$sandboxes" ]; then
+  while IFS=$'\t' read -r id premium url; do
     [ -n "$id" ] || continue
-    if is_premium "$id"; then
-      continue
+    if [ "$premium" = yes ]; then
+      echo "Updating the premium sandbox $id."
+      ddev drush --uri="$url" deploy -y
+    else
+      ddev drush blokkli-sandbox:delete "$id"
     fi
-    ddev drush blokkli-sandbox:delete "$id"
-  done <<< "$ids"
-fi
-
-if [ -n "$premium" ]; then
-  while read -r id; do
-    [ -n "$id" ] || continue
-    echo "Updating the premium sandbox $id."
-    ddev drush blokkli-sandbox:snapshot "$id"
-    if ! ddev drush --uri="https://${id}${suffix}" deploy -y; then
-      ddev drush blokkli-sandbox:restore "$id" ||
-        fail "updating the premium sandbox $id failed, and restoring its database failed too."
-      fail "updating the premium sandbox $id failed. Restored its database."
-    fi
-    ddev drush blokkli-sandbox:discard-snapshot "$id" ||
-      echo "ddev deploy: the premium sandbox $id was updated, but its snapshot is still there." >&2
-  done <<< "$premium"
+  done <<< "$sandboxes"
 fi
 
 # nginx's config, and the Nuxt apps with their new builds.

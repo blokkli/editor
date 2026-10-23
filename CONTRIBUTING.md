@@ -178,13 +178,12 @@ web_environment:
   and don't set the Rokka keys.
 - **`ddev deploy`** updates the code, builds both Nuxt apps for production,
   bakes the templates and restarts. Sandboxes that aren't premium are deleted.
-  A premium one keeps its content and files: the deploy snapshots its database,
-  then runs `drush deploy` on it (database updates and config import). If that
-  fails, the snapshot is restored and the deploy stops. The running apps keep
-  serving until the new builds are swapped in, so a failed build or bake leaves
-  them running. Run it again every week or so: the seeded dates are relative to
-  the bake. A premium sandbox keeps the content it was created with. It refuses
-  to run locally.
+  A premium one keeps its content and files, and `drush deploy` runs on it
+  (database updates and config import). A failed update stops the deploy. The
+  running apps keep serving until the new builds are swapped in, so a failed
+  build or bake leaves them running. Run it again every week or so: the seeded
+  dates are relative to the bake. A premium sandbox keeps the content it was
+  created with. It refuses to run locally.
 - **GitHub deploys `dev`** (`.github/workflows/ci.yml`): every push and pull
   request runs the gates (`bun run verify -- ci`), the production build, a bake
   and the E2E tests. They run against an E2E build of the frontend, a production
