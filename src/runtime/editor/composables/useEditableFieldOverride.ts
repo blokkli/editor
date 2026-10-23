@@ -1,7 +1,7 @@
 import type { EntityContext } from '#blokkli/types'
 import { useBlokkli } from '#imports'
 import { itemEntityType } from '#blokkli-build/config'
-import { sanitizeHtml } from '#blokkli/editor/helpers/html'
+import { sanitizeHtml, setSanitizedHtml } from '#blokkli/editor/helpers/html'
 import type { PropsFieldMapping } from './../../../global/types/definitions'
 
 export type EditableFieldOverride = {
@@ -261,14 +261,16 @@ export function useEditableFieldOverride(
   // children), and the saved nodes are outdated.
   let writtenNodes: ChildNode[] = []
 
-  /** Write into the element, keeping Vue's nodes aside on the first write. */
+  /**
+   * Write into the element, keeping Vue's nodes aside on the first write.
+   * Markup is sanitised.
+   */
   function writeDom(property: 'textContent' | 'innerHTML', value: string) {
     savedNodes ??= Array.from(element.childNodes)
     if (property === 'textContent') {
       element.textContent = value
     } else {
-      // eslint-disable-next-line no-restricted-syntax -- a formatted field's value or a diff, sanitised
-      element.innerHTML = value
+      setSanitizedHtml(element, value, 'richText')
     }
     writtenNodes = Array.from(element.childNodes)
   }
@@ -297,10 +299,7 @@ export function useEditableFieldOverride(
     element.removeAttribute('data-bk-diff-active')
 
     if (usesDirectDom) {
-      writeDom(
-        fieldType === 'plain' ? 'textContent' : 'innerHTML',
-        toShown(value),
-      )
+      writeDom(fieldType === 'plain' ? 'textContent' : 'innerHTML', value)
       return
     }
 
@@ -329,7 +328,7 @@ export function useEditableFieldOverride(
     // in between, e.g. the editable overlay opened from the diff) and are
     // re-inserted verbatim by restore(), so Vue's vnode references survive and
     // there is no VDOM/DOM mismatch to repair afterwards.
-    writeDom('innerHTML', sanitizeHtml(html, 'richText'))
+    writeDom('innerHTML', html)
   }
 
   function restore(): void {

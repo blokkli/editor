@@ -729,7 +729,78 @@ One finding per round.
      3. Trusted Types: a `blokkli` policy for the editor's sinks, and a
         DOMPurify `default` policy in the sandbox for the dependencies, as a
         project that enforces them would have. Then the build's policy gets
-        `require-trusted-types-for 'script'`;
+        `require-trusted-types-for 'script'`; **Inventory (2026-10-23):** the
+        build with a report-only
+        `require-trusted-types-for 'script'; trusted-types vue dompurify blokkli default`
+        through the whole suite: 1,446 reports from eleven places. Nothing from
+        Nuxt, Vue (`v-html` goes through its policy) or DOMPurify, no other
+        policy name, no duplicate. Every place, with the source searched for
+        what the suite doesn't reach:
+        - blökkli's, reached: `parseHtml()` (`helpers/html/index.ts:19`,
+          `innerHTML` of an inert document's element), `chunkHtml()`
+          (`readability/chunkHtml.ts:114`, on every editor load), the
+          readability indicator (`ReadabilityIndicator/index.vue:160`),
+          `translations/violations.ts:11` and the Drupal adapter
+          (`adapter/index.ts:262`), all parsing with `DOMParser`; and
+          `useEditableFieldOverride.ts:271`, sanitized markup into the page;
+        - blökkli's, not reached by the suite: `clipboardData/index.ts:125`,
+          `RichText/Renderer/enrichRichContent.ts:21` and the agent's
+          `tools/helpers.ts:300` and `:326` (parsing), and
+          `BlockPreviewRenderer/Item.vue:52`, which copies a page element into
+          the page through its `outerHTML`;
+        - the dependencies': TipTap (`elementFromString()`, `<body>…</body>`),
+          turndown (an empty probe, then `<x-turndown id="turndown-root">…`) and
+          ECharts' SVG renderer (`innerHTML` `''` and `null`, on dispose and
+          clear);
+        - the known list can't name blökkli's places: the chunks' names change
+          with every build, and the samples (the sink and the value's first 40
+          characters) look alike. The dependencies' samples are stable;
+        - a `default` policy takes every string sink that comes without a
+          trusted value, blökkli's too: with the sandbox's in place, the suite
+          wouldn't notice a sink of blökkli's that misses its policy;
+        - the lint rule against `innerHTML`, `outerHTML` and
+          `insertAdjacentHTML` (`eslint.config.mjs`, X6) doesn't cover
+          `DOMParser`.
+
+        Two rounds (decided 2026-10-23): first the `blokkli` policy, with the
+        report-only policy in the build and known entries for the dependencies
+        only; then the sandbox's `default` policy, which records its calls so
+        that the check still sees a sink of blökkli's without the policy, and
+        enforcement.
+
+        **Round 1, done (2026-10-23):**
+        - the policy is in `helpers/html` and never leaves it (`getPolicy()`):
+          it passes markup through, for documents without a window, and for what
+          DOMPurify returns. Its `createScriptURL` throws. If the page refuses
+          the name, the editor passes strings;
+        - the helpers: `parseHtml()`, `parseHtmlDocument()` (instead of
+          `DOMParser`), `setInertHtml()` (throws for an element of a document
+          with a window), `setSanitizedHtml()` (DOMPurify's TrustedHTML, for the
+          page), `sanitizeHtml()`. The editor's DOMPurify instance gets the
+          policy (`TRUSTED_TYPES_POLICY`): blökkli creates one policy, and a
+          project allows only `blokkli` for it, not `dompurify`;
+        - the other places use them: the seven `DOMParser` calls, the agent's
+          `applySelectorOperation()` (`setInertHtml()`) and the field override
+          (`setSanitizedHtml()`, which now sanitises in `writeDom()`).
+          `BlockPreviewRenderer` copies the element with
+          `cloneWithInlineStyles()` as nodes: no markup, and no style attributes
+          for the policy to refuse;
+        - the lint rule also forbids `new DOMParser()`;
+        - the unit spec of `helpers/html`: the policy is created once as
+          `blokkli`, the parsers and DOMPurify go through it (it failed without
+          them), a refused name leaves strings;
+        - the build sends the report-only policy (a route rule in
+          `sandbox/frontend/nuxt.config.ts`: nuxt-security sends no report-only
+          one). `support/csp.ts` knows the three dependencies by their samples
+          and records the column of a violation;
+        - found on the way: the drag overlay renders `getDropElementMarkup()`
+          with `v-html` (`dragging-overlay/DragItems/DragItem.vue`). A drag from
+          the structure sidebar gets `cloneElementWithStyles()`'s markup, all
+          computed styles as `style` attributes, which the strict policy
+          refuses: its preview has no styles. Neither that nor the dialogs of
+          `BlockPreviewRenderer` ("make reusable", "create template") has a
+          spec;
+
      4. Drupal's pages get their policy from the `csp` module;
      5. the docs: the directives the editor needs, and for nuxt-security the
         routes that need its XSS validator and rate limiter off, and that it
@@ -740,6 +811,7 @@ One finding per round.
         framing. That the agent module sets zod's `jitless` for the whole
         client, and that the clipboard's YouTube thumbnail needs
         `img-src https://i.ytimg.com`.
+
    - **Decided** with the user, one at a time:
      - **decided 2026-10-23:** Trusted Types are enforced in the end state.
        blökkli's sinks get a policy `blokkli` (its parsers pass through, the

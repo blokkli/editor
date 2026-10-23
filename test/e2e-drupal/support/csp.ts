@@ -27,10 +27,52 @@ declare global {
 }
 
 /**
- * The violations known today, each until its fix removes it: an entry names
- * its fix and matches its violations. None at the moment.
+ * A Trusted Types report: the sink refused a string that starts with `start`.
+ * Its sample is the sink and the value's first 40 characters.
  */
-const KNOWN: { fix: string; matches: (v: CspViolation) => boolean }[] = []
+function refused(v: CspViolation, sink: string, start: string): boolean {
+  return (
+    v.directive === 'require-trusted-types-for' &&
+    v.sample.startsWith(`${sink}|${start}`)
+  )
+}
+
+/** A Trusted Types report: the sink refused an empty string. */
+function refusedEmpty(v: CspViolation, sink: string): boolean {
+  return v.directive === 'require-trusted-types-for' && v.sample === `${sink}|`
+}
+
+/**
+ * The violations known today, each until its fix removes it: an entry names
+ * its fix and matches its violations.
+ *
+ * The build reports Trusted Types without enforcing them
+ * (sandbox/frontend/nuxt.config.ts). The editor's sinks have its policy; the
+ * dependencies' need a `default` policy, as a project's would.
+ */
+const KNOWN: { fix: string; matches: (v: CspViolation) => boolean }[] = [
+  {
+    // elementFromString(), for the rich text editor's content.
+    fix: "TipTap's DOMParser: the sandbox's default policy",
+    matches: (v) => refused(v, 'DOMParser parseFromString', '<body>'),
+  },
+  {
+    // A probe without markup, then the markup it converts.
+    fix: "turndown's DOMParser: the sandbox's default policy",
+    matches: (v) =>
+      refusedEmpty(v, 'DOMParser parseFromString') ||
+      refused(
+        v,
+        'DOMParser parseFromString',
+        '<x-turndown id="turndown-root">',
+      ),
+  },
+  {
+    // Its SVG renderer, emptying its element.
+    fix: "ECharts' innerHTML: the sandbox's default policy",
+    matches: (v) => refusedEmpty(v, 'Element innerHTML'),
+  },
+]
 
 const violations: CspViolation[] = []
 
@@ -47,7 +89,7 @@ export async function installCspCheck(page: Page): Promise<void> {
       window.__bkCspViolation?.({
         directive: e.effectiveDirective,
         blocked: e.blockedURI,
-        source: `${e.sourceFile}:${e.lineNumber}`,
+        source: `${e.sourceFile}:${e.lineNumber}:${e.columnNumber}`,
         sample: e.sample,
         document: e.documentURI,
       })

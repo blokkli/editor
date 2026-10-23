@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
-import { describe, it, expect } from 'vitest'
-import { parseHtml, sanitizeHtml } from './index'
+import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest'
+import {
+  parseHtml,
+  parseHtmlDocument,
+  sanitizeHtml,
+  setInertHtml,
+  setSanitizedHtml,
+} from './index'
 
 describe('parseHtml', () => {
   it('parses markup as a div does', () => {
@@ -17,6 +23,103 @@ describe('parseHtml', () => {
     const container = parseHtml('<p>One</p>')
     expect(container.ownerDocument).not.toBe(document)
     expect(container.isConnected).toBe(false)
+  })
+})
+
+describe('parseHtmlDocument', () => {
+  it('parses into a document without a window', () => {
+    const doc = parseHtmlDocument('<p>One</p><p>Two</p>')
+    expect(doc.defaultView).toBeNull()
+    expect(doc.body.textContent).toBe('OneTwo')
+  })
+})
+
+describe('setInertHtml', () => {
+  it('sets the markup of an element of a document without a window', () => {
+    const element = parseHtmlDocument('<div id="a"></div>').getElementById('a')!
+    setInertHtml(element, '<p>One</p>')
+    expect(element.innerHTML).toBe('<p>One</p>')
+  })
+
+  it('refuses an element of the page', () => {
+    expect(() =>
+      setInertHtml(document.createElement('div'), '<p>One</p>'),
+    ).toThrow()
+  })
+})
+
+describe('setSanitizedHtml', () => {
+  it('sets the markup that sanitizeHtml() keeps', () => {
+    const element = document.createElement('div')
+    setSanitizedHtml(
+      element,
+      '<style>p {}</style><p class="lead">A</p>',
+      'richText',
+    )
+    expect(element.innerHTML).toBe('<p class="lead">A</p>')
+  })
+})
+
+type PolicyRules = {
+  createHTML(html: string): unknown
+  createScriptURL(url: string): unknown
+}
+
+/** A stand-in for the browser's `trustedTypes`, which jsdom doesn't have. */
+function setTrustedTypes(
+  createPolicy: ((name: string, rules: PolicyRules) => PolicyRules) | null,
+) {
+  const global = globalThis as { trustedTypes?: unknown }
+  if (createPolicy) {
+    global.trustedTypes = { createPolicy }
+  } else {
+    delete global.trustedTypes
+  }
+}
+
+describe("the editor's Trusted Types policy", () => {
+  // A fresh module per test: the policy is created on first use.
+  beforeEach(() => {
+    vi.resetModules()
+  })
+
+  afterEach(() => {
+    setTrustedTypes(null)
+  })
+
+  it('is created once, as `blokkli`, for the markup the editor parses', async () => {
+    const vouched: string[] = []
+    const createPolicy = vi.fn((_name: string, rules: PolicyRules) => ({
+      createHTML: (html: string) => {
+        vouched.push(html)
+        return rules.createHTML(html)
+      },
+      createScriptURL: rules.createScriptURL,
+    }))
+    setTrustedTypes(createPolicy)
+    const html = await import('./index')
+
+    expect(html.parseHtml('<p>One</p>').textContent).toBe('One')
+    expect(html.parseHtmlDocument('<p>Two</p>').body.textContent).toBe('Two')
+    expect(html.sanitizeHtml('<p>Three</p>', 'richText')).toBe('<p>Three</p>')
+
+    expect(createPolicy).toHaveBeenCalledOnce()
+    const [name, rules] = createPolicy.mock.calls[0]!
+    expect(name).toBe('blokkli')
+    expect(vouched).toEqual(
+      expect.arrayContaining(['<p>One</p>', '<p>Two</p>', '<p>Three</p>']),
+    )
+    // It vouches for no script URL.
+    expect(() => rules.createScriptURL('/a.js')).toThrow()
+  })
+
+  it('passes strings when the page refuses the name', async () => {
+    setTrustedTypes(() => {
+      throw new TypeError('Refused.')
+    })
+    const html = await import('./index')
+    expect(html.parseHtml('<p>One</p>').innerHTML).toBe('<p>One</p>')
+    expect(html.sanitizeHtml('<p>Two</p>', 'richText')).toBe('<p>Two</p>')
   })
 })
 

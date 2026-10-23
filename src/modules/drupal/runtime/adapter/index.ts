@@ -6,6 +6,7 @@ import {
   type MutationResponseLike,
 } from '#blokkli/editor/adapter'
 import { falsy } from '#blokkli/helpers'
+import { parseHtmlDocument } from '#blokkli/editor/helpers/html'
 import { availableFeaturesAtBuild } from '#blokkli-build/features'
 import { templateEditRouteName } from '#blokkli-build/drupal-config'
 import { operationSources } from '#nuxt-graphql-middleware/sources'
@@ -259,8 +260,7 @@ function mapPluginConfigInputs(
  * inert document, so nothing in the markup runs or loads.
  */
 function plainTextLength(html: string): number {
-  const text = new DOMParser().parseFromString(html, 'text/html').body
-    .textContent
+  const text = parseHtmlDocument(html).body.textContent
   return [...text.replace(/[ \t\n\f\r]+/g, ' ').trim()].length
 }
 

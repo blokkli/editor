@@ -1,4 +1,5 @@
 import type { Validation } from '#blokkli/editor/types/state'
+import { parseHtmlDocument } from '#blokkli/editor/helpers/html'
 
 /**
  * What a violation says, as plain text.
@@ -8,10 +9,7 @@ import type { Validation } from '#blokkli/editor/types/state'
  */
 export function getViolationText(violation: Validation): string {
   // A parsed document is inert: nothing in the message is loaded or run.
-  const body = new DOMParser().parseFromString(
-    violation.message,
-    'text/html',
-  ).body
+  const body = parseHtmlDocument(violation.message).body
   return (body.textContent ?? '').trim()
 }
 

@@ -4,6 +4,7 @@ import {
   getAvailableOptions,
 } from '#blokkli/editor/helpers/options'
 import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
+import { parseHtmlDocument, setInertHtml } from '#blokkli/editor/helpers/html'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import { itemEntityType } from '#blokkli-build/config'
 import type { BlockOptionsMap } from './schemas'
@@ -296,8 +297,7 @@ export function applySelectorOperation(
   replacement: string,
 ): string {
   try {
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(`<body>${html}</body>`, 'text/html')
+    const doc = parseHtmlDocument(`<body>${html}</body>`)
     const el = doc.querySelector(selector)
     if (!el) {
       return html
@@ -322,8 +322,7 @@ export function applySelectorOperation(
     // reproduces the input exactly — otherwise the field would be rewritten
     // around the edit.
     if (doc.body.innerHTML === html) {
-      // eslint-disable-next-line no-restricted-syntax -- an element of the parsed document, which is inert
-      el.innerHTML = replacement
+      setInertHtml(el, replacement)
       return doc.body.innerHTML
     }
   } catch {

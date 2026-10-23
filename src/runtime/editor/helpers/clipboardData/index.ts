@@ -1,3 +1,5 @@
+import { parseHtmlDocument } from '#blokkli/editor/helpers/html'
+
 function convertNode(node: Node): string {
   if (node.nodeType === Node.TEXT_NODE) {
     return node.textContent || ''
@@ -122,7 +124,7 @@ function convertNode(node: Node): string {
 }
 
 function htmlToMarkdown(html: string): string {
-  const doc = new DOMParser().parseFromString(html, 'text/html')
+  const doc = parseHtmlDocument(html)
   return convertNode(doc.body)
     .replace(/\n{3,}/g, '\n\n')
     .trim()

@@ -9,6 +9,7 @@
 <script lang="ts" setup>
 import { ref, useBlokkli, onMounted, useTemplateRef } from '#imports'
 import { ScaleToFit } from '#blokkli/editor/components'
+import { cloneWithInlineStyles } from '#blokkli/editor/helpers/dom'
 
 const props = withDefaults(
   defineProps<{
@@ -47,9 +48,14 @@ onMounted(() => {
   // Get the width of the original element
   width.value = element.getBoundingClientRect().width
 
-  const markup = dom.getDropElementMarkup(item)
-  // eslint-disable-next-line no-restricted-syntax -- a copy of an element in the page
-  itemEl.value.innerHTML = markup
+  // A copy with the element's computed styles, as nodes: set through the
+  // CSSOM, they're not style attributes, which a strict Content-Security-Policy
+  // refuses in markup.
+  const clone = cloneWithInlineStyles(element)
+  if (clone instanceof HTMLElement || clone instanceof SVGElement) {
+    clone.style.opacity = '1'
+  }
+  itemEl.value.replaceChildren(clone)
 
   // Emit background color from first rendered item
   const computedStyle = window.getComputedStyle(element)

@@ -100,6 +100,7 @@ import {
   useBlokkli,
 } from '#imports'
 import { Tooltip } from '#blokkli/editor/components'
+import { parseHtmlDocument } from '#blokkli/editor/helpers/html'
 import type { ReadabilityBand } from '../../../analyze/readability/types'
 
 const { readability, context, $t } = useBlokkli()
@@ -157,8 +158,7 @@ async function analyze(text: string) {
   // For markup fields, strip HTML tags first.
   let plainText = text
   if (props.fieldType === 'markup') {
-    const doc = new DOMParser().parseFromString(text, 'text/html')
-    plainText = doc.body.textContent || ''
+    plainText = parseHtmlDocument(text).body.textContent || ''
   }
   const chunks = await readability.analyzeText(
     plainText,

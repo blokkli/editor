@@ -133,7 +133,9 @@ export default createConfigForNuxt(
   })
   .append({
     // Markup set on an element of the page loads and runs, even while the
-    // element is detached (plans/xss, X6).
+    // element is detached (plans/xss, X6). And a page that enforces Trusted
+    // Types refuses markup that no policy vouches for: the editor's is in
+    // helpers/html (plans/xss, step 8).
     files: ['src/**/*.ts', 'src/**/*.vue'],
     ignores: ['**/*.spec.ts'],
     rules: {
@@ -143,7 +145,12 @@ export default createConfigForNuxt(
           selector:
             "AssignmentExpression[left.property.name=/^(innerHTML|outerHTML)$/], CallExpression[callee.property.name='insertAdjacentHTML']",
           message:
-            "Parse markup with parseHtml() from '#blokkli/editor/helpers/html'. To render markup, say why in a disable comment.",
+            "Parse markup with parseHtml() from '#blokkli/editor/helpers/html', render it with setSanitizedHtml(). Otherwise say why in a disable comment.",
+        },
+        {
+          selector: "NewExpression[callee.name='DOMParser']",
+          message:
+            "Parse markup with parseHtmlDocument() from '#blokkli/editor/helpers/html'.",
         },
       ],
     },

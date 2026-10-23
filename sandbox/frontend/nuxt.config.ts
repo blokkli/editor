@@ -71,6 +71,14 @@ const contentSecurityPolicy = {
   'upgrade-insecure-requests': true,
 }
 
+// Trusted Types (plans/xss, step 8.3), reported but not enforced yet: the E2E
+// tests against the build list what would throw. nuxt-security sends no
+// report-only policy, so it's a header of its own.
+const trustedTypesReportOnly = [
+  "require-trusted-types-for 'script'",
+  'trusted-types vue dompurify blokkli default',
+].join('; ')
+
 export default defineNuxtConfig({
   // nuxt-graphql-middleware must come before blökkli, vuepal before
   // nuxt-language-negotiation.
@@ -104,6 +112,15 @@ export default defineNuxtConfig({
     // change.
     '/api/graphql_middleware/**': { security: { xssValidator: false } },
     '/api/blokkli/agent/**': { security: { xssValidator: false } },
+    ...(devServer
+      ? {}
+      : {
+          '/**': {
+            headers: {
+              'Content-Security-Policy-Report-Only': trustedTypesReportOnly,
+            },
+          },
+        }),
   },
 
   // Self-hosted fonts: Source Serif 4 with its optical size axis.
