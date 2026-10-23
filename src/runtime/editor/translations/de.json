@@ -338,7 +338,7 @@
   "blockTransferClipboardError": "Schreiben in die Zwischenablage fehlgeschlagen. Bitte überprüfen Sie die Berechtigungen Ihres Browsers.",
   "blockTransferCount": "Anzahl",
   "blockTransferDroppedFields": "Entfernte Felder",
-  "blockTransferDroppedFieldsHelp": "Diese Felder wurden verworfen, weil sie auf dem Ziel-Blocktyp nicht mehr vorhanden sind.",
+  "blockTransferDroppedFieldsHelp": "Diese Felder wurden verworfen, weil es sie auf dem Ziel-Blocktyp nicht gibt oder ihr Wert dort nicht gültig ist.",
   "blockTransferEntityType": "Entitätstyp",
   "blockTransferExport": "In die Zwischenablage exportieren",
   "blockTransferExportDescription": "Kopiert die ausgewählten Blöcke in die Zwischenablage, damit Sie sie in einem anderen Feld, einer anderen Seite oder einem anderen blökkli-Editor einfügen können.",

@@ -42,6 +42,9 @@ becomes markup again when the editor reads it back with `textContent`.
   use. A field whose stored format the user may not use for it can't be written
   (`checkTextFormatAccess()`), in any language and through any property, as
   Drupal's widget disables it.
+- **Imported values** (since X14's fix) are validated as an update's are
+  (`setValidFieldValue()`), in every language. What a field refuses is left out
+  and listed in the import's summary.
 - Violation messages come back as escaped markup. The editor renders `errors[]`
   and upload errors as text.
 - **Search results** (since X8's fix) are plain text, as the schema says: the
@@ -83,7 +86,6 @@ becomes markup again when the editor reads it back with `textContent`.
 | --- | ---------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | --------- |
 | X9  | [Agent conversations are stored as the client sends them](#x9-agent-conversations-are-stored-as-the-client-sends-them) | both                 | low      | to verify |
 | X11 | [The docs and the playground render titles with `v-html`](#x11-the-docs-and-the-playground-render-titles-with-v-html)  | docs                 | medium   | to verify |
-| X14 | [Imports skip the add mutations' validation](#x14-imports-skip-the-add-mutations-validation)                           | `paragraphs_blokkli` | medium   | open      |
 | X15 | [Transforms check no access](#x15-transforms-check-no-access)                                                          | `paragraphs_blokkli` | medium   | to verify |
 
 ## X9: Agent conversations are stored as the client sends them
@@ -124,27 +126,6 @@ becomes markup again when the editor reads it back with `textContent`.
   - A short docs section on what projects may rely on: blökkli sanitises what it
     previews (since X4's fix).
 
-## X14: Imports skip the add mutations' validation
-
-- **Found:** 2026-10-23, with X10. Reproduced with a probe kernel test.
-- **Symptom:**
-  - an add refuses a link to `javascript:void(0)` ("The path … is invalid");
-  - an import stores it.
-- **Cause:** `Import` never calls `validateNewParagraph()`, which
-  `AddMutationBase` runs on the first run. So any value that the field's
-  constraints refuse gets in:
-  - a link's target;
-  - a reference that the field doesn't take;
-  - a text that's too long.
-- **Impact:**
-  - Drupal's `Url::fromUri()` throws on such a target, so the page breaks rather
-    than running it.
-  - A frontend that renders the raw `uri` would run it.
-- **Fix idea:** validate on the first run, as an add does. Open:
-  - refuse the import;
-  - or drop what doesn't validate and report it in the import summary, as is
-    done for references that don't resolve. The import is best effort.
-
 ## X15: Transforms check no access
 
 - **Found:** 2026-10-23, by reading, with X10.
@@ -169,6 +150,12 @@ becomes markup again when the editor reads it back with `textContent`.
   (`features/publish/Dialog/Violations.vue:53`). Drupal sends them as escaped
   markup. Another adapter's messages need the sanitiser (step 4), or have to
   become text as `getViolationText()` does (from X13, fixed otherwise).
+- **An import's translations keep the reserved fields:**
+  `createParagraphFromSerializedData()` strips `uuid`, `langcode`, `type` and
+  the other fields a payload may not decide (`sanitizePayloadValues()`) only
+  from the source language's values. A translation's values pass them to
+  `addTranslation()`. Not XSS; found by reading, with X14, and what it does is
+  unverified.
 - `FormatTextFieldController`
   (`src/Controller/FormatTextFieldController.php:44`) processes text with any
   format the client names, without checking that the user may use it. Only the
@@ -233,6 +220,10 @@ Made with the user on 2026-10-22.
 - **The diff view's props are HTML, sanitised** (X5): escaping them would show a
   text's rich text as tags. A title with a `<` shows filtered, and nothing in it
   runs.
+- **X14: an import leaves out what doesn't validate** (2026-10-23), rather than
+  failing as an add does. The import is best effort, as it is for missing
+  paragraph types, fields and references, and the summary lists the field. One
+  invalid field from another site would otherwise block the whole paste.
 - **X10: an update of a field whose format the user may not use is refused,** as
   core's widget disables such a field. Switching the format would strip what the
   format allowed (an embed, an iframe) from content someone with more rights
@@ -492,6 +483,21 @@ One finding per round.
        with the old code. Someone who may use the format keeps writing, and
        stored mutations replay as they did. `UpdateFieldValueTest` now installs
        the filter config: its `plain_text` text didn't exist.
+   - **X14** (done 2026-10-23):
+     - on the first run, the import sets each value on a draft paragraph and
+       validates it with `setValidFieldValue()`, in the same pass that resolves
+       the formats. That's every language, with a draft for each, so a value
+       left out in one language doesn't count as a known violation in the next;
+     - a value that adds a violation, or that Drupal can't set, is left out of
+       the stored envelope and listed as a dropped field, once per paragraph. A
+       replay applies only what passed;
+     - the summary dialog's help text and the schema's description say a dropped
+       field may also have had a value that isn't valid;
+     - `ImportValidationTest`: a link to `javascript:void(0)`, a raw `target_id`
+       that the field doesn't take, and a title too long in the translation
+       only. That failed with the old code. Valid values are kept, and a stored
+       import replays as it did. `ImportMutationTest`'s large pastes now go into
+       a `string_long` field: 70,000 characters don't fit a `string`.
 8. **The CSP:**
    - blökkli works under a strict CSP (no `'unsafe-eval'` for axe-core's
      locales, nonces for what it injects);

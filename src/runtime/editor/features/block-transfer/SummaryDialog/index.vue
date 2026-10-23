@@ -51,7 +51,7 @@
         :help="
           $t(
             'blockTransferDroppedFieldsHelp',
-            'These fields were dropped because they no longer exist on the target block type.',
+            'These fields were dropped because they don\'t exist on the target block type or their value isn\'t valid there.',
           )
         "
         padded

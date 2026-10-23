@@ -8670,7 +8670,7 @@ type ParagraphsBlokkliImportSummary {
 
   """
   Field names dropped during resolution because the field doesn't exist on
-  the target paragraph bundle.
+  the target paragraph bundle, or its value doesn't validate there.
   """
   droppedFields: [ParagraphsBlokkliImportDroppedField!]!
 
