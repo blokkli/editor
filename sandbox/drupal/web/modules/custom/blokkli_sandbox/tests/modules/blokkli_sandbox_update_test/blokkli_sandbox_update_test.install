@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for blokkli_sandbox_update_test.
+ */
+
+declare(strict_types=1);
+
+/**
+ * Implements hook_schema().
+ */
+function blokkli_sandbox_update_test_schema(): array {
+  return [
+    'blokkli_sandbox_update_test' => [
+      'fields' => [
+        'id' => ['type' => 'serial', 'not null' => TRUE],
+      ],
+      'primary key' => ['id'],
+    ],
+  ];
+}
+
+/**
+ * Adds a column and writes to it.
+ *
+ * SQLite can't alter a column in place: Drupal copies the table. The E2E test
+ * resets the installed version to run this in a sandbox. The config import
+ * that follows uninstalls the module, so the state keeps the result.
+ */
+function blokkli_sandbox_update_test_update_11001(): void {
+  $database = \Drupal::database();
+  $database->schema()->addField('blokkli_sandbox_update_test', 'note', [
+    'type' => 'varchar',
+    'length' => 64,
+    'not null' => TRUE,
+    'default' => '',
+  ]);
+  $database->insert('blokkli_sandbox_update_test')->fields(['note' => 'updated'])->execute();
+  $note = $database->select('blokkli_sandbox_update_test', 't')->fields('t', ['note'])->execute()->fetchField();
+  \Drupal::state()->set('blokkli_sandbox_update_test.note', $note);
+}

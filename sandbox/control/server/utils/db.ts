@@ -51,38 +51,54 @@ export function getDatabase(): DatabaseSync {
   if (!database) {
     const { dataDirectory } = useRuntimeConfig()
     mkdirSync(dataDirectory, { recursive: true })
-    database = new DatabaseSync(`${dataDirectory}/control.sqlite`)
-    database.exec(`
-      PRAGMA journal_mode = WAL;
-      CREATE TABLE IF NOT EXISTS sandboxes (
-        id TEXT PRIMARY KEY,
-        source TEXT NOT NULL,
-        premium INTEGER NOT NULL,
-        created INTEGER NOT NULL,
-        deleted INTEGER,
-        ip_hash TEXT,
-        invitation TEXT
-      );
-      CREATE TABLE IF NOT EXISTS invitations (
-        token TEXT PRIMARY KEY,
-        note TEXT NOT NULL,
-        created INTEGER NOT NULL,
-        used INTEGER,
-        sandbox TEXT
-      );
-      CREATE TABLE IF NOT EXISTS access_links (
-        token TEXT PRIMARY KEY,
-        sandbox TEXT NOT NULL,
-        user TEXT NOT NULL,
-        note TEXT NOT NULL,
-        created INTEGER NOT NULL,
-        revoked INTEGER,
-        last_used INTEGER,
-        uses INTEGER NOT NULL DEFAULT 0
-      );
-      CREATE INDEX IF NOT EXISTS access_links_sandbox ON access_links (sandbox);
-    `)
+    database = openDatabase(databaseFile(dataDirectory))
   }
+  return database
+}
+
+/**
+ * The database's file in the app's data directory (runtimeConfig).
+ */
+export function databaseFile(dataDirectory: string): string {
+  return `${dataDirectory}/control.sqlite`
+}
+
+/**
+ * Opens the database, creating its tables. Also for `ddev deploy`, which runs
+ * while the app is stopped (scripts/deploy-sandboxes.ts).
+ */
+export function openDatabase(file: string): DatabaseSync {
+  const database = new DatabaseSync(file)
+  database.exec(`
+    PRAGMA journal_mode = WAL;
+    CREATE TABLE IF NOT EXISTS sandboxes (
+      id TEXT PRIMARY KEY,
+      source TEXT NOT NULL,
+      premium INTEGER NOT NULL,
+      created INTEGER NOT NULL,
+      deleted INTEGER,
+      ip_hash TEXT,
+      invitation TEXT
+    );
+    CREATE TABLE IF NOT EXISTS invitations (
+      token TEXT PRIMARY KEY,
+      note TEXT NOT NULL,
+      created INTEGER NOT NULL,
+      used INTEGER,
+      sandbox TEXT
+    );
+    CREATE TABLE IF NOT EXISTS access_links (
+      token TEXT PRIMARY KEY,
+      sandbox TEXT NOT NULL,
+      user TEXT NOT NULL,
+      note TEXT NOT NULL,
+      created INTEGER NOT NULL,
+      revoked INTEGER,
+      last_used INTEGER,
+      uses INTEGER NOT NULL DEFAULT 0
+    );
+    CREATE INDEX IF NOT EXISTS access_links_sandbox ON access_links (sandbox);
+  `)
   return database
 }
 

@@ -193,7 +193,8 @@ Traefik sends every hostname to the web container's nginx on port 80.
 
 - `SandboxManager` and the drush commands
   `blokkli-sandbox:create <id> [--source=en|de|fr] [--expires=<unix>] [--idle=<seconds>] [--premium]`,
-  `:delete <id>`, `:list`. They run on the dev site.
+  `:update <id>` (`drush deploy` on its site), `:delete <id>`, `:list`. They run
+  on the dev site.
 - `/blokkli-sandbox/login/{token}` (`SandboxLoginController`): verifies the
   token (`LoginToken`), logs the user in, redirects to the front page's editor
   (`/<lang>?blokkliEditing=<uuid>`) or to `?destination=`.
@@ -282,6 +283,17 @@ sandbox/drupal/web/sites/default/files/sandboxes/<id>/   its public files
   writes `lifetime.json` when there's an expiry or `--premium`, and copies the
   database last (`.tmp`, then a rename): an existing `db.sqlite` means a
   complete sandbox. **Deleting** removes `db.sqlite` first.
+- **On deploy**, the control app decides (`scripts/deploy-sandboxes.ts`,
+  `server/utils/deploySandboxes.ts`, run with tsx while the app is stopped: Bun
+  has no `node:sqlite`). A premium row the cleanup keeps (`expires()`) is
+  updated: `drush blokkli-sandbox:update <id>` runs `drush deploy` on its site
+  (database updates, config import), so it keeps its content, files, row and
+  access links. Every other sandbox is deleted and its row marked, drush-made
+  ones included. Without the control app's database, the script refuses to
+  delete anything. A weekly deploy still refreshes the templates' seeded dates;
+  a premium sandbox keeps the content it was created with.
+  `test/e2e-drupal/sandbox-update.test.ts` runs an update with a schema change
+  in an E2E sandbox (`blokkli_sandbox_update_test`).
 - **`lifetime.json`** (`{expires, idle, premium}`) is for Drupal: the `sandbox`
   query (the "Sandbox" button) and the agent. The agent's secret is only set on
   the dev site and in sandboxes with `"premium": true`; without it,
@@ -426,7 +438,8 @@ host, with ddev running: `bun run test:e2e-drupal` or
   revoked or gone: the claim page with `?access=unknown|gone`. The token is the
   credential: nginx doesn't log `/access/`, revoking posts it in the body.
   Revoking ends the link, not the sessions it opened. Access links die with
-  their sandbox, and `ddev deploy` deletes every sandbox.
+  their sandbox. `ddev deploy` keeps premium sandboxes, so their access links
+  stay, and deletes the others.
 - **The task `sandbox:cleanup`** runs every 5 minutes: it deletes sandboxes past
   `min(created + 24 h, last use + 2 h)` (premium: created + 21 days) and marks
   rows of sandboxes that are gone. Rows are never removed.
@@ -581,11 +594,12 @@ outgoing allowlist, monitoring): `plans/drupal-setup/12-hosted-deploy.md`.
   the submodule, runs composer and bun, and builds both apps into `.output-next`
   (`SANDBOX_OUTPUT_DIR`) while the running ones keep serving `.output`. Then it
   stops the control app (no claims while the templates change), bakes the de, fr
-  and en templates, stops the frontend, swaps the builds, deletes every sandbox
-  and restarts. A failure starts the apps it stopped again. It refuses to run
-  without `IS_DDEV_HOSTED=true`, with `ddev.site` hostnames, or without the
-  three secrets above, so it can't run locally. Run it again every week or so:
-  seeded dates are relative to the bake.
+  and en templates, stops the frontend, swaps the builds, updates premium
+  sandboxes and deletes the others, and restarts. A failure starts the apps it
+  stopped again, and a failed update of a premium sandbox stops the deploy. It
+  refuses to run without `IS_DDEV_HOSTED=true`, with `ddev.site` hostnames, or
+  without the three secrets above, so it can't run locally. Run it again every
+  week or so: seeded dates are relative to the bake.
 - **GitHub** (`.github/workflows/ci.yml`) runs it after every push to `dev` that
   passes the checks (below), unless the push only changes `plans/`, `docs/`,
   `skills/`, `.claude/` or `test/`.

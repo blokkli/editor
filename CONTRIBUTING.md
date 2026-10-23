@@ -90,6 +90,7 @@ its own subdomain. The site without a subdomain is the dev site.
 ddev drush blokkli-sandbox:create a1             # https://a1.blokkli.ddev.site
 ddev drush blokkli-sandbox:create b2 --source=de # from the German template
 ddev drush blokkli-sandbox:list
+ddev drush blokkli-sandbox:update a1             # drush deploy on its site
 ddev drush blokkli-sandbox:delete a1
 ```
 
@@ -177,10 +178,15 @@ web_environment:
   refuses to run without the first two. Give the agent's API key a spend limit,
   and don't set the Rokka keys.
 - **`ddev deploy`** updates the code, builds both Nuxt apps for production,
-  bakes the templates, deletes all sandboxes and restarts. The running apps keep
-  serving until the new builds are swapped in, so a failed build or bake leaves
-  them running. Run it again every week or so: the seeded dates are relative to
-  the bake. It refuses to run locally.
+  bakes the templates and restarts. The premium sandboxes that the control app's
+  cleanup keeps stay, with their content and files:
+  `drush blokkli-sandbox:update` runs `drush deploy` on each (database updates
+  and config import). Every other sandbox is deleted
+  (`sandbox/control/scripts/deploy-sandboxes.ts`). A failed update stops the
+  deploy. The running apps keep serving until the new builds are swapped in, so
+  a failed build or bake leaves them running. Run it again every week or so: the
+  seeded dates are relative to the bake. A premium sandbox keeps the content it
+  was created with. It refuses to run locally.
 - **GitHub deploys `dev`** (`.github/workflows/ci.yml`): every push and pull
   request runs the gates (`bun run verify -- ci`), the production build, a bake
   and the E2E tests. They run against an E2E build of the frontend, a production
