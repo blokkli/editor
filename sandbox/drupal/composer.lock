@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f37293cedb0000aad4009263ff5bae7f",
+    "content-hash": "9163b42415ae22f3c9d67219e4168ef0",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1584,6 +1584,54 @@
             }
         },
         {
+            "name": "drupal/csp",
+            "version": "2.2.4",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/csp.git",
+                "reference": "2.2.4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/csp-2.2.4.zip",
+                "reference": "2.2.4",
+                "shasum": "e2c5164627ca13269d02aba7eb09507d74a1c6c9"
+            },
+            "require": {
+                "drupal/core": "^10.2 || ^11"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.2.4",
+                    "datestamp": "1777416857",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "gapple",
+                    "homepage": "https://www.drupal.org/user/490940"
+                }
+            ],
+            "description": "Provide Content-Security-Policy headers",
+            "homepage": "https://www.drupal.org/project/csp",
+            "keywords": [
+                "Drupal"
+            ],
+            "support": {
+                "source": "https://git.drupalcode.org/project/csp",
+                "issues": "https://www.drupal.org/project/issues/csp"
+            }
+        },
+        {
             "name": "drupal/ctools",
             "version": "4.1.1",
             "source": {
@@ -2683,18 +2731,19 @@
             "dist": {
                 "type": "path",
                 "url": "paragraphs_blokkli",
-                "reference": "92203ca5c5234cffece13bcea344a949d46caa1b"
+                "reference": "dabdd63a6040b95f596d01652e44bf0d9f9c9252"
             },
             "require": {
                 "drupal/core": "^11.2",
-                "drupal/graphql": "^4 || ^5@beta",
+                "drupal/graphql": "^5",
                 "drupal/graphql_core_schema": "^1.0",
-                "drupal/paragraphs": "^1.17"
+                "drupal/paragraphs": "^1.19"
             },
             "require-dev": {
                 "drupal/filehash": "^3",
                 "drupal/focal_point": "^2.1",
                 "drupal/rokka": "^3",
+                "drupal/scheduler": "^2.3",
                 "drupal/search_api": "^1.41"
             },
             "suggest": {

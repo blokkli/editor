@@ -820,7 +820,59 @@ One finding per round.
           The report-only header is gone, and the known list is empty again;
         - the build: 432 of 432 pass;
 
-     4. Drupal's pages get their policy from the `csp` module;
+     4. Drupal's pages get their policy from the `csp` module. **Done
+        (2026-10-23):**
+        - the probe: `csp` 2.2.4 with the policy below and Trusted Types in
+          report-only mode, next to nginx's loose policy. The suite ran under
+          it, and a script visited 49 of Drupal's pages as the admin. No script
+          needed more than `'self'`. What it reported:
+          - 2,922 Trusted Types reports: core's jQuery, htmx and Drupal.theme,
+            CKEditor 5, Gin;
+          - `data:` images: Claro's and Gin's icons (in their CSS) and
+            environment_indicator's favicon;
+          - styles: CKEditor 5's, which the module allows (`'unsafe-inline'` on
+            pages with `core/ckeditor5`, `CoreCspSubscriber` in 2.2.4). htmx's
+            indicator styles (a style element, also on the link paragraph's
+            form; core doesn't use the class). Core's dialog container
+            (`style="display:none"` through `insertAdjacentHTML`, empty).
+            Claro's sticky bar on listings (`tableselect.js`, a style element),
+            environment_indicator's toolbar colours and a `display:none` in
+            Views UI;
+          - on the dev server, Vue devtools injects a script into same-origin
+            frames (`detectIframeApp`);
+        - decided with the user: no Trusted Types on Drupal's pages. Strict
+          styles, with the module's exception for CKEditor 5: some admin pages
+          lose the styles above. htmx is told not to add its styles;
+        - written: `csp` in `sandbox/drupal/composer.json` and in `config/sync`,
+          enforced, report-only off (`csp.settings.yml`):
+
+          ```
+          default-src 'none'; script-src 'self' 'report-sample';
+          style-src 'self' 'report-sample'; img-src 'self' data:;
+          font-src 'self'; connect-src 'self'; frame-src 'self';
+          media-src 'self'; manifest-src 'self'; worker-src 'self';
+          object-src 'none'; base-uri 'none'; form-action 'self';
+          frame-ancestors 'self'
+          ```
+
+          `blokkli_playground` adds `<meta name="htmx-config">` with
+          `includeIndicatorStyles: false` (`Hook/HtmxHooks.php`), as a strict
+          project would. `support/csp.ts` ignores Vue devtools' script
+          (`DEV_TOOLING`). nginx's policy is unchanged, now only for the control
+          app, its own pages and the files it serves;
+
+        - the module needs no change: its JS and templates have no sinks and
+          nothing inline (`redirect.js` is a file for that reason);
+        - the suite: 432 of 432 against a build. On the dev server, 431 of 432:
+          an analyze spec timed out (no Drupal page) and passes alone. Without
+          the htmx meta, the link paragraph's form fails on htmx's style element
+          (`publish/nested`);
+        - found on the way: `composer audit` reports core 11.4.7
+          (SA-CORE-2026-014, critical, remote code execution; SA-CORE-2026-015
+          and -016, cross-site scripting), Gin 5.0.15 (SA-CONTRIB-2026-219,
+          cross-site scripting) and view_unpublished (SA-CONTRIB-2026-235,
+          access bypass). Not updated here;
+
      5. the docs: the directives the editor needs, and for nuxt-security the
         routes that need its XSS validator and rate limiter off, and that it
         adds the nonce to the rendered page too. COEP: what the module sends and
@@ -832,6 +884,10 @@ One finding per round.
         `img-src https://i.ytimg.com`. Trusted Types: `blokkli` in
         `trusted-types` (and `vue` for Vue's), and a `default` policy for
         TipTap, turndown (which needs its `<x-turndown>` kept) and ECharts.
+        Drupal's side: the module's pages need `script-src 'self'` and nothing
+        inline, `frame-ancestors` has to allow the frontend, and the `csp`
+        module allows CKEditor 5's styles; core's htmx adds a style element
+        unless `includeIndicatorStyles` is off.
 
    - **Decided** with the user, one at a time:
      - **decided 2026-10-23:** Trusted Types are enforced in the end state.

@@ -28,6 +28,7 @@
         "drupal/core-composer-scaffold": "^11.4",
         "drupal/core-recipe-unpack": "^11.4",
         "drupal/core-recommended": "^11.4",
+        "drupal/csp": "^2.2",
         "drupal/entity_usage": "^2.0@beta",
         "drupal/environment_indicator": "^4.0",
         "drupal/filehash": "^3",

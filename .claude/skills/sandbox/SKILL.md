@@ -106,8 +106,16 @@ Traefik sends every hostname to the web container's nginx on port 80.
     `Cross-Origin-Embedder-Policy: require-corp`, so the Drupal pages the editor
     frames send it too (`sandbox/drupal/services.yml`,
     `paragraphs_blokkli.frame_embedder_policy`);
+  - Drupal's comes from the `csp` module
+    (`sandbox/drupal/config/sync/csp.settings.yml`): `script-src 'self'`,
+    `style-src 'self'` (the module adds `'unsafe-inline'` to pages with CKEditor
+    5), `img-src 'self' data:` (Claro's and Gin's icons). No Trusted Types:
+    core's jQuery and htmx, CKEditor 5 and Gin pass strings to their sinks.
+    `blokkli_playground` keeps htmx from adding its indicator styles
+    (`Hook/HtmxHooks.php`). A few admin pages lose a style: Claro's sticky bar
+    on listings, environment_indicator's toolbar colours;
   - every other response gets nginx's from `headers.inc`, only if the upstream
-    sent none: Drupal's pages (a loose one), the control app's, nginx's own.
+    sent none: the control app's, nginx's own pages and the files it serves.
   - nuxt-security's XSS validator is off for the editor's routes (it refuses
     markup), its rate limiter off everywhere (behind nginx every request comes
     from 127.0.0.1). `xss` is pinned to 1.0.15 (`overrides` in the root

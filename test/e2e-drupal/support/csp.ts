@@ -2,10 +2,12 @@ import type { Page } from 'playwright-core'
 
 /**
  * The CSP check (plans/xss, step 8). The frontend sends a strict
- * Content-Security-Policy (sandbox/frontend/nuxt.config.ts), and a test fails
- * on any violation of it that isn't known (../setup.ts checks after every test
- * and every file). The pages of `openEditor` and `openPage` record the
- * violations of every document they load: frames and navigations too.
+ * Content-Security-Policy (sandbox/frontend/nuxt.config.ts), and so do Drupal's
+ * pages, the forms the editor frames among them (the csp module,
+ * sandbox/drupal/config/sync/csp.settings.yml). A test fails on any violation
+ * that isn't known (../setup.ts checks after every test and every file). The
+ * pages of `openEditor` and `openPage` record the violations of every document
+ * they load: frames and navigations too.
  *
  * Under the policy, markup can't run script. A place that renders content as
  * markup shows up here, as a blocked inline handler, rather than as a canary
@@ -81,6 +83,16 @@ const DEPENDENCIES: { name: string; matches: (v: CspViolation) => boolean }[] =
     },
   ]
 
+/** The dev server's tooling, which doesn't ship: the build has none of it. */
+const DEV_TOOLING: { name: string; matches: (v: CspViolation) => boolean }[] = [
+  {
+    name: "Vue devtools' script in a framed page of Drupal's, whose policy blocks it",
+    matches: (v) =>
+      v.directive === 'script-src-elem' &&
+      v.sample.startsWith(';(function detectIframeApp'),
+  },
+]
+
 const violations: CspViolation[] = []
 
 /** Records the page's violations, in every document it loads from now on. */
@@ -140,7 +152,8 @@ export function takeUnknownCspViolations(): string | null {
   const unknown = violations.filter(
     (v) =>
       !KNOWN.some((k) => k.matches(v)) &&
-      !DEPENDENCIES.some((d) => d.matches(v)),
+      !DEPENDENCIES.some((d) => d.matches(v)) &&
+      !DEV_TOOLING.some((d) => d.matches(v)),
   )
   violations.length = 0
   if (!unknown.length) {
