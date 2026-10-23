@@ -57,6 +57,12 @@ becomes markup again when the editor reads it back with `textContent`.
   with the browser's `URL` parser: the paste's links and the iframes module's
   editor, which frames only `http(s):` sources. The other URLs the editor binds
   or opens come from the adapter or its config.
+- **Messages between windows** (since X7's fix): the editor accepts a frame's
+  messages only from that frame, on the origin of its URL (`isMessageFrom()`,
+  `src/runtime/editor/helpers/message`); the preview only from the editor, and
+  Drupal's text field frame (`js/rich-text.js`) too. Messages go only to the
+  origin they're meant for. BroadcastChannel (`providers/broadcast.ts`) only
+  carries events for every tab of the origin.
 - **Previews** (since X4's fix): the editable field override
   (`useEditableFieldOverride()`) sanitises a formatted field's value and every
   diff before they reach the page, a project's props or `<BlokkliEditable>`; the
@@ -69,34 +75,10 @@ becomes markup again when the editor reads it back with `textContent`.
 
 | #   | Finding                                                                                                                | Project              | Severity | Status    |
 | --- | ---------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | --------- |
-| X7  | [Message listeners accept any window](#x7-message-listeners-accept-any-window)                                         | editor               | medium   | to verify |
 | X8  | [The content search returns labels with their markup](#x8-the-content-search-returns-labels-with-their-markup)         | `paragraphs_blokkli` | low      | open      |
 | X9  | [Agent conversations are stored as the client sends them](#x9-agent-conversations-are-stored-as-the-client-sends-them) | both                 | low      | to verify |
 | X10 | [Imports and kept formats skip the format check](#x10-imports-and-kept-formats-skip-the-format-check)                  | `paragraphs_blokkli` | low      | to verify |
 | X11 | [The docs and the playground render titles with `v-html`](#x11-the-docs-and-the-playground-render-titles-with-v-html)  | docs                 | medium   | to verify |
-
-## X7: Message listeners accept any window
-
-- **Found:** 2026-10-22, by reading. Not reproduced.
-- **Symptom:** none seen. By reading:
-  - **Text field editors:** any frame in the page, e.g. an embed from another
-    origin, can post `blokkli__editable_field_update_formatted` while a text
-    field's editor is open. The markup goes into the page, sanitised since X4's
-    fix. Posting `blokkli__editable_field_update` sets the value that is then
-    saved.
-  - **The responsive preview:** in the preview page, every `blokkli__…` message
-    reaches its event bus, whoever sent it.
-- **Cause:**
-  - `onMessage()` checks neither `e.origin` nor `e.source`
-    (`src/runtime/editor/features/editable-field/Overlay/Frame/index.vue:160`),
-    and neither does the preview (`components/PreviewProvider.vue:148`).
-  - The nested editor and the edit form's frame don't check either
-    (`components/NestedEditorOverlay/index.vue:390`,
-    `features/edit-form/Frame/index.vue:99`), but they only save or close.
-- **Impact:** medium. It needs a frame from another origin on the page. The
-  sandbox's `frame-src 'self'` blocks that; sites with embeds don't.
-- **Fix idea:** accept only messages whose `e.source` is the frame's
-  `contentWindow` (the preview: its parent), from the expected origin.
 
 ## X8: The content search returns labels with their markup
 
@@ -189,11 +171,6 @@ becomes markup again when the editor reads it back with `textContent`.
   (`src/Controller/FormatTextFieldController.php:44`) processes text with any
   format the client names, without checking that the user may use it. Only the
   caller sees the result.
-- **Messages to other windows:**
-  - `js/rich-text.js:107` accepts `blokkli__editable_field_set_value` from any
-    origin (CKEditor's schema filters what it gets).
-  - `js/form.js` and the frame's `setValue()` post with `'*'`, so a field's text
-    could reach another window.
 - The agent's selector replace uses `String.replace()`
   (`src/modules/agent/runtime/app/tools/helpers.ts:316`), which interprets `$&`,
   `` $` `` and `$'` in the replacement. That's a correctness bug.
@@ -335,8 +312,7 @@ One finding per round.
      (`comments`), the agent's rewrite preview, prompt and reply (`agent`), and
      the import's preview (`import-preview`, added with X5's fix).
    - **Not covered yet:** alt texts, the conversations admin, the ownership
-     banner, the `markup` inline editor (not reachable with Drupal), the frame
-     messages (X7).
+     banner, the `markup` inline editor (not reachable with Drupal).
    - **Assertions:** each test checks what happens today, that its id ran, after
      the place rendered the value. Unlike `it.fails`, a broken setup can't pass
      for a fix. A run with an empty payload went through every step of all 9
@@ -444,7 +420,31 @@ One finding per round.
      loads the same source on the page: that's for the docs (step 9);
    - unit tests, no canary: the canary's payload didn't run in the paste preview
      before the fix either.
-6. **X7:** sender checks.
+6. **X7** (done 2026-10-23):
+   - `isMessageFrom(e, source, origin)` (`src/runtime/editor/helpers/message`)
+     accepts a message only from the expected window, on the expected origin.
+     `getUrlOrigin()` (`helpers/url`) reads a frame URL's origin against the
+     page's address; an opaque one counts as none;
+   - the text field's frame, the edit form and the nested editor accept only
+     their iframe's messages, from the origin of the frame's URL. The window
+     stays the same when a form redirects after saving. Content in the nested
+     editor's slot has no frame, so it gets no messages;
+   - the preview accepts only the editor's: its parent, on its own origin. The
+     editor posts to it without a target origin, which means its own origin;
+   - the text field frame's `setValue()` posts to the frame's origin instead of
+     `'*'`;
+   - **in the module:** `js/rich-text.js` accepts `set_value` only from its
+     parent, on its own origin. `js/form.js` posts without a target origin, as
+     `redirect.js` and `rich-text.js` already did. It only sent heights, the
+     dialog's width and "cancel", not a field's text. An editor on another
+     origin couldn't use the module's frames before either: Drupal sends
+     `X-Frame-Options: SAMEORIGIN`, and the other scripts posted to their own
+     origin;
+   - not BroadcastChannel instead: it's same-origin too, but every tab of the
+     origin gets every message, and the protocol with the module would change;
+   - `features/xss/messages.test.ts` posts a text field's messages and an option
+     change from a frame of its own. Both tests failed without the editor's
+     checks, and the set-value check failed without `rich-text.js`'s.
 7. **The module:** X8, X10, X9.
 8. **The CSP:**
    - blökkli works under a strict CSP (no `'unsafe-eval'` for axe-core's

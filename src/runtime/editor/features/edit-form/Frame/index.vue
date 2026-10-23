@@ -37,6 +37,8 @@ import {
   BlokkliTransition,
   NotEditStateInfo,
 } from '#blokkli/editor/components'
+import { getUrlOrigin } from '#blokkli/editor/helpers/url'
+import { isMessageFrom } from '#blokkli/editor/helpers/message'
 
 const { eventBus } = useBlokkli()
 
@@ -63,7 +65,14 @@ function onIFrameLoad() {
   }
 }
 
+// Only the form's messages are accepted, also after it was saved: the frame
+// keeps its window.
+const origin = computed(() => getUrlOrigin(props.url))
+
 function onMessage(e: MessageEvent): void {
+  if (!isMessageFrom(e, iframe.value?.contentWindow, origin.value)) {
+    return
+  }
   if (!e.data || typeof e.data !== 'object') {
     return
   }

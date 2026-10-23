@@ -24,6 +24,7 @@ import {
 import broadcastProvider from '#blokkli/editor/providers/broadcast'
 import { getFieldKey } from '#blokkli/helpers'
 import { intersects } from '#blokkli/editor/helpers/geometry'
+import { isMessageFrom } from '#blokkli/editor/helpers/message'
 import type { AdapterContext } from '../../editor/adapter'
 import {
   eventBus,
@@ -144,8 +145,14 @@ provide(INJECT_EDIT_CONTEXT, {
 
 /**
  * Listen to window messages and emit the matching frameEventBus event.
+ *
+ * Only the editor's messages are accepted: they change what the preview
+ * renders. The editor is the parent window, on the same origin.
  */
 function onMessage(e: MessageEvent) {
+  if (!isMessageFrom(e, window.parent, window.location.origin)) {
+    return
+  }
   if (
     e.data &&
     typeof e.data === 'object' &&

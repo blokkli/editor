@@ -27,3 +27,19 @@ export function isSafeUrl(url: string, use: UrlUse = 'link'): boolean {
     return false
   }
 }
+
+/**
+ * The origin of a URL, resolved against the page's address.
+ *
+ * Null if the URL can't be parsed or its origin is opaque, as a `data:` URL's
+ * is: an opaque origin is serialised as "null" and can't be told apart from
+ * another.
+ */
+export function getUrlOrigin(url: string): string | null {
+  try {
+    const { origin } = new URL(url, window.location.href)
+    return origin === 'null' ? null : origin
+  } catch {
+    return null
+  }
+}

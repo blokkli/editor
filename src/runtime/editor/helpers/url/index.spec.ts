@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from 'vitest'
-import { isSafeUrl } from './index'
+import { getUrlOrigin, isSafeUrl } from './index'
 
 describe('isSafeUrl', () => {
   it('allows web pages and email addresses in links', () => {
@@ -39,5 +39,24 @@ describe('isSafeUrl', () => {
     expect(isSafeUrl('/en/embed', 'frame')).toBe(true)
     expect(isSafeUrl('mailto:info@example.com', 'frame')).toBe(false)
     expect(isSafeUrl('javascript:void(0)', 'frame')).toBe(false)
+  })
+})
+
+describe('getUrlOrigin', () => {
+  it('reads the origin of an absolute URL', () => {
+    expect(getUrlOrigin('https://example.com:8080/a?b=c')).toBe(
+      'https://example.com:8080',
+    )
+  })
+
+  it('resolves a relative URL against the page', () => {
+    expect(getUrlOrigin('/en/form?a=b')).toBe(window.location.origin)
+    expect(getUrlOrigin('form')).toBe(window.location.origin)
+  })
+
+  it('has no origin for opaque origins and what it cannot parse', () => {
+    expect(getUrlOrigin('data:text/plain,a')).toBe(null)
+    expect(getUrlOrigin('javascript:void(0)')).toBe(null)
+    expect(getUrlOrigin('https://exa mple.com/')).toBe(null)
   })
 })
