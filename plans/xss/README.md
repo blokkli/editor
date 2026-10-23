@@ -42,6 +42,12 @@ becomes markup again when the editor reads it back with `textContent`.
   use. A field whose stored format the user may not use for it can't be written
   (`checkTextFormatAccess()`), in any language and through any property, as
   Drupal's widget disables it.
+- **Transforms** (since X15's fix) check what the editor offers them for, when
+  they're added: the paragraph types and the number that the plugin declares,
+  and update access to the paragraphs and the paragraphs that hold them. The
+  host's update access is checked for every mutation, when GraphQL loads the
+  host. What a plugin changes is the site's to check; the plugin learns the
+  first run (`isFirstRun()`) and uses the helper's checks.
 - **Imported values** (since X14's fix) are validated as an update's are
   (`setValidFieldValue()`), in every language. What a field refuses is left out
   and listed in the import's summary.
@@ -82,11 +88,10 @@ becomes markup again when the editor reads it back with `textContent`.
 
 ## Findings
 
-| #   | Finding                                                                                                                | Project              | Severity | Status    |
-| --- | ---------------------------------------------------------------------------------------------------------------------- | -------------------- | -------- | --------- |
-| X9  | [Agent conversations are stored as the client sends them](#x9-agent-conversations-are-stored-as-the-client-sends-them) | both                 | low      | to verify |
-| X11 | [The docs and the playground render titles with `v-html`](#x11-the-docs-and-the-playground-render-titles-with-v-html)  | docs                 | medium   | to verify |
-| X15 | [Transforms check no access](#x15-transforms-check-no-access)                                                          | `paragraphs_blokkli` | medium   | to verify |
+| #   | Finding                                                                                                                | Project | Severity | Status    |
+| --- | ---------------------------------------------------------------------------------------------------------------------- | ------- | -------- | --------- |
+| X9  | [Agent conversations are stored as the client sends them](#x9-agent-conversations-are-stored-as-the-client-sends-them) | both    | low      | to verify |
+| X11 | [The docs and the playground render titles with `v-html`](#x11-the-docs-and-the-playground-render-titles-with-v-html)  | docs    | medium   | to verify |
 
 ## X9: Agent conversations are stored as the client sends them
 
@@ -125,24 +130,6 @@ becomes markup again when the editor reads it back with `textContent`.
   - `{{ }}` for plain text.
   - A short docs section on what projects may rely on: blökkli sanitises what it
     previews (since X4's fix).
-
-## X15: Transforms check no access
-
-- **Found:** 2026-10-23, by reading, with X10.
-- **Symptom:** none seen. By reading:
-  - anyone who may edit the edit state can transform paragraphs of a type they
-    may not update;
-  - the sandbox's search and replace changes only text nodes. In a `full_html`
-    field that includes the text of an existing script.
-- **Cause:** `Transform` and `HostTransform`
-  (`modules/paragraphs_blokkli_transform`) run the plugin on the paragraphs
-  they're given. They skip every check that other mutations run on the first
-  run: the paragraph type, the host, the field's access and the text format.
-- **Impact:**
-  - It depends on the site's plugins.
-  - It's about access rather than XSS, apart from the script's text.
-- **Fix idea:** on the first run, the checks that `bulk_update_field_values`
-  runs, for the paragraphs given. The module can't rely on the plugins to check.
 
 ## Smaller things
 
@@ -220,6 +207,13 @@ Made with the user on 2026-10-22.
 - **The diff view's props are HTML, sanitised** (X5): escaping them would show a
   text's rich text as tags. A title with a `<` shows filtered, and nothing in it
   runs.
+- **X15: the module checks what the editor offers a transform for, not what the
+  plugin changes** (2026-10-23). That's site code, which may deliberately allow
+  things. The helper has the checks that the mutations run, and the plugin bases
+  have `isFirstRun()`, which reads the `is_first_run` key of their
+  configuration, as the mutations' does. The mutations set it and don't store
+  it. No method was added to the interfaces, so a plugin without a base class
+  keeps working.
 - **X14: an import leaves out what doesn't validate** (2026-10-23), rather than
   failing as an add does. The import is best effort, as it is for missing
   paragraph types, fields and references, and the summary lists the field. One
@@ -498,6 +492,24 @@ One finding per round.
        only. That failed with the old code. Valid values are kept, and a stored
        import replays as it did. `ImportMutationTest`'s large pastes now go into
        a `string_long` field: 70,000 characters don't fit a `string`.
+   - **X15** (done 2026-10-23):
+     - the plan's premise was partly wrong: the host's update access is checked
+       for every mutation, when the GraphQL entry loads it
+       (`entity_load_by_uuid` with `access_operation: update`). What `transform`
+       lacked were the checks of the paragraphs;
+     - on the first run, `transform` checks the plugin's `bundles`, `min` and
+       `max`, as the editor offers it (`features/transform/index.vue:40`), that
+       the paragraphs exist, and update access to them and to the paragraphs
+       that hold them. `applies()` isn't checked: it needs the editing language,
+       which the mutation doesn't get, and decides where a transform is offered;
+     - both plugin bases have `isFirstRun()`. The interfaces' `transform()` says
+       what the mutation checks and which helper methods a plugin uses for the
+       rest;
+     - `TransformAccessTest`, with the test module
+       `paragraphs_blokkli_transform_test`: a type the user may not update, a
+       paragraph in one, an undeclared type, a missing paragraph, too few and
+       too many paragraphs, and the first run of both kinds of plugin. Eight of
+       nine failed with the old mutations; a stored transform replays as it did.
 8. **The CSP:**
    - blökkli works under a strict CSP (no `'unsafe-eval'` for axe-core's
      locales, nonces for what it injects);
