@@ -118,7 +118,7 @@ https://blokkli-control.ddev.site is how visitors get a sandbox:
   tasks to try, each a link into an editor. A language needs its template
   (`ddev bake --source=…`).
 - **`/admin`** lists the sandboxes and makes invitation links. Each link creates
-  one premium sandbox (7 days, with the agent), without the captcha and the
+  one premium sandbox (21 days, with the agent), without the captcha and the
   limits.
 - **Access links** (`/access/<token>`, made and revoked in `/admin`) log into a
   premium sandbox as one of its test users, as often as needed and in any

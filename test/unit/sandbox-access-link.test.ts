@@ -1,6 +1,7 @@
 import { createHmac } from 'node:crypto'
 import { describe, expect, test } from 'vitest'
 import { accessLinkTarget } from '../../sandbox/control/server/utils/accessLink'
+import { LIFETIME } from '../../sandbox/control/server/utils/sandboxes'
 import type {
   AccessLinkRow,
   SandboxRow,
@@ -72,10 +73,21 @@ describe('accessLinkTarget', () => {
     expect(target({ exists: false })).toEqual({ error: 'gone' })
   })
 
+  test('premium lifetime is 21 days', () => {
+    expect(LIFETIME.premium).toBe(21 * 24 * 3600)
+  })
+
   test('expired', () => {
     expect(
-      target({ sandbox: { ...sandbox, created: time - 7 * 24 * 3600 } }),
+      target({ sandbox: { ...sandbox, created: time - LIFETIME.premium } }),
     ).toEqual({ error: 'gone' })
+  })
+
+  test('still there until the premium lifetime ends', () => {
+    const result = target({
+      sandbox: { ...sandbox, created: time - LIFETIME.premium + 1 },
+    })
+    expect(result).toHaveProperty('url')
   })
 
   test('not premium', () => {

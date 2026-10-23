@@ -406,7 +406,7 @@ host, with ddev running: `bun run test:e2e-drupal` or
   4. inserts the row before copying (node:sqlite is synchronous, so parallel
      claims see each other);
   5. runs `drush blokkli-sandbox:create <random 10-char id> --source=…` with
-     `--expires` and `--idle=7200` (24 h, 2 h idle) or `--premium` (7 days);
+     `--expires` and `--idle=7200` (24 h, 2 h idle) or `--premium` (21 days);
   6. with an invitation, creates an access link for Anna Keller with the
      invitation's note;
   7. returns a login URL for Anna Keller with
@@ -428,7 +428,7 @@ host, with ddev running: `bun run test:e2e-drupal` or
   Revoking ends the link, not the sessions it opened. Access links die with
   their sandbox, and `ddev deploy` deletes every sandbox.
 - **The task `sandbox:cleanup`** runs every 5 minutes: it deletes sandboxes past
-  `min(created + 24 h, last use + 2 h)` (premium: created + 7 days) and marks
+  `min(created + 24 h, last use + 2 h)` (premium: created + 21 days) and marks
   rows of sandboxes that are gone. Rows are never removed.
 - It reuses the frontend's stylesheet (its `main.css` imports the frontend's and
   adds the `Logo` folder as a Tailwind `@source`), the `Logo`, and
