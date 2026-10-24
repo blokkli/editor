@@ -102,12 +102,18 @@ None open. X11, the last, was fixed with the docs (step 9).
   (`features/publish/Dialog/Violations.vue:53`). Drupal sends them as escaped
   markup. Another adapter's messages need the sanitiser (step 4), or have to
   become text as `getViolationText()` does (from X13, fixed otherwise).
-- **An import's translations keep the reserved fields:**
-  `createParagraphFromSerializedData()` strips `uuid`, `langcode`, `type` and
-  the other fields a payload may not decide (`sanitizePayloadValues()`) only
-  from the source language's values. A translation's values pass them to
-  `addTranslation()`. Not XSS; found by reading, with X14, and what it does is
-  unverified.
+- **An import's translations kept the reserved fields** (verified and fixed
+  2026-10-24): `createParagraphFromSerializedData()` stripped `uuid`,
+  `langcode`, `type` and the other fields a payload may not decide
+  (`sanitizePayloadValues()`) only from the source language's values, and passed
+  a translation's to `addTranslation()`. Core's `createTranslation()` applies
+  only translatable fields and sets the language itself, so `id`, `revision_id`,
+  `type`, `uuid`, `langcode` and `default_langcode` had no effect.
+  `revision_translation_affected` did: a payload could mark a new translation as
+  not affected by its first revision. Not XSS. A translation's values now go
+  through `sanitizePayloadValues()` too;
+  `PayloadValuesGuardTest::testImportTranslationCannotSetReservedFields()` fails
+  without it.
 - `FormatTextFieldController`
   (`src/Controller/FormatTextFieldController.php:44`) processes text with any
   format the client names, without checking that the user may use it. Only the
