@@ -312,10 +312,14 @@ export function applySelectorOperation(
     //
     // So prefer a string-level splice: when the target's current content
     // appears exactly once in the source, it is an unambiguous anchor and every
-    // other byte of the field can be left exactly as it was.
+    // other byte of the field can be left exactly as it was. Spliced by index:
+    // String.replace() would read `$&` and the like in the replacement.
     const current = el.innerHTML
     if (current && html.split(current).length === 2) {
-      return html.replace(current, replacement)
+      const index = html.indexOf(current)
+      return (
+        html.slice(0, index) + replacement + html.slice(index + current.length)
+      )
     }
 
     // No unique anchor. Fall back to re-serializing, but only when that

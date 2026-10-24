@@ -122,9 +122,12 @@ None open. X11, the last, was fixed with the docs (step 9).
   isn't a scalar (`SearchApi::mapSearchItem()`). A field of the type "Fulltext"
   gives `TextValue` objects, so a result whose title is mapped to one is
   dropped. Not XSS; found by reading, with X8.
-- The agent's selector replace uses `String.replace()`
-  (`src/modules/agent/runtime/app/tools/helpers.ts:316`), which interprets `$&`,
-  `` $` `` and `$'` in the replacement. That's a correctness bug.
+- **The agent's selector replace used `String.replace()`** (fixed 2026-10-24):
+  `applySelectorOperation()` read `$$`, `$&`, `` $` `` and `$'` in the agent's
+  replacement, so a `$$` lost a dollar sign and the others copied the field's
+  own content into the element. Not XSS. It splices by index now, as the plain
+  search and replace does; `helpers.spec.ts` ("inserts a replacement with dollar
+  signs verbatim") fails without it.
 - Options and behaviour settings are stored without a schema check (F11 in
   [the drupal-setup findings](../drupal-setup/findings.md)). Rendering them is
   up to the site's components.
