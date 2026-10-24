@@ -324,6 +324,16 @@ One finding per round.
    - **Note:** the sandbox's dev server missed an edit and served the old file
      (the content search's results). After editing many files,
      `ddev nuxt restart` before trusting a run.
+   - **Found later (2026-10-24, by the user):** the drop target's label while
+     dragging showed its markup as text (`<span class="bk-is-host">…`): the
+     renderer (`dragging-overlay/Renderer`) still built it as markup. It's now a
+     list of parts (`DropTargetLabelPart`: host, block or field, and a text),
+     which `DragItems` renders as elements with the text in `{{ }}`.
+     `features/dragging-overlay/label.test.ts` checks the parts; it failed on
+     the markup. A sweep for the same mistake: every markup string the editor
+     builds in its scripts, the translations with markup and the docs that
+     promise markup (an add action's description) reach a `v-html` that stays,
+     with the values escaped. The drag label was the only one.
 3. **X6** (done 2026-10-22):
    - `parseHtml()` (`src/runtime/editor/helpers/html`) parses into a `<div>` of
      a document without a window (`document.implementation.createHTMLDocument`).

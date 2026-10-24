@@ -24,6 +24,16 @@ export type MoveToDropTargetEvent =
       fieldName: string
     }
 
+/**
+ * A part of a drop target's label: the host, a block or a field on the way to
+ * the target. A drop area's label is one part without a type. The text comes
+ * from content (the host's label, a block's title), so it's rendered as text.
+ */
+export type DropTargetLabelPart = {
+  type?: 'host' | 'block' | 'field'
+  text: string
+}
+
 declare module '#blokkli/editor/events' {
   interface EventbusEvents {
     'dragging:moveToDropTarget': MoveToDropTargetEvent
