@@ -1,5 +1,5 @@
 <template>
-  <div :data-bk-iframe-id="scopeId" style="container-type: inline-size">
+  <div :data-bk-iframe-id="scopeId">
     <div class="bk-iframe-slot">
       <slot />
     </div>
@@ -45,22 +45,25 @@ watch(
   },
 )
 
-// Generate container query CSS rules from the heights map.
+// Generate container query CSS rules from the heights map. The wrapper is the
+// container: it gets its container-type here, since a server-rendered style
+// attribute is refused by a Content-Security-Policy without 'unsafe-inline'.
 // Sort entries descending by width. The largest width becomes the default.
 // Each smaller width gets a container max-width rule.
 const generatedCSS = computed(() => {
   const entries = Object.entries(props.heights)
-    .map(([w, h]) => ({ width: Number(w), height: h }))
+    .map(([w, h]) => ({ width: Number(w), height: Number(h) }))
     .filter((e) => !Number.isNaN(e.width) && e.height > 0)
     .sort((a, b) => b.width - a.width)
 
   const sel = `[data-bk-iframe-id="${scopeId.value}"]`
 
-  if (!entries.length) {
-    return `${sel} .bk-iframe-slot { height: ${DEFAULT_IFRAME_HEIGHT}px; }`
-  }
+  const lines: string[] = [`${sel} { container-type: inline-size; }`]
 
-  const lines: string[] = []
+  if (!entries.length) {
+    lines.push(`${sel} .bk-iframe-slot { height: ${DEFAULT_IFRAME_HEIGHT}px; }`)
+    return lines.join('\n')
+  }
 
   // Default: largest width's height.
   lines.push(`${sel} .bk-iframe-slot { height: ${entries[0]!.height}px; }`)
@@ -76,12 +79,38 @@ const generatedCSS = computed(() => {
   return lines.join('\n')
 })
 
-useHead({
-  style: [
-    {
-      key: computed(() => `bk-iframe-${scopeId.value}`),
-      innerHTML: generatedCSS,
-    },
-  ],
+// In the browser, the rules go into a constructable stylesheet. A
+// Content-Security-Policy doesn't restrict the CSSOM, while a style element
+// created here would need the page's nonce, and setting its CSS is a Trusted
+// Types sink. Adopted stylesheets come after the document's own in the
+// cascade, so these win over the server-rendered style element.
+let sheet: CSSStyleSheet | null = null
+
+onMounted(() => {
+  sheet = new CSSStyleSheet()
+  sheet.replaceSync(generatedCSS.value)
+  document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet]
 })
+
+onBeforeUnmount(() => {
+  document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
+    (v) => v !== sheet,
+  )
+  sheet = null
+})
+
+watch(generatedCSS, (css) => sheet?.replaceSync(css))
+
+// On the server, a style element: the page's nonce is added to it when the
+// page is rendered (nuxt-security does that for every style element).
+if (import.meta.server) {
+  useHead({
+    style: [
+      {
+        key: computed(() => `bk-iframe-${scopeId.value}`),
+        innerHTML: generatedCSS,
+      },
+    ],
+  })
+}
 </script>

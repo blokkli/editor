@@ -89,6 +89,11 @@ only if it's an `http:` or `https:` URL. `<BlokkliIframe>` passes the source to
 the editor and frames nothing itself: your own `<iframe>` in its slot loads it
 on the page, so check the source there too.
 
+`<BlokkliIframe>` sets the heights in a stylesheet. On a page rendered on the
+server, that's a style element in the head, which needs the page's nonce:
+[nuxt-security](#nuxt-security) adds it. In the browser, it's a constructable
+stylesheet, which the policy doesn't restrict.
+
 ## Content-Security-Policy
 
 The editor works under a strict policy: scripts only with the page's nonce, no

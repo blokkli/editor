@@ -976,8 +976,27 @@ One finding per round.
      with `{{ }}`. `BlokkliEditable.md`'s rich text example says what it may
      hold. The other `v-html` in the docs, skills and playground render rich
      text (texts, tables) or project code (the grid);
-   - found on the way, unverified: `<BlokkliIframe>` writes its height rules
-     with `useHead()` (a style element) and has a static `style` attribute. In
-     the editor (client-side), unhead's style element has no nonce, so the
-     build's `style-src` may block it, and server-rendered, the attribute is
-     refused. No fixture has an embed, so the suite never rendered one.
+   - found on the way, confirmed and fixed (2026-10-24): `<BlokkliIframe>` wrote
+     its height rules with `useHead()` (a style element) and had a static
+     `style="container-type: inline-size"`.
+     - In the browser, unhead's style element has no nonce: against the build,
+       `style-src-elem` blocked it, and unhead set its CSS through `innerHTML`,
+       which went to the default Trusted Types policy. The slot was 150px
+       instead of 500px.
+     - Server-rendered, `style-src-attr` refused the attribute (a probe in
+       Chromium), so the `@container` rules had no container and the largest
+       width's height applied everywhere. The style element was fine there:
+       nuxt-security adds its nonce to every style element it renders.
+     - Fixed: `container-type` is a rule of the generated CSS. In the browser
+       the rules are a constructable stylesheet (`adoptedStyleSheets`,
+       `replaceSync()` when the heights change); on the server they stay in
+       `useHead()`. Adopted stylesheets come after the document's in the
+       cascade, so they win over the server's element, which unhead leaves in
+       place (it only removes elements of its own entries).
+     - Tested: `nodes/embeds.yml` (an embed of the fee calculator) and
+       `features/iframes/heights.test.ts` (the slot's height for its width, and
+       after a change of the heights). Against the build, the first failed
+       without the fix; both pass with it. The suite renders nothing on the
+       server, so that side is a probe: the generated CSS in a nonce'd style
+       element at three widths, then a client stylesheet without one of the
+       breakpoints; every height right, no violation.
