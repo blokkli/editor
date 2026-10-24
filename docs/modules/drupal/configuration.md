@@ -283,6 +283,15 @@ stays translatable, as Paragraphs requires).
 For machine translation, see
 [paragraphs_blokkli_deepl](#paragraphs-blokkli-deepl).
 
+## Content-Security-Policy and Framing
+
+The editor frames the module's pages: its forms, the rich text editor and the
+page after saving. Under a `Cross-Origin-Embedder-Policy` on the frontend, these
+pages need one too, which the module sends (the container parameter
+`paragraphs_blokkli.frame_embedder_policy`). Drupal's own policy has to allow
+the frontend to frame them. See [Security](/security#framing) for both, and for
+a policy for Drupal's pages.
+
 ## Drupal Permissions Reference
 
 ### Edit State Permissions

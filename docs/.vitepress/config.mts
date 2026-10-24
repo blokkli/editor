@@ -298,7 +298,10 @@ export default defineConfig({
       '/': [
         {
           text: 'Getting Started',
-          items: [{ text: 'Configuration', link: '/configuration' }],
+          items: [
+            { text: 'Configuration', link: '/configuration' },
+            { text: 'Security', link: '/security' },
+          ],
         },
         {
           text: 'Define blocks',

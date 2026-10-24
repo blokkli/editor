@@ -117,8 +117,8 @@ Then in the `Node/Page/index.vue` (or whatever it is) component:
 ```vue
 <template>
   <BlokkliProvider v-slot="{ entity }" v-bind="blokkliProps" :entity="$props">
-    <h1 v-blokkli-editable:title v-html="entity.title" />
-    <p v-blokkli-editable:field_lead v-html="entity.lead" />
+    <h1 v-blokkli-editable:title>{{ entity.title }}</h1>
+    <p v-blokkli-editable:field_lead>{{ entity.lead }}</p>
   </BlokkliProvider>
 </template>
 

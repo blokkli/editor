@@ -120,7 +120,7 @@ For example, if your page component has:
 
 ```vue
 <BlokkliEditable name="field_lead" :value="entity.lead" v-slot="{ value }">
-  <div v-html="value" />
+  <p>{{ value }}</p>
 </BlokkliEditable>
 ```
 

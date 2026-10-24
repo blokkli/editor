@@ -94,28 +94,7 @@ becomes markup again when the editor reads it back with `textContent`.
 
 ## Findings
 
-| #   | Finding                                                                                                               | Project | Severity | Status    |
-| --- | --------------------------------------------------------------------------------------------------------------------- | ------- | -------- | --------- |
-| X11 | [The docs and the playground render titles with `v-html`](#x11-the-docs-and-the-playground-render-titles-with-v-html) | docs    | medium   | to verify |
-
-## X11: The docs and the playground render titles with `v-html`
-
-- **Found:** 2026-10-22, by reading.
-- **Symptom:** a project that copies them has stored XSS on the public site, for
-  anyone who may set a title.
-- **Cause:**
-  - a raw title through `v-html` in:
-    - `skills/blokkli-v2-migration/phases/2-nuxt.md:120` (and the lead at
-      `:121`);
-    - `docs/components/BlokkliEditable.md:111`;
-    - `playground/app/components/Hero/index.vue:14`;
-  - no page tells projects what they can safely render with `v-html` (a
-    `processed` value), or that blökkli writes the diff markup into the element
-    itself.
-- **Fix idea:**
-  - `{{ }}` for plain text.
-  - A short docs section on what projects may rely on: blökkli sanitises what it
-    previews (since X4's fix).
+None open. X11, the last, was fixed with the docs (step 9).
 
 ## Smaller things
 
@@ -931,7 +910,12 @@ One finding per round.
         Drupal's side: the module's pages need `script-src 'self'` and nothing
         inline, `frame-ancestors` has to allow the frontend, and the `csp`
         module allows CKEditor 5's styles; core's htmx adds a style element
-        unless `includeIndicatorStyles` is off.
+        unless `includeIndicatorStyles` is off. **Done (2026-10-24):**
+        `docs/security.md`, one page (decided with the user), with Drupal's side
+        as a section of it ("Content-Security-Policy", "Framing", "Drupal"). The
+        policy and the nuxt-security config are the sandbox's. The Drupal
+        module's configuration page, the agent's quick start and the iframes
+        module's setup link to it.
 
    - **Decided** with the user, one at a time:
      - **decided 2026-10-23:** Trusted Types are enforced in the end state.
@@ -978,4 +962,22 @@ One finding per round.
 
 9. **Docs:** X11, and what projects may rely on. That includes the iframes
    module: the project checks the source it frames itself (`<BlokkliIframe>`
-   only passes it to the editor).
+   only passes it to the editor). **Done (2026-10-24):**
+   - `docs/security.md`, "Rendering content": text with `{{ }}`, `v-html` only
+     for rich text the backend filtered; what the editor sanitises while editing
+     (formatted fields' previews, diffs) and what it doesn't (plain values reach
+     props and slots as typed); the strings from project code that it renders as
+     HTML (analyzer descriptions, `mapDiffProps`, tour texts, add actions'
+     descriptions, the grid markup, violation messages in the publish dialog);
+     embeds;
+   - X11: the title in `BlokkliEditable.md` and the playground's `Hero` renders
+     its emphasized parts from the template; the title and lead in the v2
+     migration skill, and the lead in `drupal/pages.md` and `drupal/faq.md`,
+     with `{{ }}`. `BlokkliEditable.md`'s rich text example says what it may
+     hold. The other `v-html` in the docs, skills and playground render rich
+     text (texts, tables) or project code (the grid);
+   - found on the way, unverified: `<BlokkliIframe>` writes its height rules
+     with `useHead()` (a style element) and has a static `style` attribute. In
+     the editor (client-side), unhead's style element has no nonce, so the
+     build's `style-src` may block it, and server-rendered, the attribute is
+     refused. No fixture has an embed, so the suite never rendered one.

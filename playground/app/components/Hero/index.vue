@@ -11,7 +11,12 @@
             tag="h1"
             class="text-4xl lg:text-6xl hero-title"
           >
-            <div v-html="getTitleMarkup(value)" />
+            <div>
+              <template v-for="(part, i) in getTitleParts(value)" :key="i">
+                <em v-if="part.emphasized">{{ part.text }}</em>
+                <template v-else>{{ part.text }}</template>
+              </template>
+            </div>
           </BlokkliEditable>
           <slot name="lead" />
           <slot />
@@ -49,25 +54,13 @@ const props = defineProps<{
 
 const titleValue = computed(() => (props.title || '').toString())
 
-const getTitleMarkup = (text: string): string => {
-  let result = ''
-  let dollarCount = 0
-
-  for (let i = 0; i < text.length; i++) {
-    if (text[i] === '$') {
-      dollarCount++
-      if (dollarCount % 2 === 0) {
-        result += '</em>'
-      } else {
-        result += '<em>'
-      }
-    } else {
-      result += text[i]
-    }
-  }
-
-  return result
-}
+// Text between $ symbols is emphasized. The title is plain text, so the parts
+// are rendered as text.
+const getTitleParts = (text: string) =>
+  text
+    .split('$')
+    .map((part, i) => ({ text: part, emphasized: i % 2 === 1 }))
+    .filter((part) => part.text)
 
 let raf: any = null
 const step = ref(0)

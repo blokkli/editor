@@ -65,7 +65,7 @@ editable inline:
       class="text-xl"
       v-slot="{ value }"
     >
-      <div v-html="value" />
+      <p>{{ value }}</p>
     </BlokkliEditable>
 
     <BlokkliField :list="paragraphs" name="field_paragraphs" />

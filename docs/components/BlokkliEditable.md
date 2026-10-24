@@ -103,20 +103,33 @@ In normal mode, it simply renders the content without any editing functionality.
 </template>
 ```
 
+Here `page.intro` is rich text that the backend has filtered, such as Drupal's
+`processed` value. While editing, the editor sanitises the value it passes to
+the slot for a formatted field. Render any other value with
+<span v-pre>`{{ }}`</span>: see [Security](/security#rendering-content).
+
 ### Processing Value Before Display
 
 ```vue
 <template>
   <BlokkliEditable v-slot="{ value }" name="title" :value="page.title">
-    <h1 v-html="formatTitle(value)" />
+    <h1>
+      <template v-for="(part, i) in formatTitle(value)" :key="i">
+        <em v-if="part.emphasized">{{ part.text }}</em>
+        <template v-else>{{ part.text }}</template>
+      </template>
+    </h1>
   </BlokkliEditable>
 </template>
 
 <script setup lang="ts">
-const formatTitle = (text: string): string => {
-  // Wrap words between $ symbols in <em> tags
-  return text.replace(/\$([^$]+)\$/g, '<em>$1</em>')
-}
+// Words between $ symbols are emphasized. The parts are rendered as text: the
+// title is plain text that anyone who may edit it writes.
+const formatTitle = (text: string) =>
+  text
+    .split('$')
+    .map((part, i) => ({ text: part, emphasized: i % 2 === 1 }))
+    .filter((part) => part.text)
 </script>
 ```
 
