@@ -120,6 +120,13 @@ Traefik sends every hostname to the web container's nginx on port 80.
     markup), its rate limiter off everywhere (behind nginx every request comes
     from 127.0.0.1). `xss` is pinned to 1.0.15 (`overrides` in the root
     `package.json`): 1.0.16 crashes the validator (nuxt-security#767).
+- **Mutations only as JSON:** nginx answers 415 to a request to
+  `/api/graphql_middleware/mutation/…` whose content type isn't
+  `application/json`. The middleware would read a `text/plain` or form body too,
+  and run it with the session cookie: the hosts are same-site to each other, so
+  `SameSite=Lax` doesn't stop a sibling's page from posting one. A JSON POST
+  from another origin needs a CORS preflight, which nothing answers. A client
+  that posts a mutation must send JSON (`useGraphqlMutation()` does).
 - **Adding a Drupal path** means three places: the regex in `nginx-site.conf`,
   `sandbox/frontend/app/utils/drupalPath.ts` (`SiteLink` uses it to leave the
   SPA), and the table in `check-routes`. `test/unit/drupal-path.test.ts`

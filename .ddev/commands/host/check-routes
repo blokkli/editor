@@ -75,6 +75,17 @@ file_routes=(
   "/sites/default/files/x.php drupal 403"
 )
 
+# Mutations, posted with a content type: only JSON reaches the middleware.
+# nginx decodes the path before it compares it.
+mutation_routes=(
+  "application/json /api/graphql_middleware/mutation/x nuxt"
+  "application/json;charset=UTF-8 /api/graphql_middleware/mutation/x nuxt"
+  "text/plain /api/graphql_middleware/mutation/x nginx 415"
+  "application/x-www-form-urlencoded /api/graphql_middleware/mutation/x nginx 415"
+  "multipart/form-data;boundary=x /api/graphql_middleware/mutation/x nginx 415"
+  "text/plain /api/graphql_middleware/%6Dutation/x nginx 415"
+)
+
 # The control app: every path, Drupal's included.
 control="${base/:\/\/blokkli./://blokkli-control.}"
 control_routes=(
@@ -87,16 +98,17 @@ control_routes=(
 )
 
 failed=0
-# Compares the upstream and, if given, the status.
+# Compares the upstream and, if given, the status. The fourth argument labels
+# the request (the URL without one); further arguments go to curl.
 check() {
-  local url="$1" expected="$2" status="${3:-}" headers actual code
-  headers=$(curl -sk -o /dev/null -D - --max-time 10 "$url" | tr -d '\r')
+  local url="$1" expected="$2" status="${3:-}" label="${4:-${1#https://}}" headers actual code
+  headers=$(curl -sk -o /dev/null -D - --max-time 10 "${@:5}" "$url" | tr -d '\r')
   actual=$(awk -F': ' 'tolower($1) == "x-blokkli-upstream" { print $2 }' <<<"$headers")
   code=$(awk 'NR == 1 { print $2 }' <<<"$headers")
   if [ "$actual" = "$expected" ] && { [ -z "$status" ] || [ "$code" = "$status" ]; }; then
-    printf '  ok    %-50s %s\n' "${url#https://}" "$actual${status:+ $code}"
+    printf '  ok    %-50s %s\n' "$label" "$actual${status:+ $code}"
   else
-    printf '  FAIL  %-50s expected %s, got %s\n' "${url#https://}" "$expected${status:+ $status}" "${actual:-nothing}${status:+ $code}"
+    printf '  FAIL  %-50s expected %s, got %s\n' "$label" "$expected${status:+ $status}" "${actual:-nothing}${status:+ $code}"
     failed=1
   fi
 }
@@ -107,6 +119,10 @@ done
 for route in "${file_routes[@]}"; do
   read -r path upstream status <<<"$route"
   check "$base$path" "$upstream" "$status"
+done
+for route in "${mutation_routes[@]}"; do
+  read -r type path upstream status <<<"$route"
+  check "$base$path" "$upstream" "$status" "POST $path ($type)" --data '{}' -H "Content-Type: $type"
 done
 for route in "${sandbox_routes[@]}"; do
   check "$unknown_sandbox${route% *}" "${route##* }"

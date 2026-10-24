@@ -136,13 +136,38 @@ None open. X11, the last, was fixed with the docs (step 9).
 - Options and behaviour settings are stored without a schema check (F11 in
   [the drupal-setup findings](../drupal-setup/findings.md)). Rendering them is
   up to the site's components.
-- **Not XSS, unverified:**
-  - Sibling sandboxes are same-site to each other.
-  - The middleware's mutation endpoint reads any content type
-    (`node_modules/nuxt-graphql-middleware/dist/runtime/server/api/mutation.js:17`).
-  - So `SameSite=Lax` may not stop a `text/plain` POST from one sandbox to
-    another. Drupal's graphql would refuse it, but the browser never reaches
-    Drupal's endpoint directly.
+- **Cross-sandbox POSTs** (checked and fixed 2026-10-24, not XSS):
+  - Sibling sandboxes, the control app and the dev site are same-site to each
+    other: neither `ddev.site` nor `blokk.li` (the hosted instance is under
+    `dev-sandbox.blokk.li`) is a public suffix. So `SameSite=Lax` sends a
+    sandbox's session cookie with a POST from a sibling's page.
+  - The middleware's mutation endpoint checks neither the content type nor the
+    origin
+    (`node_modules/nuxt-graphql-middleware/dist/runtime/server/api/mutation.js:17`,
+    h3's `readBody()`). Tried in an E2E sandbox with `pbTakeOwnership` on a node
+    that doesn't exist: a `text/plain` or form-encoded POST with a session
+    cookie and a sibling's `Origin` runs the mutation as the user. A multipart
+    body isn't parsed, and the upload endpoint isn't registered.
+  - Drupal's GraphQL endpoint refuses these requests: `text/plain` with a 400,
+    form and multipart requests from another origin too (`QueryRouteEnhancer`).
+    nginx doesn't let the browser reach it on sandbox hosts anyway (403), only
+    on the local dev site.
+  - None of these hosts' pages could send such a request. Every response on the
+    sandbox hosts, the dev site and the control app has `form-action 'self'` and
+    `connect-src 'self'` (Nuxt's pages from nuxt-security, Drupal's from the csp
+    module, the rest from `headers.inc`; Nitro's error responses, without
+    either, are JSON). No text format and no sanitiser profile keeps form
+    elements, and uploads are images and documents.
+  - But that made the mutation endpoint only as safe as every same-site host:
+    locally every ddev project, hosted every host under `blokk.li`. So nginx now
+    answers 415 to a mutation whose content type isn't `application/json`
+    (`$blokkli_mutation_refused` in `nginx-site.conf`), as Drupal's endpoint
+    refuses one: from another origin, a JSON POST needs a preflight, which
+    fails. `ddev check-routes` posts a mutation with each content type; before
+    the change, the four that aren't JSON reached Nuxt.
+  - **Open:** this covers the sandbox's stack only. A site that uses
+    nuxt-graphql-middleware behind another server has the same gap until the
+    middleware refuses such bodies itself.
 
 ## Decisions
 
