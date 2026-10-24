@@ -799,7 +799,41 @@ One finding per round.
           computed styles as `style` attributes, which the strict policy
           refuses: its preview has no styles. Neither that nor the dialogs of
           `BlockPreviewRenderer` ("make reusable", "create template") has a
-          spec;
+          spec. **Fixed (2026-10-24):** the overlay gets a copy as nodes
+          (`dom.getDropElementClone()`, which replaces `getDropElementMarkup()`)
+          and inserts it with `replaceChildren()`. The copy is outside the
+          element's ancestors, whose styles can apply to it (a teaser list's
+          `.teaser-list > .teaser`, inherited properties), so it gets the
+          computed styles (`cloneWithInlineStyles()`):
+          - a block keeps its attributes too (`keepAttributes`), as a plain
+            clone does, for its pseudo-elements: their rules can select on a
+            class or an attribute, and the sandbox's placeholders show one
+            (`content: attr(data-placeholder)`, the empty title of a teaser
+            list). Pseudo-elements whose rules depend on the ancestors are still
+            lost. From 2024 until `9f3247260` (2025-11-02), blocks had the
+            computed styles without attributes, since then plain markup;
+          - a structure sidebar item gets them without attributes, as before:
+            its styles are nested under the sidebar (`.bk.bk-structure`);
+          - above 80 elements, computing them lags: a block then gets a plain
+            `cloneNode()`, a structure item the fallback, as before;
+          - the editor's lists' items (add list, media library, search, library)
+            get `cloneNode()`: they're styled for the overlay.
+
+          `cloneElementWithStyles()` is gone. Without `keepAttributes`,
+          `cloneWithInlineStyles()` now removes data attributes instead of
+          emptying them, which the overlay's regex did.
+          `features/dragging-overlay/copy.test.ts` drags a widget (its title's
+          colour is a style attribute), a text in columns with a project's
+          styles (a constructed stylesheet: a colour for the text inside the
+          columns, a `::before` from its class), a teaser list without a title
+          (`content/nodes/teasers.yml`, its placeholder) and a structure sidebar
+          item (`data-test="structure-item"`). Against a build without the fix,
+          the widget's and the structure item's tests fail on the copy's styles
+          and on `style-src-attr`. The text's colour fails with a plain clone,
+          its `::before` without the classes, the teaser list's placeholder
+          without the data attributes (found by the user in the browser). The
+          build: 436 of 436. On the dev server, 435 of 436: the ownership spec
+          (no drag) timed out and passes on rerun;
 
         **Round 2, done (2026-10-23):**
         - the sandbox's `default` policy (`app/plugins/trustedTypes.client.ts`)

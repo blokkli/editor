@@ -2,7 +2,7 @@ import { reactive, ref, computed, type ComputedRef, onMounted } from '#imports'
 import type { EntityContext } from '#blokkli/types'
 import { falsy, onlyUnique } from '#blokkli/helpers'
 import type { UiProvider } from './ui'
-import { cloneElementWithStyles } from '../helpers/dom'
+import { cloneWithInlineStyles } from '../helpers/dom'
 import {
   onBlokkliEvent,
   useDelayedIntersectionObserver,
@@ -36,12 +36,12 @@ export type DomProvider = {
   getBoundingClientRect: (element: HTMLElement) => DOMRect
 
   /**
-   * Return the droppable markup for a draggable item.
+   * Return a copy of a draggable item's element, for the drag overlay.
    */
-  getDropElementMarkup(
+  getDropElementClone(
     item: DraggableItem | RenderedFieldListItem,
     checkSize?: boolean,
-  ): string
+  ): Element | undefined
 
   /**
    * Register a block element for observation and tracking.
@@ -576,10 +576,10 @@ export default function (
     return results
   }
 
-  const getDropElementMarkup = (
+  const getDropElementClone = (
     item: DraggableItem | RenderedFieldListItem,
     checkSize?: boolean,
-  ): string => {
+  ): Element | undefined => {
     const getElement = () => {
       if ('itemType' in item) {
         if (item.itemType === 'existing') {
@@ -592,20 +592,40 @@ export default function (
     }
     const el = getElement()
     if (!el) {
-      return ''
+      return
     }
-    if ('itemType' in item && item.itemType !== 'existing_structure') {
-      return el.outerHTML
+    // Copies as nodes, not as markup: a strict Content-Security-Policy refuses
+    // style attributes in markup, but not the styles set on the elements.
+    const itemType = 'itemType' in item ? item.itemType : 'existing'
+    if (itemType !== 'existing' && itemType !== 'existing_structure') {
+      return el.cloneNode(true) as Element
     }
+
+    // The styles of a block or a structure item can depend on its ancestors,
+    // which the copy is outside of: it gets the computed styles. Computing them
+    // for a large element lags, so a block's copy then goes without them and a
+    // structure item gets the fallback.
     const childCount = element.queryAll(
       el,
       '*',
-      'Get child count for drop element markup.',
+      'Get child count for drop element clone.',
     ).length
     if (checkSize && childCount > 80) {
-      return ''
+      return itemType === 'existing'
+        ? (el.cloneNode(true) as Element)
+        : undefined
     }
-    return cloneElementWithStyles(el, true).replace(/\sdata-\w+="[^"]*"/g, '')
+
+    // A block keeps its attributes, as a plain clone does: its pseudo-elements
+    // can need them. A structure item's classes only apply inside the sidebar.
+    if (itemType === 'existing') {
+      return cloneWithInlineStyles(el, { keepAttributes: true })
+    }
+    const clone = cloneWithInlineStyles(el)
+    if (clone instanceof HTMLElement || clone instanceof SVGElement) {
+      clone.style.opacity = '1'
+    }
+    return clone
   }
 
   const getVisibleBlocks = () => Array.from(visibleBlocks)
@@ -980,7 +1000,7 @@ export default function (
   })
 
   return {
-    getDropElementMarkup,
+    getDropElementClone,
     getVisibleBlocks,
     getVisibleFields,
     registerField,

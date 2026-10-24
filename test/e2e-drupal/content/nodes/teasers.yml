@@ -1,0 +1,9 @@
+# An automatic teaser list without a title, at /en/teasers. While editing, its
+# heading is empty and shows the source's title as a placeholder.
+key: teasers
+type: page
+title: Teasers
+field_paragraphs:
+  - type: teaser_list
+    key: teasers-events
+    options: { source: events }

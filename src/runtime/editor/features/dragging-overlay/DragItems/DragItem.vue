@@ -2,7 +2,7 @@
   <div
     ref="rootEl"
     class="bk-dragging-overlay-item"
-    :class="{ 'bk-is-top': isTop, 'bk-is-fallback': !markup }"
+    :class="{ 'bk-is-top': isTop, 'bk-is-fallback': !clone }"
     :style="{
       width: width + 'px',
       height: height + 'px',
@@ -12,8 +12,12 @@
       '--bk-dragging-radius': Math.max(props.borderRadius, 4),
     }"
   >
-    <!-- eslint-disable-next-line vue/no-v-html -- a copy of an element in the page -->
-    <div v-if="markup" class="bk-dragging-overlay-markup" v-html="markup" />
+    <div
+      v-if="clone"
+      ref="cloneEl"
+      class="bk-dragging-overlay-markup"
+      data-test="dragging-overlay-copy"
+    />
     <div v-else class="bk-dragging-overlay-fallback">
       <div :style="{ transform: `scale(${1 / to.scaleX})` }">
         <template v-if="isTop">
@@ -49,7 +53,7 @@ export type DragItemData = {
   width: number
   height: number
   transformOrigin: string
-  markup: string
+  clone?: Element
   background: string
   bundle?: string
   icon?: BlokkliIcon
@@ -66,6 +70,7 @@ const DURATION = 500
 const { ui } = useBlokkli()
 
 const rootEl = useTemplateRef('rootEl')
+const cloneEl = useTemplateRef('cloneEl')
 
 let isDone = false
 let animationStart = 0
@@ -111,6 +116,9 @@ onBlokkliEvent('canvas:draw', (e) => {
 })
 
 onMounted(() => {
+  if (cloneEl.value && props.clone) {
+    cloneEl.value.replaceChildren(props.clone)
+  }
   if (rootEl.value) {
     rootEl.value.style.transform = `translate(${props.from.x}px, ${props.from.y}px) scale(${props.from.scaleX}, ${props.from.scaleY})`
     rootEl.value.style.opacity = String(props.from.opacity)

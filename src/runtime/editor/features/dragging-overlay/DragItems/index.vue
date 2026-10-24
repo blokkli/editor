@@ -515,18 +515,18 @@ onMounted(() => {
         scaleY: targetScaleY,
       }
 
-      // Get the markup and let the method check the size of the clone.
+      // Get the clone and let the method check its size.
       // For elements with a very large DOM the cloning can become quite a
       // performance issue which results in a noticeable lag. In this case
       // we instead render a simple fallback.
-      const markup =
+      const clone =
         (elRects.length < 6 || isTop) && !ui.lowPerformanceMode.value
-          ? dom.getDropElementMarkup(item.item, true)
-          : ''
+          ? dom.getDropElementClone(item.item, true)
+          : undefined
       let bundle: string | undefined
       let label = ''
 
-      if (!markup) {
+      if (!clone) {
         if ('itemBundle' in item.item) {
           bundle = item.item.itemBundle
           if (bundle) {
@@ -555,7 +555,7 @@ onMounted(() => {
         width: item.element.offsetWidth,
         height: item.element.offsetHeight,
         transformOrigin: `${originX}px ${originY}px`,
-        markup,
+        clone,
         background:
           item.item.itemType === 'existing'
             ? realBackgroundColor(item.element)

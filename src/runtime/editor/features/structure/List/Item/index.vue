@@ -3,6 +3,8 @@
     class="bk-structure-item"
     :class="{ 'bk-is-selected': isSelected }"
     :bk-structure-uuid="uuid"
+    data-test="structure-item"
+    :data-test-uuid="uuid"
     @pointerdown.stop.prevent="onMouseDown"
   >
     <button class="bk-structure-item-label">
