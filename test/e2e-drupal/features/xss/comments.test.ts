@@ -26,14 +26,13 @@ import {
 const TEXT = seedUuid('paragraph', 'first-text')
 
 /**
- * X3 (plans/xss): Drupal stores a comment's body as it gets it, and returned
- * the raw value (`getBody()`), although it's stored with the format
- * `blokkli_comment`. The sidebar renders it with `v-html`. Drupal now returns
+ * Drupal stores a comment's body as it gets it, and returned the raw value
+ * (`getBody()`), although it's stored with the format `blokkli_comment`. The sidebar renders it with `v-html`. Drupal now returns
  * the body as the format filters it (`getProcessedBody()`). The comment editor
  * doesn't produce such a body: the spec sends it through the adapter, as a
  * request made by hand would.
  */
-describe('XSS canary: comment bodies (X3)', async () => {
+describe('XSS canary: comment bodies', async () => {
   const sandbox = workerSandbox()
   await setup({ host: sandboxHost(sandbox) })
 

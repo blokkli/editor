@@ -40,7 +40,7 @@ const onKeyDown = (e: KeyboardEvent) => {
 }
 
 onMounted(() => {
-  // The raw stored value (plans/xss, X4). An edit saves what's shown.
+  // The raw stored value, sanitised. An edit saves what's shown.
   original.value = sanitizeHtml(props.modelValue, 'richText')
 })
 </script>

@@ -42,7 +42,7 @@ const testSeams = process.env.NODE_ENV !== 'production' || e2eBuild
 const devServer = process.env.NODE_ENV !== 'production'
 
 // The Content-Security-Policy: the strictest that the site and the editor work
-// under, so that blökkli works on projects that have one (plans/xss, step 8).
+// under, so that blökkli works on projects that have one.
 // nuxt-security gives Nuxt's own scripts, styles and links a nonce per
 // response. Uploads and pasted images are previewed from blob: URLs, a pasted
 // YouTube link with its thumbnail from YouTube's image host. On the dev

@@ -22,8 +22,8 @@ import {
 const TEXT = seedUuid('paragraph', 'notices-text')
 
 /**
- * X6 (plans/xss): the editor parsed stored values in the live document. The
- * translate dialog turns every source and current value into plain text
+ * The editor parsed stored values in the live document. The translate dialog
+ * turns every source and current value into plain text
  * (`stripHtml()`), through a detached `<div>`'s `innerHTML`, which loaded the
  * markup's images. Drupal stores a formatted field's raw markup as it gets it
  * and filters it only when it renders the field, so the page itself shows the
@@ -33,7 +33,7 @@ const TEXT = seedUuid('paragraph', 'notices-text')
  * The spec stores the payload as raw markup in the English text, then opens
  * "Translate texts" in the German translation.
  */
-describe('XSS canary: raw markup in the translate dialog (X6)', async () => {
+describe('XSS canary: raw markup in the translate dialog', async () => {
   const sandbox = workerSandbox()
   await setup({ host: sandboxHost(sandbox) })
 

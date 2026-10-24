@@ -10,11 +10,11 @@ type TrustedTypesFactory = {
 
 /**
  * The page's `default` Trusted Types policy, as a project that enforces them
- * needs one (plans/xss, step 8). The editor brings its own policy for its
- * markup (`blokkli`); its dependencies pass strings: TipTap parses the content
- * of the comment editor, turndown the markup it converts to Markdown, ECharts
- * empties its SVG. They get DOMPurify's result. turndown wraps the markup in an
- * element of its own, which DOMPurify would remove.
+ * needs one. The editor brings its own policy for its markup (`blokkli`); its
+ * dependencies pass strings: TipTap parses the content of the comment editor,
+ * turndown the markup it converts to Markdown, ECharts empties its SVG. They
+ * get DOMPurify's result. turndown wraps the markup in an element of its own,
+ * which DOMPurify would remove.
  */
 export default defineNuxtPlugin({
   name: 'sandbox:trusted-types',

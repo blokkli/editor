@@ -15,10 +15,9 @@ type TrustedTypesFactory = {
 let policy: HtmlPolicy | null | undefined
 
 /**
- * The editor's Trusted Types policy, `blokkli` (plans/xss, step 8). It vouches
- * for any markup, so it never leaves this module: it's for markup parsed into a
- * document without a window, where nothing loads or runs, and for what
- * DOMPurify returns. A page that enforces Trusted Types has to allow it
+ * The editor's Trusted Types policy, `blokkli`. It vouches for any markup, so
+ * it never leaves this module: it's for markup parsed into a document without a
+ * window, where nothing loads or runs, and for what DOMPurify returns. A page that enforces Trusted Types has to allow it
  * (`trusted-types blokkli`). Without Trusted Types, or if the page refuses the
  * name, the editor passes strings.
  */

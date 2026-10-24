@@ -58,8 +58,8 @@
       field_title: { en: Vacancies, de: Offene Stellen, fr: 'Offres d''emploi' }
   # Banners at the very top of every page.
   field_notice:
-    # Disappears itself when the pool opens, in every language (F24: the
-    # editor's schedule dialog sets one translation's).
+    # Disappears itself when the pool opens, in every language (the editor's
+    # schedule dialog sets one translation's).
     - type: banner
       options: { color: warning }
       unpublish_on: '+4 days 10:00'

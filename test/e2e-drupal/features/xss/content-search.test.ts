@@ -15,16 +15,15 @@ import {
 } from '../../support/xss'
 
 /**
- * X8 (plans/xss): the content search returns a node's label as Drupal stores
- * it (`EntityQuery`, the provider "Content"). The editor rendered its results
- * with `v-html`, so a node whose title has the payload as text ran it for
- * whoever's search found the node. Fixed in the editor (X1): it shows them as
- * text.
+ * The content search returns a node's label as Drupal stores it
+ * (`EntityQuery`, the provider "Content"). The editor rendered its results with
+ * `v-html`, so a node whose title has the payload as text ran it for whoever's
+ * search found the node. Fixed in the editor: it shows them as text.
  *
  * The search queries the stored nodes, not the edit state: the spec publishes
  * the title of the page "Blank" (content/nodes/blank.yml) first.
  */
-describe('XSS canary: content search results (X8)', async () => {
+describe('XSS canary: content search results', async () => {
   const sandbox = workerSandbox()
   await setup({ host: sandboxHost(sandbox) })
 

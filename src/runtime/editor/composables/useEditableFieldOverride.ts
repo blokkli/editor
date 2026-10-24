@@ -98,7 +98,7 @@ export function useEditableFieldOverride(
 
   /**
    * A value as the page shows it. Markup is sanitised: it's the raw stored
-   * value or one nobody has approved yet (plans/xss, X4).
+   * value or one nobody has approved yet.
    */
   function toShown(value: string): string {
     return fieldType === 'markup' ? sanitizeHtml(value, 'richText') : value

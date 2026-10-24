@@ -11,7 +11,6 @@ const props = defineProps<{
   content: string
 }>()
 
-// The file comes from whoever dropped it, and is stored with the conversation
-// (plans/xss, X2).
+// The file comes from whoever dropped it, and is stored with the conversation.
 const html = computed(() => sanitizeHtml(props.content, 'richText'))
 </script>

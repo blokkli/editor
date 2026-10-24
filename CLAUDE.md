@@ -355,8 +355,7 @@ adapter methods, and configuration.
 the Drupal adapter (`sandbox/frontend/`). They run in ddev at
 https://blokkli.ddev.site. The control app (`sandbox/control/`, another Nuxt
 app) hands out sandboxes at https://blokkli-control.ddev.site. How it all works:
-the `sandbox` skill. Setup and the full workflow: `CONTRIBUTING.md`. What's
-still open: `plans/drupal-setup/`.
+the `sandbox` skill. Setup and the full workflow: `CONTRIBUTING.md`.
 
 - **Commands for this stack run in the web container:**
   `ddev exec -d /var/www/html bun run …` and `ddev drush …`. `bun run verify`

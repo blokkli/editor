@@ -48,7 +48,7 @@ const props = defineProps<{
 
 const { $t } = useBlokkli()
 
-/** A value as the views without a diff show it (plans/xss, X5). */
+/** A value as the views without a diff show it. */
 function toHtml(value: string): string {
   return props.plain ? escapeHtml(value) : sanitizeHtml(value, 'richText')
 }

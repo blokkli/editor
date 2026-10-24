@@ -1,9 +1,9 @@
 import type { Page } from 'playwright-core'
 
 /**
- * The CSP check (plans/xss, step 8). The frontend sends a strict
- * Content-Security-Policy (sandbox/frontend/nuxt.config.ts), and so do Drupal's
- * pages, the forms the editor frames among them (the csp module,
+ * The CSP check. The frontend sends a strict Content-Security-Policy
+ * (sandbox/frontend/nuxt.config.ts), and so do Drupal's pages, the forms the
+ * editor frames among them (the csp module,
  * sandbox/drupal/config/sync/csp.settings.yml). A test fails on any violation
  * that isn't known (../setup.ts checks after every test and every file). The
  * pages of `openEditor` and `openPage` record the violations of every document

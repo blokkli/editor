@@ -86,8 +86,7 @@ function ckEditorData(frame: Frame): Promise<string> {
 }
 
 /**
- * X7 (plans/xss): the editor and the frames it opens took messages from any
- * window. Any frame on the page can post them: a project's embed in a block,
+ * The editor and the frames it opens took messages from any window. Any frame on the page can post them: a project's embed in a block,
  * or a frame inside the previewed page. One could set the text a field saves,
  * or the options the preview renders. The editor now accepts a frame's
  * messages only from that frame, on the origin of its URL; the preview only
@@ -96,7 +95,7 @@ function ckEditorData(frame: Frame): Promise<string> {
  * The messages here are plain text. That the editor's own messages still
  * arrive: `editable-field/frame` and `responsive-preview/base`.
  */
-describe('XSS: messages from other windows (X7)', async () => {
+describe('XSS: messages from other windows', async () => {
   const sandbox = workerSandbox()
   await setup({ host: sandboxHost(sandbox) })
 

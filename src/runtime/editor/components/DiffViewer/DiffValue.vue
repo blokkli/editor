@@ -18,7 +18,7 @@ const props = defineProps<{
 }>()
 
 // The values can come from anywhere: a file to import, a translation service,
-// the raw stored value (plans/xss, X5).
+// the raw stored value.
 const diffHtml = computed(() => {
   const before = props.plain ? escapeHtml(props.before) : props.before
   const after = props.plain ? escapeHtml(props.after) : props.after

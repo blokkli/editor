@@ -192,8 +192,6 @@ web_environment:
 - Hosted, the Nuxt apps run their production builds (never the dev servers,
   which serve any file of the repository), nginx doesn't serve the dev site, and
   only Nuxt's server reaches Drupal's GraphQL endpoint.
-- What the server needs besides that (the VM, the firewall, certificates, the
-  outgoing allowlist, monitoring): `plans/drupal-setup/12-hosted-deploy.md`.
 
 ### The agent
 
@@ -225,7 +223,6 @@ Their DE and FR strings are in `translations` in `nuxt.config.ts`.
 | `sandbox/control/`                   | The control app: the claim page, invitations, the cleanup.      |
 | `build/drupal-schema.graphql`        | The site's GraphQL schema. Generated, never edited by hand.     |
 | `.ddev/`                             | nginx routing, the Nuxt daemons, `ddev nuxt`, `bake`, `reset`.  |
-| `plans/drupal-setup/`                | What's still open: the hosted deploy, upstream findings.        |
 
 ### A feature across both repositories
 

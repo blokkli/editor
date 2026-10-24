@@ -31,8 +31,8 @@ const emit = defineEmits<{
 }>()
 
 // The body comes from the adapter. Drupal filters it with the comment's text
-// format; another backend may return it as stored (plans/xss, X3). Sanitised
-// first: the enrichment adds the checkboxes and the links' target.
+// format; another backend may return it as stored. Sanitised first: the
+// enrichment adds the checkboxes and the links' target.
 const enriched = computed(() =>
   enrichRichContent(sanitizeHtml(props.body, 'comment')),
 )

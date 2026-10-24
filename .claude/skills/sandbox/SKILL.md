@@ -575,8 +575,6 @@ that with settings management, which is off).
 ## Hosting
 
 The same ddev project runs on a server, for internal use (the hosted instance).
-What the server needs besides the repository (VM, firewall, certificates,
-outgoing allowlist, monitoring): `plans/drupal-setup/12-hosted-deploy.md`.
 
 - **The switch** is `.ddev/config.local.yaml` (gitignored) on the server:
   `IS_DDEV_HOSTED=true` in `web_environment`, and `project_tld: <domain>`. The

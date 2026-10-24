@@ -195,8 +195,8 @@ export function useApprovalOverrides(options: {
         acceptedById: acceptedBySegmentId(item),
       })
     }
-    // A plain field's values are text: markup in them is shown, not rendered
-    // (plans/xss, X5). Only markup fields are segmented.
+    // A plain field's values are text: markup in them is shown, not rendered.
+    // Only markup fields are segmented.
     const toDiffed = (value: string) =>
       override.fieldType === 'plain' ? escapeHtml(value) : value
     return options.insertionsOnly()

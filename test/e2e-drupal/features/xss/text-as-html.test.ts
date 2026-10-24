@@ -31,10 +31,10 @@ import {
 } from '../../support/xss'
 
 /**
- * X1 (plans/xss): text that becomes markup again. An editor who types the
- * payload as text stores text: the page shows it escaped. Read back through
- * `textContent`, it's markup, and these places rendered it with `v-html`.
- * Fixed: they show it as text.
+ * Text that becomes markup again. An editor who types the payload as text
+ * stores text: the page shows it escaped. Read back through `textContent`, it's
+ * markup, and these places rendered it with `v-html`. Fixed: they show it as
+ * text.
  *
  * - search, "On this page": every block's text, through `Highlight`;
  * - the command palette: the page title in "Edit @label", through `Highlight`;
@@ -45,7 +45,7 @@ import {
  * H1. The spec gives it a title, a text and a title paragraph (an H2), each
  * with a payload of its own.
  */
-describe('XSS canary: text rendered as markup (X1)', async () => {
+describe('XSS canary: text rendered as markup', async () => {
   const sandbox = workerSandbox()
   await setup({ host: sandboxHost(sandbox) })
 

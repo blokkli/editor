@@ -28,7 +28,7 @@ const TITLE = seedUuid('paragraph', 'notices-first-title')
 const TEXT = seedUuid('paragraph', 'notices-text')
 
 /**
- * X5 (plans/xss): the diff views rendered values with `v-html` as they came.
+ * The diff views rendered values with `v-html` as they came.
  * The import's preview diffs a file's values against the current ones, so a
  * file from someone else ran as soon as it was selected, before anything was
  * applied. The views now sanitise what they show, and show a plain field's
@@ -37,7 +37,7 @@ const TEXT = seedUuid('paragraph', 'notices-text')
  * The spec uploads a CSV in the German translation: the payload as text for a
  * title (a plain field), and as raw markup for a text. Nothing is applied.
  */
-describe('XSS canary: the import preview (X5)', async () => {
+describe('XSS canary: the import preview', async () => {
   const sandbox = workerSandbox()
   await setup({ host: sandboxHost(sandbox) })
 

@@ -125,7 +125,7 @@ export default createConfigForNuxt(
   })
   .append({
     // The editor renders content: text goes into `{{ }}`. Each `v-html` that
-    // stays says why in its disable comment (plans/xss).
+    // stays says why in its disable comment.
     files: ['src/**/*.vue'],
     rules: {
       'vue/no-v-html': 'error',
@@ -133,9 +133,8 @@ export default createConfigForNuxt(
   })
   .append({
     // Markup set on an element of the page loads and runs, even while the
-    // element is detached (plans/xss, X6). And a page that enforces Trusted
-    // Types refuses markup that no policy vouches for: the editor's is in
-    // helpers/html (plans/xss, step 8).
+    // element is detached. And a page that enforces Trusted Types refuses
+    // markup that no policy vouches for: the editor's is in helpers/html.
     files: ['src/**/*.ts', 'src/**/*.vue'],
     ignores: ['**/*.spec.ts'],
     rules: {

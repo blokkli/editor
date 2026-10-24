@@ -1,8 +1,8 @@
 import type { Page } from 'playwright-core'
 
 /**
- * The XSS canary (plans/xss, step 1): every place where the editor could render
- * content as markup gets a payload with an id of its own. A payload that runs
+ * The XSS canary: every place where the editor could render content as markup
+ * gets a payload with an id of its own. A payload that runs
  * calls `window.__bkXss(id)`, which records the id; the specs check which ids
  * ran.
  *
