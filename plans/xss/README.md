@@ -114,10 +114,15 @@ None open. X11, the last, was fixed with the docs (step 9).
   through `sanitizePayloadValues()` too;
   `PayloadValuesGuardTest::testImportTranslationCannotSetReservedFields()` fails
   without it.
-- `FormatTextFieldController`
-  (`src/Controller/FormatTextFieldController.php:44`) processes text with any
-  format the client names, without checking that the user may use it. Only the
-  caller sees the result.
+- **`FormatTextFieldController` processed text with any format the client
+  named** (fixed 2026-10-24): the rich text editor's preview route
+  (`/paragraphs_blokkli/format_text_field`) applied whatever format came in the
+  body, without checking that the user may use it. Only the caller saw the
+  result. It now answers 403 for a format that doesn't exist, is disabled or
+  isn't the user's, and 400 for a text or format that isn't a string (an array
+  threw). `FormatTextFieldControllerTest` fails without it. The site's editors
+  may use the formats of their fields (basic_html and table, for every
+  authenticated user), so the frame editor's preview is unchanged.
 - **Search API's fulltext fields:** the Search API provider skips a value that
   isn't a scalar (`SearchApi::mapSearchItem()`). A field of the type "Fulltext"
   gives `TextValue` objects, so a result whose title is mapped to one is
