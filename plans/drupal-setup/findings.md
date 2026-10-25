@@ -9,7 +9,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #    | Finding                                                                                                                                                                     | Project                   | Severity | Status     |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F20  | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                                                                           | `paragraphs_blokkli`      | low      | open       |
 | F24  | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                                                                           | `paragraphs_blokkli`      | medium   | parked     |
 | F26  | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation)                                                     | both                      | medium   | parked     |
 | F28  | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                                                                      | `@blokkli/editor`         | low      | workaround |
@@ -52,29 +51,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it), `parked` (part of a plan of its own, in
 [README](README.md)'s "Features that need their own plan").
-
-## F20: Default templates with `add_multiple`
-
-- **Found:** 2026-09-27, 13d, reproduced
-  (`tmp/drupal-reusable-mutations.sh templates`).
-- **Symptom:** with a default template for columns, `add_multiple` of a columns
-  block with its own children gives the template's children plus the given ones
-  (the agent's `add_paragraphs` uses it).
-- **Cause:** `AddMultiple::createItem` (`AddMultiple.php:168-199`) applies the
-  template, then adds the children. `createNestedParagraphs` only skips the
-  template's children when a value for the field is given, not children
-  (`AddMutationBase.php:447-450`).
-- **Also** (by reading):
-  - The template root's own options aren't applied
-    (`createAndAddParagraphWithTemplate` sets no behavior settings), only its
-    children's.
-  - The template's nested paragraph types aren't checked against the user's
-    `create` permissions (`AddMutationBase::createNestedParagraphs()`, at
-    `29a392b`): a user who may add columns gets the texts of the default
-    template without `create` for texts. Left as it is on 2026-10-11, when
-    `add_from_template` got that check: the default template is what the site
-    defines as a new paragraph of the type. To decide.
-- **Fix idea:** skip the template's children for a field that gets children.
 
 ## F24: Paragraph schedules apply to one translation
 
