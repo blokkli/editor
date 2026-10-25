@@ -50,8 +50,8 @@
           >
             {{ item.fieldLabel }}
           </div>
-          <!-- eslint-disable-next-line vue/no-v-html -- the adapter's markup: Drupal escapes the values in it -->
-          <div v-html="item.violation.message" />
+          <!-- eslint-disable-next-line vue/no-v-html -- sanitised -->
+          <div data-test="publish-violation-message" v-html="item.message" />
         </button>
       </li>
     </ul>
@@ -77,6 +77,7 @@ import { computed, useBlokkli } from '#imports'
 import { InfoBox, ItemIcon } from '#blokkli/editor/components'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import { itemEntityType } from '#blokkli-build/config'
+import { sanitizeHtml } from '#blokkli/editor/helpers/html'
 import type { Validation } from '#blokkli/editor/types/state'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
 
@@ -93,6 +94,11 @@ const { types, blocks, context, eventBus, $t } = useBlokkli()
 
 interface ResolvedViolation {
   violation: Validation
+  /**
+   * The message's markup, sanitised: a validator may put a value of the
+   * content into it.
+   */
+  message: string
   /** The block this violation targets, if entityUuid resolves to one. */
   block: RenderedFieldListItem | null
   /** The block bundle's label, when `block` is set. */
@@ -154,6 +160,7 @@ const resolvedViolations = computed<ResolvedViolation[]>(() =>
       : undefined
     return {
       violation,
+      message: sanitizeHtml(violation.message, 'richText'),
       block,
       bundleLabel,
       fieldLabel: resolveFieldLabel(violation, block),

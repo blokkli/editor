@@ -33,6 +33,7 @@ export type CanaryId =
   | 'agent-rewrite'
   | 'import-title'
   | 'import-text'
+  | 'violation'
 
 /**
  * The payload for `id`: markup that calls `window.__bkXss(id)` when the

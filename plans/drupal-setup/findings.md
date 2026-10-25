@@ -53,7 +53,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F116 | [A comment can be edited or deleted through any page](#f116-a-comment-can-be-edited-or-deleted-through-any-page)                                                            | `paragraphs_blokkli`      | low      | open       |
 | F117 | [An add or a move into a field that blökkli doesn't manage is lost](#f117-an-add-or-a-move-into-a-field-that-blökkli-doesnt-manage-is-lost)                                 | `paragraphs_blokkli`      | low      | to verify  |
 | F118 | [A Search API result whose title is a fulltext field is dropped](#f118-a-search-api-result-whose-title-is-a-fulltext-field-is-dropped)                                      | `paragraphs_blokkli`      | low      | to verify  |
-| F119 | [Another adapter's violation messages reach `v-html`](#f119-another-adapters-violation-messages-reach-v-html)                                                               | `@blokkli/editor`         | low      | open       |
 | F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                                                          | `nuxt-graphql-middleware` | low      | workaround |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
@@ -898,21 +897,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Impact:** low: the title has to be mapped to a string field.
 - **Fix idea:** take a `TextValueInterface`'s text (`getText()`), or say in the
   search skill which field types the mapping takes.
-
-## F119: Another adapter's violation messages reach `v-html`
-
-- **Found:** 2026-10-22, with the XSS plan's X13.
-- **Symptom:** none with Drupal. The publish dialog renders a violation's
-  message as HTML (`src/runtime/editor/features/publish/Dialog/Violations.vue`).
-  Drupal sends markup whose values are escaped. An adapter that puts a stored
-  value into a message as it is puts that value's markup into the editor's page.
-- **Cause:** `Validation.message` is trusted as HTML there. The translations
-  feature shows the same messages as text (`getViolationText()` in
-  `features/translations/violations.ts`).
-- **Impact:** low: only with another adapter.
-- **Fix idea:** sanitise the message (`sanitizeHtml()` in
-  `src/runtime/editor/helpers/html`), or show it as text as the translations
-  feature does.
 
 ## F120: A mutation from a text or form body runs as the user
 

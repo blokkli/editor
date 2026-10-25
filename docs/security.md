@@ -77,8 +77,8 @@ you put into them from content:
   the editor also sanitises;
 - tour texts (`tourText`) and the descriptions of add actions;
 - the [grid overlay's markup](/adapter/getGridMarkup);
-- the `message` of a violation in the publish dialog. The Drupal module's are
-  escaped markup.
+- the `message` of a violation in the publish dialog, which the editor also
+  sanitises. The Drupal module's are escaped markup.
 
 Labels and descriptions that site admins write (block types, fields) are text.
 
