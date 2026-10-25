@@ -52,7 +52,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F115 | [A violation of a host's paragraphs field names no entity](#f115-a-violation-of-a-hosts-paragraphs-field-names-no-entity)                                                   | `paragraphs_blokkli`      | low      | to verify  |
 | F116 | [A comment can be edited or deleted through any page](#f116-a-comment-can-be-edited-or-deleted-through-any-page)                                                            | `paragraphs_blokkli`      | low      | open       |
 | F117 | [An add or a move into a field that blökkli doesn't manage is lost](#f117-an-add-or-a-move-into-a-field-that-blökkli-doesnt-manage-is-lost)                                 | `paragraphs_blokkli`      | low      | to verify  |
-| F118 | [A Search API result whose title is a fulltext field is dropped](#f118-a-search-api-result-whose-title-is-a-fulltext-field-is-dropped)                                      | `paragraphs_blokkli`      | low      | to verify  |
 | F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                                                          | `nuxt-graphql-middleware` | low      | workaround |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
@@ -883,20 +882,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   `getAvailableHostFieldNames()`.
 - **Fix idea:** refuse a field that blökkli doesn't manage, when the mutation
   runs for the first time.
-
-## F118: A Search API result whose title is a fulltext field is dropped
-
-- **Found:** 2026-10-23, by reading, with the XSS plan's X8. Not reproduced.
-- **Symptom (by reading):** the content search of
-  `paragraphs_blokkli_search_api` leaves out every result whose title is mapped
-  to an index field of the type "Fulltext".
-- **Cause:** `SearchApi::mapSearchItem()`
-  (`modules/paragraphs_blokkli_search_api/src/Plugin/ParagraphsBlokkli/Search/SearchApi.php`
-  at `22d299a`) keeps only scalar values. A fulltext field gives a `TextValue`
-  object, and a result without a title is dropped.
-- **Impact:** low: the title has to be mapped to a string field.
-- **Fix idea:** take a `TextValueInterface`'s text (`getText()`), or say in the
-  search skill which field types the mapping takes.
 
 ## F120: A mutation from a text or form body runs as the user
 
