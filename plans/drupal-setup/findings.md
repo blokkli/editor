@@ -9,7 +9,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #    | Finding                                                                                                                                                                     | Project                   | Severity | Status     |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F6   | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                                                                    | `blokkli_starterkit`      | low      | open       |
 | F11  | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                                                                       | `paragraphs_blokkli`      | low      | open       |
 | F18  | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                                                                           | both                      | low      | workaround |
 | F19  | [Template and library search](#f19-template-and-library-search)                                                                                                             | both                      | low      | open       |
@@ -55,41 +54,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it), `parked` (part of a plan of its own, in
 [README](README.md)'s "Features that need their own plan").
-
-## F6: Starterkit nginx routing
-
-- **Found:** 2026-09-26, while porting the starterkit's nginx config for
-  chunk 02. Code references are relative to the `blokkli_starterkit` repository
-  (2.0.x, `.ddev/nginx_full/`, generated from `scripts/nginx-conf-generator/`).
-- **Symptoms and causes:**
-  - **Frontend paths go to Drupal.** The Drupal path prefixes are not anchored
-    at a path segment, so `/blockchain` matches `block`, `/users` matches
-    `user`, and `/media-kit` matches `media`. Nuxt pages with such paths are
-    unreachable.
-  - **The agent WebSocket loses the forwarded headers.** The
-    `/api/blokkli/agent` location sets its own `proxy_set_header` lines. nginx
-    then ignores all server-level ones, so Nuxt gets `Host: localhost:3000` and
-    no `X-Forwarded-*` on that route.
-  - **SSR requests to Drupal carry `Host: localhost`.** Nuxt calls
-    `http://localhost/{lang}/graphql`, and nginx passes `Host $host` on. Drupal
-    only sees the real host through `X-Forwarded-Host`. That works for URL
-    generation, but anything that reads `HTTP_HOST` early (multisite or per-host
-    settings) picks the wrong site.
-  - **PHP in the files directories.** The PHP location matches any `*.php`, and
-    only `\..*/.*\.php$` is denied, so a `.php` file under `sites/*/files` is
-    passed to PHP. Drupal's nginx recipe denies it (found 2026-10-06, chunk 10).
-- **Fix ideas:**
-  - Anchor the prefixes: `^(/(de|fr|en))?/(prefixes)(/|$)`. Entries that end in
-    `/` today (`user/`, `system/`, `devel/`, `comment/`) lose the slash. Check
-    that routes such as `/entity_reference_autocomplete` are still covered,
-    since `entity` no longer matches them.
-  - Set every `proxy_set_header` at server level and none in locations. The
-    `$http_upgrade` map already covers WebSocket upgrades.
-  - Send one host to the upstreams: `X-Forwarded-Host` if present, otherwise
-    `Host`, as both `Host` and `X-Forwarded-Host`. This repo's
-    `.ddev/nginx_full/nginx-site.conf` does all three.
-  - `location ~ ^/sites/[^/]+/files/.*\.php$ { deny all; }` before the other
-    locations of files, as in this repo since chunk 10.
 
 ## F11: Options schema: no validation, lossy form saves
 
@@ -385,9 +349,10 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   an access check (`TextsTranslator::trans()`, `src/TextsTranslator.php:117` in
   `texts`). Any user with GraphQL access can fill the table: on the dev site,
   everyone, with `blokkli_playground_public`. Sandboxes are safe from it since
-  2026-10-14: nginx refuses Drupal's GraphQL endpoint to the browser there, and
+  2026-10-25: nginx refuses Drupal's GraphQL endpoint to the browser there, and
   the app's operations name their keys as literals
-  (`app/graphql/fragment.easyTexts.graphql`).
+  (`app/graphql/fragment.easyTexts.graphql`). From 2026-10-14, nginx refused
+  `/graphql`, but any logged-in user still reached it as `/index.php/graphql`.
 - **Fix idea:** create keys only with a permission, or only in development.
 
 ## F64: A template or a copy places a library item its user may not view
