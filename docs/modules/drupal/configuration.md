@@ -2,28 +2,17 @@
 
 ## Nuxt Module Options
 
-The Drupal module is imported and configured in your `nuxt.config.ts`:
+The Drupal module is added in your `nuxt.config.ts`. It has no options:
 
 ```typescript
 import drupal from '@blokkli/editor/drupal'
 
 export default defineNuxtConfig({
   blokkli: {
-    modules: [
-      drupal({
-        templateEditRouteName: 'blokkli-template',
-      }),
-    ],
+    modules: [drupal()],
   },
 })
 ```
-
-### templateEditRouteName
-
-**Type:** `string`
-
-The name of the Nuxt route used for editing template entities. The route must
-have a `uuid` param. Only needed if you use the templates feature.
 
 ### Automatic Defaults
 
@@ -405,8 +394,10 @@ For the reusable paragraph library, which comes from Paragraphs'
 `paragraphs_library`. It adds the form that sets which paragraph types may
 become library items (`/admin/config/content/blokkli/library`), and moves the
 library item's canonical URL to `/blokkli/library-item/{id}`, a path the
-frontend serves. The editor's "From library" dialog also needs a search provider
-of the type "Paragraphs library items".
+frontend serves (see
+[Library Item and Template Pages](/modules/drupal/pages#library-item-and-template-pages)).
+The editor's "From library" dialog also needs a search provider of the type
+"Paragraphs library items".
 
 ### paragraphs_blokkli_comment
 
@@ -432,8 +423,11 @@ Batch transform plugins for applying operations to multiple paragraphs at once.
 
 ### paragraphs_blokkli_template
 
-Template system for creating and managing paragraph templates. The editor's
-template dialog needs a search provider of the type "Paragraph Templates".
+Template system for creating and managing paragraph templates. A template's
+canonical URL is `/blokkli/template/{id}`, a path the frontend serves (see
+[Library Item and Template Pages](/modules/drupal/pages#library-item-and-template-pages));
+its form in Drupal is the edit form. The editor's template dialog needs a search
+provider of the type "Paragraph Templates".
 
 ### paragraphs_blokkli_scheduler
 

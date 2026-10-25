@@ -20,7 +20,8 @@ src/modules/drupal/
 │   ├── adapter/
 │   │   └── index.ts      # Full adapter implementation (~1400 lines)
 │   └── components/
-│       └── BlokkliDrupalEditTemplate.vue  # Template editing wrapper
+│       ├── BlokkliDrupalEditLibraryItem/  # A library item's page
+│       └── BlokkliDrupalEditTemplate/     # A template's page
 └── graphql/              # GraphQL queries, mutations, fragments
 ```
 
@@ -42,15 +43,7 @@ src/modules/drupal/
 
 ## Configuration
 
-```typescript
-blokkli: {
-  modules: {
-    drupal: {
-      templateEditRouteName?: string  // Nuxt route for template editing (needs :uuid param)
-    }
-  }
-}
-```
+The module has no options: `modules: [drupal()]`.
 
 ## Adapter
 
@@ -59,11 +52,21 @@ mutations and queries go through GraphQL. Methods are conditionally registered
 based on what the schema supports — the adapter only exposes operations that the
 backend can handle.
 
-## Component
+## Components
 
-`BlokkliDrupalEditTemplate` — Loads a template entity via GraphQL and wraps it
-with `BlokkliProvider` + `BlokkliField` for editing. Used on the template edit
-route.
+Library items and templates are edited on their canonical URLs, pages of the
+frontend by the entity's ID: `/blokkli/library-item/{id}` and
+`/blokkli/template/{id}`. Drupal links there, and the adapter builds the same
+URLs (`getLibraryItemEditUrl`, `templatesGetEditUrl`).
+
+- `BlokkliDrupalEditLibraryItem` (`id`) — loads a library item
+  (`paragraphsBlokkliLibraryItemGet`) and wraps it with `BlokkliProvider` +
+  `BlokkliField`; its slot renders above the paragraph.
+- `BlokkliDrupalEditTemplate` (`id`) — the same for a template
+  (`paragraphsBlokkliTemplateGet`).
+
+Both answer 404 when the entity doesn't exist or the user may not view it or use
+blökkli.
 
 ## GraphQL Integration
 

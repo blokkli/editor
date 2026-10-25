@@ -74,12 +74,7 @@ export default defineNuxtConfig({
   modules: ['nuxt-graphql-middleware', '@blokkli/editor'],
 
   blokkli: {
-    modules: [
-      drupal({
-        // Optional: route name for editing template entities
-        templateEditRouteName: 'blokkli-template',
-      }),
-    ],
+    modules: [drupal()],
 
     // Your block component patterns
     pattern: ['~/components/Paragraph/**/*.vue'],

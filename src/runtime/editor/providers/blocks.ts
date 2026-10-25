@@ -69,7 +69,7 @@ export default function (
 
   function getLibraryData(
     item: FieldListItemTyped,
-  ): { label: string; libraryItemUuid: string; reusableBundle: string } | null {
+  ): RenderedFieldListItem['library'] {
     if (item.bundle === fromLibraryBlockBundle && item.props.libraryItem) {
       const uuid = item.props.libraryItem.uuid
       const bundle = item.props.libraryItem.block?.bundle
@@ -77,6 +77,7 @@ export default function (
         return {
           label: item.props.libraryItem.label ?? '',
           libraryItemUuid: uuid,
+          libraryItemId: item.props.libraryItem.id ?? null,
           reusableBundle: bundle,
         }
       }

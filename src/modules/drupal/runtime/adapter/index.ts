@@ -8,7 +8,6 @@ import {
 import { falsy } from '#blokkli/helpers'
 import { parseHtmlDocument } from '#blokkli/editor/helpers/html'
 import { availableFeaturesAtBuild } from '#blokkli-build/features'
-import { templateEditRouteName } from '#blokkli-build/drupal-config'
 import { operationSources } from '#nuxt-graphql-middleware/sources'
 import {
   useGraphqlQuery,
@@ -1270,24 +1269,40 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         }).then(mapMutation)
     }
 
-    const buildFormUrl = (parts: string | string[], langcode: string) => {
+    const getUrlPrefix = (langcode: string) => {
       const prefix = config.urlPrefixes[langcode]
       if (prefix === null || prefix === undefined) {
         throw new Error('Failed to get URL prefix for langcode: ' + langcode)
       }
-      const url = typeof parts === 'string' ? parts : '/' + parts.join('/')
-      return { url: prefix + url + `?paragraphsBlokkli=true` }
+      return prefix
     }
 
-    if (availableFeatureIds.has('library')) {
-      adapter.getLibraryItemEditUrl = (uuid) => {
-        const url = buildFormUrl(
-          ['blokkli', 'library-item', uuid],
-          ctx.value.langcode,
-        ).url
+    const buildFormUrl = (parts: string | string[], langcode: string) => {
+      const url = typeof parts === 'string' ? parts : '/' + parts.join('/')
+      return { url: getUrlPrefix(langcode) + url + `?paragraphsBlokkli=true` }
+    }
 
-        // Directly build the URL to start blökkli for the paragraphs_library_item.
-        return `${url}&blokkliEditing=${uuid}&language=${ctx.value.langcode}`
+    // The canonical URL of a library item or a template: a page of the
+    // frontend, by the entity's ID. Drupal links there too.
+    const buildPageUrl = (
+      type: 'library-item' | 'template',
+      id: string,
+      uuid: string,
+      langcode: string,
+    ) =>
+      `${getUrlPrefix(langcode)}/blokkli/${type}/${id}?blokkliEditing=${uuid}`
+
+    if (availableFeatureIds.has('library')) {
+      adapter.getLibraryItemEditUrl = (e) => {
+        if (!e.libraryItemId) {
+          return null
+        }
+        return buildPageUrl(
+          'library-item',
+          e.libraryItemId,
+          e.libraryItemUuid,
+          ctx.value.langcode,
+        )
       }
     }
 
@@ -1912,6 +1927,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
                 }
                 return {
                   uuid: v.uuid,
+                  id: v.id ?? undefined,
                   label: v.label ?? '',
                   description: v.description,
                   isDefault: !!v.isDefault,
@@ -1973,25 +1989,16 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }
     }
 
-    if (hasQuery('pbGetTemplateEntity') && templateEditRouteName) {
-      try {
-        const href = router.resolve({
-          name: templateEditRouteName,
-          params: {
-            uuid: 'UUID_PLACEHOLDER',
-          },
-        }).path
-
-        adapter.templatesGetEditUrl = (e) => {
-          return (
-            href.replace('UUID_PLACEHOLDER', e.templateUuid) +
-            '?blokkliEditing=' +
-            e.templateUuid
-          )
+    if (hasQuery('pbGetTemplateEntity')) {
+      adapter.templatesGetEditUrl = (e) => {
+        if (!e.templateId) {
+          return null
         }
-      } catch {
-        console.error(
-          `The provided templateEditRouteName "${templateEditRouteName}" is not valid. Editing templates will not be possible.`,
+        return buildPageUrl(
+          'template',
+          e.templateId,
+          e.templateUuid,
+          ctx.value.langcode,
         )
       }
     }

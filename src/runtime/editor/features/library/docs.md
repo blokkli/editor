@@ -50,9 +50,11 @@ const blocks: FieldListItem[] = [
     // blökkli expects a single prop named libraryItem.
     props: {
       // The referenced library item entity. The editor uses its uuid and
-      // label, e.g. to edit or detach it.
+      // label, e.g. to edit or detach it, and passes its optional id to the
+      // adapter's getLibraryItemEditUrl.
       libraryItem: {
         uuid: 'c5b3a0f2-6d7e-4f1a-9b8c-2e4d6f8a0b1c',
+        id: '12',
         label: 'Opening hours notice',
         // The actual reusable block, with its own uuid.
         block: {

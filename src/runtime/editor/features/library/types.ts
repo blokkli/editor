@@ -6,6 +6,10 @@ export interface LibraryItemProps {
   block?: FieldListItem
   label?: string
   uuid?: string
+  /**
+   * The ID of the library item, e.g. for the URL of its page.
+   */
+  id?: string
 }
 
 export type MakeReusableEvent = {
@@ -38,6 +42,11 @@ export type LibraryEditItemEvent = {
   uuid: string
   blockUuid: string
   label?: string
+}
+
+export type AdapterGetLibraryItemEditUrl = {
+  libraryItemUuid: string
+  libraryItemId: string | null
 }
 
 export type AddReusableItemEvent = {
@@ -85,8 +94,10 @@ declare module '#blokkli/editor/adapter' {
 
     /**
      * Build the URL to edit a library item.
+     *
+     * Returns null when the URL can't be built, e.g. without the ID.
      */
-    getLibraryItemEditUrl?: (uuid: string) => string
+    getLibraryItemEditUrl?: (e: AdapterGetLibraryItemEditUrl) => string | null
   }
 }
 

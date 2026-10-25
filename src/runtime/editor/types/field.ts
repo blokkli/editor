@@ -62,6 +62,7 @@ export type RenderedFieldListItem = {
   library: {
     label: string
     libraryItemUuid: string
+    libraryItemId: string | null
     reusableBundle: string
   } | null
   fragment: {

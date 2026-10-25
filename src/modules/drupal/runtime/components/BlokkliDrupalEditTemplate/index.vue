@@ -6,19 +6,19 @@
 
 <script setup lang="ts">
 import { BlokkliProvider, BlokkliField } from '#components'
-import { useGraphqlQuery, useAsyncData } from '#imports'
+import { createError, useGraphqlQuery, useAsyncData } from '#imports'
 
 const props = defineProps<{
   /**
-   * The UUID of the template.
+   * The ID of the template, from its canonical URL: /blokkli/template/{id}.
    */
-  uuid: string
+  id: string
 }>()
 
 const { data: entity } = await useAsyncData(
-  'blokkli-drupal-edit-template-' + props.uuid,
+  'blokkli-drupal-edit-template-' + props.id,
   () => {
-    return useGraphqlQuery('pbGetTemplateEntity', { uuid: props.uuid }).then(
+    return useGraphqlQuery('pbGetTemplateEntity', { id: props.id }).then(
       (v) => {
         if (v.data.paragraphsBlokkliTemplateGet) {
           return v.data.paragraphsBlokkliTemplateGet
@@ -28,4 +28,8 @@ const { data: entity } = await useAsyncData(
     )
   },
 )
+
+if (!entity.value) {
+  throw createError({ statusCode: 404, fatal: true })
+}
 </script>

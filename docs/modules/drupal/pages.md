@@ -222,31 +222,71 @@ are immediately reflected:
 
 Outside of editing, `entity` is the same as the data you passed via `:entity`.
 
-## Template Editing
+## Library Item and Template Pages
 
-If you use templates, create a page for editing template entities:
+Library items and templates are edited on pages of their own. Their canonical
+URLs, which Drupal links to, are these pages, by the entity's ID:
+
+- a library item: `/blokkli/library-item/{id}` (`paragraphs_blokkli_library`);
+- a template: `/blokkli/template/{id}` (`paragraphs_blokkli_template`).
+
+The editor links there too, behind the language prefix, e.g.
+`/de/blokkli/template/3?blokkliEditing=<uuid>`. Create the two pages at these
+paths, with the components that load and render the entity:
 
 ::: code-group
 
-```vue [~/pages/blokkli/template/[uuid].vue]
+```vue [~/pages/blokkli/library-item/[id].vue]
 <template>
-  <BlokkliDrupalEditTemplate :uuid />
+  <BlokkliDrupalEditLibraryItem v-slot="{ entity }" :id>
+    <h1 v-blokkli-editable:label>{{ entity.libraryItemLabel }}</h1>
+  </BlokkliDrupalEditLibraryItem>
+</template>
+
+<script setup lang="ts">
+import BlokkliDrupalEditLibraryItem from '#blokkli/drupal/components/BlokkliDrupalEditLibraryItem/index.vue'
+
+const id = String(useRoute().params.id)
+</script>
+```
+
+```vue [~/pages/blokkli/template/[id].vue]
+<template>
+  <BlokkliDrupalEditTemplate :id />
 </template>
 
 <script setup lang="ts">
 import BlokkliDrupalEditTemplate from '#blokkli/drupal/components/BlokkliDrupalEditTemplate/index.vue'
 
-definePageMeta({
-  name: 'blokkli-template',
-})
-
-const route = useRoute()
-const uuid = computed(() => String(route.params.uuid))
+const id = String(useRoute().params.id)
 </script>
 ```
 
 :::
 
-The route name must match the `templateEditRouteName` option you pass to the
-Drupal module in your config. The route may have no parameter besides `uuid`
-(e.g. no language segment): blökkli resolves it by name with the uuid only.
+Both answer 404 when the entity doesn't exist or the user may not view it or use
+blökkli. `BlokkliDrupalEditLibraryItem`'s slot renders above the paragraphs,
+with the entity as it is while editing: `libraryItemLabel` is the library item's
+label, as in the
+[`pbMutatedEntity` fragment](/modules/drupal/graphql#_3-the-pbmutatedentity-fragment).
+
+For the editor's link to a library item, the fragment of the `from_library`
+paragraph needs the item's `id`:
+
+```graphql
+fragment paragraphFromLibrary on ParagraphFromLibrary {
+  libraryItem: fieldReusableParagraph {
+    id
+    uuid
+    label
+    block: paragraphs {
+      ...paragraphsFieldItem
+      props {
+        ...paragraphLeaf
+      }
+    }
+  }
+}
+```
+
+Without it, a placed library item can't be edited.

@@ -5853,11 +5853,15 @@ type Query {
   pbGetNotificationCount: Int
 
   paragraphsBlokkliSearchLibraryItems(bundles: [String]!, filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliLibraryItemsSearchResults
+
+  "A library item, by the id in its canonical URL, in the current language."
+  paragraphsBlokkliLibraryItemGet(id: ID!): ParagraphsLibraryItem
+
   paragraphsBlokkliSearch(id: String, text: String!): [ParagraphsBlokkliSearchItem]
   paragraphsBlokkliSearchTabs: [ParagraphsBlokkliSearchTab]
   pbSearchEditStates(filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliEditStatesResults
   paragraphsBlokkliTemplateSearch(filters: [ParagraphsBlokkliUserConfigInput], page: Int): ParagraphsBlokkliTemplatesSearchResults
-  paragraphsBlokkliTemplateGet(uuid: String!): BlokkliParagraphTemplate
+  paragraphsBlokkliTemplateGet(id: ID!): BlokkliParagraphTemplate
   paragraphsBlokkliGetTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliTransformPlugin!]
   paragraphsBlokkliGetHostTransformPlugins(entityType: EntityType!, entityUuid: String!, langcode: String!): [ParagraphsBlokkliHostTransformPlugin!]
   route(path: String!, skipFrontpageRedirect: Boolean = false): Url

@@ -9,7 +9,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #    | Finding                                                                                                                                                                     | Project                   | Severity | Status     |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F18  | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                                                                           | both                      | low      | workaround |
 | F19  | [Template and library search](#f19-template-and-library-search)                                                                                                             | both                      | low      | open       |
 | F20  | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                                                                           | `paragraphs_blokkli`      | low      | open       |
 | F24  | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                                                                           | `paragraphs_blokkli`      | medium   | parked     |
@@ -53,27 +52,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it), `parked` (part of a plan of its own, in
 [README](README.md)'s "Features that need their own plan").
-
-## F18: Links to library items and templates
-
-- **Found:** 2026-09-27, 13d.
-- **Library items:**
-  - `paragraphs_blokkli_library` moves the canonical route to
-    `/blokkli/library-item/{paragraphs_library_item}`, with the numeric id.
-    Drupal builds links with it: open editing, the list of edit states when
-    publishing, notifications, preview grants, the language switch.
-  - The editor's own link (`getLibraryItemEditUrl` in the Drupal adapter) uses
-    the uuid, and the documented Nuxt page loads by uuid. So Drupal's links 404.
-  - **Workaround:** the page loads by id when the parameter is numeric
-    (`sandbox/frontend/app/pages/[lang]/blokkli/library-item/[uuid].vue`, and
-    the `blokkli-setup-library` skill).
-- **Templates:** the canonical URL is the admin form
-  (`/admin/config/content/blokkli/templates/{id}`), so Drupal's links to a
-  template's edit state lead there, not to the template route. Not worked
-  around.
-- **Fix ideas:** one parameter for both sides, e.g. the adapter builds the link
-  from the id, or Drupal's route takes the uuid. For templates, a canonical
-  route the frontend serves.
 
 ## F19: Template and library search
 

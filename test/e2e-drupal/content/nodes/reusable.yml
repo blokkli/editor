@@ -1,0 +1,8 @@
+# A page that places the library item "Opening hours", at /en/reusable.
+key: reusable
+type: page
+title: Reusable
+field_paragraphs:
+  - type: from_library
+    key: reusable-opening-hours
+    field_reusable_paragraph: { library: opening-hours }

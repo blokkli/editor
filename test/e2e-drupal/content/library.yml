@@ -1,0 +1,8 @@
+# Library items.
+
+# On the page "Reusable".
+- key: opening-hours
+  label: Opening hours
+  paragraphs:
+    - type: text
+      field_text: '<p>Monday to Friday, 8 to 12 o’clock.</p>'

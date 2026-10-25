@@ -18,15 +18,7 @@ function getDrupalAdapterPath(): string {
   return resolver.resolve('./runtime/adapter/index.js')
 }
 
-export default defineBlokkliModule<{
-  /**
-   * The name of the route that is used for editing template entities.
-   *
-   * The route must have a param called `uuid`, used for loading the correct
-   * template entity.
-   */
-  templateEditRouteName?: string
-}>({
+export default defineBlokkliModule({
   alterOptions(options) {
     // Set default options for blökkli starterkit setups.
     if (!options.itemEntityType) {
@@ -74,28 +66,8 @@ export default defineBlokkliModule<{
       }
     }
   },
-  setup({ context, helper }, options) {
+  setup({ context, helper }) {
     helper.addAlias('#blokkli/drupal-adapter', getDrupalAdapterPath())
-
-    context.addTemplate({
-      type: 'code',
-      name: 'drupal-config',
-      buildCode: () => {
-        return `
-export const templateEditRouteName = ${JSON.stringify(options?.templateEditRouteName || null)}
-`
-      },
-      buildTypes: () => {
-        return `
-export declare const templateEditRouteName: string|null
-`
-      },
-      options: {
-        dependencies: [],
-        write: true,
-        context: 'app',
-      },
-    })
 
     // First try to get nuxt-graphql-middleware module context without
     // throwing an error, so that we can log additional information on what
@@ -388,6 +360,10 @@ fragment blokkliTextFieldValue on ParagraphsBlokkliTextFieldValue {
     // Feature: Library.
     if (graphql.schemaHasType('ParagraphFromLibrary')) {
       addGraphqlDocument('features/library.graphql')
+      // For the library item's page (BlokkliDrupalEditLibraryItem).
+      if (queryFields.has('paragraphsBlokkliLibraryItemGet')) {
+        addGraphqlDocument('features/library-item.graphql')
+      }
     } else {
       disableFeature('library')
     }
@@ -477,11 +453,6 @@ fragment blokkliTextFieldValue on ParagraphsBlokkliTextFieldValue {
         disableFeature('templates')
       } else {
         addGraphqlDocument('features/templates.graphql')
-        if (!options?.templateEditRouteName) {
-          helper.logger.warn(
-            `The templates feature is enabled, but the "templateEditRouteName" option was not provided for the blökkli Drupal module. Editing templates will not be possible.`,
-          )
-        }
       }
     } else {
       disableFeature('templates')

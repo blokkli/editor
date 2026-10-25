@@ -3,8 +3,8 @@ name: blokkli-setup-templates
 description: >-
   Set up templates in a blökkli 2.x + Drupal project: the
   paragraphs_blokkli_template module, its GraphQL exposure, the template search
-  provider, permissions, default templates for new paragraphs, and the Nuxt
-  route that edits templates. Use when editors should insert prepared sets of
+  provider, permissions, default templates for new paragraphs, and the Nuxt page
+  that edits templates. Use when editors should insert prepared sets of
   paragraphs (e.g. a service page), when new paragraphs of a type should start
   with content (e.g. columns with two texts), or when the "Template" dialog is
   empty, templates can't be edited, or a default template isn't applied.
@@ -15,9 +15,9 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.1.2'
+  version: '1.1.3'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
-  docs: https://docs.blokk.li/modules/drupal/pages#template-editing
+  docs: https://docs.blokk.li/modules/drupal/pages#library-item-and-template-pages
 ---
 
 # Templates
@@ -29,12 +29,11 @@ skill).
 
 Templates are content entities (`blokkli_paragraph_template`) with their own
 paragraphs. Editors create them from selected paragraphs ("Create template"),
-insert them ("Template" in the add menu), and edit them on a route of their own.
+insert them ("Template" in the add menu), and edit them on a page of their own.
 A template marked as default fills every new paragraph of its type.
 
 The docs:
-[template editing](https://docs.blokk.li/modules/drupal/pages#template-editing),
-[`templateEditRouteName`](https://docs.blokk.li/modules/drupal/configuration#templateeditroutename).
+[the library item and template pages](https://docs.blokk.li/modules/drupal/pages#library-item-and-template-pages).
 This skill is the procedure and the traps.
 
 ## 1. The module
@@ -91,7 +90,7 @@ Tell the developer who needs which permissions; don't assign them:
 | ----------------------------------------------------- | ---------------------------------------------------------------- |
 | Insert a template, and see its preview in the dialog  | `view paragraph templates`                                       |
 | Create one ("Create template")                        | `create paragraph template`                                      |
-| Edit one on its route                                 | `view paragraph templates` and `edit own/any paragraph template` |
+| Edit one on its page                                  | `view paragraph templates` and `edit own/any paragraph template` |
 | Delete one                                            | `delete own/any paragraph template`                              |
 | Make one the default, or change a default             | `manage default paragraph templates` (restricted: admins)        |
 | The list at `/admin/config/content/blokkli/templates` | `view paragraph templates` or `administer paragraph templates`   |
@@ -102,52 +101,35 @@ With per-type permissions (`paragraphs_type_permissions`), inserting a template
 also needs `create paragraph content <type>` for every paragraph type in it, the
 nested ones included. A template is no way around them.
 
-## 5. The route in Nuxt
+## 5. The page in Nuxt
 
-Templates are edited on a page of their own. Create it, e.g.
-`pages/blokkli/template/[uuid].vue`:
+A template's canonical URL is its page: `/blokkli/template/{id}`, behind the
+language prefix if the site has one. "Edit" in the editor's "Templates" menu
+opens it in a nested editor, and Drupal links there too (e.g. in the list of
+edit states when publishing). In Drupal, the template's form is its edit form
+(`/admin/config/content/blokkli/templates/{id}/edit`).
+
+Create the page, `pages/blokkli/template/[id].vue` (with the site's language
+prefix in front, if the routes have one):
 
 ```vue
 <template>
-  <BlokkliDrupalEditTemplate :uuid />
+  <BlokkliDrupalEditTemplate :id />
 </template>
 
 <script lang="ts" setup>
 import BlokkliDrupalEditTemplate from '#blokkli/drupal/components/BlokkliDrupalEditTemplate/index.vue'
 
-definePageMeta({
-  name: 'blokkli-template',
-})
-
-const uuid = String(useRoute().params.uuid)
+const id = String(useRoute().params.id)
 </script>
 ```
 
 - **Import the component explicitly.** It isn't registered as a Nuxt component.
-- **The route may have no parameter besides `uuid`.** blökkli resolves it by
-  name with the uuid only. A `[lang]` segment, or route names that an i18n
-  module suffixes with the language, make it fail. The console then says "The
-  provided templateEditRouteName … is not valid", and templates have no edit
-  button.
-- **Language:** without a language prefix, the GraphQL request uses the default
-  language, and templates are edited in it. Their paragraphs are copied into
-  pages, which translate them.
+- **The component** loads the template by its id and renders its paragraphs. It
+  answers 404 when the template doesn't exist or the user may not view it or use
+  blökkli.
 - **Layout:** none is needed. Use `layout: false` or the project's own layout.
-- The web server or proxy must send the path to Nuxt.
-
-Then give blökkli the route's name:
-
-```typescript
-export default defineNuxtConfig({
-  blokkli: {
-    modules: [drupal({ templateEditRouteName: 'blokkli-template' })],
-  },
-})
-```
-
-The editor's "Templates" menu lists them, and "Edit" opens this route in a
-nested editor. Drupal's own links to a template (e.g. in the list of edit states
-when publishing) lead to its admin form instead.
+- The web server or proxy must send the path, with the language prefix, to Nuxt.
 
 ## 6. Default templates
 
@@ -175,29 +157,31 @@ columns with a text in each column.
 1. **The schema** has `BlokkliParagraphTemplate` with the fields in section 2.
 2. **The Nuxt dev server's log** doesn't list templates among the disabled
    features (recent versions say "The Drupal GraphQL schema supports all
-   features"). Without the route name, it warns that `templateEditRouteName` is
-   missing.
+   features").
 3. **In the browser, as an editor** (not user 1):
    - select paragraphs, "Create template"
    - "Template" in the add menu lists it with a preview, and inserts it
-   - "Templates" in the menu, then "Edit", opens the route; publish there
+   - "Templates" in the menu, then "Edit", opens the template's page; publish
+     there
+   - Drupal's link to a template's edit state (the list of edit states when
+     publishing) opens the same page in the editor
    - for a default: add a paragraph of its type, and it has the template's
      children
 
 ## Symptoms and causes
 
-| Symptom                                                                              | Cause                                                                                                |
-| ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| The "Template" dialog is empty                                                       | No search provider of type "Paragraph Templates"                                                     |
-| The dialog lists templates, but their previews are empty                             | The user lacks `view paragraph templates`                                                            |
-| Inserting a template fails: "Access denied: cannot view the template."               | The user lacks `view paragraph templates`                                                            |
-| Inserting a template fails: "Access denied: cannot create paragraph of type '…'"     | The user lacks `create paragraph content <type>` for a type in the template, also a nested one       |
-| No "Template" or "Create template" in the editor                                     | Templates are disabled: see the Nuxt log (a missing field on `BlokkliParagraphTemplate`)             |
-| Templates have no edit button; "templateEditRouteName … is not valid" in the console | The route name is wrong, or the route has a parameter besides `uuid`                                 |
-| The template's route renders nothing                                                 | The user lacks `view paragraph templates`, or the uuid doesn't exist                                 |
-| `[nuxt] Invalid layout … selected`                                                   | The page sets a layout the project doesn't have                                                      |
-| "Use as default" is disabled                                                         | Not exactly one paragraph is selected, or the user lacks `manage default paragraph templates`        |
-| New paragraphs don't get the default template                                        | They were pasted, dropped or taken from the library; or the default holds more than one paragraph    |
-| New paragraphs from the agent have their children twice                              | The agent adds its own children on top of the default template's                                     |
-| Inserting a template fails: "Paragraph type '…' is not allowed in field '…'"         | The template holds a paragraph type that the target field, or the field of its parent, doesn't allow |
-| Adding a paragraph type fails with the same message, naming a field of the type      | The type's default template holds a nested paragraph type that the field doesn't allow               |
+| Symptom                                                                          | Cause                                                                                                         |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| The "Template" dialog is empty                                                   | No search provider of type "Paragraph Templates"                                                              |
+| The dialog lists templates, but their previews are empty                         | The user lacks `view paragraph templates`                                                                     |
+| Inserting a template fails: "Access denied: cannot view the template."           | The user lacks `view paragraph templates`                                                                     |
+| Inserting a template fails: "Access denied: cannot create paragraph of type '…'" | The user lacks `create paragraph content <type>` for a type in the template, also a nested one                |
+| No "Template" or "Create template" in the editor                                 | Templates are disabled: see the Nuxt log (a missing field on `BlokkliParagraphTemplate`)                      |
+| Templates have no edit button                                                    | The user may not edit the template (`edit own/any paragraph template`)                                        |
+| The template's page is a 404                                                     | The page isn't at `blokkli/template/[id]`, the user lacks `view paragraph templates`, or the id doesn't exist |
+| `[nuxt] Invalid layout … selected`                                               | The page sets a layout the project doesn't have                                                               |
+| "Use as default" is disabled                                                     | Not exactly one paragraph is selected, or the user lacks `manage default paragraph templates`                 |
+| New paragraphs don't get the default template                                    | They were pasted, dropped or taken from the library; or the default holds more than one paragraph             |
+| New paragraphs from the agent have their children twice                          | The agent adds its own children on top of the default template's                                              |
+| Inserting a template fails: "Paragraph type '…' is not allowed in field '…'"     | The template holds a paragraph type that the target field, or the field of its parent, doesn't allow          |
+| Adding a paragraph type fails with the same message, naming a field of the type  | The type's default template holds a nested paragraph type that the field doesn't allow                        |

@@ -494,8 +494,9 @@ host, with ddev running: `bun run test:e2e-drupal` or
     Nuxt-only: its texts are in `app/utils/welcomeTexts.ts`, its paths also in
     `shared/utils/welcome.ts` (the control app's redirect target).
   - `/<lang>/design-system` documents the design system, with mockups.
-  - `blokkli/template/[uuid]` and `blokkli/library-item/[uuid]` edit templates
-    and library items; `embed/fee-calculator` is embedded in a page.
+  - `blokkli/template/[id]` and `blokkli/library-item/[id]` edit templates and
+    library items, at their canonical URLs; `embed/fee-calculator` is embedded
+    in a page.
   - `layouts/drupal.vue`: the toolbar (vuepal), the local tasks and the
     "Sandbox" button (`SandboxInfo`, shown when the `sandbox` query isn't null),
     the header (`ConfigPageSite`) and footer (`ConfigPageFooter`), both editable

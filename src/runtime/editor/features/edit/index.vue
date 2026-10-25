@@ -56,6 +56,17 @@ function getComplexOption(
   }
 }
 
+// The URL of the library item's page, if the adapter can build it.
+function getLibraryItemEditUrl(item: RenderedFieldListItem): string | null {
+  if (!item.library || !adapter.getLibraryItemEditUrl) {
+    return null
+  }
+  return adapter.getLibraryItemEditUrl({
+    libraryItemUuid: item.library.libraryItemUuid,
+    libraryItemId: item.library.libraryItemId,
+  })
+}
+
 function isFragment(item: RenderedFieldListItem): boolean {
   return item.bundle === fragmentBlockBundle
 }
@@ -100,8 +111,8 @@ const editDisabledReason = computed<false | string>(() => {
     )
   }
 
-  // For reusable blocks, editing is only possible if the adapter implements
-  // the getLibraryItemEditUrl method.
+  // For reusable blocks, editing is only possible if the adapter can build the
+  // URL of the library item's page.
   if (item.library?.libraryItemUuid) {
     if (!userCanEditLibraryItems.value) {
       return $t(
@@ -110,7 +121,7 @@ const editDisabledReason = computed<false | string>(() => {
       )
     }
     if (
-      !adapter.getLibraryItemEditUrl ||
+      !getLibraryItemEditUrl(item) ||
       (state.editMode.value !== 'editing' &&
         state.editMode.value !== 'translating') ||
       item.isNew
@@ -144,10 +155,10 @@ function onClick(items: RenderedFieldListItem[]) {
   // Because editing library items inside the current context is not (yet)
   // supported, editing has to happen in a separate window where the host
   // context is the library item entity.
-  if (item.library?.libraryItemUuid && adapter.getLibraryItemEditUrl) {
-    const url = adapter.getLibraryItemEditUrl(item.library.libraryItemUuid)
+  const libraryItemEditUrl = getLibraryItemEditUrl(item)
+  if (item.library && libraryItemEditUrl) {
     eventBus.emit('library:edit-item', {
-      url,
+      url: libraryItemEditUrl,
       label: item.library.label,
       uuid: item.library.libraryItemUuid,
       blockUuid: item.uuid,

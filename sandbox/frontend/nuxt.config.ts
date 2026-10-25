@@ -299,7 +299,7 @@ export default defineNuxtConfig({
     ],
     schemaOptionsPath: optionsSchemaPath,
     modules: [
-      drupal({ templateEditRouteName: 'blokkli-template' }),
+      drupal(),
       // The demo's own skills, tool and prompts are in ./blokkli.
       agent({
         provider: 'anthropic',

@@ -5,29 +5,38 @@ Build the URL to edit a library item.
 ## Signature
 
 ```typescript
-getLibraryItemEditUrl?: (uuid: string) => string
+getLibraryItemEditUrl?: (e: AdapterGetLibraryItemEditUrl) => string | null
 ```
 
 ## Parameters
 
-### uuid
+### e.libraryItemUuid
 
 The UUID of the library item to edit.
 
+### e.libraryItemId
+
+The ID of the library item, or `null`. It comes from the `id` of the
+`libraryItem` prop of the block that places the library item.
+
 ## Returns
 
-The URL to the edit form for the library item.
+The URL of the page that edits the library item, or `null` if it can't be built.
+Without a URL, the block's "Edit" action is disabled.
 
 ## Description
 
-This method returns the URL that should be opened when a user wants to edit a
-reusable block from the library. The URL typically points to the edit form for
-the library item entity.
+"Edit" on a reusable block opens this URL in an overlay. The page edits the
+library item in blökkli, so the URL usually contains `blokkliEditing` with the
+library item's UUID.
 
 ## Example
 
 ```typescript
-getLibraryItemEditUrl: (uuid) => {
-  return `/admin/library-items/${uuid}/edit`
+getLibraryItemEditUrl: (e) => {
+  if (!e.libraryItemId) {
+    return null
+  }
+  return `/library-item/${e.libraryItemId}?blokkliEditing=${e.libraryItemUuid}`
 }
 ```

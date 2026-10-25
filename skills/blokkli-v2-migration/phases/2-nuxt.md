@@ -61,6 +61,7 @@ Make sure the paragraphFromLibrary fragment has the following structure:
 fragment paragraphFromLibrary on ParagraphFromLibrary {
   uuid
   libraryItem: fieldReusableParagraph {
+    id
     uuid
     label
     block: paragraphs {
@@ -73,6 +74,9 @@ fragment paragraphFromLibrary on ParagraphFromLibrary {
   }
 }
 ```
+
+The `id` builds the link to the library item's page,
+`blokkli/library-item/[id]`: see the `blokkli-setup-library` skill.
 
 ## blokkli.editAdapter.ts
 
