@@ -4,19 +4,12 @@ status: true
 dependencies:
   module:
     - blokkli_playground
-    - paragraphs_blokkli_comment
 _core:
   default_config_hash: eIDWIfsLsdl3jonHlltHlTqya40ny9Inb9QS9SuytlU
 name: 'Basic HTML'
 format: basic_html
 weight: 0
 filters:
-  blokkli_comment_html:
-    id: blokkli_comment_html
-    provider: paragraphs_blokkli_comment
-    status: false
-    weight: -10
-    settings: {  }
   blokkli_playground_external_links:
     id: blokkli_playground_external_links
     provider: blokkli_playground

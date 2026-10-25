@@ -12,7 +12,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F5   | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                                                                                   | Drupal core               | high     | workaround |
 | F6   | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                                                                    | `blokkli_starterkit`      | low      | open       |
 | F11  | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                                                                       | `paragraphs_blokkli`      | low      | open       |
-| F14  | [The comment filter leaks into new text formats](#f14-the-comment-filter-leaks-into-new-text-formats)                                                                       | `paragraphs_blokkli`      | low      | open       |
 | F18  | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                                                                           | both                      | low      | workaround |
 | F19  | [Template and library search](#f19-template-and-library-search)                                                                                                             | both                      | low      | open       |
 | F20  | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                                                                           | `paragraphs_blokkli`      | low      | open       |
@@ -129,22 +128,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   existing settings instead of replacing them; optionally validate mutations
   against the schema when one is configured; resolve relative paths against
   `DRUPAL_ROOT` and log a missing file.
-
-## F14: The comment filter leaks into new text formats
-
-- **Found:** 2026-09-26, creating the `table` format in 13b.
-- **Symptom:** every text format saved while `paragraphs_blokkli_comment` is
-  enabled gets a disabled `blokkli_comment_html` filter with `settings: {}`, and
-  a dependency on the module.
-- **Cause:** `FilterPluginCollection::getConfiguration()` only drops filters
-  whose configuration equals their defaults. `BlokkliCommentHtml`
-  (`modules/paragraphs_blokkli_comment/src/Plugin/Filter/BlokkliCommentHtml.php:21-31`)
-  declares default settings, but the instance reports none, so the comparison
-  never matches.
-- **Impact:** noise in config exports. Core removes the filter when the module
-  is uninstalled. `basic_html` has it too since chunk 10 changed it.
-- **Fix idea:** make the plugin's configuration match its defaults (e.g.
-  `defaultConfiguration()` or `setConfiguration()` in the plugin).
 
 ## F18: Links to library items and templates
 

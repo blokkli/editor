@@ -1,19 +1,11 @@
 uuid: 17224f11-7d98-4e87-855d-f09391d38d67
 langcode: en
 status: true
-dependencies:
-  module:
-    - paragraphs_blokkli_comment
+dependencies: {  }
 name: Table
 format: table
 weight: 1
 filters:
-  blokkli_comment_html:
-    id: blokkli_comment_html
-    provider: paragraphs_blokkli_comment
-    status: false
-    weight: -10
-    settings: {  }
   filter_html:
     id: filter_html
     provider: filter

@@ -105,5 +105,6 @@ With two users who can comment, e.g. an editor and a reviewer:
 - **Nobody is notified of a new comment:** it has no mention.
 - **An edited comment doesn't say "(edited)":** it was edited before the
   module's update 10005, which doesn't know when.
-- **Every text format gets a disabled `blokkli_comment_html` filter** when
-  saved: added by the comment module. It does nothing.
+- **A text format has a disabled `blokkli_comment_html` filter,** and depends on
+  the comment module: it was saved before the module stopped adding the filter
+  to every format. It does nothing; saving the format again removes it.
