@@ -9,7 +9,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #    | Finding                                                                                                                                                                     | Project                   | Severity | Status     |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F5   | [Twig 3.30 breaks escaping](#f5-twig-330-breaks-escaping)                                                                                                                   | Drupal core               | high     | workaround |
 | F6   | [Starterkit nginx routing](#f6-starterkit-nginx-routing)                                                                                                                    | `blokkli_starterkit`      | low      | open       |
 | F11  | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                                                                       | `paragraphs_blokkli`      | low      | open       |
 | F18  | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                                                                           | both                      | low      | workaround |
@@ -56,20 +55,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it), `parked` (part of a plan of its own, in
 [README](README.md)'s "Features that need their own plan").
-
-## F5: Twig 3.30 breaks escaping
-
-- **Found:** 2026-09-26, SQLite spike, with Drupal 11.4.7.
-- **Symptom:** every template that escapes output throws
-  "EscaperRuntime::escape(): Argument #4 ($autoescape) must be of type bool,
-  null given". Pages return 500.
-- **Cause:** core requires `twig/twig: ^3.28.0`, and `core-recommended` 11.4.7
-  doesn't pin Twig, so a fresh install gets 3.30.0. Twig 3.30 compiles `|escape`
-  to `$this->escaper->escape(...)`, but with the argument list of Drupal's own
-  escape filter.
-- **Workaround in the sandbox:** pin `twig/twig` to `~3.29.0` (chunk 03).
-- **To do:** check whether core has an issue for it, and remove the pin once a
-  core release fixes it.
 
 ## F6: Starterkit nginx routing
 
