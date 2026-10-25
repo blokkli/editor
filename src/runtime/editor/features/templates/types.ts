@@ -39,7 +39,10 @@ export type AdapterTemplatesGetResult =
   BlokkliAdapterSearchResults<TemplateItem>
 
 export type TemplatesSearchArguments = {
-  host?: BlokkliItemHost
+  /**
+   * The field to add a template to: only templates whose blocks it allows.
+   */
+  host?: BlokkliItemHost & { bundle: string }
   includeItems: boolean
 } & AdapterSearchArguments
 

@@ -9,7 +9,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #    | Finding                                                                                                                                                                     | Project                   | Severity | Status     |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F19  | [Template and library search](#f19-template-and-library-search)                                                                                                             | both                      | low      | open       |
+| F19  | [Template and library search](#f19-template-and-library-search)                                                                                                             | `paragraphs_blokkli`      | low      | open       |
 | F20  | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                                                                           | `paragraphs_blokkli`      | low      | open       |
 | F24  | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                                                                           | `paragraphs_blokkli`      | medium   | parked     |
 | F26  | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation)                                                     | both                      | medium   | parked     |
@@ -55,27 +55,22 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 
 ## F19: Template and library search
 
-- **Found:** 2026-09-27, 13d, by reading; the `NOT IN ()` error was confirmed
-  with drush.
-- **Templates aren't filtered by the field:** the Drupal adapter's
-  `templatesSearch` (`src/modules/drupal/runtime/adapter/index.ts:1600-1605`,
-  this repo) never sends the host the dialog passes. The server supports a
-  `host` filter (`EntityQueryTemplates.php:103-128`), but it throws "Query
-  condition 'p.type NOT IN ()' cannot be empty" for a host whose field has no
-  target bundles (library items, templates). Fix both together.
-- **`templateBundles` repeats bundles** (`TemplateBundles.php:85`): a template
-  with two accordions lists `accordion` twice, and the join has no language
-  condition.
+- **Found:** 2026-09-27, 13d, by reading. The field filter and the repeated
+  paragraph types were fixed on 2026-10-25.
+- **The totals count what the user may not see** (2026-10-25): both searches
+  count in SQL, then leave out what the user may not view (`filterViewable()`).
+  Pagination counts the hidden ones, and a page comes up short. Proposed: apply
+  each entity type's access rule in the query (the permission to view templates;
+  `status = 1` for library items without the library's admin permission), and
+  keep `filterViewable()` as the last guard.
 - **The library search** (`LibraryItemsSearch.php`) ignores the provider's
-  `status`, doesn't filter by language (labels come in the item's source
-  language), and shows unpublished items to users who may see them.
-- **The template search checks no access** (2026-10-11):
-  `EntityQueryTemplates::getTemplatesSearchResults()` selects from the database
-  and loads every template, for every user of the editor. Without
-  `view paragraph templates`, the dialog lists templates whose previews stay
-  empty, and inserting one is refused since `add_from_template` checks the
-  permission. It doesn't leave out templates with paragraph types that the user
-  may not create either.
+  `status`, which `LoadSearchProvider` checks, and doesn't filter by language:
+  labels come in the item's source language, and the text filter matches a label
+  in any language. Unpublished items stay listed for whoever may view them, as
+  decided on 2026-10-25.
+- **The template search lists templates with paragraph types that the user may
+  not create** (2026-10-11): inserting one is refused, as `add_from_template`
+  checks the types, nested ones included.
 
 ## F20: Default templates with `add_multiple`
 

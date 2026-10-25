@@ -96,6 +96,7 @@ const filters = reactive<Record<string, any>>({})
 const host = computed(() => ({
   type: props.field.hostEntityType,
   uuid: props.field.hostEntityUuid,
+  bundle: props.field.hostEntityBundle,
   fieldName: props.field.name,
 }))
 

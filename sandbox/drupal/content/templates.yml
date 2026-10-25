@@ -1,6 +1,3 @@
-# Templates aren't translated (content translation is off for them): they're
-# created in the source language only.
-
 # Follows the detail pages: an introduction, an info box, the steps, and the
 # frequent questions. The sidebar (the office's contact and a link list) isn't
 # part of a template.

@@ -76,8 +76,6 @@ field_paragraphs:
 - **A plain value on a translatable field** is the same in every language.
 - **`outdated: [fr]`** flags the French translation of the entity and its
   paragraphs as outdated.
-- Templates aren't translated (content translation is off for them): they get
-  their source language's values.
 - The UI texts in `texts.csv` stay English-based, like the defaults in the
   frontend's code.
 

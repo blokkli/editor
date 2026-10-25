@@ -1,5 +1,6 @@
-# Paragraph templates. Templates aren't translated: they're created in the
-# source language only.
+# Paragraph templates.
+
+# Plain values: the template and its paragraphs have no translations.
 - key: two-texts-left
   label: Two texts on the left
   paragraphs:
@@ -9,3 +10,23 @@
           field_text: '<p>The first text of the template.</p>'
         - type: text
           field_text: '<p>The second text of the template.</p>'
+
+# Its paragraphs have a German and a French translation.
+- key: translated-texts
+  label:
+    {
+      en: Two translated texts,
+      de: Zwei übersetzte Texte,
+      fr: Deux textes traduits,
+    }
+  paragraphs:
+    - type: text
+      field_text:
+        en: '<p>The first translated text.</p>'
+        de: '<p>Der erste übersetzte Text.</p>'
+        fr: '<p>Le premier texte traduit.</p>'
+    - type: text
+      field_text:
+        en: '<p>The second translated text.</p>'
+        de: '<p>Der zweite übersetzte Text.</p>'
+        fr: '<p>Le deuxième texte traduit.</p>'

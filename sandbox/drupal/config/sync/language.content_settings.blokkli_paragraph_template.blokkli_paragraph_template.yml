@@ -7,7 +7,7 @@ dependencies:
     - paragraphs_blokkli_template
 third_party_settings:
   content_translation:
-    enabled: false
+    enabled: true
     bundle_settings:
       untranslatable_fields_hide: '0'
 id: blokkli_paragraph_template.blokkli_paragraph_template

@@ -15,7 +15,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.1.3'
+  version: '1.1.4'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/pages#library-item-and-template-pages
 ---
@@ -44,6 +44,11 @@ language.
 
 Templates can hold every paragraph type, including `from_library` paragraphs.
 Fragments can't be added to them.
+
+**Translation:** on a multilingual site, enable content translation for
+templates (`/admin/config/regional/content-language`). Then a template's label
+and paragraphs are translated in the editor as a page's are, and a template
+added to a page gives the page's translations the template's.
 
 ## 2. GraphQL
 
@@ -76,7 +81,8 @@ At `/admin/config/content/blokkli/search/add` add a provider:
 Export the config (`drush cex`). The export is
 `paragraphs_blokkli_search.blokkli_search_provider.<id>.yml`.
 
-The dialog lists every template to every user. Inserting one is refused if:
+The dialog lists the templates whose paragraphs the field allows, to users who
+may view templates. Inserting one is refused if:
 
 - the target field doesn't allow one of its paragraph types: "Paragraph type '…'
   is not allowed in field '…'."
@@ -88,7 +94,7 @@ Tell the developer who needs which permissions; don't assign them:
 
 | Task                                                  | Permission                                                       |
 | ----------------------------------------------------- | ---------------------------------------------------------------- |
-| Insert a template, and see its preview in the dialog  | `view paragraph templates`                                       |
+| Find a template in the dialog, and insert it          | `view paragraph templates`                                       |
 | Create one ("Create template")                        | `create paragraph template`                                      |
 | Edit one on its page                                  | `view paragraph templates` and `edit own/any paragraph template` |
 | Delete one                                            | `delete own/any paragraph template`                              |
@@ -170,18 +176,17 @@ columns with a text in each column.
 
 ## Symptoms and causes
 
-| Symptom                                                                          | Cause                                                                                                         |
-| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| The "Template" dialog is empty                                                   | No search provider of type "Paragraph Templates"                                                              |
-| The dialog lists templates, but their previews are empty                         | The user lacks `view paragraph templates`                                                                     |
-| Inserting a template fails: "Access denied: cannot view the template."           | The user lacks `view paragraph templates`                                                                     |
-| Inserting a template fails: "Access denied: cannot create paragraph of type '…'" | The user lacks `create paragraph content <type>` for a type in the template, also a nested one                |
-| No "Template" or "Create template" in the editor                                 | Templates are disabled: see the Nuxt log (a missing field on `BlokkliParagraphTemplate`)                      |
-| Templates have no edit button                                                    | The user may not edit the template (`edit own/any paragraph template`)                                        |
-| The template's page is a 404                                                     | The page isn't at `blokkli/template/[id]`, the user lacks `view paragraph templates`, or the id doesn't exist |
-| `[nuxt] Invalid layout … selected`                                               | The page sets a layout the project doesn't have                                                               |
-| "Use as default" is disabled                                                     | Not exactly one paragraph is selected, or the user lacks `manage default paragraph templates`                 |
-| New paragraphs don't get the default template                                    | They were pasted, dropped or taken from the library; or the default holds more than one paragraph             |
-| New paragraphs from the agent have their children twice                          | The agent adds its own children on top of the default template's                                              |
-| Inserting a template fails: "Paragraph type '…' is not allowed in field '…'"     | The template holds a paragraph type that the target field, or the field of its parent, doesn't allow          |
-| Adding a paragraph type fails with the same message, naming a field of the type  | The type's default template holds a nested paragraph type that the field doesn't allow                        |
+| Symptom                                                                          | Cause                                                                                                                                                   |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The "Template" dialog is empty                                                   | No search provider of type "Paragraph Templates", the user lacks `view paragraph templates`, or the field allows none of the templates' paragraph types |
+| Inserting a template fails: "Access denied: cannot view the template."           | The user lacks `view paragraph templates`                                                                                                               |
+| Inserting a template fails: "Access denied: cannot create paragraph of type '…'" | The user lacks `create paragraph content <type>` for a type in the template, also a nested one                                                          |
+| No "Template" or "Create template" in the editor                                 | Templates are disabled: see the Nuxt log (a missing field on `BlokkliParagraphTemplate`)                                                                |
+| Templates have no edit button                                                    | The user may not edit the template (`edit own/any paragraph template`)                                                                                  |
+| The template's page is a 404                                                     | The page isn't at `blokkli/template/[id]`, the user lacks `view paragraph templates`, or the id doesn't exist                                           |
+| `[nuxt] Invalid layout … selected`                                               | The page sets a layout the project doesn't have                                                                                                         |
+| "Use as default" is disabled                                                     | Not exactly one paragraph is selected, or the user lacks `manage default paragraph templates`                                                           |
+| New paragraphs don't get the default template                                    | They were pasted, dropped or taken from the library; or the default holds more than one paragraph                                                       |
+| New paragraphs from the agent have their children twice                          | The agent adds its own children on top of the default template's                                                                                        |
+| Inserting a template fails: "Paragraph type '…' is not allowed in field '…'"     | The template holds a paragraph type that the target field, or the field of its parent, doesn't allow                                                    |
+| Adding a paragraph type fails with the same message, naming a field of the type  | The type's default template holds a nested paragraph type that the field doesn't allow                                                                  |

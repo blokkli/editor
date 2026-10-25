@@ -1909,7 +1909,13 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     if (hasQuery('pbSearchTemplates')) {
       adapter.templatesSearch = (e) => {
         return useGraphqlQuery('pbSearchTemplates', {
-          filters: configObjectToUserConfigInput(e.filters),
+          filters: configObjectToUserConfigInput({
+            ...e.filters,
+            // By the field's definition: the host may not be saved yet.
+            ...(e.host && {
+              host: `${e.host.type}:${e.host.bundle}:${e.host.fieldName}`,
+            }),
+          }),
           page: e.page,
           includeItems: e.includeItems,
         }).then((data) => {
