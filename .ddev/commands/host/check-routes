@@ -26,6 +26,9 @@ routes=(
   "/users nuxt"
   "/media-kit nuxt"
   "/administration nuxt"
+  "/index.php/graphql nuxt"
+  "/en/index.php/node/1 nuxt"
+  "/x.php nuxt"
   "/en/blokkli/library-item/x nuxt"
   "/de/search nuxt"
   "/en/blokkli/template/x nuxt"
@@ -38,7 +41,9 @@ routes=(
   "/admin drupal"
   "/de/admin/content drupal"
   "/core/install.php drupal"
+  "/index.php drupal"
   "/update.php drupal"
+  "/update.php/selection drupal"
   "/node/add drupal"
   "/node/add/page drupal"
   "/node/1/edit drupal"
@@ -69,10 +74,20 @@ sandbox_routes=(
 )
 
 # Files, with the expected status: a sandbox's files only on its own host (none
-# on the default site), and PHP never runs from them.
+# on the default site), PHP never from them and only from Drupal's front
+# controllers, and none of Drupal's source files.
 file_routes=(
   "/sites/default/files/sandboxes/zz98/x.jpg nginx 404"
   "/sites/default/files/x.php drupal 403"
+  "/core/install.php drupal 200"
+  "/sites/default/settings.php drupal 404"
+  "/core/tests/bootstrap.php drupal 404"
+  "/core/core.services.yml drupal 403"
+  "/core/composer.json drupal 403"
+  "/core/modules/system/templates/page.html.twig drupal 403"
+  "/modules/custom/blokkli_sandbox/blokkli_sandbox.info.yml drupal 403"
+  "/core/misc/drupal.js drupal 200"
+  "/core/misc/druplicon.png drupal 200"
 )
 
 # Mutations, posted with a content type: only JSON reaches the middleware.

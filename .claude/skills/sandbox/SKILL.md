@@ -81,7 +81,12 @@ Traefik sends every hostname to the web container's nginx on port 80.
     …), with an optional `/en|/de|/fr` prefix and anchored to a whole segment;
     the entity forms (`/node/add`,
     `/node/<n>/edit|delete|revisions|translations|usage`, the same for
-    `taxonomy/term`); `*.php` and `/.well-known/`.
+    `taxonomy/term`); the front controllers `/index.php` (not `/index.php/…`:
+    Drupal would route the path after it) and `/update.php`, and
+    `/.well-known/`.
+  - The internal server runs PHP only for Drupal's front controllers (core's
+    come with `/core`), and serves none of Drupal's source files (`.yml`,
+    `.twig`, `.module`, `composer.json`, …).
   - Everything else goes to the frontend on `:3000`: pages, `/_nuxt/` (HMR) and
     `/api/blokkli/agent` (the agent's WebSocket, 1-day timeouts).
   - Canonical entity pages (`/node/1`) are Nuxt's. An alias that starts with one
