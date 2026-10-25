@@ -9,7 +9,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #    | Finding                                                                                                                                                                     | Project                   | Severity | Status     |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F11  | [Options schema: no validation, lossy form saves](#f11-options-schema-no-validation-lossy-form-saves)                                                                       | `paragraphs_blokkli`      | low      | open       |
+| F11  | [The options schema's path](#f11-the-options-schemas-path)                                                                                                                  | `paragraphs_blokkli`      | low      | open       |
 | F18  | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                                                                           | both                      | low      | workaround |
 | F19  | [Template and library search](#f19-template-and-library-search)                                                                                                             | both                      | low      | open       |
 | F20  | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                                                                           | `paragraphs_blokkli`      | low      | open       |
@@ -55,28 +55,17 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it), `parked` (part of a plan of its own, in
 [README](README.md)'s "Features that need their own plan").
 
-## F11: Options schema: no validation, lossy form saves
+## F11: The options schema's path
 
-- **Found:** 2026-09-26, planning chunk 13b.
-- **No validation.** The docs said Drupal validates options against
-  `schema_file`. It doesn't: mutations (`update_behavior_setting`,
-  `bulk_update_behavior_settings`, `add_multiple`, `add_fragment`) store any
-  string. The schema only builds the options in Drupal's own paragraphs widget
-  (`ParagraphsBlokkliData::buildBehaviorForm()`). The docs are fixed (13b).
-- **Lossy form saves.** Saving through that widget
-  (`ParagraphsBlokkliData::submitBehaviorForm()`, line 430) goes through
-  `filterBehaviorFormSubmitValues()`, which drops falsy values
-  (`ParagraphsBehaviorBase.php:163-175`), then replaces the whole set:
-  - A checkbox that defaults to true can't be unchecked, and a radio value `'0'`
-    can't be saved.
-  - Options missing from the schema are dropped.
-  - Options the user never set get their default stored (seen in 13b's check).
-- **The path** is used as it is (relative to the web root), and a missing file
-  silently means no options.
-- **Fix ideas:** keep falsy values that the schema knows; merge into the
-  existing settings instead of replacing them; optionally validate mutations
-  against the schema when one is configured; resolve relative paths against
-  `DRUPAL_ROOT` and log a missing file.
+- **Found:** 2026-09-26, planning chunk 13b. The other parts of F11 are settled:
+  mutations don't validate options against the schema, by design (the frontend
+  sends them), and saves through Drupal's paragraphs widget keep what they don't
+  change since 2026-10-25.
+- **Symptom:** `schema_file` is used as it is, so a relative path depends on the
+  working directory, and a missing file silently means no options: Drupal's
+  paragraphs widget then shows none.
+- **Fix idea:** resolve a relative path against `DRUPAL_ROOT`, and log a missing
+  file.
 
 ## F18: Links to library items and templates
 
