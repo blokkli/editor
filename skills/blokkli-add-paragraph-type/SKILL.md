@@ -331,11 +331,9 @@ const { options } = defineBlokkli({
     against it.
   - Use an absolute `schemaOptionsPath`: a relative one resolves against Nuxt's
     source directory.
-  - Drupal uses `schema_file` as it is, so a relative path is relative to the
-    web root. If the file is missing, the widget silently shows no options.
+  - A relative `schema_file` is relative to the web root. If the file is missing
+    or isn't valid JSON, the widget shows no options, and Drupal logs a warning.
   - Commit the file: Nuxt writes it when it starts or builds.
-  - Saving through that widget drops falsy values, so avoid option values like
-    `'0'` and checkboxes that default to true.
 
 ## 7. Paragraphs that hold other paragraphs
 
@@ -500,7 +498,7 @@ so they catch none of the problems above.
 | Nested paragraphs differ between languages                                  | The paragraphs field is translatable                                                        |
 | "Paragraphs can't be nested more than 7 levels deep."                       | The limit: 7 levels of nesting. Flatten the structure                                       |
 | "The edit state could not be loaded": nested more than 7 levels deep        | The page's saved paragraphs exceed the limit. Flatten them in Drupal's own form             |
-| Drupal's paragraph form shows no options                                    | `schema_file` doesn't point at the schema file (relative to the web root)                   |
+| Drupal's paragraph form shows no options                                    | `schema_file` doesn't point at the schema file (relative to the web root): see Drupal's log |
 | An option has no effect on a paragraph from the library                     | Global options like `bkVisibleLanguages` don't apply to paragraphs from the library         |
 | Dropping a search result fails with "Missing mapping for entity type …"     | No entity mapping from that bundle to this paragraph type and field                         |
 | A search result can't be dropped onto the paragraph to replace it           | No `v-blokkli-droppable` on the reference, or its allowed bundles lack the result's         |

@@ -257,11 +257,11 @@ blokkli: {
 }
 ```
 
-Then set the `schema_file` setting in Drupal to the same file. Drupal uses the
-path as it is, so a relative path is relative to the web root (e.g.
-`../blokkli-options-schema.json`). If the file doesn't exist, Drupal silently
-shows no options. Nuxt writes the file whenever it starts or builds. Commit it,
-so that Drupal has it where Nuxt doesn't run.
+Then set the `schema_file` setting in Drupal to the same file: an absolute path,
+or one relative to the web root (e.g. `../blokkli-options-schema.json`). If the
+file is missing or isn't valid JSON, Drupal shows no options and logs a warning.
+Nuxt writes the file whenever it starts or builds. Commit it, so that Drupal has
+it where Nuxt doesn't run.
 
 ## Translations
 

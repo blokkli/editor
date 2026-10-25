@@ -9,7 +9,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #    | Finding                                                                                                                                                                     | Project                   | Severity | Status     |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F11  | [The options schema's path](#f11-the-options-schemas-path)                                                                                                                  | `paragraphs_blokkli`      | low      | open       |
 | F18  | [Links to library items and templates](#f18-links-to-library-items-and-templates)                                                                                           | both                      | low      | workaround |
 | F19  | [Template and library search](#f19-template-and-library-search)                                                                                                             | both                      | low      | open       |
 | F20  | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                                                                           | `paragraphs_blokkli`      | low      | open       |
@@ -54,18 +53,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it), `parked` (part of a plan of its own, in
 [README](README.md)'s "Features that need their own plan").
-
-## F11: The options schema's path
-
-- **Found:** 2026-09-26, planning chunk 13b. The other parts of F11 are settled:
-  mutations don't validate options against the schema, by design (the frontend
-  sends them), and saves through Drupal's paragraphs widget keep what they don't
-  change since 2026-10-25.
-- **Symptom:** `schema_file` is used as it is, so a relative path depends on the
-  working directory, and a missing file silently means no options: Drupal's
-  paragraphs widget then shows none.
-- **Fix idea:** resolve a relative path against `DRUPAL_ROOT`, and log a missing
-  file.
 
 ## F18: Links to library items and templates
 
