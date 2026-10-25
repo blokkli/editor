@@ -9,7 +9,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #    | Finding                                                                                                                                                                     | Project                   | Severity | Status     |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F19  | [Template and library search](#f19-template-and-library-search)                                                                                                             | `paragraphs_blokkli`      | low      | open       |
 | F20  | [Default templates with `add_multiple`](#f20-default-templates-with-add_multiple)                                                                                           | `paragraphs_blokkli`      | low      | open       |
 | F24  | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                                                                           | `paragraphs_blokkli`      | medium   | parked     |
 | F26  | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation)                                                     | both                      | medium   | parked     |
@@ -53,19 +52,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it), `parked` (part of a plan of its own, in
 [README](README.md)'s "Features that need their own plan").
-
-## F19: Template and library search
-
-- **Found:** 2026-09-27, 13d, by reading. Fixed on 2026-10-25: the field filter,
-  the repeated paragraph types, the totals of the template search, and the
-  library search's provider status and language. The library search's totals
-  follow Paragraphs' query access, but for F121.
-- **The template search lists templates with paragraph types that the user may
-  not create** (2026-10-11): inserting one is refused, as `add_from_template`
-  checks the types, nested ones included. Agreed fix: the template stores the
-  types of all its paragraphs, nested ones included, in a base field filled on
-  save, and the search leaves out templates with a type the user may not create,
-  in the query.
 
 ## F20: Default templates with `add_multiple`
 
@@ -784,8 +770,8 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 
 ## F121: The library's query access finds unpublished items that its access handler hides
 
-- **Found:** 2026-10-25, while fixing F19's totals, by reading. A kernel test
-  showed that content moderation's access makes the two agree.
+- **Found:** 2026-10-25, while fixing the library search's totals, by reading. A
+  kernel test showed that content moderation's access makes the two agree.
 - **Symptom:** a user with "view any unpublished content" but without
   "administer paragraphs library" gets unpublished library items from an entity
   query with access checks, but may not view them. The library search counts

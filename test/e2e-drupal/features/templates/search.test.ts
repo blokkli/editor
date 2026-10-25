@@ -8,14 +8,19 @@ import {
   seedUuid,
   workerSandbox,
 } from '../../support/sandbox'
-import { editorPath, openEditor } from '../../support/session'
+import {
+  BLOCKS_EDITOR_PATH,
+  editorPath,
+  openEditor,
+} from '../../support/session'
 
-// The templates (content/templates.yml): columns with two texts, and two texts
-// with translations.
+// The templates (content/templates.yml): columns with two texts, columns with a
+// chart, and two texts with translations.
 const COLUMNS_TEMPLATE = seedUuid(
   'blokkli_paragraph_template',
   'two-texts-left',
 )
+const CHART_TEMPLATE = seedUuid('blokkli_paragraph_template', 'chart-left')
 const TEXTS_TEMPLATE = seedUuid(
   'blokkli_paragraph_template',
   'translated-texts',
@@ -25,6 +30,9 @@ const TEXTS_TEMPLATE = seedUuid(
 // allow no columns.
 const NESTED = seedUuid('node', 'nested')
 const COLUMNS = seedUuid('paragraph', 'columns')
+
+// The page "Blocks", which Jonas edits.
+const BLOCKS = seedUuid('node', 'blocks')
 
 /**
  * The templates that the dialog "Template" lists for a field: it searches with
@@ -59,31 +67,32 @@ function searchForField(
 /**
  * The search for templates in the dialog "Template".
  *
- * Page lifecycle: Anna opens the page "Nested" in the editor. Test 2 adds
- * columns, which nothing else looks at.
+ * Page lifecycle: Anna opens the page "Nested" in the editor, Jonas, who may
+ * not create charts, the page "Blocks". Test 2 adds columns, which nothing
+ * else looks at.
  */
 describe('Searching templates', async () => {
   const sandbox = workerSandbox()
   await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
+  let jonas: Page
 
   beforeAll(async () => {
     resetSandbox(sandbox)
-    page = await openEditor(
-      sandbox,
-      'Anna Keller',
-      editorPath('/en/nested', 'nested'),
-    )
+    ;[page, jonas] = await Promise.all([
+      openEditor(sandbox, 'Anna Keller', editorPath('/en/nested', 'nested')),
+      openEditor(sandbox, 'Jonas Weber', BLOCKS_EDITOR_PATH),
+    ])
   })
 
   afterAll(async () => {
-    await page.close()
+    await Promise.all([page.close(), jonas.close()])
   })
 
   test('A field gets the templates whose paragraphs it allows', async () => {
     expect(await searchForField(page, NESTED, 'field_paragraphs')).toEqual(
-      [COLUMNS_TEMPLATE, TEXTS_TEMPLATE].sort(),
+      [COLUMNS_TEMPLATE, CHART_TEMPLATE, TEXTS_TEMPLATE].sort(),
     )
     expect(await searchForField(page, COLUMNS, 'field_left')).toEqual([
       TEXTS_TEMPLATE,
@@ -103,6 +112,13 @@ describe('Searching templates', async () => {
     expect(await searchForField(page, uuid!, 'field_left')).toEqual([
       TEXTS_TEMPLATE,
     ])
+  })
+
+  test('Only who may create all its paragraph types finds a template', async () => {
+    // Its chart is nested in columns, which Jonas may create.
+    expect(await searchForField(jonas, BLOCKS, 'field_paragraphs')).toEqual(
+      [COLUMNS_TEMPLATE, TEXTS_TEMPLATE].sort(),
+    )
   })
 
   test("A template's paragraph types come once per paragraph", async () => {
