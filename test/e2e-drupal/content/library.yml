@@ -2,7 +2,7 @@
 
 # On the page "Reusable".
 - key: opening-hours
-  label: Opening hours
+  label: { en: Opening hours, de: Öffnungszeiten, fr: Heures d'ouverture }
   paragraphs:
     - type: text
       field_text: '<p>Monday to Friday, 8 to 12 o’clock.</p>'

@@ -48,6 +48,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F116 | [A comment can be edited or deleted through any page](#f116-a-comment-can-be-edited-or-deleted-through-any-page)                                                            | `paragraphs_blokkli`      | low      | open       |
 | F117 | [An add or a move into a field that blökkli doesn't manage is lost](#f117-an-add-or-a-move-into-a-field-that-blökkli-doesnt-manage-is-lost)                                 | `paragraphs_blokkli`      | low      | to verify  |
 | F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                                                          | `nuxt-graphql-middleware` | low      | workaround |
+| F121 | [The library's query access finds unpublished items that its access handler hides](#f121-the-librarys-query-access-finds-unpublished-items-that-its-access-handler-hides)   | `paragraphs`              | low      | open       |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it), `parked` (part of a plan of its own, in
@@ -55,22 +56,16 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 
 ## F19: Template and library search
 
-- **Found:** 2026-09-27, 13d, by reading. The field filter and the repeated
-  paragraph types were fixed on 2026-10-25.
-- **The totals count what the user may not see** (2026-10-25): both searches
-  count in SQL, then leave out what the user may not view (`filterViewable()`).
-  Pagination counts the hidden ones, and a page comes up short. Proposed: apply
-  each entity type's access rule in the query (the permission to view templates;
-  `status = 1` for library items without the library's admin permission), and
-  keep `filterViewable()` as the last guard.
-- **The library search** (`LibraryItemsSearch.php`) ignores the provider's
-  `status`, which `LoadSearchProvider` checks, and doesn't filter by language:
-  labels come in the item's source language, and the text filter matches a label
-  in any language. Unpublished items stay listed for whoever may view them, as
-  decided on 2026-10-25.
+- **Found:** 2026-09-27, 13d, by reading. Fixed on 2026-10-25: the field filter,
+  the repeated paragraph types, the totals of the template search, and the
+  library search's provider status and language. The library search's totals
+  follow Paragraphs' query access, but for F121.
 - **The template search lists templates with paragraph types that the user may
   not create** (2026-10-11): inserting one is refused, as `add_from_template`
-  checks the types, nested ones included.
+  checks the types, nested ones included. Agreed fix: the template stores the
+  types of all its paragraphs, nested ones included, in a base field filled on
+  save, and the search leaves out templates with a type the user may not create,
+  in the query.
 
 ## F20: Default templates with `add_multiple`
 
@@ -786,3 +781,24 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   other people's content.
 - **Fix idea:** refuse a mutation whose content type isn't `application/json`,
   with a 415. A JSON POST from another origin needs a CORS preflight.
+
+## F121: The library's query access finds unpublished items that its access handler hides
+
+- **Found:** 2026-10-25, while fixing F19's totals, by reading. A kernel test
+  showed that content moderation's access makes the two agree.
+- **Symptom:** a user with "view any unpublished content" but without
+  "administer paragraphs library" gets unpublished library items from an entity
+  query with access checks, but may not view them. The library search counts
+  them in its total and then leaves them out, so a page of results comes up
+  short. The sandbox's editors are such users: `view_unpublished` gives them the
+  permission.
+- **Cause:** Paragraphs 8.x-1.23. Its query access
+  (`paragraphs_library_query_paragraphs_library_item_access_alter()`) lets
+  either permission see unpublished items. Its access handler
+  (`LibraryItemAccessControlHandler`) only lets the admin permission view them.
+  With content moderation, the two agree: content moderation lets "view any
+  unpublished content" view any unpublished entity. `view_unpublished` only
+  grants access to nodes.
+- **Fix idea:** the access handler allows viewing for "view any unpublished
+  content" too, or the query access only for the admin permission. Upstream, in
+  Paragraphs.
