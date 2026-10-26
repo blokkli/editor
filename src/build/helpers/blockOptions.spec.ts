@@ -1,6 +1,11 @@
 import { test, describe, expect } from 'vitest'
-import { toRuntimeOptionArray } from './blockOptions'
+import { toRuntimeOptionArray, translateBuiltInOptions } from './blockOptions'
 import type { BlockOptionDefinitionBase } from '../../global/types/blockOptions'
+import {
+  BK_HIDDEN_GLOBALLY,
+  BK_VISIBLE_LANGUAGES,
+  BUILT_IN_OPTION_TEXTS,
+} from '../../global/constants'
 
 describe('toRuntimeOptionArray', () => {
   test('converts text option', () => {
@@ -250,5 +255,101 @@ describe('toRuntimeOptionArray', () => {
       label: 'DateTime',
     }
     expect(toRuntimeOptionArray(option)).toEqual(['datetime-local', undefined])
+  })
+})
+
+describe('translateBuiltInOptions', () => {
+  const translations = {
+    de: {
+      blockOption_bkVisibleLanguages_label: 'Sichtbare Sprachen',
+      blockOption_bkVisibleLanguages_description: 'Nur in bestimmten Sprachen.',
+      blockOption_bkHiddenGlobally_label: 'Global verstecken',
+      blockOption_bkHiddenGlobally_description: '',
+    },
+    fr: {
+      blockOption_bkVisibleLanguages_label: 'Langues visibles',
+    },
+  }
+
+  const visibleLanguages: BlockOptionDefinitionBase = {
+    type: 'checkboxes',
+    ...BUILT_IN_OPTION_TEXTS[BK_VISIBLE_LANGUAGES],
+    options: {},
+    default: [],
+  }
+
+  const hiddenGlobally: BlockOptionDefinitionBase = {
+    type: 'checkbox',
+    ...BUILT_IN_OPTION_TEXTS[BK_HIDDEN_GLOBALLY],
+    default: false,
+  }
+
+  test('translates the texts of the built-in options', () => {
+    expect(
+      translateBuiltInOptions(
+        {
+          [BK_VISIBLE_LANGUAGES]: visibleLanguages,
+          [BK_HIDDEN_GLOBALLY]: hiddenGlobally,
+        },
+        translations,
+      ),
+    ).toEqual({
+      [BK_VISIBLE_LANGUAGES]: {
+        ...visibleLanguages,
+        label: {
+          en: 'Visible languages',
+          de: 'Sichtbare Sprachen',
+          fr: 'Langues visibles',
+        },
+        description: {
+          en: 'Only show on specific languages.',
+          de: 'Nur in bestimmten Sprachen.',
+        },
+      },
+      [BK_HIDDEN_GLOBALLY]: {
+        ...hiddenGlobally,
+        label: { en: 'Hide globally', de: 'Global verstecken' },
+        description: { en: 'Always hides the block.' },
+      },
+    })
+  })
+
+  test("keeps the project's own texts", () => {
+    const label = { en: 'Languages', de: 'Sprachen' }
+    expect(
+      translateBuiltInOptions(
+        {
+          [BK_VISIBLE_LANGUAGES]: { ...visibleLanguages, label },
+          [BK_HIDDEN_GLOBALLY]: { ...hiddenGlobally, description: 'Hidden.' },
+        },
+        translations,
+      ),
+    ).toEqual({
+      [BK_VISIBLE_LANGUAGES]: {
+        ...visibleLanguages,
+        label,
+        description: {
+          en: 'Only show on specific languages.',
+          de: 'Nur in bestimmten Sprachen.',
+        },
+      },
+      [BK_HIDDEN_GLOBALLY]: {
+        ...hiddenGlobally,
+        label: { en: 'Hide globally', de: 'Global verstecken' },
+        description: 'Hidden.',
+      },
+    })
+  })
+
+  test('leaves the other options alone', () => {
+    const options: Record<string, BlockOptionDefinitionBase> = {
+      width: {
+        type: 'radios',
+        label: 'Hide globally',
+        options: { narrow: 'Narrow', wide: 'Wide' },
+        default: 'narrow',
+      },
+    }
+    expect(translateBuiltInOptions(options, translations)).toEqual(options)
   })
 })

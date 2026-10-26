@@ -1394,7 +1394,7 @@ msgstr "Global verstecken"
 
 msgctxt "blockOption_bkVisibleLanguages_description"
 msgid "Only show on specific languages."
-msgstr "Nur auf bestimmten Sprachen anzeigen."
+msgstr "Nur in bestimmten Sprachen anzeigen."
 
 msgctxt "blockOption_bkVisibleLanguages_label"
 msgid "Visible languages"

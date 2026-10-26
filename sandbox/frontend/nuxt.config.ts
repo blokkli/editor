@@ -211,23 +211,6 @@ export default defineNuxtConfig({
           },
         },
       },
-      // blökkli's own definition, with labels in every language: the editor
-      // doesn't translate them.
-      bkVisibleLanguages: {
-        type: 'checkboxes',
-        label: {
-          en: 'Visible languages',
-          de: 'Sichtbare Sprachen',
-          fr: 'Langues visibles',
-        },
-        description: {
-          en: 'Only show on specific languages.',
-          de: 'Nur in bestimmten Sprachen anzeigen.',
-          fr: 'Afficher uniquement dans certaines langues.',
-        },
-        options: {},
-        default: [],
-      },
     },
     colorOptions: CHART_COLORS,
     // The strings of the demo's own analyzer (app/blokkli/analyzers) and of its

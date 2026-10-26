@@ -4,18 +4,18 @@ import type { BaseCallExpression, Expression, SpreadElement } from 'estree'
 import { parse } from 'acorn'
 import chalk from 'chalk'
 import { glob } from 'glob'
-import {
-  BK_HIDDEN_GLOBALLY,
-  BK_VISIBLE_LANGUAGES,
-} from '../../src/global/constants'
+import { BUILT_IN_OPTION_TEXTS } from '../../src/global/constants'
 
-export const INTERNAL_TRANSLATIONS = {
-  [`blockOption_${BK_VISIBLE_LANGUAGES}_label`]: 'Visible languages',
-  [`blockOption_${BK_VISIBLE_LANGUAGES}_description`]:
-    'Only show on specific languages.',
-  [`blockOption_${BK_HIDDEN_GLOBALLY}_label`]: 'Hide globally',
-  [`blockOption_${BK_HIDDEN_GLOBALLY}_description`]: 'Always hides the block.',
-}
+/**
+ * The texts of blökkli's own global options. The module builds their keys
+ * instead of calling `$t()`, so they're added here.
+ */
+export const INTERNAL_TRANSLATIONS: Record<string, string> = Object.fromEntries(
+  Object.entries(BUILT_IN_OPTION_TEXTS).flatMap(([property, texts]) => [
+    [`blockOption_${property}_label`, texts.label],
+    [`blockOption_${property}_description`, texts.description],
+  ]),
+)
 
 export interface Extraction {
   key: string
@@ -278,7 +278,8 @@ export class Extractor {
           .substring(0, code.length - 1)
           .replace('defineBlokkliFeature(', '')
 
-        let result: ExtractedFeature | null = null
+        // Set by eval(): cast, or TypeScript narrows it to null.
+        let result = null as ExtractedFeature | null
         try {
           // The feature definition is a plain object literal — eval is the
           // simplest way to get its runtime shape (template literals, etc.).

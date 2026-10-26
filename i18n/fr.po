@@ -1338,19 +1338,19 @@ msgstr ""
 
 msgctxt "blockOption_bkHiddenGlobally_description"
 msgid "Always hides the block."
-msgstr ""
+msgstr "Masque toujours le bloc."
 
 msgctxt "blockOption_bkHiddenGlobally_label"
 msgid "Hide globally"
-msgstr ""
+msgstr "Masquer partout"
 
 msgctxt "blockOption_bkVisibleLanguages_description"
 msgid "Only show on specific languages."
-msgstr ""
+msgstr "Afficher uniquement dans certaines langues."
 
 msgctxt "blockOption_bkVisibleLanguages_label"
 msgid "Visible languages"
-msgstr ""
+msgstr "Langues visibles"
 
 msgctxt "blockSchedulerDialogLead"
 msgid ""

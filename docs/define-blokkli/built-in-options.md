@@ -50,3 +50,30 @@ const { options } = defineBlokkli({
 
 The value is stored as a normal [checkbox](/define-blokkli/options#checkbox)
 value: `'0'` or `'1'`.
+
+## Labels
+
+The editor shows the labels and descriptions of both options in the page's
+language, from its own [translations](/editor/translations). The options schema
+(see [`schemaOptionsPath`](/configuration#schemaoptionspath)) has them in each
+language with a translation, so the backend can show them too.
+
+To change them, override their texts like any other editor text:
+
+```typescript [~/nuxt.config.ts]
+export default defineNuxtConfig({
+  blokkli: {
+    translations: {
+      de: {
+        blockOption_bkVisibleLanguages_label: 'Sprachen',
+        blockOption_bkVisibleLanguages_description: 'Nur in diesen Sprachen.',
+        blockOption_bkHiddenGlobally_label: 'Verstecken',
+        blockOption_bkHiddenGlobally_description: 'Nie anzeigen.',
+      },
+    },
+  },
+})
+```
+
+A `label` or `description` that you set in `globalOptions` replaces them in
+every language.

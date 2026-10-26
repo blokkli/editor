@@ -9,7 +9,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #    | Finding                                                                                                                                                                     | Project                   | Severity | Status     |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F28  | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                                                                      | `@blokkli/editor`         | low      | workaround |
+| F28  | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                                                                      | `@blokkli/editor`         | low      | open       |
 | F29  | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                                                                                | `paragraphs_blokkli`      | low      | workaround |
 | F30  | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                                                                               | `paragraphs_blokkli`      | low      | open       |
 | F35  | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)                                                        | `@blokkli/editor`         | low      | open       |
@@ -53,21 +53,15 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 ## F28: Labels that can't be translated
 
 - **Found:** 2026-09-27, 13f.
-- **Symptom:** on a German page, the editor shows "Visible languages" and "Hide
-  globally" in English, and the fragments' labels ("Upcoming events") too.
+- **Symptom:** on a German page, the editor shows the fragments' labels
+  ("Today", "Frequently searched") and the chart colours' labels in English.
 - **Cause:**
-  - The built-in global options are defined with English strings
-    (`src/module.ts:44-56`). Their translation keys
-    (`blockOption_bkVisibleLanguages_label`, …) exist but nothing reads them.
   - A fragment's `label` and `description` are plain strings
     (`src/global/types/definitions.ts:329`), not `DefinitionString` like option
     labels.
   - So are the chart colours' labels in `colorOptions`
     (`src/global/types/colorOptions.ts`), 13i.
-- **Workaround:** the sandbox frontend redefines `bkVisibleLanguages` in
-  `nuxt.config.ts` with labels per language. Fragments and colours have none.
-- **Fix idea:** resolve the built-in labels through the editor's texts, and
-  accept `DefinitionString` for fragment and colour labels.
+- **Fix idea:** accept `DefinitionString` for fragment and colour labels.
 
 ## F29: Drops write only the source's link
 

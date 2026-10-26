@@ -5,12 +5,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -22,12 +24,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -84,12 +88,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -114,12 +120,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -188,12 +196,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -244,12 +254,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -286,12 +298,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -342,12 +356,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -423,12 +439,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -476,12 +494,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -518,12 +538,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -571,12 +593,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -633,12 +657,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -650,12 +676,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -667,12 +695,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -693,12 +723,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -735,12 +767,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -810,12 +844,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -899,12 +935,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -926,12 +964,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"
@@ -999,12 +1039,14 @@
       "description": {
         "de": "Nur in bestimmten Sprachen anzeigen.",
         "en": "Only show on specific languages.",
-        "fr": "Afficher uniquement dans certaines langues."
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
       },
       "label": {
         "de": "Sichtbare Sprachen",
         "en": "Visible languages",
-        "fr": "Langues visibles"
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
       },
       "options": {},
       "type": "checkboxes"

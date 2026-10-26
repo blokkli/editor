@@ -324,7 +324,7 @@
   "blockNotImplemented": "Keine Komponente für Block-Typ <strong>@bundle</strong> gefunden.",
   "blockOption_bkHiddenGlobally_description": "Den Block immer verstecken.",
   "blockOption_bkHiddenGlobally_label": "Global verstecken",
-  "blockOption_bkVisibleLanguages_description": "Nur auf bestimmten Sprachen anzeigen.",
+  "blockOption_bkVisibleLanguages_description": "Nur in bestimmten Sprachen anzeigen.",
   "blockOption_bkVisibleLanguages_label": "Sichtbare Sprachen",
   "blockSchedulerDialogLead": "Planen Sie automatische Veröffentlichungs- und Depublikationsdaten für die ausgewählten Blöcke.",
   "blockSchedulerDialogLeadLanguages": "Planen Sie automatische Veröffentlichungs- und Depublikationsdaten für die ausgewählten Blöcke. Ein hier gesetztes Datum gilt für alle Sprachen.",

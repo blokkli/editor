@@ -1,6 +1,8 @@
 import type { Nuxt } from 'nuxt/schema'
 import type { BuildRelativeImports, ModuleOptions } from './types'
+import { readFileSync } from 'node:fs'
 import { relative } from 'pathe'
+import { defu } from 'defu'
 import {
   type Resolver,
   type useLogger,
@@ -10,11 +12,13 @@ import {
 } from '@nuxt/kit'
 import { FileCache } from './FileCache'
 import { onlyUnique } from './helpers'
+import { translateBuiltInOptions } from './helpers/blockOptions'
 import type { ValidationInterface } from './ValidationInterface'
 import type { IconCollector } from './Collector/Icons'
 import { validateOptions } from './validation/validateOptions'
 import { validateColorOptions } from './validation/validateColorOptions'
 import type { ColorOption } from '../global/types/colorOptions'
+import { TRANSLATION_LANGUAGES } from '../global/constants'
 
 const defaultColorOptions: Record<string, ColorOption> = {
   blue: { hex: '#3b82f6', label: 'Blue' },
@@ -178,9 +182,32 @@ export class ModuleHelper implements ValidationInterface {
       providerTypes: providerTypes.filter(onlyUnique),
       chunkNames: chunkNames.filter(onlyUnique),
       colorOptions: providedOptions.colorOptions || defaultColorOptions,
+      globalOptions: translateBuiltInOptions(
+        providedOptions.globalOptions || {},
+        this.getTranslations(providedOptions.translations),
+      ),
     }
 
     this.paths.editAdapter = this.findEditAdapterPath()
+  }
+
+  /**
+   * The editor's texts, keyed by language: the project's own ones and the
+   * shipped translations.
+   */
+  private getTranslations(
+    projectTranslations: ModuleOptions['translations'],
+  ): Record<string, Record<string, string>> {
+    const shipped = TRANSLATION_LANGUAGES.reduce<
+      Record<string, Record<string, string>>
+    >((acc, langcode) => {
+      const path = this.resolvers.module.resolve(
+        `./runtime/editor/translations/${langcode}.json`,
+      )
+      acc[langcode] = JSON.parse(readFileSync(path, 'utf-8'))
+      return acc
+    }, {})
+    return defu(projectTranslations || {}, shipped)
   }
 
   /**
