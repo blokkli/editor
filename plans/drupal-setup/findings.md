@@ -12,7 +12,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                   | `paragraphs_blokkli`      | low      | open       |
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                      | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
-| F73  | [A new paragraph of a type its field doesn't allow is no violation](#f73-a-new-paragraph-of-a-type-its-field-doesnt-allow-is-no-violation)                                | `paragraphs`              | low      | open       |
 | F74  | [The older mutations for media leave a link field empty](#f74-the-older-mutations-for-media-leave-a-link-field-empty)                                                     | `paragraphs_blokkli`      | low      | open       |
 | F77  | ["Add to" is offered for link fields with several values](#f77-add-to-is-offered-for-link-fields-with-several-values)                                                     | editor                    | low      | to verify  |
 | F78  | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                           | `paragraphs_blokkli`      | low      | to verify  |
@@ -76,27 +75,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   (`app/graphql/fragment.easyTexts.graphql`). From 2026-10-14, nginx refused
   `/graphql`, but any logged-in user still reached it as `/index.php/graphql`.
 - **Fix idea:** create keys only with a permission, or only in development.
-
-## F73: A new paragraph of a type its field doesn't allow is no violation
-
-- **Found:** 2026-10-12, with a kernel test, when the edit state got validated
-  as it's edited (the former F53).
-- **Symptom:** a stored `add` puts a text into a grid that only takes buttons.
-  While editing, validation finds nothing. A saved text that a stored `move`
-  puts there has its violation (`field_items.0.target_id`).
-- **By reading:** publishing validates the same way, so it finds nothing either.
-  Once published, the paragraph is saved, and the next edit state shows the
-  violation.
-- **Cause:** Paragraphs 8.x-1.23,
-  `ParagraphSelection::validateReferenceableNewEntities()`
-  (`src/Plugin/EntityReferenceSelection/ParagraphSelection.php:251-259`). Its
-  closure doesn't `use ($bundles)`, so `isset($bundles)` is false in it and
-  every new paragraph counts as allowed.
-- **Impact:** low. A mutation is refused when it's added, so only a stored one
-  gets there: one from before that check, or from before the field's settings
-  changed.
-- **Fix idea:** a patch for Paragraphs (`use ($bundles)`). Whether drupal.org
-  has an issue for it isn't looked up yet.
 
 ## F74: The older mutations for media leave a link field empty
 
