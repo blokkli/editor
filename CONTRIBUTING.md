@@ -45,8 +45,7 @@ bun run dev          # http://localhost:3000
    source, which needs the root `.nuxt/` (without it: "Failed to load tsconfig
    '.nuxt/tsconfig.app.json'") and the compiled editor CSS
    `src/runtime/editor/css/output.css` (without it: "ENOENT … output.css"). Both
-   are gitignored. Revert the change `dev:prepare` makes to
-   `playground/app/options-schema.json`.
+   are gitignored.
 5. `ddev bake` installs the site from `sandbox/drupal/config/sync`, with the
    German and French interface translations from drupal.org, and seeds the
    content of `sandbox/drupal/content`. It takes about 20 seconds. The first
@@ -232,8 +231,6 @@ Their DE and FR strings are in `translations` in `nuxt.config.ts`.
    the schema into `build/drupal-schema.graphql`. The Nuxt daemon restarts and
    detects the available features again.
 3. `bun run dev:prepare` regenerates the types for the Drupal module in `src/`.
-   It also rewrites `playground/app/options-schema.json` with English labels;
-   don't commit that.
 4. Change the adapter and the UI in `src/`. The sandbox's Nuxt app hot-reloads.
 5. Export config changes with `ddev drush cex -y` and commit
    `sandbox/drupal/config/sync`.

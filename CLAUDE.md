@@ -372,8 +372,7 @@ the `sandbox` skill. Setup and the full workflow: `CONTRIBUTING.md`.
   2. `bun run drupal:schema` (in the container) dumps the schema into
      `build/drupal-schema.graphql`, and the daemon restarts. Never edit that
      file by hand.
-  3. `bun run dev:prepare` regenerates the root types. Revert the change it
-     makes to `playground/app/options-schema.json`.
+  3. `bun run dev:prepare` regenerates the root types.
 - **Config:** export with `ddev drush cex -y` and commit
   `sandbox/drupal/config/sync`. Secrets only go in `.ddev/.env.web`
   (`ddev dotenv set`), never in config.

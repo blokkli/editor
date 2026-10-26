@@ -545,8 +545,7 @@ host, with ddev running: `bun run test:e2e-drupal` or
   prompt (nginx: 502): fix it, then `ddev nuxt restart`.
 - **The schema loop:** change the module (submodule) → `ddev drush cr` →
   `bun run drupal:schema` (container; dumps `build/drupal-schema.graphql`, the
-  daemon restarts) → `bun run dev:prepare` for the root types (revert its change
-  to `playground/app/options-schema.json`).
+  daemon restarts) → `bun run dev:prepare` for the root types.
 - **UI strings:** `$texts('key', 'English default')` (nuxt-easy-texts), stored
   in Drupal's texts module, seeded from `content/texts.csv`. Pages outside
   Drupal's reach (welcome, the control app) keep their texts in code.

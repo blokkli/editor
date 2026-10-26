@@ -68,10 +68,7 @@ jobs:
         run: SANDBOX_E2E_BUILD=true bunx nuxi build sandbox/frontend
 
       - name: Prepare the module and the playground
-        run: |
-          bun run dev:prepare
-          # It rewrites the playground's options schema.
-          git checkout -- playground/app/options-schema.json
+        run: bun run dev:prepare
 
       # The agent's secret, for its E2E tests in premium sandboxes. The others
       # have local defaults. No key for DeepL, Rokka or a model: E2E sandboxes

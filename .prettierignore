@@ -1,5 +1,4 @@
 CHANGELOG.md
-playground/app/options-schema.json
 build/drupal-schema.graphql
 sandbox/frontend/app/graphql/fragment.easyTexts.graphql
 .oxfmtrc.json
