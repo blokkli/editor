@@ -2,11 +2,11 @@ enum Langcode {
   "English"
   EN
 
-  "French"
-  FR
-
   "German"
   DE
+
+  "French"
+  FR
 }
 
 enum LanguageDirection {

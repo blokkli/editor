@@ -164,7 +164,9 @@ Traefik sends every hostname to the web container's nginx on port 80.
   weights (en, de, fr). The seed stores its `--source` in the state, which the
   templates and sandboxes copy, and `SourceLanguageOverride`
   (`blokkli_playground`) gives that language a lower weight. An override is
-  never exported, so `drush cex` stays clean whatever the bake's language.
+  never exported, so `drush cex` stays clean whatever the bake's language. The
+  schema dump turns it off (below), so `build/drupal-schema.graphql` is the same
+  whatever the bake's language.
 - **Theme:** Gin for everything Drupal renders (admin and the login). The
   frontend shows Drupal's toolbar and local tasks through vuepal.
 - **Hosts** (`paragraphs_blokkli.settings.yml`, `enabled_types`): the node types
@@ -256,6 +258,10 @@ Traefik sends every hostname to the web container's nginx on port 80.
   warm-up, then `VACUUM INTO <dir>/db.sqlite`, switched to WAL mode: otherwise
   the first parallel requests to a fresh copy race to switch it, and the losers
   fail with "database is locked").
+- Drush `blokkli-playground:schema <file>`, which `bun run drupal:schema` runs:
+  the GraphQL schema as a site baked in English has it. It turns the language
+  order's override off and builds the schema anew: the cached one may come from
+  a request with the override.
 - The access policy above; class-based hooks (`src/Hook`): previews of
   unpublished entities, menu access, an event's `unpublish_on` from its date.
 - Editor plugins: conversions (link → text, text ↔ title) and the transform

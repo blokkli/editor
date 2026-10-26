@@ -17,6 +17,9 @@ use Drupal\Core\State\StateInterface;
  * its template. Its language entity gets a weight below the configured ones,
  * which start at 0. An override is never exported, so the config stays the
  * same whatever the dev site was baked in.
+ *
+ * The schema dump turns it off (SchemaCommands), so that the dumped schema
+ * lists the languages in the config's order.
  */
 final class SourceLanguageOverride implements ConfigFactoryOverrideInterface {
 
@@ -25,14 +28,31 @@ final class SourceLanguageOverride implements ConfigFactoryOverrideInterface {
    */
   public const STATE_KEY = 'blokkli_playground.source_language';
 
+  /**
+   * Whether the override is off, for the rest of the request.
+   */
+  private bool $disabled = FALSE;
+
   public function __construct(
     private readonly StateInterface $state,
   ) {}
 
   /**
+   * Turns the override off for the rest of the request.
+   *
+   * Config that is loaded already keeps it: reset the config factory.
+   */
+  public function disable(): void {
+    $this->disabled = TRUE;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function loadOverrides($names): array {
+    if ($this->disabled) {
+      return [];
+    }
     $source = $this->state->get(self::STATE_KEY);
     if (!is_string($source) || !in_array("language.entity.$source", $names, TRUE)) {
       return [];
