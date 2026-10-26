@@ -6,9 +6,8 @@ import { blockCount, blockState } from '../../support/blocks'
 import { emitEvent } from '../../support/events'
 import { dispatchPaste, dropDragInto } from '../../support/clipboard'
 import { dialogSubmit, dismissMessages } from '../../support/overlays'
+import { dropAreaIds, dropOnArea } from '../../support/dropAreas'
 import {
-  dropAreaIds,
-  dropOnArea,
   pasteFiles,
   uploadDialog,
   uploadField,

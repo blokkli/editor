@@ -2,6 +2,8 @@ import { itemEntityType } from '#blokkli-build/config'
 import { falsy } from '#blokkli/helpers'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { BlokkliItemHost } from '#blokkli/editor/types/field'
+import type { DropAreaDropOptions } from '#blokkli/editor/types/ui'
+import { hasOtherTranslations } from '#blokkli/editor/helpers/translations'
 
 /**
  * A droppable field whose media can be replaced.
@@ -14,9 +16,14 @@ export type ReplaceMediaTarget = {
   label: string
   element: HTMLElement
   /**
+   * Whether to ask if the media changes in every language: the field is
+   * translatable, and its block (or the page) has another translation.
+   */
+  askLanguages: boolean
+  /**
    * Replace the field's media with the given one.
    */
-  replace: (mediaId: string) => Promise<boolean>
+  replace: (mediaId: string, options?: DropAreaDropOptions) => Promise<boolean>
 }
 
 /**
@@ -89,6 +96,16 @@ export function getReplaceMediaTargets(
         fieldName: field.fieldName,
       }
 
+      const askLanguages =
+        !!config.isTranslatable &&
+        hasOtherTranslations(
+          state.translation.value,
+          isBlock
+            ? (state.getFieldListItem(field.uuid)?.editContext?.translations ??
+                [])
+            : null,
+        )
+
       return {
         id: `${isBlock ? 'replace-media' : 'replace-entity-media'}:${field.uuid}:${field.fieldName}`,
         label: $t('replaceField', 'Replace @field').replace(
@@ -96,9 +113,15 @@ export function getReplaceMediaTargets(
           config.label,
         ),
         element: field.element,
-        replace: (mediaId) =>
+        askLanguages,
+        replace: (mediaId, options) =>
           state.mutateWithLoadingState(
-            () => replaceMedia({ host, mediaId }),
+            () =>
+              replaceMedia({
+                host,
+                mediaId,
+                allLanguages: options?.allLanguages,
+              }),
             errorMessage,
           ),
       }

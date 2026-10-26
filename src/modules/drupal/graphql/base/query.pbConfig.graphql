@@ -81,6 +81,7 @@ query pbConfig($entityType: String!, $entityBundle: String!) {
       bundles
     }
     required
+    isTranslatable
   }
 
   urlPrefixes: pbGetUrlPrefixes {

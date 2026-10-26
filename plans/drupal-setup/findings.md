@@ -9,7 +9,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #    | Finding                                                                                                                                                                     | Project                   | Severity | Status     |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F29  | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                                                                                | `paragraphs_blokkli`      | low      | workaround |
 | F30  | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                                                                               | `paragraphs_blokkli`      | low      | open       |
 | F35  | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)                                                        | `@blokkli/editor`         | low      | open       |
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                     | `paragraphs_blokkli`      | low      | open       |
@@ -24,7 +23,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F72  | [The editor offers places below the nesting limit](#f72-the-editor-offers-places-below-the-nesting-limit)                                                                   | editor                    | low      | open       |
 | F73  | [A new paragraph of a type its field doesn't allow is no violation](#f73-a-new-paragraph-of-a-type-its-field-doesnt-allow-is-no-violation)                                  | `paragraphs`              | low      | open       |
 | F74  | [The older mutations for media leave a link field empty](#f74-the-older-mutations-for-media-leave-a-link-field-empty)                                                       | `paragraphs_blokkli`      | low      | open       |
-| F76  | [A search result replaces the first mapped field](#f76-a-search-result-replaces-the-first-mapped-field)                                                                     | editor                    | low      | to verify  |
 | F77  | ["Add to" is offered for link fields with several values](#f77-add-to-is-offered-for-link-fields-with-several-values)                                                       | editor                    | low      | to verify  |
 | F78  | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                             | `paragraphs_blokkli`      | low      | to verify  |
 | F85  | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                       | editor                    | low      | to verify  |
@@ -48,19 +46,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
-
-## F29: Drops write only the source's link
-
-- **Found:** 2026-09-27, 13f (read in the code; the demo avoids it).
-- **Symptom:** a page dropped onto a button whose link field is translatable
-  changes the link in the source language only. The translations keep the old
-  link.
-- **Cause:** `replace_entity_reference` sets the field on the paragraph as
-  loaded, the default translation (`Mutation/ReplaceEntityReference.php:131`,
-  `Traits/LinkOrReferenceFieldTrait.php:30`).
-- **Workaround:** link fields are untranslatable in the demo (dates and links
-  never are, the user's decision).
-- **Fix idea:** write the translation of the edit's language, or all of them.
 
 ## F30: No hint for shared fields in a translation
 
@@ -311,21 +296,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** `getLinkOrEntityReferenceFieldValue()` behind a mutation
   version, since stored ones replay with the empty link. Or refuse a mapping to
   a link field when the mutation is added.
-
-## F76: A search result replaces the first mapped field
-
-- **Found:** 2026-10-12, by reading, in the same check. Not reproduced: no
-  paragraph type of the sandbox has two such fields.
-- **Symptom:** a paragraph type has two fields that entity mappings allow the
-  same bundle for. A search result dropped on the second one ("Replace …")
-  replaces the first.
-- **Cause:** the Drupal adapter's `replaceContentSearchItem`
-  (`src/modules/drupal/runtime/adapter/index.ts:2041-2050`, in this repository)
-  doesn't send the field's name, although `pbReplaceEntityReference` has the
-  variable. `replace_entity_reference` then takes the bundle's first mapping for
-  the paragraph type (`PbEntityMapping::getMappingForBundle()`). The agent's
-  `replace_content_search_item` tool goes through the same method.
-- **Fix idea:** send `fieldName: data.host.fieldName`.
 
 ## F77: "Add to" is offered for link fields with several values
 

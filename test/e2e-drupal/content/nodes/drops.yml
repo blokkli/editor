@@ -1,0 +1,25 @@
+# News in English and German, at /en/news/drops and /de/aktuelles/ablagen. In
+# E2E sandboxes a teaser's link and media and a news item's hero image differ
+# per language (blokkli_playground_test): the editor asks whether a drop onto
+# them changes them in all languages (features/dragging-overlay).
+key: drops
+type: news
+title: { en: Drops, de: Ablagen }
+field_hero_image: { media: lake }
+field_paragraphs:
+  # Translated: its title differs per language.
+  - type: teaser
+    key: drops-teaser
+    field_title: { en: Read more, de: Weiterlesen }
+    field_link: { node: blocks }
+    field_media: { media: lake }
+  # Plain values only: it has no translation.
+  - type: teaser
+    key: drops-untranslated
+    field_title: Untranslated
+    field_link: { node: blocks }
+    field_media: { media: lake }
+  # An image's media is shared by the translations.
+  - type: image
+    key: drops-image
+    field_media: { media: lake }

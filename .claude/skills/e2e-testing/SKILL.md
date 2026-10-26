@@ -19,7 +19,7 @@ frame-timed drop logic, DOM lifecycle.
   `diff`, `events`, `toolbar`, `menu`, `sidebar`, `overlays`, `options`,
   `preview`, `schedule`, `publish`, `selection`, `clipboard`, `bundleSelector`,
   `history`, `itemActions`, `keyboard`, `translations`, `agent`, `charts`,
-  `complexOptions`.
+  `complexOptions`, `dropAreas`.
 - Fixtures: `test/e2e-drupal/content` (see "Fixtures" below).
 
 For the agent's tests (`features/agent/`) see `/agent-e2e-testing` — covers the
@@ -208,7 +208,9 @@ matches either; assert exact: `getAttribute === 'true'`.
   — logs the user in, pre-dismisses the `agent`/`tour` popups, always gives the
   agent a mock script (default `[]`; `[{ type: 'restore' }]` to test the restore
   of a conversation), waits for the editor. It answers requests to YouTube's
-  image host (the clipboard's thumbnails) with an image of the fixtures.
+  image host (the clipboard's thumbnails) with an image of the fixtures. It and
+  `openPage` turn Nuxt DevTools off: its panel can throw, and Nuxt's dev error
+  layer then takes the clicks.
 - `openPage(sandbox, user, path)` — logs the user in and opens the path outside
   the editor, e.g. to check what visitors see.
 - `editorPath('/en/blocks', 'blocks')` — a seeded node's path in the editor;
@@ -327,6 +329,10 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
   nothing). One drag per test sidesteps it.
 - Canvas double-click to edit is unreliable (artboard vs screen coords) — use
   `eventBus.emit('editable:open', { fieldName, uuid? })`.
+- **A drag started on the event bus follows the real pointer:** the browser
+  moves it whenever the layout under it changes, so a drag can end where an
+  earlier click left the pointer (the toolbar). `support/dropAreas.ts` puts it
+  in the middle first (`startDrag`, `pointerToCenter`); drop with `dropOnArea`.
 - **Drop logic without a canvas drop:**
   `app.dragdrop.getDropHandler('<itemType>')` returns the handler; you can
   `await handler.execute({ items, host, afterUuid, field, bundle })` in

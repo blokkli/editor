@@ -189,7 +189,7 @@ onBlokkliEvent('mouse:up', (e) => {
   emitDrop()
 })
 
-const emitDrop = async () => {
+const emitDrop = () => {
   const timeDelta = Date.now() - dragStart
   // Prevent accidental drops. At least 200ms should have passed between the
   // time the drag was initiated and when the drop was made.
@@ -222,7 +222,10 @@ const emitDrop = async () => {
       if (!area) {
         return
       }
-      await area.onDrop()
+      // A mouse drop ends the drag right away, which unmounts this component:
+      // the overlay asks and drops.
+      eventBus.emit('dragging:dropArea', area)
+      return
     }
   }
 

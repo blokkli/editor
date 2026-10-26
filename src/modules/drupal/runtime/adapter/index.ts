@@ -1341,6 +1341,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           uuid: e.host.uuid,
           fieldName: e.host.fieldName,
           mediaId: e.mediaId,
+          allLanguages: e.allLanguages,
         }).then(mapMutation)
     }
 
@@ -1350,6 +1351,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           ...ctx.value,
           fieldName: e.host.fieldName,
           mediaId: e.mediaId,
+          allLanguages: e.allLanguages,
         }).then(mapMutation)
     }
 
@@ -2062,6 +2064,8 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           targetBundle: data.item.entityBundle,
           targetId: data.item.id,
           uuid: data.host.uuid,
+          fieldName: data.host.fieldName,
+          allLanguages: data.allLanguages,
         }).then(mapMutation)
     }
 

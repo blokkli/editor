@@ -51,6 +51,7 @@ import {
   defineDropHandler,
 } from '#blokkli/editor/composables'
 import { falsy } from '#blokkli/helpers'
+import { hasOtherTranslations } from '#blokkli/editor/helpers/translations'
 import { itemEntityType } from '#blokkli-build/config'
 import type { DropArea } from '#blokkli/editor/types/ui'
 import type { BlokkliItemHost } from '#blokkli/editor/types/field'
@@ -139,12 +140,19 @@ defineDropAreas((dragItems) => {
         label,
         element: field.element,
         icon: 'bk_mdi_swap_horiz',
-        onDrop: () => {
+        askLanguages:
+          !!config.isTranslatable &&
+          hasOtherTranslations(
+            state.translation.value,
+            state.getFieldListItem(field.uuid)?.editContext?.translations ?? [],
+          ),
+        onDrop: (options) => {
           return state.mutateWithLoadingState(
             () =>
               adapter.replaceContentSearchItem!({
                 host,
                 item: searchItem,
+                allLanguages: options.allLanguages,
               }),
             ERROR_MESSAGE,
           )

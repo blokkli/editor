@@ -48,6 +48,17 @@ export type OpenEditorOptions = {
 }
 
 /**
+ * Turns Nuxt DevTools off. The sandbox's frontend is a dev server, and the
+ * DevTools' panel can throw: Nuxt then lays its dev error layer over the page,
+ * which takes the clicks of the tests that follow.
+ */
+async function disableDevtools(page: Page): Promise<void> {
+  await page.addInitScript(() => {
+    Object.assign(window, { __NUXT_DEVTOOLS_DISABLE__: true })
+  })
+}
+
+/**
  * Logs the user into the sandbox, then opens the path in the editor.
  *
  * The agent always has a mock script, so no spec reaches the model. DeepL
@@ -64,6 +75,7 @@ export async function openEditor(
     timezoneId: opts.timezoneId,
   })
   await installCspCheck(page)
+  await disableDevtools(page)
   // The clipboard's YouTube thumbnails (DropElement/Video.vue): an image of the
   // fixtures, instead of a request to YouTube.
   await page.route('https://i.ytimg.com/**', (route) =>
@@ -93,6 +105,7 @@ export async function openPage(
 ): Promise<Page> {
   const page = await createPage(undefined, { ignoreHTTPSErrors: true })
   await installCspCheck(page)
+  await disableDevtools(page)
   await page.goto(url(loginPath(sandbox, user, path)))
   return page
 }

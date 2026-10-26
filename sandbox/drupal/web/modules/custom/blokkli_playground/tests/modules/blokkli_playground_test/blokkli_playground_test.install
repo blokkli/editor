@@ -18,6 +18,10 @@ use Drupal\field\Entity\FieldConfig;
  * Every translation of a news item shares its status and the scheduler's
  * dates, as the content translation settings allow. The site gives each
  * translation its own.
+ *
+ * A teaser's link and media, and a news item's hero image, differ per
+ * language, so the editor asks whether a drop changes them in all languages.
+ * On the site, links and media are shared.
  */
 function blokkli_playground_test_install(): void {
   $field = FieldConfig::loadByName('node', 'page', 'field_paragraphs');
@@ -30,5 +34,15 @@ function blokkli_playground_test_install(): void {
   $definitions = \Drupal::service('entity_field.manager')->getBaseFieldDefinitions('node');
   foreach (['status', 'publish_on', 'unpublish_on'] as $name) {
     $definitions[$name]->getConfig('news')->setTranslatable(FALSE)->save();
+  }
+
+  foreach ([
+    ['paragraph', 'teaser', 'field_link'],
+    ['paragraph', 'teaser', 'field_media'],
+    ['node', 'news', 'field_hero_image'],
+  ] as [$entityType, $bundle, $fieldName]) {
+    $field = FieldConfig::loadByName($entityType, $bundle, $fieldName);
+    assert($field instanceof FieldConfig);
+    $field->setTranslatable(TRUE)->save();
   }
 }

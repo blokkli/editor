@@ -11,6 +11,13 @@ export type AddContentSearchItemEvent = {
 export type ReplaceContentSearchItemEvent = {
   host: BlokkliItemHost
   item: SearchContentItem
+
+  /**
+   * Whether to replace the reference in every translation of the block.
+   * Only set when the editor asked, for a translatable field. Otherwise the
+   * reference changes in the source language.
+   */
+  allLanguages?: boolean
 }
 
 export interface DraggableSearchContentItem {
@@ -100,6 +107,10 @@ declare module '#blokkli/editor/adapter' {
 
     /**
      * Replace a content reference on an existing block from a search content item.
+     *
+     * For a translatable field (`isTranslatable` in the droppable field
+     * config), the editor asks first whether to replace it in every language,
+     * and passes the answer as `allLanguages`.
      */
     replaceContentSearchItem?: (
       e: ReplaceContentSearchItemEvent,

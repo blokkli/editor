@@ -45,8 +45,20 @@ function getDroppableFieldConfig() {
         allowed: [{ type: 'media', bundles: ['image'] }],
         cardinality: 1,
         required: true,
+        // Whether the value can differ per language. Optional.
+        isTranslatable: false,
       },
     ]
   }
 }
 ```
+
+## Translatable fields
+
+When a media or a search result is dropped onto a field with
+`isTranslatable: true`, and the block (or, for a field of the page entity, the
+page) has another translation, the editor asks whether to change the field in
+all languages or only in the current one. The answer is passed to the adapter as
+`allLanguages` ([mediaLibraryReplaceMedia](./mediaLibraryReplaceMedia.md),
+[mediaLibraryReplaceEntityMedia](./mediaLibraryReplaceEntityMedia.md) and
+`replaceContentSearchItem`). Without `isTranslatable`, the editor never asks.

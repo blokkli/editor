@@ -50,4 +50,6 @@ library item can: the fields whose media it can replace show a drop area. The
 file is uploaded in the same dialog, then the media is set with
 [adapter.mediaLibraryReplaceMedia] (or [adapter.mediaLibraryReplaceEntityMedia]
 for a field of the page). This needs [adapter.getUploadMediaBundle], which tells
-the media bundle a file becomes.
+the media bundle a file becomes. For a translatable field, the editor first asks
+whether to replace the media in all languages or only in the current one, before
+the dialog opens.

@@ -6563,6 +6563,9 @@ type ParagraphsEditMutationState {
 
     "The specific paragraph field to update."
     fieldName: String
+
+    "Whether to replace the reference in every translation of the paragraph, if the field is translatable."
+    allLanguages: Boolean
   ): ParagraphsBlokkliMutationResult
 
   "Edit a paragraph."
@@ -6719,6 +6722,9 @@ type ParagraphsEditMutationState {
 
     "The new media ID."
     mediaId: String!
+
+    "Whether to replace the media in every translation of the host entity, if the field is translatable."
+    allLanguages: Boolean
   ): ParagraphsBlokkliMutationResult
 
   "Updates a single behavior setting."
@@ -6908,6 +6914,9 @@ type ParagraphsEditMutationState {
 
     "The new media ID."
     mediaId: String!
+
+    "Whether to replace the media in every translation of the paragraph, if the field is translatable."
+    allLanguages: Boolean
   ): ParagraphsBlokkliMutationResult
 
   "Adds a new paragraph."
@@ -7410,6 +7419,12 @@ type ParagraphsBlokkliDroppableFieldConfig {
 
   ""
   fieldType: ParagraphsBlokkliDroppableFieldType!
+
+  """
+  Whether the value can differ per language. An untranslatable field's value
+  is shared by every translation.
+  """
+  isTranslatable: Boolean!
 }
 
 ""

@@ -2452,6 +2452,18 @@ msgctxt "dragToMove"
 msgid "Drag to move"
 msgstr "Zum Verschieben ziehen"
 
+msgctxt "draggingOverlayAllLanguages"
+msgid "All languages"
+msgstr "Alle Sprachen"
+
+msgctxt "draggingOverlayLanguagesDescription"
+msgid "This field can differ per language."
+msgstr "Dieses Feld kann pro Sprache unterschiedlich sein."
+
+msgctxt "draggingOverlayOnlyLanguage"
+msgid "Only @language"
+msgstr "Nur @language"
+
 msgctxt "draggingOverlaySelectBundle"
 msgid "Select block type to create"
 msgstr "Block-Typ zum Erstellen auswählen"

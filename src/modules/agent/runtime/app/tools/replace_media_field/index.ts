@@ -13,6 +13,12 @@ export const paramsSchema = z.object({
   field: z.string().describe('The content field name (reference type)'),
   mediaId: z.string().describe('The media item ID (from search_media results)'),
   mediaBundle: z.string().describe('The media bundle type (e.g., "image")'),
+  allLanguages: z
+    .boolean()
+    .optional()
+    .describe(
+      'Whether to replace it in every translation of the paragraph (or of the page, for a field of the page). Omit to change only the edited language. Only matters for a translatable field.',
+    ),
 })
 
 export const resultSchema = mutationResultSchema
@@ -96,6 +102,7 @@ export default defineBlokkliAgentTool({
               fieldName: params.field,
             },
             mediaId: params.mediaId,
+            allLanguages: params.allLanguages,
           })
         }
         return adapter.mediaLibraryReplaceMedia!({
@@ -105,6 +112,7 @@ export default defineBlokkliAgentTool({
             fieldName: params.field,
           },
           mediaId: params.mediaId,
+          allLanguages: params.allLanguages,
         })
       },
       affectedUuids: [params.uuid],

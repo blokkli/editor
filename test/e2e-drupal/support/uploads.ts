@@ -1,5 +1,4 @@
 import type { Locator, Page } from 'playwright-core'
-import { withApp } from './session'
 import { dialog } from './overlays'
 
 // Files for the upload dialog, and the dialog itself.
@@ -140,30 +139,4 @@ export function uploadField(page: Page, name: string): Locator {
   return uploadDialog(page).locator(
     `[data-test="config-form-${name}"] [data-test="form-text-input"]`,
   )
-}
-
-/** The IDs of the drop areas the in-flight drag can be dropped on. */
-export function dropAreaIds(page: Page): Promise<string[]> {
-  return withApp(page, (app) =>
-    app.dragdrop
-      .getDropAreas([...app.selection.dragItems.value])
-      .map((area) => area.id),
-  )
-}
-
-/**
- * Drop the in-flight drag on a drop area, as the dragging overlay does once
- * its pointer hit-test picked the area (see `clipboard.ts`).
- */
-export function dropOnArea(page: Page, id: string): Promise<void> {
-  return page.evaluate((id) => {
-    const app = window.__BLOKKLI__!.app!
-    const area = app.dragdrop
-      .getDropAreas([...app.selection.dragItems.value])
-      .find((v) => v.id === id)
-    if (!area) {
-      throw new Error(`No drop area "${id}"`)
-    }
-    area.onDrop()
-  }, id)
 }

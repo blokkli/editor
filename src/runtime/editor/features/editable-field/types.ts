@@ -22,6 +22,12 @@ export type DroppableFieldConfig = {
   allowed: EntityTypeRestriction[]
   cardinality: number
   required: boolean
+
+  /**
+   * Whether the value can differ per language. If it does, the editor asks
+   * whether a drop changes it in every language. Never asks when not set.
+   */
+  isTranslatable?: boolean
 }
 
 export type UpdateFieldValueEvent = {

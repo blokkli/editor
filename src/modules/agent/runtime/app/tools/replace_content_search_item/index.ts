@@ -15,6 +15,12 @@ export const paramsSchema = z.object({
   itemId: z.string().describe('Content item ID from search_content_* results'),
   itemEntityType: z.string().describe('Entity type of the content item'),
   itemEntityBundle: z.string().describe('Entity bundle of the content item'),
+  allLanguages: z
+    .boolean()
+    .optional()
+    .describe(
+      'Whether to replace it in every translation of the paragraph (or of the page, for a field of the page). Omit to change only the edited language. Only matters for a translatable field.',
+    ),
 })
 
 export const resultSchema = mutationResultSchema
@@ -101,6 +107,7 @@ export default defineBlokkliAgentTool({
             fieldName: params.field,
           },
           item,
+          allLanguages: params.allLanguages,
         }),
       affectedUuids: [params.uuid],
     }

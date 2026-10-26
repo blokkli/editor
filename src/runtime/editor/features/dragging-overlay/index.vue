@@ -34,6 +34,13 @@
         @close="onCloseBundleSelector"
         @select="onSelectBundle"
       />
+      <DropLanguages
+        v-else-if="dropLanguagesData"
+        :title="dropLanguagesData.title"
+        :anchor-coordinates="dropLanguagesData.anchorCoordinates"
+        @close="onAnswerDropLanguages(null)"
+        @select="onAnswerDropLanguages"
+      />
     </BlokkliTransition>
   </Teleport>
 </template>
@@ -56,9 +63,13 @@ import { MOUSE_BUTTON } from '#blokkli/editor/helpers/dom'
 import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
 import type { DraggableItem } from '#blokkli/editor/types/draggable'
 import type { DropExecuteResult } from '#blokkli/editor/providers/dragdrop'
+import type { DropAreaDropOptions } from '#blokkli/editor/types/ui'
 
 const DragItems = defineAsyncComponent(() => import('./DragItems/index.vue'))
 const Renderer = defineAsyncComponent(() => import('./Renderer/index.vue'))
+const DropLanguages = defineAsyncComponent(
+  () => import('./DropLanguages/index.vue'),
+)
 
 const { adapter } = defineBlokkliFeature({
   icon: 'bk_mdi_drag_pan',
@@ -118,6 +129,39 @@ function onSelectBundle(bundle: string) {
   if (bundleSelectorResolve) {
     bundleSelectorResolve(bundle)
     bundleSelectorResolve = null
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Promise-based question: change a field in all languages or in one?
+// ---------------------------------------------------------------------------
+type DropLanguagesData = {
+  title: string
+  anchorCoordinates: Coord
+}
+
+const dropLanguagesData = ref<DropLanguagesData | null>(null)
+let dropLanguagesResolve: ((allLanguages: boolean | null) => void) | null = null
+
+/**
+ * Resolves to whether to change the field in every language, or null when
+ * the question is closed.
+ */
+function askDropLanguages(title: string): Promise<boolean | null> {
+  return new Promise((resolve) => {
+    dropLanguagesResolve = resolve
+    dropLanguagesData.value = {
+      title,
+      anchorCoordinates: getAnchorCoordinates(),
+    }
+  })
+}
+
+function onAnswerDropLanguages(allLanguages: boolean | null) {
+  dropLanguagesData.value = null
+  if (dropLanguagesResolve) {
+    dropLanguagesResolve(allLanguages)
+    dropLanguagesResolve = null
   }
 }
 
@@ -351,6 +395,20 @@ onBlokkliEvent('dragging:move', (e) => {
 })
 
 onBlokkliEvent('dragging:drop', onDrop)
+
+onBlokkliEvent('dragging:dropArea', async (area) => {
+  const options: DropAreaDropOptions = {}
+  if (area.askLanguages) {
+    const allLanguages = await askDropLanguages(area.label)
+    if (allLanguages === null) {
+      eventBus.emit('dragging:end')
+      return
+    }
+    options.allLanguages = allLanguages
+  }
+  await area.onDrop(options)
+  eventBus.emit('dragging:end')
+})
 
 function loop() {
   if (!isVisible.value) {
