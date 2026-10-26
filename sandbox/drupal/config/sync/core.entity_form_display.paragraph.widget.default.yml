@@ -5,10 +5,13 @@ dependencies:
   config:
     - field.field.paragraph.widget.field_lead
     - field.field.paragraph.widget.field_link
+    - field.field.paragraph.widget.field_link_items
+    - field.field.paragraph.widget.field_media_items
     - field.field.paragraph.widget.field_title
     - paragraphs.paragraphs_type.widget
   module:
     - link
+    - media_library
 id: paragraph.widget.default
 targetEntityType: paragraph
 bundle: widget
@@ -29,6 +32,21 @@ content:
     settings:
       placeholder_url: ''
       placeholder_title: ''
+    third_party_settings: {  }
+  field_link_items:
+    type: link_default
+    weight: 4
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+  field_media_items:
+    type: media_library_widget
+    weight: 3
+    region: content
+    settings:
+      media_types: {  }
     third_party_settings: {  }
   field_title:
     type: string_textfield

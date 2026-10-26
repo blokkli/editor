@@ -173,7 +173,7 @@ watch(activeField, (v) => {
   }
 })
 
-// Drop areas: "Add to {field}" for multi-value droppable fields.
+// Drop areas: "Add to {field}" for multi-value droppable reference fields.
 // Suppressed when the overlay is open — the Overlay registers its own drop area.
 defineDropAreas((dragItems) => {
   if (activeField.value) {
@@ -200,7 +200,9 @@ defineDropAreas((dragItems) => {
         return
       }
       const config = types.getDroppableFieldConfig(field.fieldName, field)
-      if (config.cardinality === 1) {
+      // Only a reference field can be edited, as for the command and
+      // `droppable:open`.
+      if (config.type !== 'reference' || config.cardinality === 1) {
         return
       }
 

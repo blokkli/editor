@@ -12,7 +12,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                   | `paragraphs_blokkli`      | low      | open       |
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                      | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
-| F77  | ["Add to" is offered for link fields with several values](#f77-add-to-is-offered-for-link-fields-with-several-values)                                                     | editor                    | low      | to verify  |
 | F78  | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                           | `paragraphs_blokkli`      | low      | to verify  |
 | F85  | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                     | editor                    | low      | to verify  |
 | F89  | [Building an edit state empties the fields of the cached entities](#f89-building-an-edit-state-empties-the-fields-of-the-cached-entities)                                 | `paragraphs_blokkli`      | low      | open       |
@@ -74,20 +73,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   (`app/graphql/fragment.easyTexts.graphql`). From 2026-10-14, nginx refused
   `/graphql`, but any logged-in user still reached it as `/index.php/graphql`.
 - **Fix idea:** create keys only with a permission, or only in development.
-
-## F77: "Add to" is offered for link fields with several values
-
-- **Found:** 2026-10-12, by reading, in the same check. Not reproduced: the
-  sandbox has no link field with several values.
-- **Symptom:** a media dragged from the library over a link field with several
-  values, which an entity mapping allows its type for, gets the place "Add to
-  …". The drop fails: "Field '…' is not a droppable reference field."
-- **Cause:** the drop areas of the editor's `droppable-field-edit` feature
-  (`src/runtime/editor/features/droppable-field-edit/index.vue:178-250`, in this
-  repository) don't look at the field's type, as its command (`:103`) and
-  `droppable:open` (`:146`) do. `update_droppable_field` only takes reference
-  fields, which `UpdateDroppableFieldTest` pins.
-- **Fix idea:** leave out fields whose `config.type` isn't `reference`.
 
 ## F78: A page's link field takes a paragraph type's mapping by name
 

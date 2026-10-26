@@ -1,0 +1,9 @@
+# The page "Droppable", at /en/droppable (features/droppable-field-edit/add): a
+# widget without media and links, which both take several values.
+key: droppable
+type: page
+title: Droppable
+field_paragraphs:
+  - type: widget
+    key: droppable-widget
+    field_title: Widget for media

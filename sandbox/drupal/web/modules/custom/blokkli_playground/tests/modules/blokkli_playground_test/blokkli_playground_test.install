@@ -8,6 +8,8 @@
 declare(strict_types=1);
 
 use Drupal\field\Entity\FieldConfig;
+use Drupal\paragraphs_blokkli\Entity\PbEntityMapping;
+use Drupal\paragraphs_blokkli\Model\ParagraphMapping;
 
 /**
  * Implements hook_install().
@@ -22,6 +24,9 @@ use Drupal\field\Entity\FieldConfig;
  * A teaser's link and media, and a news item's hero image, differ per
  * language, so the editor asks whether a drop changes them in all languages.
  * On the site, links and media are shared.
+ *
+ * A document can go into the widget's links, which take several values, as
+ * into its media.
  */
 function blokkli_playground_test_install(): void {
   $field = FieldConfig::loadByName('node', 'page', 'field_paragraphs');
@@ -45,4 +50,12 @@ function blokkli_playground_test_install(): void {
     assert($field instanceof FieldConfig);
     $field->setTranslatable(TRUE)->save();
   }
+
+  $mapping = PbEntityMapping::load('media__document');
+  assert($mapping instanceof PbEntityMapping);
+  $mapping->setMappings([
+    ...$mapping->getMappings(),
+    new ParagraphMapping('widget', 'field_link_items'),
+  ]);
+  $mapping->save();
 }

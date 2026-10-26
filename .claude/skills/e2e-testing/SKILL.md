@@ -318,10 +318,12 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
 - **The widget** (`sandbox/frontend/app/components/Paragraph/Widget`): a
   paragraph type for the tests only. It has an option of every type, each value
   in a cell of its own (`data-test="widget-option-<key>"`), a `field_title`
-  bound to an element, a `field_lead` that is only prop-mapped, and a
-  `field_link` with a title (`field_link.title`). Only E2E sandboxes allow it,
-  on pages. Seeded ones are on `nodes/widgets.yml`; `setupWidget(page)` adds
-  one. A new option type goes here first.
+  bound to an element, a `field_lead` that is only prop-mapped, a `field_link`
+  with a title (`field_link.title`), and documents and links that take several
+  values (`field_media_items`, `field_link_items`; an entity mapping allows
+  documents in the links). Only E2E sandboxes allow it, on pages. Seeded ones
+  are on `nodes/widgets.yml`; `setupWidget(page)` adds one. A new option type
+  goes here first.
 
 ## Gotchas
 

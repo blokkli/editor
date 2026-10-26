@@ -305,11 +305,11 @@ Traefik sends every hostname to the web container's nginx on port 80.
   installs it): allows the widget on pages, fakes YouTube and Vimeo, shares the
   status and the scheduler's dates of news between their translations, makes a
   teaser's link and media and a news item's hero image translatable (the editor
-  then asks whether a drop changes them in all languages), and adds the roles
-  `comment_reader` (a reviewer who may read comments but not post them) and
-  `comment_administrator` (one who administers comments). Neither has
-  `view any blokkli entity label`: they are the roles without the list of all
-  pages.
+  then asks whether a drop changes them in all languages), maps documents to the
+  widget's links (`field_link_items`), and adds the roles `comment_reader` (a
+  reviewer who may read comments but not post them) and `comment_administrator`
+  (one who administers comments). Neither has `view any blokkli entity label`:
+  they are the roles without the list of all pages.
 
 ## Sandboxes
 

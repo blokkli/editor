@@ -5609,6 +5609,18 @@ type ParagraphWidget implements Paragraph & Entity & EntityRevisionable & Entity
   "{value} {field: field_link} "
   fieldLink: FieldItemTypeLink
 
+  "{field: field_link_items} "
+  fieldLinkItemsRawField: FieldItemListLink
+
+  "{value} {field: field_link_items} "
+  fieldLinkItems: [FieldItemTypeLink]
+
+  "{field: field_media_items} "
+  fieldMediaItemsRawField: FieldItemListEntityReference
+
+  "{value} {field: field_media_items} "
+  fieldMediaItems: [MediaDocument]
+
   "{field: field_title} "
   fieldTitleRawField: FieldItemListString
 

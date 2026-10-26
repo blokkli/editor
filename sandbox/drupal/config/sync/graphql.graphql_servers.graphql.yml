@@ -124,8 +124,10 @@ schema_configuration:
         field_lead: field_lead
         field_left: field_left
         field_link: field_link
+        field_link_items: field_link_items
         field_links: field_links
         field_media: field_media
+        field_media_items: field_media_items
         field_office: field_office
         field_paragraphs: field_paragraphs
         field_reusable_paragraph: field_reusable_paragraph

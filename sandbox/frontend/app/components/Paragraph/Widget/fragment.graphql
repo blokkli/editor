@@ -7,4 +7,13 @@ fragment paragraphWidget on ParagraphWidget {
       path
     }
   }
+  mediaItems: fieldMediaItems {
+    id
+    label
+  }
+  linkItems: fieldLinkItems {
+    uri {
+      path
+    }
+  }
 }

@@ -15,6 +15,21 @@
           link.title
         }}</span>
       </a>
+      <ul v-blokkli-droppable:field_media_items data-test="widget-media-items">
+        <li
+          v-for="media in mediaItems"
+          :key="media?.id ?? ''"
+          data-test="widget-media-item"
+          :data-test-media-id="media?.id"
+        >
+          {{ media?.label }}
+        </li>
+      </ul>
+      <ul v-blokkli-droppable:field_link_items data-test="widget-link-items">
+        <li v-for="(item, index) in linkItems" :key="index">
+          {{ item?.uri?.path }}
+        </li>
+      </ul>
       <table class="text-small">
         <tbody>
           <tr v-for="(value, key) in options" :key="key">
@@ -41,6 +56,10 @@ import type { ParagraphWidgetFragment } from '#graphql-operations'
 // mapped through `propsFieldMapping`. The link's title is addressed by its
 // property path; the dotted name can't go through the directive's `:arg`
 // shorthand (Vue reads `field_link.title` as an arg with a modifier).
+//
+// The media and the links take several values. In E2E sandboxes an entity
+// mapping allows documents in the links too, but the editor only adds media to
+// a reference field.
 defineProps<ParagraphWidgetFragment>()
 
 const block = defineBlokkli({
@@ -50,6 +69,8 @@ const block = defineBlokkli({
     title: { type: 'editable', name: 'field_title' },
     lead: { type: 'editable', name: 'field_lead' },
     link: { type: 'editable', name: 'field_link.title' },
+    mediaItems: { type: 'droppable', name: 'field_media_items' },
+    linkItems: { type: 'droppable', name: 'field_link_items' },
   },
   options: {
     showAllOptions: {
