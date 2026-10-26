@@ -30,6 +30,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                                                        | `nuxt-graphql-middleware` | low      | workaround |
 | F121 | [The library's query access finds unpublished items that its access handler hides](#f121-the-librarys-query-access-finds-unpublished-items-that-its-access-handler-hides) | `paragraphs`              | low      | open       |
 | F123 | [Content moderation decides what blökkli publishes](#f123-content-moderation-decides-what-blökkli-publishes)                                                              | both                      | low      | to verify  |
+| F124 | [The lists of pages show one name for bundles of the same name](#f124-the-lists-of-pages-show-one-name-for-bundles-of-the-same-name)                                      | both                      | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -401,3 +402,29 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   there. Reproduced with the editorial workflow (`HiddenSharedFieldsTest`).
 - **Impact:** low: the sandbox doesn't use content moderation.
 - **Fix idea:** try a moderated page with drafts in blökkli first.
+
+## F124: The lists of pages show one name for bundles of the same name
+
+- **Found:** 2026-10-26, by reading, in a search for lookups of a bundle without
+  its entity type (after the former F78). Not reproduced: the sandbox's content
+  types and config pages have no name in common.
+- **Symptom:** "Switch page" and "Import from an existing page" show each page's
+  type. When two entity types have a bundle of the same name, say a content type
+  and a vocabulary both named `page`, every row of either shows the name of the
+  one that came last.
+- **Cause:**
+  - `EntitiesSearch::resolve()`
+    (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/EntitiesSearch.php:156-159`
+    at `5c1ce28`) lists the bundles' names as `{id, label}`
+    (`ParagraphsBlokkliEntitiesSearchLabel`), without their entity type.
+  - The adapter's `getHostEntities` keys them by bundle
+    (`src/modules/drupal/runtime/adapter/index.ts:1893`), and the editor looks
+    them up by bundle (`getBundleLabel()`,
+    `src/runtime/editor/providers/workspaces.ts:209`), for
+    `features/workspace/Overlay` and `features/import-existing/Dialog`.
+- **Impact:** low: only the name, and only on sites with such bundles.
+- **Fix idea:** the bundles' names carry their entity type in the schema (the
+  label type is shared with `entityTypeLabels`); the adapter keys them by entity
+  type and bundle, and `getBundleLabel(entityType, bundle)` takes both.
+- **Also:** `labelMap.label` is the first entity type's name only, and nothing
+  in the editor reads it.
