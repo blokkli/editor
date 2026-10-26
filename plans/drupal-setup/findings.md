@@ -12,7 +12,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                     | `paragraphs_blokkli`      | low      | open       |
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                    | both                      | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                         | `texts`                   | low      | open       |
-| F64  | [A template or a copy places a library item its user may not view](#f64-a-template-or-a-copy-places-a-library-item-its-user-may-not-view)                                   | `paragraphs_blokkli`      | low      | to verify  |
 | F68  | [An old copy from another page gives its new paragraphs a new UUID on every replay](#f68-an-old-copy-from-another-page-gives-its-new-paragraphs-a-new-uuid-on-every-replay) | `paragraphs_blokkli`      | low      | open       |
 | F70  | [A library item shares its paragraph with the page's earlier revisions](#f70-a-library-item-shares-its-paragraph-with-the-pages-earlier-revisions)                          | `paragraphs_blokkli`      | low      | open       |
 | F71  | [Moving a paragraph into its own nested paragraph is refused for the wrong reason](#f71-moving-a-paragraph-into-its-own-nested-paragraph-is-refused-for-the-wrong-reason)   | `paragraphs_blokkli`      | low      | open       |
@@ -81,31 +80,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   (`app/graphql/fragment.easyTexts.graphql`). From 2026-10-14, nginx refused
   `/graphql`, but any logged-in user still reached it as `/index.php/graphql`.
 - **Fix idea:** create keys only with a permission, or only in development.
-
-## F64: A template or a copy places a library item its user may not view
-
-- **Found:** 2026-10-11, by reading, when `add_reusable` got its check of view
-  access to the library item. Not reproduced.
-- **Symptom:** `add_reusable` refuses a library item that its user may not view,
-  e.g. an unpublished one. Two other ways place such an item:
-  - A template that holds a `from_library` paragraph: `add_from_template` checks
-    view access to the template, not to the library items in it.
-  - Duplicating a `from_library` paragraph whose item was unpublished since: the
-    copy repeats the reference.
-  - Detaching such a paragraph (`detach_reusable`) goes further: the page gets a
-    copy of the item's paragraph, so the user gets the content of an item that
-    they may not view.
-- **Cause:** the paragraphs come from `createParagraphFromSerializedData()`
-  (`src/SerializedParagraphCreationTrait.php`, at `29a392b`) and from the
-  duplicate, which set `field_reusable_paragraph` as it was. The field's allowed
-  types are checked for the item's paragraph type
-  (`getPlacedParagraphBundles()`), access to the item isn't.
-- **Impact:** low. The user repeats a reference that exists already, and the
-  page shows nothing in its place while the item is unpublished.
-- **Fix idea:** when such a mutation is added, check view access to the library
-  items of the placed paragraphs, next to the check of the allowed types. Or
-  decide that repeating an existing reference needs no check, as for the nested
-  paragraph types of a duplicated paragraph.
 
 ## F68: An old copy from another page gives its new paragraphs a new UUID on every replay
 
