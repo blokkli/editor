@@ -12,7 +12,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                   | `paragraphs_blokkli`      | low      | open       |
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                      | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
-| F74  | [The older mutations for media leave a link field empty](#f74-the-older-mutations-for-media-leave-a-link-field-empty)                                                     | `paragraphs_blokkli`      | low      | open       |
 | F77  | ["Add to" is offered for link fields with several values](#f77-add-to-is-offered-for-link-fields-with-several-values)                                                     | editor                    | low      | to verify  |
 | F78  | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                           | `paragraphs_blokkli`      | low      | to verify  |
 | F85  | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                     | editor                    | low      | to verify  |
@@ -75,27 +74,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   (`app/graphql/fragment.easyTexts.graphql`). From 2026-10-14, nginx refused
   `/graphql`, but any logged-in user still reached it as `/index.php/graphql`.
 - **Fix idea:** create keys only with a permission, or only in development.
-
-## F74: The older mutations for media leave a link field empty
-
-- **Found:** 2026-10-12, with a kernel test, while checking which mutations
-  besides `replace_media` (the former F45) can't set a link field.
-- **Symptom:** with an entity mapping from the media type to a link field (as
-  the sandbox has for documents), `add_media_image_reference` and
-  `add_media_video_reference` add the paragraph with an empty link. Nothing is
-  reported.
-- **By reading:** `add_video_remote` sets its field the same way.
-- **Cause:** they set `['target_id' => …]` on the mapped field
-  (`Mutation/AddMediaImageReference.php:168`,
-  `Mutation/AddMediaVideoReference.php:168`, `Mutation/AddVideoRemote.php:179`
-  at `0f3e2e8`), which a link item ignores. The other mutations that fill a
-  mapped field use `getLinkOrEntityReferenceFieldValue()`.
-- **Impact:** low. The Drupal adapter uses only `add_video_remote`, for a pasted
-  video URL, and the sandbox maps remote videos to a reference field. The other
-  two are for older clients.
-- **Fix idea:** `getLinkOrEntityReferenceFieldValue()` behind a mutation
-  version, since stored ones replay with the empty link. Or refuse a mapping to
-  a link field when the mutation is added.
 
 ## F77: "Add to" is offered for link fields with several values
 
