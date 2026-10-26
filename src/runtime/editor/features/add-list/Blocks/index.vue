@@ -46,6 +46,7 @@ import { AddListItem, Sortli } from '#blokkli/editor/components'
 import { isInternalBundle } from '#blokkli/editor/helpers/bundles'
 import { PluginTourItem } from '#blokkli/editor/plugins'
 import { getFieldKey } from '#blokkli/helpers'
+import { fitsNestingLimit } from '#blokkli/editor/helpers/dropTargets'
 import { itemEntityType } from '#blokkli-build/config'
 import { defineCommands } from '#blokkli/editor/composables'
 import type { Command } from '../../command-palette/types'
@@ -110,7 +111,10 @@ const {
   definitions,
   blocks,
   permissions,
+  adapter,
 } = useBlokkli()
+
+const maxNestingLevel = adapter.getMaxNestingLevel?.()
 
 function buildItem(element: HTMLElement): DraggableNewItem | undefined {
   const itemBundle = element.dataset.sortliId
@@ -300,15 +304,19 @@ const getInsertCommands = (
     return []
   }
 
-  // Find nested fields of the block.
-  const nestedFields = types.fieldConfig
-    .forEntityTypeAndBundle(itemEntityType, block.bundle)
-    .map((field) => {
-      return {
-        ...field,
-        uuid: block.uuid,
-      }
-    })
+  // Find nested fields of the block, unless a block in them would be nested
+  // too deep.
+  const fieldLevel = state.getNestingLevel(block.uuid) + 1
+  const nestedFields = fitsNestingLimit(fieldLevel, 1, maxNestingLevel)
+    ? types.fieldConfig
+        .forEntityTypeAndBundle(itemEntityType, block.bundle)
+        .map((field) => {
+          return {
+            ...field,
+            uuid: block.uuid,
+          }
+        })
+    : []
 
   const commands: Command[] = nestedFields.flatMap(
     (field: FieldConfig & { uuid: string }) => {

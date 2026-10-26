@@ -3,8 +3,10 @@ import type { BlokkliFieldElement } from '#blokkli/editor/types/field'
 import type { DraggableItem } from '#blokkli/editor/types/draggable'
 import {
   determineCanAddChildren,
+  fitsNestingLimit,
   getDraggingBlockCount,
   getDraggingBundleGroups,
+  getDraggingDepth,
 } from './index'
 
 function buildField(values: Partial<BlokkliFieldElement>): BlokkliFieldElement {
@@ -110,5 +112,54 @@ describe('getDraggingBundleGroups', () => {
         buildNativeDrop({ itemBundles: ['text'] }),
       ]),
     ).toEqual([['image'], ['document']])
+  })
+})
+
+describe('getDraggingDepth', () => {
+  // A grid holds the inner grid, which holds a button. Another button is next
+  // to the grid.
+  const HOSTS: Record<string, string> = { inner: 'grid', deep: 'inner' }
+  const LEVELS: Record<string, number> = {
+    grid: 0,
+    button: 0,
+    inner: 1,
+    deep: 2,
+  }
+  const isChildOf = (childUuid: string, parentUuid: string): boolean => {
+    const host = HOSTS[childUuid]
+    return !!host && (host === parentUuid || isChildOf(host, parentUuid))
+  }
+  const state = {
+    getAllUuids: () => Object.keys(LEVELS),
+    getNestingLevel: (uuid: string) => LEVELS[uuid] ?? 0,
+    isChildOf,
+  }
+
+  test('new items and blocks without nested blocks take one level', () => {
+    expect(getDraggingDepth([], state)).toBe(1)
+    expect(getDraggingDepth(['button'], state)).toBe(1)
+    expect(getDraggingDepth(['deep'], state)).toBe(1)
+  })
+
+  test('a block takes one more level for every level nested in it', () => {
+    expect(getDraggingDepth(['inner'], state)).toBe(2)
+    expect(getDraggingDepth(['grid'], state)).toBe(3)
+    expect(getDraggingDepth(['button', 'grid'], state)).toBe(3)
+  })
+})
+
+describe('fitsNestingLimit', () => {
+  test('blocks fit down to the deepest level', () => {
+    // The blocks in a field of the host entity are on level 1, so the ones
+    // in a field on nesting level 6 are on level 7.
+    expect(fitsNestingLimit(6, 1, 7)).toBe(true)
+    expect(fitsNestingLimit(7, 1, 7)).toBe(false)
+    // A block with nested blocks takes their levels too.
+    expect(fitsNestingLimit(5, 2, 7)).toBe(true)
+    expect(fitsNestingLimit(5, 3, 7)).toBe(false)
+  })
+
+  test('without a limit, blocks fit anywhere', () => {
+    expect(fitsNestingLimit(100, 100, undefined)).toBe(true)
   })
 })

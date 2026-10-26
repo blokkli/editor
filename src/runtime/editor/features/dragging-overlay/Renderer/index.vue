@@ -24,8 +24,10 @@ import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
 import {
   determineCanAddChildren,
+  fitsNestingLimit,
   getDraggingBlockCount,
   getDraggingBundleGroups,
+  getDraggingDepth,
   getChildrenOrientation,
   getGapSize,
   MIN_GAP,
@@ -67,6 +69,7 @@ const {
   context,
   permissions,
   selection,
+  adapter,
 } = useBlokkli()
 
 const FIELD_MIN_DRAW_SIZE = 6
@@ -387,6 +390,15 @@ const selectionUuids = computed<string[]>(() =>
     })
     .filter(falsy),
 )
+
+/**
+ * How many levels the dragged blocks take, with the blocks nested in them.
+ */
+const draggingDepth = computed<number>(() =>
+  getDraggingDepth(selectionUuids.value, state),
+)
+
+const maxNestingLevel = adapter.getMaxNestingLevel?.()
 
 const fieldChildCache: Record<string, FieldRectChild[]> = {}
 
@@ -732,19 +744,25 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
   const childElements = [...field.element.children] as HTMLElement[]
 
   const currentCount = state.getFieldBlockCount(field.key)
-  const canAddChildren = determineCanAddChildren(
-    field,
-    childElements,
-    selectionUuids.value,
-    currentCount,
-    draggingBlockCount.value,
-    draggingBundles.value,
-    draggingFragments.value,
-    isDraggingExisting.value
-      ? undefined
-      : (bundle) => permissions.checkBlockBundlePermission(bundle, 'add'),
-    draggingBundleGroups.value,
-  )
+  const canAddChildren =
+    fitsNestingLimit(
+      field.nestingLevel,
+      draggingDepth.value,
+      maxNestingLevel,
+    ) &&
+    determineCanAddChildren(
+      field,
+      childElements,
+      selectionUuids.value,
+      currentCount,
+      draggingBlockCount.value,
+      draggingBundles.value,
+      draggingFragments.value,
+      isDraggingExisting.value
+        ? undefined
+        : (bundle) => permissions.checkBlockBundlePermission(bundle, 'add'),
+      draggingBundleGroups.value,
+    )
   const orientation =
     field.dropAlignment || getChildrenOrientation(field.element)
 

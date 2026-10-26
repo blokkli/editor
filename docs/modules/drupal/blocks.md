@@ -166,8 +166,8 @@ Important:
   create a recursive reference — instead, spread each allowed bundle fragment
   explicitly (e.g. `...paragraphText`, `...paragraphImage`)
 - Paragraphs can be nested **7 levels deep** (a paragraph of the page is on
-  level 1). Drupal refuses a change that would nest one deeper, and blökkli
-  can't edit a page that already nests deeper
+  level 1). The editor doesn't offer to add or move one deeper, Drupal refuses
+  such a change, and blökkli can't edit a page that already nests deeper
 
 ## Block with Options
 

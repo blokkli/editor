@@ -377,6 +377,10 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       return Promise.resolve(config.fieldConfig)
     }
 
+    // The module refuses deeper paragraphs (MAX_NESTING_LEVEL of
+    // ParagraphsBlokkliHelper).
+    const getMaxNestingLevel: DrupalAdapter['getMaxNestingLevel'] = () => 7
+
     const mapState: DrupalAdapter['mapState'] = (state) => {
       const currentIndex =
         state?.currentIndex === null || state?.currentIndex === undefined
@@ -718,6 +722,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       getDroppableFieldConfig,
       getEditableFieldConfig,
       getFieldConfig,
+      getMaxNestingLevel,
       getLastChanged,
       loadState,
       loadStateAtIndex,
