@@ -225,7 +225,12 @@ describe('Pasting and dragging in files', async () => {
       { name: 'report.pdf', type: 'application/pdf', size: 100 },
     ])
 
-    expect(await draggedBundleGroups(page)).toEqual([['image'], ['link']])
+    // A PDF can also become a widget: E2E sandboxes map documents to its
+    // links (blokkli_playground_test).
+    expect(await draggedBundleGroups(page)).toEqual([
+      ['image'],
+      ['link', 'widget'],
+    ])
     expect(await draggedBlockCount(page)).toBe(2)
   })
 })
