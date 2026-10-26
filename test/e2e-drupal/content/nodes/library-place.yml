@@ -1,0 +1,9 @@
+# The page "Library place", at /en/library-place (features/library/place): a
+# text, after which library items are placed.
+key: library-place
+type: page
+title: Library place
+field_paragraphs:
+  - type: text
+    key: place-text
+    field_text: '<p>Library items come after this text.</p>'

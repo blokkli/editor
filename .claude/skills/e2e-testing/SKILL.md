@@ -19,7 +19,7 @@ frame-timed drop logic, DOM lifecycle.
   `diff`, `events`, `toolbar`, `menu`, `sidebar`, `overlays`, `options`,
   `preview`, `schedule`, `publish`, `selection`, `clipboard`, `bundleSelector`,
   `history`, `itemActions`, `keyboard`, `translations`, `agent`, `charts`,
-  `complexOptions`, `dropAreas`.
+  `complexOptions`, `dropAreas`, `library`.
 - Fixtures: `test/e2e-drupal/content` (see "Fixtures" below).
 
 For the agent's tests (`features/agent/`) see `/agent-e2e-testing` — covers the

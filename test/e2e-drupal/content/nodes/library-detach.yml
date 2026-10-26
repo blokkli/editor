@@ -1,0 +1,19 @@
+# The page "Library detach", at /en/library-detach (features/library/detach).
+# It shows the library items "Opening hours" twice, "Useful links" (a link
+# list) and "Unpublished notice", which the editors may not view.
+key: library-detach
+type: page
+title: Library detach
+field_paragraphs:
+  - type: from_library
+    key: detach-hours
+    field_reusable_paragraph: { library: opening-hours }
+  - type: from_library
+    key: detach-hours-again
+    field_reusable_paragraph: { library: opening-hours }
+  - type: from_library
+    key: detach-links
+    field_reusable_paragraph: { library: useful-links }
+  - type: from_library
+    key: detach-unpublished
+    field_reusable_paragraph: { library: unpublished-notice }

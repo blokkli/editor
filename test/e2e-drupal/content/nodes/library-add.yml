@@ -1,0 +1,30 @@
+# The page "Library add", at /en/library-add and /de/bibliothek-neu
+# (features/library/add).
+# - A text and a link list with two links, to add to the library.
+# - Columns: a type that the library doesn't take.
+# - The links of the link list: its field doesn't take library items.
+key: library-add
+type: page
+title: { en: Library add, de: Bibliothek neu }
+field_paragraphs:
+  - type: text
+    key: add-text
+    field_text:
+      en: '<p>The town hall is open on Saturdays.</p>'
+      de: '<p>Das Rathaus ist am Samstag offen.</p>'
+  - type: link_list
+    key: add-links
+    field_paragraphs:
+      - type: link
+        key: add-link-library
+        field_link: https://www.example.com/library
+        field_title: The library
+      - type: link
+        key: add-link-pool
+        field_link: https://www.example.com/pool
+        field_title: The pool
+  - type: columns
+    key: add-columns
+    field_left:
+      - type: text
+        field_text: '<p>A text on the left.</p>'

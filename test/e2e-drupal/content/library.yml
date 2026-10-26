@@ -1,8 +1,30 @@
 # Library items.
 
-# On the page "Reusable".
+# On the pages "Reusable" and "Library detach" (twice).
 - key: opening-hours
   label: { en: Opening hours, de: Öffnungszeiten, fr: Heures d'ouverture }
   paragraphs:
     - type: text
       field_text: '<p>Monday to Friday, 8 to 12 o’clock.</p>'
+
+# On the page "Library detach": a link list with two links.
+- key: useful-links
+  label: Useful links
+  paragraphs:
+    - type: link_list
+      field_paragraphs:
+        - type: link
+          field_link: https://www.example.com/permits
+          field_title: Building permits
+        - type: link
+          field_link: https://www.example.com/waste
+          field_title: Waste collection
+
+# On the page "Library detach", unpublished: only who administers the library
+# may view it.
+- key: unpublished-notice
+  label: Unpublished notice
+  status: false
+  paragraphs:
+    - type: text
+      field_text: '<p>This notice is not published.</p>'

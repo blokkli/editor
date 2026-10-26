@@ -12,7 +12,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                   | `paragraphs_blokkli`      | low      | open       |
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                      | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
-| F70  | [A library item shares its paragraph with the page's earlier revisions](#f70-a-library-item-shares-its-paragraph-with-the-pages-earlier-revisions)                        | `paragraphs_blokkli`      | low      | open       |
 | F71  | [Moving a paragraph into its own nested paragraph is refused for the wrong reason](#f71-moving-a-paragraph-into-its-own-nested-paragraph-is-refused-for-the-wrong-reason) | `paragraphs_blokkli`      | low      | open       |
 | F72  | [The editor offers places below the nesting limit](#f72-the-editor-offers-places-below-the-nesting-limit)                                                                 | editor                    | low      | open       |
 | F73  | [A new paragraph of a type its field doesn't allow is no violation](#f73-a-new-paragraph-of-a-type-its-field-doesnt-allow-is-no-violation)                                | `paragraphs`              | low      | open       |
@@ -79,37 +78,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   (`app/graphql/fragment.easyTexts.graphql`). From 2026-10-14, nginx refused
   `/graphql`, but any logged-in user still reached it as `/index.php/graphql`.
 - **Fix idea:** create keys only with a permission, or only in development.
-
-## F70: A library item shares its paragraph with the page's earlier revisions
-
-- **Found:** 2026-10-12, fixing the former F12. Its larger part is fixed: "Add
-  to library" changed the page's earlier revisions, and deleting the library
-  item emptied them. A paragraph that gets a new host now gets a new revision:
-  the same happened to one that was moved into a new paragraph.
-- **Symptom:** "Add to library" moves the paragraph into the new library item.
-  The library item references a new revision of it, the page's earlier revisions
-  the ones before: one paragraph, with one UUID, in two places.
-  - Reverting the page to an earlier revision makes a further revision for the
-    page. The paragraph's default revision and its parent are then the page's,
-    until the library item is saved again. Reproduced before the fix.
-  - By reading: after the library item is deleted, its revision of the paragraph
-    stays behind without a parent. The cleanup of orphaned paragraphs never
-    deletes a default revision that has others next to it.
-- **Cause:** `MakeReusable::execute()`
-  (`src/Plugin/ParagraphsBlokkli/Mutation/MakeReusable.php:102-108` at
-  `0afa03d`) puts the paragraph itself into the library item. Paragraphs' own
-  "Promote to library" (`LibraryItem::createFromParagraph()`) puts a duplicate
-  into it.
-- **Impact:** low: each place shows its own revision.
-- **Fix idea:** a new version of `make_reusable` that puts a duplicate into the
-  library item, with stored UUIDs (`duplicateParagraph()` of the helper and
-  `DuplicateMutationBase::duplicateChildren()`). The original and its nested
-  paragraphs leave the edit state. Stored mutations keep moving the paragraph.
-  By reading (a review of the plan), the duplicate must also:
-  - keep the published state, per translation: `duplicateParagraph()` of the
-    helper with `withStatus`;
-  - cope with nested paragraphs that the first run didn't see:
-    `duplicateChildren()` does.
 
 ## F71: Moving a paragraph into its own nested paragraph is refused for the wrong reason
 
