@@ -4,17 +4,26 @@ import type { BaseCallExpression, Expression, SpreadElement } from 'estree'
 import { parse } from 'acorn'
 import chalk from 'chalk'
 import { glob } from 'glob'
-import { BUILT_IN_OPTION_TEXTS } from '../../src/global/constants'
+import {
+  BUILT_IN_OPTION_TEXTS,
+  DEFAULT_COLOR_OPTIONS,
+} from '../../src/global/constants'
 
 /**
- * The texts of blökkli's own global options. The module builds their keys
- * instead of calling `$t()`, so they're added here.
+ * The texts of blökkli's own global options and of its color palette. The
+ * module builds their keys instead of calling `$t()`, so they're added here.
  */
 export const INTERNAL_TRANSLATIONS: Record<string, string> = Object.fromEntries(
-  Object.entries(BUILT_IN_OPTION_TEXTS).flatMap(([property, texts]) => [
-    [`blockOption_${property}_label`, texts.label],
-    [`blockOption_${property}_description`, texts.description],
-  ]),
+  [
+    ...Object.entries(BUILT_IN_OPTION_TEXTS).flatMap(([property, texts]) => [
+      [`blockOption_${property}_label`, texts.label],
+      [`blockOption_${property}_description`, texts.description],
+    ]),
+    ...Object.entries(DEFAULT_COLOR_OPTIONS).map(([id, option]) => [
+      `colorOption_${id}_label`,
+      option.label,
+    ]),
+  ],
 )
 
 export interface Extraction {

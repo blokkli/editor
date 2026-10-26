@@ -2175,6 +2175,38 @@ msgctxt "close"
 msgid "Close"
 msgstr "Zuemache"
 
+msgctxt "colorOption_amber_label"
+msgid "Amber"
+msgstr "Bernstei"
+
+msgctxt "colorOption_blue_label"
+msgid "Blue"
+msgstr "Blau"
+
+msgctxt "colorOption_green_label"
+msgid "Green"
+msgstr "Grüen"
+
+msgctxt "colorOption_orange_label"
+msgid "Orange"
+msgstr "Orange"
+
+msgctxt "colorOption_pink_label"
+msgid "Pink"
+msgstr "Pink"
+
+msgctxt "colorOption_purple_label"
+msgid "Purple"
+msgstr "Violett"
+
+msgctxt "colorOption_red_label"
+msgid "Red"
+msgstr "Rot"
+
+msgctxt "colorOption_teal_label"
+msgid "Teal"
+msgstr "Türkis"
+
 msgctxt "commandGroup.add"
 msgid "Add new"
 msgstr "Drzuefüege"

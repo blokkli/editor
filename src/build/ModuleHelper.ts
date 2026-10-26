@@ -13,23 +13,12 @@ import {
 import { FileCache } from './FileCache'
 import { onlyUnique } from './helpers'
 import { translateBuiltInOptions } from './helpers/blockOptions'
+import { getDefaultColorOptions } from './helpers/colorOptions'
 import type { ValidationInterface } from './ValidationInterface'
 import type { IconCollector } from './Collector/Icons'
 import { validateOptions } from './validation/validateOptions'
 import { validateColorOptions } from './validation/validateColorOptions'
-import type { ColorOption } from '../global/types/colorOptions'
 import { TRANSLATION_LANGUAGES } from '../global/constants'
-
-const defaultColorOptions: Record<string, ColorOption> = {
-  blue: { hex: '#3b82f6', label: 'Blue' },
-  red: { hex: '#ef4444', label: 'Red' },
-  green: { hex: '#10b981', label: 'Green' },
-  amber: { hex: '#f59e0b', label: 'Amber' },
-  purple: { hex: '#8b5cf6', label: 'Purple' },
-  pink: { hex: '#ec4899', label: 'Pink' },
-  teal: { hex: '#14b8a6', label: 'Teal' },
-  orange: { hex: '#f97316', label: 'Orange' },
-}
 
 type ModuleHelperResolvers = {
   /**
@@ -175,16 +164,19 @@ export class ModuleHelper implements ValidationInterface {
       chunkNames.push('global')
     }
 
+    const translations = this.getTranslations(providedOptions.translations)
+
     this.options = {
       ...providedOptions,
       pattern,
       fieldListTypes: fieldListTypes.filter(onlyUnique),
       providerTypes: providerTypes.filter(onlyUnique),
       chunkNames: chunkNames.filter(onlyUnique),
-      colorOptions: providedOptions.colorOptions || defaultColorOptions,
+      colorOptions:
+        providedOptions.colorOptions || getDefaultColorOptions(translations),
       globalOptions: translateBuiltInOptions(
         providedOptions.globalOptions || {},
-        this.getTranslations(providedOptions.translations),
+        translations,
       ),
     }
 

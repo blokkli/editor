@@ -16,6 +16,21 @@ export const BUILT_IN_OPTION_TEXTS = {
   },
 }
 
+/**
+ * The color palette when a project defines no `colorOptions`. Its labels are
+ * translated.
+ */
+export const DEFAULT_COLOR_OPTIONS = {
+  blue: { hex: '#3b82f6', label: 'Blue' },
+  red: { hex: '#ef4444', label: 'Red' },
+  green: { hex: '#10b981', label: 'Green' },
+  amber: { hex: '#f59e0b', label: 'Amber' },
+  purple: { hex: '#8b5cf6', label: 'Purple' },
+  pink: { hex: '#ec4899', label: 'Pink' },
+  teal: { hex: '#14b8a6', label: 'Teal' },
+  orange: { hex: '#f97316', label: 'Orange' },
+}
+
 export const SETTINGS_GROUP = [
   'appearance',
   'artboard',

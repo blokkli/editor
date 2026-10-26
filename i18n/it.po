@@ -2128,6 +2128,38 @@ msgctxt "close"
 msgid "Close"
 msgstr "Chiudi"
 
+msgctxt "colorOption_amber_label"
+msgid "Amber"
+msgstr "Ambra"
+
+msgctxt "colorOption_blue_label"
+msgid "Blue"
+msgstr "Blu"
+
+msgctxt "colorOption_green_label"
+msgid "Green"
+msgstr "Verde"
+
+msgctxt "colorOption_orange_label"
+msgid "Orange"
+msgstr "Arancione"
+
+msgctxt "colorOption_pink_label"
+msgid "Pink"
+msgstr "Rosa"
+
+msgctxt "colorOption_purple_label"
+msgid "Purple"
+msgstr "Viola"
+
+msgctxt "colorOption_red_label"
+msgid "Red"
+msgstr "Rosso"
+
+msgctxt "colorOption_teal_label"
+msgid "Teal"
+msgstr "Turchese"
+
 msgctxt "commandGroup.add"
 msgid "Add new"
 msgstr ""

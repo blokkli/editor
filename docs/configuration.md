@@ -401,6 +401,10 @@ The `label` is a string or has
 [one text per language](/define-blokkli/options#labels-in-several-languages),
 like an option's.
 
+Without `colorOptions`, blökkli's own palette is used: `blue`, `red`, `green`,
+`amber`, `purple`, `pink`, `teal` and `orange`. Its labels are translated to the
+editor's languages.
+
 ```typescript
 blokkli: {
   colorOptions: {

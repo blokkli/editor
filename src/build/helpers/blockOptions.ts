@@ -4,6 +4,7 @@ import type {
 } from '../../global/types/blockOptions'
 import type { BlockDefinitionOptionsInputBase } from '../../global/types/definitions'
 import { BUILT_IN_OPTION_TEXTS } from '../../global/constants'
+import { translateText } from './translations'
 
 export function toRuntimeOptionArray(
   option: BlockOptionDefinitionBase,
@@ -53,17 +54,6 @@ export function translateBuiltInOptions(
   globalOptions: BlockDefinitionOptionsInputBase,
   translations: Record<string, Record<string, string>>,
 ): BlockDefinitionOptionsInputBase {
-  const translate = (key: string, text: string): Record<string, string> => {
-    const result: Record<string, string> = { en: text }
-    for (const [langcode, texts] of Object.entries(translations)) {
-      const translation = texts[key]
-      if (translation) {
-        result[langcode] = translation
-      }
-    }
-    return result
-  }
-
   const translated = { ...globalOptions }
 
   for (const [property, texts] of Object.entries(BUILT_IN_OPTION_TEXTS)) {
@@ -76,11 +66,19 @@ export function translateBuiltInOptions(
       ...option,
       label:
         option.label === texts.label
-          ? translate(`blockOption_${property}_label`, texts.label)
+          ? translateText(
+              `blockOption_${property}_label`,
+              texts.label,
+              translations,
+            )
           : option.label,
       description:
         option.description === texts.description
-          ? translate(`blockOption_${property}_description`, texts.description)
+          ? translateText(
+              `blockOption_${property}_description`,
+              texts.description,
+              translations,
+            )
           : option.description,
     }
   }
