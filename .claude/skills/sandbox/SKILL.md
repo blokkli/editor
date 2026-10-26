@@ -160,6 +160,11 @@ Traefik sends every hostname to the web container's nginx on port 80.
 - **Languages:** en (Drupal's default), de, fr, each with a path prefix. The
   GraphQL request's language comes first in negotiation
   (`language-graphql-operation`), then the URL. Time zone Europe/Zurich.
+- **Language order:** the content's original language first, then the config's
+  weights (en, de, fr). The seed stores its `--source` in the state, which the
+  templates and sandboxes copy, and `SourceLanguageOverride`
+  (`blokkli_playground`) gives that language a lower weight. An override is
+  never exported, so `drush cex` stays clean whatever the bake's language.
 - **Theme:** Gin for everything Drupal renders (admin and the login). The
   frontend shows Drupal's toolbar and local tasks through vuepal.
 - **Hosts** (`paragraphs_blokkli.settings.yml`, `enabled_types`): the node types

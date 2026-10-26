@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\blokkli_playground\Seed;
 
+use Drupal\blokkli_playground\Config\SourceLanguageOverride;
 use Drupal\Component\Serialization\Exception\InvalidDataTypeException;
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Component\Utility\Html;
@@ -222,6 +223,7 @@ final class Seeder {
       $this->createComments($comments);
       $this->createTexts($texts);
       $this->deleteRemoved($items);
+      $this->state->set(SourceLanguageOverride::STATE_KEY, $this->source);
     }
     catch (\Throwable $e) {
       $transaction->rollBack();
