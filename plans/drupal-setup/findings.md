@@ -7,37 +7,36 @@ removed; its commit names it.
 Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 (2.0.x), unless noted otherwise.
 
-| #    | Finding                                                                                                                                                                     | Project                   | Severity | Status     |
-| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                     | `paragraphs_blokkli`      | low      | open       |
-| F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                    | both                      | low      | open       |
-| F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                         | `texts`                   | low      | open       |
-| F68  | [An old copy from another page gives its new paragraphs a new UUID on every replay](#f68-an-old-copy-from-another-page-gives-its-new-paragraphs-a-new-uuid-on-every-replay) | `paragraphs_blokkli`      | low      | open       |
-| F70  | [A library item shares its paragraph with the page's earlier revisions](#f70-a-library-item-shares-its-paragraph-with-the-pages-earlier-revisions)                          | `paragraphs_blokkli`      | low      | open       |
-| F71  | [Moving a paragraph into its own nested paragraph is refused for the wrong reason](#f71-moving-a-paragraph-into-its-own-nested-paragraph-is-refused-for-the-wrong-reason)   | `paragraphs_blokkli`      | low      | open       |
-| F72  | [The editor offers places below the nesting limit](#f72-the-editor-offers-places-below-the-nesting-limit)                                                                   | editor                    | low      | open       |
-| F73  | [A new paragraph of a type its field doesn't allow is no violation](#f73-a-new-paragraph-of-a-type-its-field-doesnt-allow-is-no-violation)                                  | `paragraphs`              | low      | open       |
-| F74  | [The older mutations for media leave a link field empty](#f74-the-older-mutations-for-media-leave-a-link-field-empty)                                                       | `paragraphs_blokkli`      | low      | open       |
-| F77  | ["Add to" is offered for link fields with several values](#f77-add-to-is-offered-for-link-fields-with-several-values)                                                       | editor                    | low      | to verify  |
-| F78  | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                             | `paragraphs_blokkli`      | low      | to verify  |
-| F85  | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                       | editor                    | low      | to verify  |
-| F89  | [Building an edit state empties the fields of the cached entities](#f89-building-an-edit-state-empties-the-fields-of-the-cached-entities)                                   | `paragraphs_blokkli`      | low      | open       |
-| F95  | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                          | both                      | low      | open       |
-| F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                           | `paragraphs_blokkli`      | low      | to verify  |
-| F102 | [The library search fails for an empty list of types](#f102-the-library-search-fails-for-an-empty-list-of-types)                                                            | `paragraphs_blokkli`      | low      | open       |
-| F103 | [A preview misses a change that is made before its first poll](#f103-a-preview-misses-a-change-that-is-made-before-its-first-poll)                                          | editor                    | low      | open       |
-| F104 | [A refused machine translation answers "Internal server error"](#f104-a-refused-machine-translation-answers-internal-server-error)                                          | `paragraphs_blokkli`      | low      | open       |
-| F110 | [The Search API lists show what the index returns](#f110-the-search-api-lists-show-what-the-index-returns)                                                                  | `paragraphs_blokkli`      | low      | to verify  |
-| F111 | [A new target resets the options of a link](#f111-a-new-target-resets-the-options-of-a-link)                                                                                | `paragraphs_blokkli`      | low      | to verify  |
-| F112 | [A text update of a link field does nothing, and is stored](#f112-a-text-update-of-a-link-field-does-nothing-and-is-stored)                                                 | `paragraphs_blokkli`      | low      | open       |
-| F113 | [The comment module's schema extension needs the GraphQL submodule](#f113-the-comment-modules-schema-extension-needs-the-graphql-submodule)                                 | `paragraphs_blokkli`      | low      | to verify  |
-| F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                                                                         | `paragraphs_blokkli`      | low      | open       |
-| F115 | [A violation of a host's paragraphs field names no entity](#f115-a-violation-of-a-hosts-paragraphs-field-names-no-entity)                                                   | `paragraphs_blokkli`      | low      | to verify  |
-| F116 | [A comment can be edited or deleted through any page](#f116-a-comment-can-be-edited-or-deleted-through-any-page)                                                            | `paragraphs_blokkli`      | low      | open       |
-| F117 | [An add or a move into a field that blökkli doesn't manage is lost](#f117-an-add-or-a-move-into-a-field-that-blökkli-doesnt-manage-is-lost)                                 | `paragraphs_blokkli`      | low      | to verify  |
-| F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                                                          | `nuxt-graphql-middleware` | low      | workaround |
-| F121 | [The library's query access finds unpublished items that its access handler hides](#f121-the-librarys-query-access-finds-unpublished-items-that-its-access-handler-hides)   | `paragraphs`              | low      | open       |
-| F123 | [Content moderation decides what blökkli publishes](#f123-content-moderation-decides-what-blökkli-publishes)                                                                | both                      | low      | to verify  |
+| #    | Finding                                                                                                                                                                   | Project                   | Severity | Status     |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
+| F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                   | `paragraphs_blokkli`      | low      | open       |
+| F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                      | low      | open       |
+| F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
+| F70  | [A library item shares its paragraph with the page's earlier revisions](#f70-a-library-item-shares-its-paragraph-with-the-pages-earlier-revisions)                        | `paragraphs_blokkli`      | low      | open       |
+| F71  | [Moving a paragraph into its own nested paragraph is refused for the wrong reason](#f71-moving-a-paragraph-into-its-own-nested-paragraph-is-refused-for-the-wrong-reason) | `paragraphs_blokkli`      | low      | open       |
+| F72  | [The editor offers places below the nesting limit](#f72-the-editor-offers-places-below-the-nesting-limit)                                                                 | editor                    | low      | open       |
+| F73  | [A new paragraph of a type its field doesn't allow is no violation](#f73-a-new-paragraph-of-a-type-its-field-doesnt-allow-is-no-violation)                                | `paragraphs`              | low      | open       |
+| F74  | [The older mutations for media leave a link field empty](#f74-the-older-mutations-for-media-leave-a-link-field-empty)                                                     | `paragraphs_blokkli`      | low      | open       |
+| F77  | ["Add to" is offered for link fields with several values](#f77-add-to-is-offered-for-link-fields-with-several-values)                                                     | editor                    | low      | to verify  |
+| F78  | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                           | `paragraphs_blokkli`      | low      | to verify  |
+| F85  | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                     | editor                    | low      | to verify  |
+| F89  | [Building an edit state empties the fields of the cached entities](#f89-building-an-edit-state-empties-the-fields-of-the-cached-entities)                                 | `paragraphs_blokkli`      | low      | open       |
+| F95  | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                        | both                      | low      | open       |
+| F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli`      | low      | to verify  |
+| F102 | [The library search fails for an empty list of types](#f102-the-library-search-fails-for-an-empty-list-of-types)                                                          | `paragraphs_blokkli`      | low      | open       |
+| F103 | [A preview misses a change that is made before its first poll](#f103-a-preview-misses-a-change-that-is-made-before-its-first-poll)                                        | editor                    | low      | open       |
+| F104 | [A refused machine translation answers "Internal server error"](#f104-a-refused-machine-translation-answers-internal-server-error)                                        | `paragraphs_blokkli`      | low      | open       |
+| F110 | [The Search API lists show what the index returns](#f110-the-search-api-lists-show-what-the-index-returns)                                                                | `paragraphs_blokkli`      | low      | to verify  |
+| F111 | [A new target resets the options of a link](#f111-a-new-target-resets-the-options-of-a-link)                                                                              | `paragraphs_blokkli`      | low      | to verify  |
+| F112 | [A text update of a link field does nothing, and is stored](#f112-a-text-update-of-a-link-field-does-nothing-and-is-stored)                                               | `paragraphs_blokkli`      | low      | open       |
+| F113 | [The comment module's schema extension needs the GraphQL submodule](#f113-the-comment-modules-schema-extension-needs-the-graphql-submodule)                               | `paragraphs_blokkli`      | low      | to verify  |
+| F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                                                                       | `paragraphs_blokkli`      | low      | open       |
+| F115 | [A violation of a host's paragraphs field names no entity](#f115-a-violation-of-a-hosts-paragraphs-field-names-no-entity)                                                 | `paragraphs_blokkli`      | low      | to verify  |
+| F116 | [A comment can be edited or deleted through any page](#f116-a-comment-can-be-edited-or-deleted-through-any-page)                                                          | `paragraphs_blokkli`      | low      | open       |
+| F117 | [An add or a move into a field that blökkli doesn't manage is lost](#f117-an-add-or-a-move-into-a-field-that-blökkli-doesnt-manage-is-lost)                               | `paragraphs_blokkli`      | low      | to verify  |
+| F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                                                        | `nuxt-graphql-middleware` | low      | workaround |
+| F121 | [The library's query access finds unpublished items that its access handler hides](#f121-the-librarys-query-access-finds-unpublished-items-that-its-access-handler-hides) | `paragraphs`              | low      | open       |
+| F123 | [Content moderation decides what blökkli publishes](#f123-content-moderation-decides-what-blökkli-publishes)                                                              | both                      | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -80,29 +79,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   (`app/graphql/fragment.easyTexts.graphql`). From 2026-10-14, nginx refused
   `/graphql`, but any logged-in user still reached it as `/index.php/graphql`.
 - **Fix idea:** create keys only with a permission, or only in development.
-
-## F68: An old copy from another page gives its new paragraphs a new UUID on every replay
-
-- **Found:** 2026-10-12, by reading. Its larger part is fixed since 2026-10-14:
-  the copy of a nested paragraph that the first run didn't see gets the same
-  UUID on every replay, made of the UUIDs of its paragraph's copy and of the
-  nested paragraph (`DuplicateMutationBase::getUuidForNestedCopy()`). That
-  covers `duplicate`, `duplicate_multiple`, and the nested paragraphs in the
-  copies of `copy_from_existing` and `detach_reusable` that were stored before
-  their version 3.
-- **Symptom:** a `copy_from_existing` that was stored before its version 3
-  copies what the other page holds on every run. A paragraph that the other page
-  got since, at the top of a copied field, gets a new UUID on every replay: a
-  later mutation that names it no longer finds it. The same for a
-  `detach_reusable` stored before its version 3, when the library item holds
-  another paragraph since.
-- **Cause:** `getUuidForNewEntity()` (`src/ParagraphsBlokkliPluginTrait.php` at
-  `f24e0a0`) makes a random UUID for a paragraph that the first run didn't
-  store. Such a paragraph has no copy of a paragraph above it to make its UUID
-  of.
-- **Impact:** low: only mutations stored before version 3 of the two.
-- **Fix idea:** none yet. A UUID made of the host's and the paragraph's would be
-  the same for two such mutations that copy from the same page.
 
 ## F70: A library item shares its paragraph with the page's earlier revisions
 
