@@ -476,7 +476,11 @@ fragment blokkliTextFieldValue on ParagraphsBlokkliTextFieldValue {
       // Add the scheduler related GraphQL mutations.
       if (editMutationStateFields.has('unschedule')) {
         addGraphqlDocument('features/scheduler.graphql')
-        publishOptionsFragmentFields.push('canSchedule', 'publishOn')
+        publishOptionsFragmentFields.push(
+          'canSchedule',
+          'publishOn',
+          'publishLanguages',
+        )
       }
 
       const publishOptionsFragment = `

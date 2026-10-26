@@ -1,0 +1,10 @@
+# A page published only in German, its translation: /en/lido, /de/strandbad.
+key: original-unpublished
+type: page
+title: { en: Lido, de: Strandbad }
+status: { en: false, de: true }
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>The lido opens in June.</p>'
+      de: '<p>Das Strandbad öffnet im Juni.</p>'

@@ -19,12 +19,17 @@ mutation pbSchedule(
   $langcode: String
   $date: String!
   $revisionLogMessage: String
+  $languages: [String!]
 ) {
   state: paragraphsEditMutationState(
     entityType: $entityType
     entityUuid: $entityUuid
   ) {
-    action: schedule(date: $date, revisionLogMessage: $revisionLogMessage) {
+    action: schedule(
+      date: $date
+      revisionLogMessage: $revisionLogMessage
+      languages: $languages
+    ) {
       ...paragraphsBlokkliMutationResult
     }
   }

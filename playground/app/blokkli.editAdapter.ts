@@ -112,6 +112,7 @@ function getPublishOptions(ctx: {
     lastChanged: '2024-09-09T14:00:01.000Z',
     canSchedule: true,
     publishOn,
+    publishLanguages: [],
     revisionLogMessage,
   }
 }

@@ -22,9 +22,7 @@
       class="bk-toolbar-button group/tooltip w-full justify-start relative"
       data-test="entity-title"
       :data-test-entity-status="statusIndicatorStatus"
-      :data-test-entity-status-scope="
-        languageName ? 'language' : isStatusShared ? 'all-languages' : 'page'
-      "
+      :data-test-entity-status-scope="statusScope"
       :disabled="!state.canEdit.value"
       @click="onEditEntity"
     >
@@ -62,6 +60,7 @@ import {
 } from '#blokkli/editor/components'
 import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
 import type { UiStatus } from '#blokkli/editor/types/ui'
+import { getStatusScope } from '#blokkli/editor/helpers/status'
 
 defineBlokkliFeature({
   id: 'entity-title',
@@ -102,16 +101,14 @@ const formattedScheduledDate = computed(() => {
   })
 })
 
+const statusScope = computed(() => getStatusScope(translation.value))
+
 /**
- * The name of the language being edited, when the page has several and each
- * of them has a status of its own.
+ * The name of the language being edited, when each language has a status of
+ * its own.
  */
 const languageName = computed<string | null>(() => {
-  if (
-    !translation.value.isTranslatable ||
-    translation.value.isStatusTranslatable !== true ||
-    (translation.value.availableLanguages?.length ?? 0) < 2
-  ) {
+  if (statusScope.value !== 'language') {
     return null
   }
   const language = translation.value.availableLanguages?.find(
@@ -119,16 +116,6 @@ const languageName = computed<string | null>(() => {
   )
   return language?.name ?? context.value.language
 })
-
-/**
- * Whether every language of the page shares one status.
- */
-const isStatusShared = computed(
-  () =>
-    !!translation.value.isTranslatable &&
-    translation.value.isStatusTranslatable === false &&
-    (translation.value.availableLanguages?.length ?? 0) > 1,
-)
 
 const tooltipLabel = computed(() => {
   if (languageName.value) {
@@ -147,7 +134,7 @@ const tooltipLabel = computed(() => {
     return label.replace('@language', languageName.value)
   }
 
-  if (isStatusShared.value) {
+  if (statusScope.value === 'all-languages') {
     if (!entity.value.status) {
       return $t(
         'entityTitleNotPublishedInAnyLanguage',

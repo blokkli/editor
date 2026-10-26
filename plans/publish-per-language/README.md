@@ -1,9 +1,9 @@
 # Publishing per language
 
 What the editor publishes and schedules, and in which languages, and how the
-user sees it. Step 1 of the work is done (2026-10-26). It began as two findings
-of the drupal-setup plan, F24 (a paragraph's schedule) and F26 ("Publish if
-unpublished"), which moved here on 2026-10-25.
+user sees it. Steps 1 and 2 of the work are done (2026-10-26). It began as two
+findings of the drupal-setup plan, F24 (a paragraph's schedule) and F26
+("Publish if unpublished"), which moved here on 2026-10-25.
 
 Code references are relative to the `paragraphs_blokkli` repository at `3d34722`
 (2.0.x), except those under `src/runtime/` and `src/modules/`, which are in this
@@ -84,6 +84,7 @@ language the user is in.
   publish the original language by accident.
 - **By the site's settings:** with a shared status, publishing the original
   language publishes every language, and F26 can't happen.
+- **Fixed** in step 2 (2026-10-26): publishing takes the languages to publish.
 
 ## What exists today
 
@@ -100,14 +101,14 @@ Read in the code on 2026-10-12, and on 2026-10-25 where noted:
   by the language switcher
   (`src/runtime/editor/features/translations/LanguageSwitcher/`: inline buttons,
   or a dropdown for long language codes and on mobile).
-- `publish()` sends one flag, `publishIfUnpublished`, without a language. A page
-  that is published only has the mode "Publish", so the flag is sent on every
-  publish: publishing every language on it would put a translation live that was
-  held back on purpose.
-- A scheduled publish of the changes passes the flag too
+- Until step 2: `publish()` sends one flag, `publishIfUnpublished`, without a
+  language. A page that is published only has the mode "Publish", so the flag is
+  sent on every publish: publishing every language on it would put a translation
+  live that was held back on purpose.
+- Until step 2: a scheduled publish of the changes passes the flag too
   (`modules/paragraphs_blokkli_scheduler/src/EditStateSchedulerService.php:86`,
   2026-10-25): at the date, it publishes the original language.
-- The publish button is disabled without pending changes
+- Until step 2: the publish button is disabled without pending changes
   (`src/runtime/editor/features/publish/index.vue:162`), so a language can't be
   published on its own without changing something. The dialog itself doesn't
   check for changes, and neither does the module: `doPublish()` applies the
@@ -163,6 +164,14 @@ cover every language in blökkli, without the user knowing why.
     `publishIfUnpublished`, without a fallback: the editor's alpha only works
     with the latest release of the module, and the other way round.
   - A scheduled publish stores its languages and publishes those at the date.
+    Schedules stored before get the page's original language, which they would
+    publish until now (the user, 2026-10-26).
+  - "Save" is offered only while no translation is published (the user,
+    2026-10-26). Drupal saves one revision for every translation, so saving puts
+    the changes live in each published one; until now, the dialog offered "Save"
+    while the current language was unpublished, and said that the page stays
+    unpublished. With a published translation, "Publish" with only the published
+    languages ticked does what "Save" did.
   - The dialog opens without pending changes while a translation is unpublished,
     so a translation can be published on its own: the publish button is disabled
     only without changes and with every translation published. Without changes,
@@ -217,9 +226,12 @@ a commit in both repositories where both change.
 1. **The status in the language switcher.** Done (2026-10-26). Drupal's flag for
    a shared status, the dots, and the title's tooltip. E2E sandboxes share the
    status of news (`blokkli_playground_test`), to test it.
-2. **Publishing per language (F26).** The mutation `publish` with its languages,
-   the scheduled publish with them, and the publish dialog's section "Languages"
-   and summary.
+2. **Publishing per language (F26).** Done (2026-10-26). The mutation `publish`
+   with its languages, the scheduled publish with them (a field
+   `publish_languages` on the edit state), and the publish dialog's section
+   "Languages" and summary. Each language's result sits in its row of the
+   section, which the user tried and kept; the summary has the sentence on the
+   changes.
 3. **The schedule's languages (F24).** Drupal's flags per paragraph type (the
    three fields, and the setting "Hide non translatable fields"), every
    translation's status and dates in the edit context, and the schedule dialog:

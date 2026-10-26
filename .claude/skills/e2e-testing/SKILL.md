@@ -17,8 +17,8 @@ frame-timed drop logic, DOM lifecycle.
 - Helpers: `test/e2e-drupal/support/` (no barrel — import direct from each
   module). Modules: `session`, `sandbox`, `mutations`, `blocks`, `editable`,
   `diff`, `events`, `toolbar`, `menu`, `sidebar`, `overlays`, `options`,
-  `preview`, `schedule`, `selection`, `clipboard`, `bundleSelector`, `history`,
-  `itemActions`, `keyboard`, `translations`, `agent`, `charts`,
+  `preview`, `schedule`, `publish`, `selection`, `clipboard`, `bundleSelector`,
+  `history`, `itemActions`, `keyboard`, `translations`, `agent`, `charts`,
   `complexOptions`.
 - Fixtures: `test/e2e-drupal/content` (see "Fixtures" below).
 
@@ -303,10 +303,12 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
   translated node (`nodes/notices.yml`); `outdated: [de]` flags a translation as
   outdated (`nodes/waste-collection.yml`). Each translation of a page has a
   status of its own (`status: { en: true, de: false }`,
-  `nodes/status-per-language.yml`); the translations of a news item share one
-  (`nodes/shared-status.yml`). `deleted: true` on a user or node deletes it
-  after seeding, leaving its comments without an author or its notifications
-  without a page (`users.yml`: Nora Huber, `nodes/removed.yml`).
+  `nodes/status-per-language.yml`, `unpublished-translations.yml`,
+  `original-unpublished.yml`); the translations of a news item share one
+  (`nodes/shared-status.yml`, unpublished: `shared-draft.yml`). `deleted: true`
+  on a user or node deletes it after seeding, leaving its comments without an
+  author or its notifications without a page (`users.yml`: Nora Huber,
+  `nodes/removed.yml`).
 - **The widget** (`sandbox/frontend/app/components/Paragraph/Widget`): a
   paragraph type for the tests only. It has an option of every type, each value
   in a cell of its own (`data-test="widget-option-<key>"`), a `field_title`

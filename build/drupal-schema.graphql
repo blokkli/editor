@@ -7025,7 +7025,13 @@ type ParagraphsEditMutationState {
   ): ParagraphsBlokkliMutationResult
 
   revertAllChanges: ParagraphsBlokkliMutationResult
-  publish(createNewState: Boolean, publishIfUnpublished: Boolean, revisionLogMessage: String): ParagraphsBlokkliMutationResult
+
+  """
+  Publish the changes, and the translations in the given languages. The other
+  translations keep their status.
+  """
+  publish(createNewState: Boolean, languages: [String!], revisionLogMessage: String): ParagraphsBlokkliMutationResult
+
   undo: ParagraphsBlokkliMutationResult
   redo: ParagraphsBlokkliMutationResult
   setHistoryIndex(index: Int!): ParagraphsBlokkliMutationResult
@@ -7035,8 +7041,11 @@ type ParagraphsEditMutationState {
   "Unschedule an already scheduled edit state."
   unschedule: ParagraphsBlokkliMutationResult
 
-  "Schedule an edit state."
-  schedule(revisionLogMessage: String, date: String!): ParagraphsBlokkliMutationResult
+  """
+  Schedule an edit state: publish its changes, and the translations in the
+  given languages, at the date.
+  """
+  schedule(revisionLogMessage: String, date: String!, languages: [String!]): ParagraphsBlokkliMutationResult
 
   "Creates a template from the selected paragraphs in the current edit state."
   createTemplate(
@@ -7245,6 +7254,9 @@ type ParagraphsBlokkliPublishOptions {
 
   canSchedule: Boolean!
   publishOn: String
+
+  "The languages whose translations the schedule publishes."
+  publishLanguages: [String!]
 }
 
 ""

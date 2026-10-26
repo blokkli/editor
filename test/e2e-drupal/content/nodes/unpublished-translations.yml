@@ -1,0 +1,12 @@
+# A page published in English, with an unpublished German and French
+# translation: /en/ice-rink, /de/eisbahn, /fr/patinoire.
+key: unpublished-translations
+type: page
+title: { en: Ice rink, de: Eisbahn, fr: Patinoire }
+status: { en: true, de: false, fr: false }
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>The ice rink opens in December.</p>'
+      de: '<p>Die Eisbahn öffnet im Dezember.</p>'
+      fr: '<p>La patinoire ouvre en décembre.</p>'

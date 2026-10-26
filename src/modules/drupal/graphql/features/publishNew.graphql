@@ -3,7 +3,7 @@ mutation pbPublish(
   $entityUuid: String!
   $langcode: String
   $createNewState: Boolean
-  $publishIfUnpublished: Boolean
+  $languages: [String!]
   $revisionLogMessage: String
 ) {
   state: paragraphsEditMutationState(
@@ -12,7 +12,7 @@ mutation pbPublish(
   ) {
     action: publish(
       createNewState: $createNewState
-      publishIfUnpublished: $publishIfUnpublished
+      languages: $languages
       revisionLogMessage: $revisionLogMessage
     ) {
       ...paragraphsBlokkliMutationResult

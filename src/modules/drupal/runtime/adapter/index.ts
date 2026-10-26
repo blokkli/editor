@@ -90,6 +90,7 @@ function mapPublishOptions(
     lastChanged: publishOptions.lastChanged ?? null,
     canSchedule: !!publishOptions.canSchedule,
     publishOn: publishOptions.publishOn ?? null,
+    publishLanguages: publishOptions.publishLanguages ?? [],
     revisionLogMessage: publishOptions.revisionLogMessage ?? null,
   }
 }
@@ -807,7 +808,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           entityType: options.hostEntityType.toUpperCase() as any,
           entityUuid: options.hostEntityUuid,
           createNewState: !options.closeAfterPublish,
-          publishIfUnpublished: options.publishIfUnpublished,
+          languages: options.languages,
           revisionLogMessage: options.revisionLogMessage,
         }).then(mapMutation)
     }
@@ -2026,6 +2027,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           entityUuid: options.hostEntityUuid,
           date: options.date,
           revisionLogMessage: options.revisionLogMessage,
+          languages: options.languages,
         }).then(mapMutation)
     }
 

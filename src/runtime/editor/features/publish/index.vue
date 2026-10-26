@@ -17,6 +17,7 @@ import {
 } from '#imports'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { BlokkliTransition } from '#blokkli/editor/components'
+import { getStatusScope } from '#blokkli/editor/helpers/status'
 import {
   defineMenuButton,
   onBlokkliEvent,
@@ -52,6 +53,41 @@ const hasPublishOptions = !!adapter.getPublishOptions
 
 const isPublished = computed<boolean>(() => !!state.entity.value.status)
 
+const statusScope = computed(() => getStatusScope(state.translation.value))
+
+const translationStatuses = computed<boolean[]>(() =>
+  (state.translation.value.translations ?? [])
+    .filter((v) => v.exists)
+    .map((v) => v.status),
+)
+
+/**
+ * Whether a language is published: saving then puts the changes live in it.
+ */
+const isAnyPublished = computed<boolean>(() =>
+  statusScope.value === 'language'
+    ? translationStatuses.value.includes(true)
+    : isPublished.value,
+)
+
+/**
+ * Whether the dialog can publish a language, also without changes.
+ */
+const canPublishLanguage = computed<boolean>(
+  () =>
+    hasPublishOptions &&
+    (statusScope.value === 'language'
+      ? translationStatuses.value.includes(false)
+      : !isPublished.value),
+)
+
+/**
+ * Whether the button publishes rather than saves.
+ */
+const isPublishing = computed<boolean>(
+  () => isAnyPublished.value || !mutations.value.length,
+)
+
 const isScheduled = computed<boolean>(
   () => !!state.publishOptions.value.publishOn,
 )
@@ -66,8 +102,8 @@ const publishLabel = computed(() => {
     return $t('manageScheduling', 'Manage scheduling') + suffix
   }
 
-  // Entity is published. Clicking the button will make the changes go "live".
-  if (isPublished.value) {
+  // A language is published: the changes go live.
+  if (isPublishing.value) {
     return (
       (settings.value.closeAfterPublish
         ? $t('publishAndCloseLabel', 'Publish & Close')
@@ -89,7 +125,15 @@ const publishDescription = computed(() => {
       'View or change the scheduled publication',
     )
   }
-  return isPublished.value
+  if (!mutations.value.length) {
+    return statusScope.value === 'language'
+      ? $t(
+          'publishDescriptionUnpublishedLanguages',
+          'Publish the languages that are not published yet',
+        )
+      : $t('publishDescriptionPage', 'Publish the page')
+  }
+  return isAnyPublished.value
     ? $t('publishDescription', 'Publish all changes.')
     : $t(
         'publishDescriptionUnpublished',
@@ -101,7 +145,7 @@ const icon = computed<BlokkliIcon>(() => {
   if (state.publishOptions.value?.publishOn) {
     return 'bk_mdi_calendar_clock'
   }
-  return isPublished.value ? 'bk_mdi_publish' : 'bk_mdi_save'
+  return isPublishing.value ? 'bk_mdi_publish' : 'bk_mdi_save'
 })
 
 const onMenuClick = async () => {
@@ -159,7 +203,8 @@ defineMenuButton(() => {
     description: publishDescription.value,
     icon: icon.value,
     type: isScheduled.value ? 'yellow' : 'success',
-    disabled: !mutations.value.length || !canEdit.value,
+    disabled:
+      (!mutations.value.length && !canPublishLanguage.value) || !canEdit.value,
     weight: 0,
     callback: onMenuClick,
   }
