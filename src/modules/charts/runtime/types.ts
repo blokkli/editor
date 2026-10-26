@@ -253,13 +253,40 @@ export type ChartDataSourceCapabilities = {
  * prop).
  */
 export type ChartDataSourcePayload = {
-  categories: string[]
-  series: { name: string; data: number[] }[]
+  categories: ChartDataSourceCategory[]
+  series: ChartDataSourceSeries[]
+}
+
+/**
+ * A category of a data source's payload.
+ */
+export type ChartDataSourceCategory = {
+  /**
+   * Identifies the category in every language and over time: the category's
+   * color override is keyed by it.
+   */
+  key: string
+  /** The label, in the requested language. */
+  label: string
+}
+
+/**
+ * A series of a data source's payload.
+ */
+export type ChartDataSourceSeries = {
+  /**
+   * Identifies the series in every language and over time: the series'
+   * override is keyed by it.
+   */
+  key: string
+  /** The name, in the requested language. */
+  name: string
+  data: number[]
 }
 
 /**
  * Per-series presentation overrides for dynamic data, keyed by the
- * fetched series name.
+ * series' key.
  */
 export type ChartSeriesOverride = {
   color?: string
@@ -277,9 +304,9 @@ export type ChartDataSourceRef = {
   id: string
   /** Cached label for display when the live source has been removed. */
   label: string
-  /** Keyed by fetched series name. */
+  /** Keyed by the series' key. */
   seriesOverrides?: Record<string, ChartSeriesOverride>
-  /** Keyed by fetched category label, used by pie/donut charts. */
+  /** Keyed by the category's key, used by pie/donut charts. */
   categoryColorOverrides?: Record<string, string>
 }
 

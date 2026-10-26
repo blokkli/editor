@@ -3002,9 +3002,15 @@ export default defineBlokkliEditAdapter((ctx) => {
     if (!source) {
       throw new Error(`Unknown data source: ${id}`)
     }
+    // The mock data has one language, so its labels and names are also the
+    // keys.
     return {
-      categories: source.categories,
-      series: source.series.map((s) => ({ name: s.name, data: [...s.data] })),
+      categories: source.categories.map((label) => ({ key: label, label })),
+      series: source.series.map((s) => ({
+        key: s.name,
+        name: s.name,
+        data: [...s.data],
+      })),
     }
   }
 

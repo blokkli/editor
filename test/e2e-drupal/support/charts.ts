@@ -21,13 +21,31 @@ export function chartEditorOverlay(page: Page): Locator {
  * (and its first series colour control) is rendered.
  */
 export async function openChartEditor(page: Page, uuid: string): Promise<void> {
+  await openOverlay(page, uuid)
+  await chartSeriesColor(page, 0).waitFor({ state: 'visible' })
+}
+
+/**
+ * Open the chart editor for a chart bound to a data source, and wait until it
+ * shows the override of the series with `seriesKey`: the source's data has
+ * loaded.
+ */
+export async function openBoundChartEditor(
+  page: Page,
+  uuid: string,
+  seriesKey: string,
+): Promise<void> {
+  await openOverlay(page, uuid)
+  await chartSeriesOverrideHide(page, seriesKey).waitFor({ state: 'visible' })
+}
+
+async function openOverlay(page: Page, uuid: string): Promise<void> {
   await openComplexOption(page, {
     uuid,
     key: CHART_OPTION_KEY,
     dataType: CHART_DATA_TYPE,
   })
   await chartEditorOverlay(page).waitFor({ state: 'visible' })
-  await chartSeriesColor(page, 0).waitFor({ state: 'visible' })
 }
 
 /** Close the chart editor, which saves the chart (see `closeComplexOption`). */
@@ -55,6 +73,37 @@ export function setChartSeriesColor(
   colorId: string,
 ): Promise<void> {
   return pickColor(page, `chart-series-color-${index}`, colorId)
+}
+
+/**
+ * The button that hides or shows a bound chart's series, by the series' key.
+ * `data-test-hidden` tells whether it's hidden.
+ */
+export function chartSeriesOverrideHide(page: Page, key: string): Locator {
+  return page.locator(`[data-test="chart-series-override-hide-${key}"]`)
+}
+
+/** The colour control of a bound chart's category, by the category's key. */
+export function chartCategoryOverrideColor(page: Page, key: string): Locator {
+  return page.locator(`[data-test="chart-category-override-color-${key}"]`)
+}
+
+/** Pick a colour (by id) for a bound chart's category, by its key. */
+export function setChartCategoryOverrideColor(
+  page: Page,
+  key: string,
+  colorId: string,
+): Promise<void> {
+  return pickColor(page, `chart-category-override-color-${key}`, colorId)
+}
+
+/** The keys of the overrides that the data of a bound chart no longer has. */
+export function chartOrphanOverrideKeys(page: Page): Promise<string[]> {
+  return page
+    .locator('[data-test="chart-orphan-override"]')
+    .evaluateAll((items) =>
+      items.map((item) => item.getAttribute('data-test-key') ?? ''),
+    )
 }
 
 /**

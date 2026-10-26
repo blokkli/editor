@@ -9,7 +9,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #    | Finding                                                                                                                                                                     | Project                   | Severity | Status     |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F35  | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)                                                        | `@blokkli/editor`         | low      | open       |
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                     | `paragraphs_blokkli`      | low      | open       |
 | F43  | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                                                                              | both                      | low      | open       |
 | F44  | [No approval step](#f44-no-approval-step)                                                                                                                                   | both                      | low      | open       |
@@ -45,22 +44,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
-
-## F35: A data source's colour overrides apply to one language
-
-- **Found:** 2026-09-28, 13i, with the budget chart (a donut bound to a data
-  source).
-- **Symptom:** an editor sets a slice's colour in the English editor; the German
-  page shows the palette's colour.
-- **Cause:** `categoryColorOverrides` and `seriesOverrides` are keyed by the
-  fetched names
-  (`src/modules/charts/runtime/components/ChartRenderer/index.vue:146-170`, in
-  this repository), and the docs tell integrators to localize those names in the
-  data source.
-- **Workaround:** none; the demo keeps the palette's colours (a pie of six
-  slices at most).
-- **Fix idea:** an optional stable `key` per category and series in
-  `ChartDataSourcePayload`, used for the overrides when present.
 
 ## F40: A new comment without a mention notifies nobody
 

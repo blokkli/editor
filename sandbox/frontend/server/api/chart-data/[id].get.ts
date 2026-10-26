@@ -1,3 +1,5 @@
+import type { ChartDataSourcePayload } from '#blokkli/charts/types'
+
 /**
  * A chart data source's data in a language: for the editor's preview
  * (getChartDataSourceData) and the chart paragraph.
@@ -10,10 +12,12 @@ export default defineEventHandler((event) => {
   const { language } = getQuery(event)
   const lang = isLanguage(language) ? language : DEFAULT_LANGUAGE
   return {
-    categories: dataset.categories.map((category) => localize(category, lang)),
-    series: dataset.series.map((series) => ({
-      name: localize(series.name, lang),
-      data: series.data,
-    })),
-  }
+    categories: dataset.categories.map((category) =>
+      localizeName(category, lang),
+    ),
+    series: dataset.series.map((series) => {
+      const { key, label } = localizeName(series.name, lang)
+      return { key, name: label, data: series.data }
+    }),
+  } satisfies ChartDataSourcePayload
 })

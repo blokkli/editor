@@ -83,15 +83,15 @@
               />
               <OrphanOverridesWarning
                 v-if="previewPayload"
-                :series-override-names="seriesOverrideNames"
-                :category-override-names="categoryOverrideNames"
-                :known-series="previewSeriesNames"
-                :known-categories="previewPayload.categories"
+                :series-override-keys="seriesOverrideKeys"
+                :category-override-keys="categoryOverrideKeys"
+                :known-series-keys="previewSeriesKeys"
+                :known-category-keys="previewCategoryKeys"
                 @remove="onRemoveOrphan"
               />
               <SeriesOverridesPanel
                 v-if="previewPayload"
-                :series-names="previewSeriesNames"
+                :series="previewPayload.series"
                 :overrides="chartData.dataSource.seriesOverrides ?? {}"
                 :has-series-colors="caps.hasSeriesColors"
                 @update:overrides="onUpdateSeriesOverrides"
@@ -600,8 +600,12 @@ const selectedDataSource = computed<ChartDataSource | null>(() => {
   }
 })
 
-const previewSeriesNames = computed<string[]>(() => {
-  return previewPayload.value?.series.map((s) => s.name) ?? []
+const previewSeriesKeys = computed<string[]>(() => {
+  return previewPayload.value?.series.map((s) => s.key) ?? []
+})
+
+const previewCategoryKeys = computed<string[]>(() => {
+  return previewPayload.value?.categories.map((c) => c.key) ?? []
 })
 
 const previewEmpty = computed(() => {
@@ -610,11 +614,11 @@ const previewEmpty = computed(() => {
   return p.categories.length === 0 || p.series.length === 0
 })
 
-const seriesOverrideNames = computed(() =>
+const seriesOverrideKeys = computed(() =>
   Object.keys(chartData.value.dataSource?.seriesOverrides ?? {}),
 )
 
-const categoryOverrideNames = computed(() =>
+const categoryOverrideKeys = computed(() =>
   Object.keys(chartData.value.dataSource?.categoryColorOverrides ?? {}),
 )
 
@@ -678,14 +682,11 @@ function onRemoveOrphan(orphan: OrphanOverride) {
   if (!chartData.value.dataSource) return
   if (orphan.scope === 'series') {
     onUpdateSeriesOverrides(
-      withoutKey(chartData.value.dataSource.seriesOverrides, orphan.name),
+      withoutKey(chartData.value.dataSource.seriesOverrides, orphan.key),
     )
   } else {
     onUpdateCategoryOverrides(
-      withoutKey(
-        chartData.value.dataSource.categoryColorOverrides,
-        orphan.name,
-      ),
+      withoutKey(chartData.value.dataSource.categoryColorOverrides, orphan.key),
     )
   }
 }

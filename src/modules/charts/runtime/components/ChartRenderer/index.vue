@@ -53,6 +53,7 @@ import type {
   ChartTypeRenderProps,
 } from '../../types'
 import { applyFootnotes, SUPERSCRIPTS } from '../../helpers'
+import { applyDataSourceOverrides } from '../../helpers/dataSource'
 import { detectDateFormat, formatDateCategory } from '../../helpers/dateFormat'
 import { INJECT_CHART_PREVIEW_DYNAMIC_DATA } from '../../helpers/previewInjection'
 import { chartTypeComponents } from '#blokkli-build/charts-components'
@@ -140,37 +141,11 @@ const effectiveData = computed<{
   series: ChartSeries[]
   categoryColors: string[]
 } | null>(() => {
-  if (hasDynamicSource.value) {
+  const dataSource = props.data.dataSource
+  if (dataSource) {
     const payload = effectiveDynamicPayload.value
     if (!payload) return null
-    const overrides = props.data.dataSource?.seriesOverrides ?? {}
-    const categoryOverrides =
-      props.data.dataSource?.categoryColorOverrides ?? {}
-    const palette = colorPalette.value
-    const fallback = palette[0] ?? ''
-    const visibleSeries = payload.series.filter(
-      (s) => overrides[s.name]?.hidden !== true,
-    )
-    const series: ChartSeries[] = visibleSeries.map((s, i) => ({
-      name: s.name,
-      color:
-        overrides[s.name]?.color ??
-        palette[i % Math.max(palette.length, 1)] ??
-        fallback,
-      data: s.data,
-    }))
-    const categoryColors = payload.categories.map((label, i) => {
-      return (
-        categoryOverrides[label] ??
-        palette[i % Math.max(palette.length, 1)] ??
-        fallback
-      )
-    })
-    return {
-      categories: payload.categories,
-      series,
-      categoryColors,
-    }
+    return applyDataSourceOverrides(payload, dataSource, colorPalette.value)
   }
   return {
     categories: props.data.categories,
