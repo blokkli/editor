@@ -40,6 +40,10 @@ The languages whose translations to publish. The other translations keep their
 status: publishing never unpublishes. Without languages, no status changes: the
 changes are saved, and go live in the translations that are already published.
 
+A backend should refuse to publish a translation whose status the user may not
+change. The Drupal module does, and tells the editor which ones those are
+([canChangeStatus](/editor/edit-state#translationstate-translations)).
+
 The publish dialog sends the languages that the user ticked, while each
 translation has a status of its own
 ([isStatusTranslatable](/editor/edit-state#translationstate-isstatustranslatable)).

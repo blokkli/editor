@@ -34,6 +34,7 @@ permissions:
   - 'access content overview'
   - 'access string translation overview'
   - 'access toolbar'
+  - 'administer node published status'
   - 'bypass paragraphs type content access'
   - 'create content translations'
   - 'create paragraphs blokkli edit state'

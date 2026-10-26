@@ -368,6 +368,14 @@ status of its own
 language switcher shows it for each language, and the publish dialog lists the
 existing translations with it.
 
+`canChangeStatus` (optional) is whether the user may change the translation's
+status, which publishing an unpublished translation does. When it's `false`, the
+publish dialog doesn't let the user tick the translation, or publish the page
+when it's the source language's translation and every language shares one
+status. When it's missing, the dialog assumes the user may. The Drupal adapter
+sets it from the access to edit the published field: Drupal's node form also
+needs it to change the status.
+
 ## Edit mode
 
 [type.EditMode]

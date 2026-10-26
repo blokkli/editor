@@ -3268,6 +3268,10 @@ msgctxt "publishLanguages"
 msgid "Languages"
 msgstr "Lingue"
 
+msgctxt "publishLanguagesNotAllowed"
+msgid "You may not publish the unpublished languages that can't be ticked."
+msgstr "Non può pubblicare le lingue non pubblicate che non si possono selezionare."
+
 msgctxt "publishMode"
 msgid "Publish mode"
 msgstr ""
@@ -3287,6 +3291,10 @@ msgstr ""
 msgctxt "publishModeScheduledTitle"
 msgid "Schedule"
 msgstr ""
+
+msgctxt "publishPageNotAllowed"
+msgid "You may not publish this page. Saving keeps it unpublished."
+msgstr "Non può pubblicare questa pagina. Salvandola, rimane non pubblicata."
 
 msgctxt "publishPublicationScheduled"
 msgid "Publication scheduled"

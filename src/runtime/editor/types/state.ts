@@ -26,6 +26,12 @@ export interface EntityTranslation {
   editUrl?: string
   exists: boolean
   status: boolean
+  /**
+   * Whether the user may change the translation's published status, which
+   * publishing an unpublished translation does. The editor assumes so when
+   * the backend doesn't say.
+   */
+  canChangeStatus?: boolean
 }
 
 export interface TranslationState {

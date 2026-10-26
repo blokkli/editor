@@ -18,4 +18,9 @@ export type PublishLanguage = {
   label: string
   isCurrent: boolean
   isPublished: boolean
+  /**
+   * Whether the user may change its published status: publish it, when it's
+   * unpublished.
+   */
+  canChangeStatus: boolean
 }

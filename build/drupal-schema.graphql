@@ -7356,6 +7356,13 @@ type ParagraphsBlokkliTranslationStateEntityTranslation {
 
   ""
   status: Boolean
+
+  """
+  Whether the user may change the translation's published status, which
+  publishing an unpublished translation does. False for an entity without a
+  status.
+  """
+  canChangeStatus: Boolean!
 }
 
 ""

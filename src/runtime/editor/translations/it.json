@@ -165,6 +165,8 @@
   "publishDescriptionUnpublishedLanguages": "Pubblica le lingue non ancora pubblicate",
   "publishError": "Le modifiche non possono essere pubblicate.",
   "publishLanguages": "Lingue",
+  "publishLanguagesNotAllowed": "Non può pubblicare le lingue non pubblicate che non si possono selezionare.",
+  "publishPageNotAllowed": "Non può pubblicare questa pagina. Salvandola, rimane non pubblicata.",
   "publishRevisionLogMessage": "Descrizione delle modifiche",
   "publishSaveAppliesAllLanguages": "Il salvataggio applica tutte le modifiche in attesa, in tutte le lingue.",
   "publishSuccess": "Modifiche pubblicate con successo.",

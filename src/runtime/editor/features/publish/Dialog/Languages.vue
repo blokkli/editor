@@ -73,7 +73,9 @@ const rows = computed(() =>
   props.languages.map((language) => {
     const isChecked =
       language.isPublished ||
-      (props.mode !== 'save' && selected.value.includes(language.id))
+      (props.mode !== 'save' &&
+        language.canChangeStatus &&
+        selected.value.includes(language.id))
 
     const result = (() => {
       if (language.isPublished || !isChecked) {
@@ -94,7 +96,11 @@ const rows = computed(() =>
       ...language,
       isChecked,
       // Publishing never unpublishes.
-      isLocked: language.isPublished || props.disabled || props.mode === 'save',
+      isLocked:
+        language.isPublished ||
+        !language.canChangeStatus ||
+        props.disabled ||
+        props.mode === 'save',
       result,
       resultLabel,
     }

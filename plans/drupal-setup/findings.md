@@ -10,8 +10,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | #    | Finding                                                                                                                                                                     | Project                   | Severity | Status     |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                     | `paragraphs_blokkli`      | low      | open       |
-| F43  | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                                                                              | both                      | low      | open       |
-| F44  | [No approval step](#f44-no-approval-step)                                                                                                                                   | both                      | low      | open       |
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                    | both                      | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                         | `texts`                   | low      | open       |
 | F64  | [A template or a copy places a library item its user may not view](#f64-a-template-or-a-copy-places-a-library-item-its-user-may-not-view)                                   | `paragraphs_blokkli`      | low      | to verify  |
@@ -55,38 +53,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   (`modules/paragraphs_blokkli_comment/src/CommentNotifier.php`).
 - **Workaround:** mention the reviewer (the demo's flow, 13h).
 - **Fix idea:** notify the edit state's owner of new comments on their page.
-
-## F43: Translators can't be limited to translating
-
-- **Found:** 2026-09-28, 13h, with the French translator.
-- **Symptom:** a translator who can translate in the editor can also change the
-  source language's page, including its structure.
-- **Cause:** `blokkliProps` gives `edit` only with update access to the host
-  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/BlokkliProps.php`),
-  and core's translation permissions don't grant update access to a translation.
-  So translators need `edit any <type> content`.
-- **Workaround:** none; the translator role has it (13h).
-- **Fix idea:** a paragraphs_blokkli permission that gives `edit` in translation
-  mode only, for translations the user may translate, and limits the mutations
-  to texts in those languages.
-
-## F44: No approval step
-
-- **Found:** 2026-09-28, 13h. The user chose a reviewer who only comments.
-- **Symptom:** a reviewer can't publish without edit rights, and an editor can't
-  be kept from publishing.
-- **Cause:** publishing needs `edit` and update access to the host, the same as
-  editing (`canPublish` in
-  `modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/PublishOptions.php:88`).
-  The editor has an unused `review` edit mode and never reads
-  `publishOptions.canPublish` (`src/runtime/editor/providers/state.ts`, in this
-  repository).
-- **Fix idea:** a publish permission of its own, a review mode that publishes,
-  and an "approved" notification (the editor already has the type
-  `edit-state:approved`).
-- **Test:** the mock suite's last spec checked that an approval links to the
-  page without a `blokkliComment` param. It was deleted on 2026-10-10; recreate
-  it in `test/e2e-drupal/features/notifications/` with the notification.
 
 ## F46: A pasted URL can't become a link
 

@@ -41,6 +41,13 @@
             isLoading || isAlreadyScheduled || statusScope === 'all-languages'
           "
         />
+        <InfoBox
+          v-if="notAllowedText"
+          :text="notAllowedText"
+          small
+          class="mt-10"
+          data-test="publish-not-allowed"
+        />
       </PanelSection>
 
       <PanelSection
@@ -123,6 +130,9 @@
             :text="summarySentence"
             data-test="publish-summary-sentence"
           />
+        </FormItem>
+        <FormItem v-if="statusScope === 'page' && notAllowedText">
+          <InfoBox :text="notAllowedText" data-test="publish-not-allowed" />
         </FormItem>
         <FormItem v-if="statusScope === 'page'">
           <Summary
@@ -367,6 +377,16 @@ const isCurrentlyPublished = computed(() => !!state.entity.value?.status)
 const statusScope = computed(() => getStatusScope(state.translation.value))
 
 /**
+ * Whether the user may change the status of the source language's
+ * translation: the page's status, when it has one for every language.
+ */
+const canChangeSourceStatus = computed(() => {
+  const { sourceLanguage, translations } = state.translation.value
+  const source = translations?.find((v) => v.id === sourceLanguage)
+  return source?.canChangeStatus !== false
+})
+
+/**
  * The rows of the section "Languages": each translation, or one row when every
  * language shares one status.
  */
@@ -378,6 +398,7 @@ const languages = computed<PublishLanguage[]>(() => {
         label: $t('publishAllLanguages', 'All languages'),
         isCurrent: false,
         isPublished: isCurrentlyPublished.value,
+        canChangeStatus: canChangeSourceStatus.value,
       },
     ]
   } else if (statusScope.value !== 'language') {
@@ -397,6 +418,7 @@ const languages = computed<PublishLanguage[]>(() => {
           label: language.name,
           isCurrent: language.id === context.value.language,
           isPublished: translation.status,
+          canChangeStatus: translation.canChangeStatus !== false,
         },
       ]
     },
@@ -414,6 +436,35 @@ const isAnyPublished = computed(() =>
 )
 
 const hasChanges = computed(() => state.mutations.value.length > 0)
+
+/**
+ * Whether the user may publish an unpublished language, or the page.
+ */
+const canPublishAny = computed(() =>
+  statusScope.value === 'language'
+    ? languages.value.some((v) => !v.isPublished && v.canChangeStatus)
+    : !isCurrentlyPublished.value && canChangeSourceStatus.value,
+)
+
+/**
+ * The note when the user may not publish what is unpublished.
+ */
+const notAllowedText = computed(() => {
+  if (statusScope.value === 'language') {
+    return languages.value.some((v) => !v.isPublished && !v.canChangeStatus)
+      ? $t(
+          'publishLanguagesNotAllowed',
+          "You may not publish the unpublished languages that can't be ticked.",
+        )
+      : ''
+  }
+  return !isCurrentlyPublished.value && !canChangeSourceStatus.value
+    ? $t(
+        'publishPageNotAllowed',
+        'You may not publish this page. Saving keeps it unpublished.',
+      )
+    : ''
+})
 
 /**
  * The unpublished languages that are ticked: those of the schedule, or the
@@ -453,7 +504,9 @@ const publishModeOptions = computed<PublishOptionProps[]>(() => {
         'publishModeImmediateDescription',
         'Publish changes immediately',
       ),
-      disabled: isAlreadyScheduled.value,
+      disabled:
+        isAlreadyScheduled.value ||
+        (!isAnyPublished.value && !canPublishAny.value),
     },
   ]
 
@@ -467,7 +520,7 @@ const publishModeOptions = computed<PublishOptionProps[]>(() => {
         'publishModeScheduledDescription',
         'Schedule changes for publishing',
       ),
-      disabled: false,
+      disabled: !isAnyPublished.value && !canPublishAny.value,
     })
   }
 
@@ -523,9 +576,14 @@ const languagesToPublish = computed<string[]>(() => {
     return []
   } else if (statusScope.value === 'language') {
     return languages.value
-      .filter((v) => !v.isPublished && selectedLanguages.value.includes(v.id))
+      .filter(
+        (v) =>
+          !v.isPublished &&
+          v.canChangeStatus &&
+          selectedLanguages.value.includes(v.id),
+      )
       .map((v) => v.id)
-  } else if (isCurrentlyPublished.value) {
+  } else if (isCurrentlyPublished.value || !canChangeSourceStatus.value) {
     return []
   }
 

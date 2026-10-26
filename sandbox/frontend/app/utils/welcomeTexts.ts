@@ -83,7 +83,7 @@ export const WELCOME_TEXTS: Record<Language, Texts> = {
       footer:
         'Edit the footer: every page shows it, and you edit it like a page.',
       roles:
-        'Try the other roles: Jonas Weber may not add sections, nor add, change or delete charts, and Élodie Favre only translates: she can’t take over a page someone else is editing. Their links are under “Your sandbox”.',
+        'Try the other roles: Jonas Weber may not add sections or publish an unpublished page, nor add, change or delete charts, and Élodie Favre only translates: she can’t take over a page someone else is editing. Their links are under “Your sandbox”.',
     },
     sandboxTitle: 'Your sandbox',
     expires: 'Your sandbox is deleted on @date.',
@@ -152,7 +152,7 @@ export const WELCOME_TEXTS: Record<Language, Texts> = {
       footer:
         'Bearbeiten Sie die Fusszeile: Jede Seite zeigt sie, und Sie bearbeiten sie wie eine Seite.',
       roles:
-        'Probieren Sie die anderen Rollen aus: Jonas Weber darf keine Abschnitte hinzufügen und Diagramme weder hinzufügen, ändern noch löschen, und Élodie Favre übersetzt nur: Sie kann keine Seite übernehmen, die jemand anderes bearbeitet. Ihre Links finden Sie unter «Ihre Sandbox».',
+        'Probieren Sie die anderen Rollen aus: Jonas Weber darf keine Abschnitte hinzufügen, keine unveröffentlichte Seite veröffentlichen und Diagramme weder hinzufügen, ändern noch löschen, und Élodie Favre übersetzt nur: Sie kann keine Seite übernehmen, die jemand anderes bearbeitet. Ihre Links finden Sie unter «Ihre Sandbox».',
     },
     sandboxTitle: 'Ihre Sandbox',
     expires: 'Ihre Sandbox wird am @date gelöscht.',
@@ -221,7 +221,7 @@ export const WELCOME_TEXTS: Record<Language, Texts> = {
       footer:
         'Modifiez le pied de page : toutes les pages l’affichent, et vous le modifiez comme une page.',
       roles:
-        'Essayez les autres rôles : Jonas Weber ne peut pas ajouter de sections, ni ajouter, modifier ou supprimer de graphiques, et Élodie Favre ne fait que traduire : elle ne peut pas reprendre une page qu’une autre personne modifie. Leurs liens se trouvent sous « Votre sandbox ».',
+        'Essayez les autres rôles : Jonas Weber ne peut pas ajouter de sections, publier une page non publiée, ni ajouter, modifier ou supprimer de graphiques, et Élodie Favre ne fait que traduire : elle ne peut pas reprendre une page qu’une autre personne modifie. Leurs liens se trouvent sous « Votre sandbox ».',
     },
     sandboxTitle: 'Votre sandbox',
     expires: 'Votre sandbox sera supprimée le @date.',

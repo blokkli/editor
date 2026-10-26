@@ -429,6 +429,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
                 editUrl: v.editUrl,
                 exists: !!v.exists,
                 status: !!v.status,
+                canChangeStatus: v.canChangeStatus,
               }
             }
             return null

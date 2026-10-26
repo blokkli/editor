@@ -19,6 +19,11 @@ status, and the user ticks the ones to publish:
 
 With a shared status, the section has one row: "All languages".
 
+A user who may not change the status of an unpublished translation
+([canChangeStatus](/editor/edit-state#translationstate-translations)) can't tick
+it, and a note says so. When nothing is published and the user may publish
+nothing, only "Save" is left.
+
 "Save" is disabled while a translation is published: saving would put the
 changes live in it. The dialog also opens without pending changes while a
 translation is unpublished, to publish it on its own.

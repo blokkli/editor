@@ -186,19 +186,21 @@ Traefik sends every hostname to the web container's nginx on port 80.
 - **Roles and test users** (`content/users.yml`, no passwords:
   `ddev drush uli --name="Anna Keller"`; `ddev drush uli` is the admin, uid 1):
 
-  | User         | Role                                 | Can                                                                        |
-  | ------------ | ------------------------------------ | -------------------------------------------------------------------------- |
-  | Anna Keller  | `content_editor` ("Editor")          | everything editorial, any media, templates, library, scheduling, the agent |
-  | Marc Brunner | `reviewer` ("Head of department")    | view, comment, review; no editing                                          |
-  | Élodie Favre | `translator` ("Translator (French)") | translate, edit translations; can't take over an edit state                |
-  | Jonas Weber  | `restricted_editor`                  | edit, but not charts or others' media, and can't add or delete sections    |
+  | User         | Role                                 | Can                                                                                                  |
+  | ------------ | ------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+  | Anna Keller  | `content_editor` ("Editor")          | everything editorial, any media, templates, library, scheduling, the agent                           |
+  | Marc Brunner | `reviewer` ("Head of department")    | view, comment, review; no editing                                                                    |
+  | Élodie Favre | `translator` ("Translator (French)") | translate, edit translations; can't take over an edit state                                          |
+  | Jonas Weber  | `restricted_editor`                  | edit, but not charts or others' media, can't add or delete sections, nor publish what is unpublished |
 
   All four have `view any unpublished content` (contrib `view_unpublished`),
   `use paragraphs blokkli agent` and `view any blokkli entity label` (the list
   of all pages: "Switch page" and "Import from an existing page"). The two
   editor roles may export and import paragraphs (`transfer blokkli paragraphs`).
-  Élodie can't take over an edit state: it covers every language, so she would
-  take over the editors' unfinished changes.
+  Anna and Élodie may publish what is unpublished
+  (`administer node published status`), Jonas only saves it. Élodie can't take
+  over an edit state: it covers every language, so she would take over the
+  editors' unfinished changes.
 
 - **Access:** the anonymous role only has `view media`, so a site is private
   ("This sandbox is private", `app/error.vue`). `blokkli_playground`'s

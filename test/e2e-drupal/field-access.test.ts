@@ -6,9 +6,9 @@ import { resetSandbox, sandboxHost, workerSandbox } from './support/sandbox'
 
 /**
  * Drupal lets a mutation write the fields that the form of the entity could
- * let the user edit. Anna Keller, an editor, may not administer nodes: the
- * page's title is hers to change, its author and whether it's published are
- * not.
+ * let the user edit. Jonas Weber, a restricted editor, may neither administer
+ * nodes nor change their published status: the page's title is his to change,
+ * its author and whether it's published are not.
  *
  * The same goes for the value: Drupal validates the field, and a value that
  * the form would refuse is refused.
@@ -56,7 +56,7 @@ describe('The fields a mutation may write', async () => {
 
   beforeAll(async () => {
     resetSandbox(sandbox)
-    page = await openEditor(sandbox, 'Anna Keller', BLOCKS_EDITOR_PATH)
+    page = await openEditor(sandbox, 'Jonas Weber', BLOCKS_EDITOR_PATH)
   })
 
   afterAll(async () => {
