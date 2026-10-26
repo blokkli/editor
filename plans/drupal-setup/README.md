@@ -43,12 +43,6 @@ Statuses: `todo`, `in progress`.
   on every push to `dev` and weekly, and with them their access links. Premium
   sandboxes (21 days, handed to customers) need to survive it: a plan of its own.
 
-## Features that need their own plan
-
-- **Publishing per language:**
-  [its own plan](../publish-per-language/README.md), with F24 and F26 of the
-  findings.
-
 ## Upstream bugs
 
 [findings.md](findings.md): bugs in `paragraphs_blokkli`, `@blokkli/editor` and

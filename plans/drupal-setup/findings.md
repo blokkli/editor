@@ -687,7 +687,7 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 ## F122: A shared field may be refused when shared fields are hidden
 
 - **Found:** 2026-10-26, by reading, while planning a paragraph's schedule in
-  every language (the publish-per-language plan). Not reproduced.
+  every language. Not reproduced.
 - **Symptom:** a paragraph type with "Hide non translatable fields on
   translation forms" ticked. An edit state changes a shared field of a paragraph
   (a date, a media reference, a link) and a translated field of one of its

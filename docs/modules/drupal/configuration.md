@@ -269,6 +269,19 @@ stays translatable, as Paragraphs requires).
 - The flags are saved when the changes are published.
 - Changes to options, media and the host's own fields aren't tracked.
 
+**Publishing per language:** one edit state covers every language, and
+publishing saves its changes in all of them. Whether each translation has a
+status of its own follows the content translation settings of the host's bundle:
+
+- **Per language:** the language switcher shows each translation's status, and
+  the publish dialog lists the translations. The user ticks the ones to publish;
+  the published ones stay published. A scheduled publication stores its
+  languages, and publishes those at the date.
+- **Shared:** the publish dialog has one row, "All languages".
+
+A paragraph's schedule applies to every language, whatever the paragraph type
+shares: see [paragraphs_blokkli_scheduler](#paragraphs-blokkli-scheduler).
+
 For machine translation, see
 [paragraphs_blokkli_deepl](#paragraphs-blokkli-deepl).
 
@@ -435,13 +448,29 @@ Scheduling. Pending changes need nothing else; single paragraphs need the
 contrib `scheduler` module:
 
 - **Pending changes:** the "Schedule" mode of the publish dialog stores a
-  `publish_on` date on the edit state. Cron publishes the changes then.
+  `publish_on` date on the edit state, and the languages to publish then
+  (`publish_languages`). Cron publishes the changes then. A post-update gives
+  the schedules stored by an earlier version the host's original language, the
+  one they published until then.
 - **Single paragraphs:** "Manage schedule" sets scheduler's publish and
   unpublish dates on paragraphs. Without `scheduler`, no paragraph type can be
   scheduled. scheduler has no paragraph support of its own; it needs the patch
   from
   [scheduler#3312200](https://www.drupal.org/project/scheduler/issues/3312200),
   and scheduling enabled on each paragraph type.
+
+A paragraph's dates apply to every translation, also when the paragraph type
+keeps them per language:
+
+- A "Publish on" date in the future unpublishes every translation until then.
+- Removing it publishes the translations that had one. A translation that was
+  unpublished without a date stays unpublished.
+- An "Unpublish on" date goes to every translation and keeps their status.
+- Dates that differ per language are listed in the dialog. They stay until the
+  user changes them, which sets one date for all languages. A schedule per
+  language is set in Drupal's forms.
+- Pending changes stored by an earlier version apply to every translation too
+  when they're published.
 
 Both only happen when cron runs: `drush cron` runs scheduler's job and this
 module's.

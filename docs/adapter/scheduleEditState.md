@@ -10,6 +10,7 @@ scheduleEditState?: (options: {
   hostEntityUuid: string
   revisionLogMessage?: string
   date: string
+  languages?: string[]
 }) => Promise<MutationResponseLike<T | undefined | null>>
 ```
 
@@ -31,6 +32,13 @@ Optional revision log message describing the changes.
 
 The ISO 8601 date and time when the edit state should be published.
 
+### languages
+
+The languages whose translations to publish at the date, as for
+[publish()](/adapter/publish#languages). The backend stores them with the date,
+and [getPublishOptions()](/adapter/getPublishOptions) returns them as
+`publishLanguages`, so that the dialog shows the scheduled languages.
+
 ## Returns
 
 A promise that resolves to a mutation response, or `undefined`/`null` if
@@ -50,6 +58,7 @@ scheduleEditState: async (options) => {
     entityType: options.hostEntityType,
     entityUuid: options.hostEntityUuid,
     publishAt: options.date,
+    languages: options.languages ?? [],
     message: options.revisionLogMessage,
   })
 
