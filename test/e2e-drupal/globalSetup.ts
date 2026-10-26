@@ -27,6 +27,31 @@ const SOURCES = [
   'build/drupal-schema.graphql',
 ]
 
+// The template caches the plugin definitions: a change to a plugin's
+// attribute (a mutation's version, which new mutations are stored with) needs
+// a bake. These are the plugins of the module, its submodules and the custom
+// modules.
+const PLUGIN_MODULES = ['sandbox/drupal/paragraphs_blokkli']
+const PLUGIN_MODULE_DIRECTORIES = [
+  'sandbox/drupal/paragraphs_blokkli/modules',
+  'sandbox/drupal/web/modules/custom',
+]
+
+/** The `src/Plugin` directories of the modules that have plugins. */
+function pluginDirectories(): string[] {
+  const modules = [
+    ...PLUGIN_MODULES,
+    ...PLUGIN_MODULE_DIRECTORIES.flatMap((directory) =>
+      readdirSync(`${ROOT}${directory}`, { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => `${directory}/${entry.name}`),
+    ),
+  ]
+  return modules
+    .map((module) => `${module}/src/Plugin`)
+    .filter((path) => existsSync(`${ROOT}${path}`))
+}
+
 function files(path: string): string[] {
   if (statSync(path).isFile()) {
     return [path]
@@ -38,7 +63,7 @@ function files(path: string): string[] {
 
 function fingerprint(): string {
   const hash = createHash('sha256')
-  for (const source of SOURCES) {
+  for (const source of [...SOURCES, ...pluginDirectories()]) {
     for (const file of files(`${ROOT}${source}`).sort()) {
       hash.update(file.slice(ROOT.length)).update(readFileSync(file))
     }

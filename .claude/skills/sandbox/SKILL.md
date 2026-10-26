@@ -346,8 +346,8 @@ sandbox/drupal/web/sites/default/files/sandboxes/<id>/   its public files
   definitions.** After changing services, routes or a plugin's attribute (e.g. a
   mutation's `version`, which new mutations are stored with): `ddev drush cr`
   (dev site), the same with `--uri` for a sandbox, and a bake so that new
-  sandboxes get it. The E2E template's fingerprint doesn't cover the module's
-  code: run `ddev bake-e2e` after such a change.
+  sandboxes get it. The E2E template's fingerprint covers the plugins, so the
+  next E2E run bakes it.
 - **Logins** are `<payload>.<signature>`: base64url JSON
   `{sandbox, user, expires}` and base64url HMAC-SHA256 with
   `NUXT_SANDBOX_LOGIN_SECRET`. The control app makes them
@@ -401,8 +401,9 @@ host, with ddev running: `bun run test:e2e-drupal` or
   `sandbox/drupal/content`. `ddev bake-e2e` installs into a scratch sandbox
   (`e2ebake`), so the dev site stays as it is. vitest's global setup bakes when
   its fingerprint changes: config, the seed code, the fixtures, the fakes,
-  `bake-e2e`, the dumped GraphQL schema (the template caches it), and the date
-  (seeded dates are relative to the bake). About 16 s.
+  `bake-e2e`, the dumped GraphQL schema and the plugins of the module and the
+  custom modules (the template caches the schema and the plugin definitions),
+  and the date (seeded dates are relative to the bake). About 16 s.
 - **One sandbox per vitest worker:** `e2e1`, `e2e2`, … (`VITEST_POOL_ID`).
   `resetSandbox()` makes it a fresh copy of the template in about 20 ms: plain
   file copies on the host, the database last. Each spec file resets in
