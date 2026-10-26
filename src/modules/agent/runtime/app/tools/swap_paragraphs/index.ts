@@ -25,7 +25,7 @@ export default defineBlokkliAgentTool({
   resultSchema,
   requiredAdapterMethods: ['swapBlocks'],
   execute(ctx, params) {
-    const { blocks, types, $t, permissions } = ctx.app
+    const { blocks, types, $t, permissions, state } = ctx.app
 
     // Validate block A exists
     const blockA = blocks.getBlock(params.uuid1)
@@ -43,6 +43,7 @@ export default defineBlokkliAgentTool({
       getFieldConfig: types.getFieldConfig,
       checkBlockBundlePermission: permissions.checkBlockBundlePermission,
       blockHasRestrictedAncestor: permissions.blockHasRestrictedAncestor,
+      isChildOf: state.isChildOf,
     })
     if (reason) {
       return { error: reason }

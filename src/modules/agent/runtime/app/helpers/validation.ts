@@ -149,6 +149,27 @@ export function requireNoRestrictedAncestor(
 }
 
 /**
+ * Check that blocks aren't moved into themselves: into one of their own fields,
+ * or into a block nested in them. Returns a ToolError if the target parent is
+ * one of the blocks or nested in one, or undefined otherwise.
+ */
+export function requireNotMovedIntoItself(
+  app: BlokkliApp,
+  uuids: string[],
+  parentUuid: string,
+): ToolError | undefined {
+  const into = uuids.find(
+    (uuid) => uuid === parentUuid || app.state.isChildOf(parentUuid, uuid),
+  )
+  if (into) {
+    return {
+      error: `Paragraph ${into} cannot be moved into itself or into a paragraph nested in it`,
+    }
+  }
+  return undefined
+}
+
+/**
  * Check that the user has a specific permission for all given bundles.
  * Returns a ToolError if any bundle is denied, or undefined if all are allowed.
  */

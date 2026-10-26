@@ -9,6 +9,7 @@ type SwapValidationContext = {
   ) => FieldConfig | undefined
   checkBlockBundlePermission: (bundle: string, operation: 'edit') => boolean
   blockHasRestrictedAncestor: (uuid: string) => boolean
+  isChildOf: (childUuid: string, parentUuid: string) => boolean
 }
 
 /**
@@ -22,6 +23,15 @@ export function getSwapDisabledReason(
 ): string | null {
   if (blockA.uuid === blockB.uuid) {
     return 'Cannot swap a block with itself.'
+  }
+
+  // Each block goes to the place of the other one: a block nested in the
+  // other would take it into its own field.
+  if (
+    ctx.isChildOf(blockA.uuid, blockB.uuid) ||
+    ctx.isChildOf(blockB.uuid, blockA.uuid)
+  ) {
+    return 'Cannot swap a block with a block nested in it.'
   }
 
   if (

@@ -38,6 +38,7 @@ const swapDisabledReason = computed<false | string>(() => {
     getFieldConfig: types.getFieldConfig,
     checkBlockBundlePermission: permissions.checkBlockBundlePermission,
     blockHasRestrictedAncestor: permissions.blockHasRestrictedAncestor,
+    isChildOf: state.isChildOf,
   })
   if (reason) {
     return $t('swapNotPossible', 'Block positions cannot be swapped.')

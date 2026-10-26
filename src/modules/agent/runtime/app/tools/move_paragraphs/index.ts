@@ -5,6 +5,7 @@ import { resolvePosition, resolveHost } from '../helpers'
 import {
   requireBundlePermission,
   requireNoRestrictedAncestor,
+  requireNotMovedIntoItself,
   validateFieldCardinality,
 } from '../../helpers/validation'
 import { getFieldKey } from '#blokkli/helpers'
@@ -73,6 +74,13 @@ export default defineBlokkliAgentTool({
           'Permission denied: target parent is inside a block with restricted editing permissions',
       }
     }
+
+    const intoItself = requireNotMovedIntoItself(
+      ctx.app,
+      params.uuids,
+      params.parent.uuid,
+    )
+    if (intoItself) return intoItself
 
     // Validate target field cardinality. Only blocks coming from another field
     // increase the target's count — same-field reorders leave it unchanged.

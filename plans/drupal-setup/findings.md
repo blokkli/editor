@@ -12,7 +12,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                   | `paragraphs_blokkli`      | low      | open       |
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                      | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
-| F71  | [Moving a paragraph into its own nested paragraph is refused for the wrong reason](#f71-moving-a-paragraph-into-its-own-nested-paragraph-is-refused-for-the-wrong-reason) | `paragraphs_blokkli`      | low      | open       |
 | F72  | [The editor offers places below the nesting limit](#f72-the-editor-offers-places-below-the-nesting-limit)                                                                 | editor                    | low      | open       |
 | F73  | [A new paragraph of a type its field doesn't allow is no violation](#f73-a-new-paragraph-of-a-type-its-field-doesnt-allow-is-no-violation)                                | `paragraphs`              | low      | open       |
 | F74  | [The older mutations for media leave a link field empty](#f74-the-older-mutations-for-media-leave-a-link-field-empty)                                                     | `paragraphs_blokkli`      | low      | open       |
@@ -78,23 +77,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   (`app/graphql/fragment.easyTexts.graphql`). From 2026-10-14, nginx refused
   `/graphql`, but any logged-in user still reached it as `/index.php/graphql`.
 - **Fix idea:** create keys only with a permission, or only in development.
-
-## F71: Moving a paragraph into its own nested paragraph is refused for the wrong reason
-
-- **Found:** 2026-10-12, trying the nesting limit in a sandbox, over GraphQL.
-- **Symptom:** `move` of a section into a section that is nested in it is
-  refused with "Paragraphs can't be nested more than 7 levels deep.", at any
-  depth. The refusal is right, the reason isn't: the paragraphs would hold each
-  other, and the limit's check counts that as too deep.
-- **By reading:** before the limit (2026-10-12) the move was accepted. The
-  paragraph and everything nested in it then had no way back to the page: gone
-  from the editor, and from the page when it was published. `Move::execute()`
-  and `MoveMultiple::execute()` have no check of their own. The editor doesn't
-  offer such a drop.
-- **Impact:** low. Only a client that sends the mutation itself gets there, and
-  it is refused.
-- **Fix idea:** refuse it in `move` and `move_multiple` when the mutation is
-  added, with a message of its own. A kernel test.
 
 ## F72: The editor offers places below the nesting limit
 
