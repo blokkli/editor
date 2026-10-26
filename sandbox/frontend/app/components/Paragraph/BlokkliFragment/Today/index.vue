@@ -35,9 +35,12 @@
 // Before the await: the editor needs the definition during setup.
 defineBlokkliFragment({
   name: 'today',
-  label: 'Today',
-  description:
-    "An office's hours today, the next collection and an event, from the site config page.",
+  label: { en: 'Today', de: 'Heute', fr: "Aujourd'hui" },
+  description: {
+    en: "An office's hours today, the next collection and an event, from the site config page.",
+    de: 'Die heutigen Öffnungszeiten eines Amts, die nächste Abfuhr und eine Veranstaltung, von der Konfigurationsseite «Website».',
+    fr: "Les horaires du jour d'un service, le prochain ramassage et un événement, tirés de la page de configuration « Site ».",
+  },
   editor: {
     icon: 'bk_mdi_today',
     previewWidth: 800,

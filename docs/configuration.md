@@ -397,6 +397,10 @@ shapes:
   (e.g. `red`) or a specific shade via the compound id `red.<shade>` (e.g.
   `red.300`).
 
+The `label` is a string or has
+[one text per language](/define-blokkli/options#labels-in-several-languages),
+like an option's.
+
 ```typescript
 blokkli: {
   colorOptions: {
@@ -405,7 +409,7 @@ blokkli: {
       hex: '#0c6bff',
     },
     red: {
-      label: 'Red',
+      label: { en: 'Red', de: 'Rot' },
       mainShade: '500',
       shades: {
         '300': '#fca5a5',

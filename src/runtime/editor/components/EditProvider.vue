@@ -229,7 +229,6 @@ const state = await editStateProvider(
   providerKey,
   props.permissions.filter(falsy),
 )
-const config = configProvider()
 const storage = await storageProvider(adapter, context)
 const plugins = pluginProvider()
 const debug = debugProvider(eventBus, storage)
@@ -251,6 +250,7 @@ const ui = uiProvider(
   viewportElement,
   $t,
 )
+const config = configProvider(ui.interfaceLanguage)
 const definitions = definitionProvider(props.providerType, ui.interfaceLanguage)
 const dom = domProvider(ui, debug, state, element)
 const theme = themeProvider(element)

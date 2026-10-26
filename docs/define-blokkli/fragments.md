@@ -48,15 +48,22 @@ prop on `<BlokkliField>`.
 
 ### label
 
-**Type:** `string` (required)
+**Type:** `string | Record<string, string>` (required)
 
-The human-readable label displayed in the editor.
+The human-readable label displayed in the editor. Like an option's label, it can
+have
+[one text per language](/define-blokkli/options#labels-in-several-languages):
+
+```typescript
+label: { en: 'Opening hours', de: 'Öffnungszeiten', fr: 'Horaires' },
+```
 
 ### description
 
-**Type:** `string`
+**Type:** `string | Record<string, string>`
 
-A short description of what the fragment renders.
+A short description of what the fragment renders, as a string or one text per
+language.
 
 ### chunkName
 

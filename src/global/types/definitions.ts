@@ -1,4 +1,7 @@
-import type { BlockOptionDefinitionBase } from './blockOptions'
+import type {
+  BlockOptionDefinitionBase,
+  DefinitionString,
+} from './blockOptions'
 
 export type BlockDefinitionOptionsInputBase = {
   [key: string]: BlockOptionDefinitionBase
@@ -324,14 +327,14 @@ export type FragmentDefinitionInputBase<
   name: string
 
   /**
-   * The label of the fragment.
+   * The label of the fragment, as a string or one per language.
    */
-  label: string
+  label: DefinitionString
 
   /**
-   * A short description.
+   * A short description, as a string or one per language.
    */
-  description?: string
+  description?: DefinitionString
 
   /**
    * The name of the chunk group.

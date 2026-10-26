@@ -9,7 +9,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #    | Finding                                                                                                                                                                     | Project                   | Severity | Status     |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F28  | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                                                                      | `@blokkli/editor`         | low      | open       |
 | F29  | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                                                                                | `paragraphs_blokkli`      | low      | workaround |
 | F30  | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                                                                               | `paragraphs_blokkli`      | low      | open       |
 | F35  | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)                                                        | `@blokkli/editor`         | low      | open       |
@@ -49,19 +48,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
-
-## F28: Labels that can't be translated
-
-- **Found:** 2026-09-27, 13f.
-- **Symptom:** on a German page, the editor shows the fragments' labels
-  ("Today", "Frequently searched") and the chart colours' labels in English.
-- **Cause:**
-  - A fragment's `label` and `description` are plain strings
-    (`src/global/types/definitions.ts:329`), not `DefinitionString` like option
-    labels.
-  - So are the chart colours' labels in `colorOptions`
-    (`src/global/types/colorOptions.ts`), 13i.
-- **Fix idea:** accept `DefinitionString` for fragment and colour labels.
 
 ## F29: Drops write only the source's link
 

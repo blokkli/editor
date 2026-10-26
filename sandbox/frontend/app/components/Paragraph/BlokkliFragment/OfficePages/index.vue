@@ -26,8 +26,16 @@
 // Before the await: the editor needs the definition during setup.
 const block = defineBlokkliFragment({
   name: 'office_pages',
-  label: 'Pages of the office',
-  description: 'The detail pages this office is responsible for.',
+  label: {
+    en: 'Pages of the office',
+    de: 'Seiten des Amts',
+    fr: 'Pages du service',
+  },
+  description: {
+    en: 'The detail pages this office is responsible for.',
+    de: 'Die Detailseiten, für die dieses Amt zuständig ist.',
+    fr: 'Les pages de détail dont ce service est responsable.',
+  },
   editor: {
     icon: 'bk_mdi_format_list_bulleted',
     previewWidth: 800,

@@ -21,6 +21,18 @@ import type {
 import type { RenderedFieldListItem } from '../types/field'
 import { resolveDefinitionString as resolveDefinitionStringBase } from '../helpers/options'
 
+/**
+ * A fragment's definition, with its label and description in the editor's
+ * language.
+ */
+export type ResolvedFragmentDefinition = Omit<
+  FragmentDefinition,
+  'label' | 'description'
+> & {
+  label: string
+  description?: string
+}
+
 export type DefinitionProvider = {
   /**
    * Get the block definition for a specific context.
@@ -57,7 +69,9 @@ export type DefinitionProvider = {
    * @param name - The fragment name
    * @returns The fragment definition, or undefined if not found
    */
-  getFragmentDefinition: (name: string) => FragmentDefinition | undefined
+  getFragmentDefinition: (
+    name: string,
+  ) => ResolvedFragmentDefinition | undefined
 
   /**
    * Get a provider definition for an entity type and bundle.
@@ -92,7 +106,7 @@ export type DefinitionProvider = {
    *
    * Updates automatically via HMR during development.
    */
-  fragmentDefinitions: ComputedRef<FragmentDefinition[]>
+  fragmentDefinitions: ComputedRef<ResolvedFragmentDefinition[]>
 
   /**
    * List of all registered block definitions.
@@ -198,8 +212,18 @@ export default function (
     }, {}),
   )
 
+  const resolvedFragments = computed<ResolvedFragmentDefinition[]>(() =>
+    fragments.value.map((definition) => ({
+      ...definition,
+      label: resolveDefinitionString(definition.label),
+      description: definition.description
+        ? resolveDefinitionString(definition.description)
+        : undefined,
+    })),
+  )
+
   const fragmentsByName = computed(() =>
-    fragments.value.reduce<Record<string, FragmentDefinition>>(
+    resolvedFragments.value.reduce<Record<string, ResolvedFragmentDefinition>>(
       (acc, definition) => {
         acc[definition.name] = definition
         return acc
@@ -247,7 +271,9 @@ export default function (
     return blocksByKey.value[bundle]
   }
 
-  function getFragmentDefinition(name: string): FragmentDefinition | undefined {
+  function getFragmentDefinition(
+    name: string,
+  ): ResolvedFragmentDefinition | undefined {
     return fragmentsByName.value[name]
   }
 
@@ -296,7 +322,7 @@ export default function (
     getDefaultDefinition,
     getBlockIcon,
     getBlockImage,
-    fragmentDefinitions: computed(() => fragments.value),
+    fragmentDefinitions: resolvedFragments,
     blockDefinitions: computed(() => blocks.value),
     globalOptions: readonly(allGlobalOptions),
     runtimeOptions: readonly(runtimeOptions),

@@ -1,5 +1,8 @@
+import type { DefinitionString } from './blockOptions'
+
 /**
- * A color option declared at build time.
+ * A color option declared at build time. Its label is a string or one per
+ * language.
  *
  * Two shapes:
  * - A flat color with a single hex value.
@@ -12,11 +15,11 @@
  */
 export type ColorOption =
   | {
-      label: string
+      label: DefinitionString
       hex: string
     }
   | {
-      label: string
+      label: DefinitionString
       shades: Record<string, string>
       mainShade: string
     }

@@ -117,7 +117,7 @@ import {
   Pill,
 } from '#blokkli/editor/components'
 import EditActionsItemDropdown from '../ItemDropdown/index.vue'
-import type { FragmentDefinition } from '#blokkli-build/definitions'
+import type { ResolvedFragmentDefinition } from '#blokkli/editor/providers/definition'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import {
@@ -203,7 +203,7 @@ const hasSelectedHost = computed(() => {
   return selection.items.value.length === 0
 })
 
-const fragment = computed<FragmentDefinition | null>(() => {
+const fragment = computed<ResolvedFragmentDefinition | null>(() => {
   if (itemBundle.value?.id !== fragmentBlockBundle) {
     return null
   }
