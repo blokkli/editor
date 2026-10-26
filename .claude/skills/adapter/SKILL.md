@@ -24,6 +24,10 @@ const adapter: BlokkliAdapterFactory<T> = (ctx: ComputedRef<AdapterContext>) =>
 The Drupal module provides the reference implementation. The playground uses a
 mock adapter that stores data in localStorage.
 
+**A bundle is only unique within its entity type:** the host entity's bundle can
+have a block bundle's name. Whatever an adapter returns per bundle or per field
+carries the entity type, and a lookup in it compares the entity type too.
+
 ## Type System
 
 The adapter type is assembled from two parts:

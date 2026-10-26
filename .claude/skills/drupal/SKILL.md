@@ -52,6 +52,18 @@ mutations and queries go through GraphQL. Methods are conditionally registered
 based on what the schema supports — the adapter only exposes operations that the
 backend can handle.
 
+## Bundles
+
+- **A bundle is known by its entity type and its name.** A content type and a
+  paragraph type can have the same name, and fields of the same name. The field
+  configs (`fieldConfig`, `editableFieldConfig`, `droppableFieldConfig`) list
+  the host's fields and every paragraph type's: look a field up by entity type,
+  bundle and name (in the editor, through the `types` provider). A function that
+  takes a bundle alone means a paragraph type: don't call it with the host's.
+- **Kernel tests in the module** that cover the host's fields and a paragraph
+  type's give both bundles the same name and the same field names, so that a
+  lookup without the entity type fails.
+
 ## Components
 
 Library items and templates are edited on their canonical URLs, pages of the

@@ -93,7 +93,7 @@ const buildEditable = (
   if (!host) {
     return
   }
-  if (host.bundle === fromLibraryBlockBundle) {
+  if (host.type === itemEntityType && host.bundle === fromLibraryBlockBundle) {
     return
   }
 

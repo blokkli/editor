@@ -18,7 +18,6 @@ import {
 } from '#imports'
 import type {
   ParagraphsBlokkliBulkUpdateFieldValuesInput,
-  ParagraphsBlokkliAddMultipleItemInput,
   ParagraphsBlokkliCommentFragment,
   ParagraphsBlokkliConfigInputFragment,
   ParagraphsBlokkliEditStateFragment,
@@ -55,6 +54,7 @@ import { toValidNotificationType } from '#blokkli/editor/features/notifications/
 import type { BlokkliUser } from '#blokkli/editor/types/user'
 import type { BlockTransferImportSummary } from '#blokkli/editor/features/block-transfer/types'
 import { isFileAccepted } from '../helpers/clipboard'
+import { mapBlockToGraphQL } from '../helpers/addNewBlocks'
 
 type DrupalAdapter = FullBlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 
@@ -2076,57 +2076,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     }
 
     if (hasMutation('pbAddMultipleParagraphs')) {
-      type AddNewBlocksData = Parameters<
-        NonNullable<typeof adapter.addNewBlocks>
-      >[0]
-      type EventBlock = AddNewBlocksData['blocks'][number]
-
-      const mapBlockToGraphQL = (
-        block: EventBlock,
-      ): ParagraphsBlokkliAddMultipleItemInput => {
-        const values: Record<string, unknown> = {}
-        for (const entry of block.values ?? []) {
-          const droppableConfig = config.droppableFieldConfig.find(
-            (f) =>
-              f.entityBundle === block.bundle && f.name === entry.fieldName,
-          )
-          if (droppableConfig) {
-            if (droppableConfig.type === 'reference') {
-              if (typeof entry.fieldValue !== 'string') {
-                values[entry.fieldName] = {
-                  target_id: entry.fieldValue.entityId,
-                }
-              }
-            } else if (droppableConfig.type === 'link') {
-              if (typeof entry.fieldValue === 'string') {
-                values[entry.fieldName] = entry.fieldValue
-              } else {
-                values[entry.fieldName] =
-                  `entity:${entry.fieldValue.entityType}/${entry.fieldValue.entityId}`
-              }
-            }
-          } else if (typeof entry.fieldValue === 'string') {
-            values[entry.fieldName] = entry.fieldValue
-          }
-        }
-
-        return {
-          bundle: block.bundle,
-          uuid: block.blockUuid,
-          values,
-          options: block.options,
-          children: block.children
-            ? Object.entries(block.children).map(
-                ([fieldName, childBlocks]) => ({
-                  fieldName,
-                  items: childBlocks.map(mapBlockToGraphQL),
-                }),
-              )
-            : undefined,
-        }
-      }
-
-      adapter.addNewBlocks = (data: AddNewBlocksData) =>
+      adapter.addNewBlocks = (data) =>
         useGraphqlMutation('pbAddMultipleParagraphs', {
           entityType: ctx.value.entityType,
           entityUuid: ctx.value.entityUuid,
@@ -2135,7 +2085,9 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           hostUuid: data.host.uuid,
           hostFieldName: data.host.fieldName,
           afterUuid: data.afterUuid,
-          items: data.blocks.map(mapBlockToGraphQL),
+          items: data.blocks.map((block) =>
+            mapBlockToGraphQL(block, config.droppableFieldConfig),
+          ),
         }).then(mapMutation)
     }
 
