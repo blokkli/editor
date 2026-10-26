@@ -12,7 +12,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                   | `paragraphs_blokkli`      | low      | open       |
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                      | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
-| F78  | [A page's link field takes a paragraph type's mapping by name](#f78-a-pages-link-field-takes-a-paragraph-types-mapping-by-name)                                           | `paragraphs_blokkli`      | low      | to verify  |
 | F85  | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                     | editor                    | low      | to verify  |
 | F89  | [Building an edit state empties the fields of the cached entities](#f89-building-an-edit-state-empties-the-fields-of-the-cached-entities)                                 | `paragraphs_blokkli`      | low      | open       |
 | F95  | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                        | both                      | low      | open       |
@@ -73,21 +72,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   (`app/graphql/fragment.easyTexts.graphql`). From 2026-10-14, nginx refused
   `/graphql`, but any logged-in user still reached it as `/index.php/graphql`.
 - **Fix idea:** create keys only with a permission, or only in development.
-
-## F78: A page's link field takes a paragraph type's mapping by name
-
-- **Found:** 2026-10-12, by reading, in the same check. Not reproduced.
-- **Symptom:** a content type has the machine name of a paragraph type, and a
-  link field of the same name as that type's (say both `event`, with
-  `field_link`). The page's link field is then listed with the entities that the
-  paragraph type's mappings allow. For media, the editor offers "Replace …" on
-  it, and `replace_host_entity_media` refuses: it only takes reference fields,
-  since no mapping can name a field of a page.
-- **Cause:** `ParagraphsBlokkliDroppableFieldConfig::getDroppableFields()`
-  (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/ParagraphsBlokkliDroppableFieldConfig.php:117-133`
-  at `0f3e2e8`) compares a mapping's paragraph type and field with the bundle
-  and the field's name, also for the host's bundle.
-- **Fix idea:** look at the mappings only for fields of paragraphs.
 
 ## F85: A rejected rewrite drops the token usage of its stream
 
