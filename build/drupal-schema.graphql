@@ -7114,6 +7114,21 @@ type ParagraphsBlokkliParagraphEditContext {
   """
   outdatedTranslations: [String!]!
 
+  "The paragraph in each of its languages."
+  translations: [ParagraphsBlokkliParagraphTranslation!]!
+
+  publishOn: String
+  unpublishOn: String
+}
+
+"A paragraph in one of its languages."
+type ParagraphsBlokkliParagraphTranslation {
+  "The langcode of the translation."
+  langcode: String!
+
+  "The status of the translation."
+  isPublished: Boolean!
+
   publishOn: String
   unpublishOn: String
 }

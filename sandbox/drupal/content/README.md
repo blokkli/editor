@@ -69,7 +69,9 @@ field_paragraphs:
   every language. An entity can pin its own with `source: de`; its paragraphs
   have its source language.
 - **An entity gets a translation in every language of its maps,** its
-  paragraphs' included. A language a map lacks gets the source's value there.
+  paragraphs' included. A language a map lacks gets the source's value there;
+  `null` leaves the field empty in its language
+  (`publish_on: { en: '+5 days', de: null }`).
 - **A paragraph only gets a translation in the languages of its own maps** (and
   its nested paragraphs'). With plain values only, it has none, even in a
   translated node: the editor shows it as untranslated there.

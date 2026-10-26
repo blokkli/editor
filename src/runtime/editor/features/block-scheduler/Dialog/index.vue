@@ -5,10 +5,15 @@
     :submit-label="$t('blockSchedulerDialogSubmit', 'Save schedule')"
     :width="900"
     :lead="
-      $t(
-        'blockSchedulerDialogLead',
-        'Schedule automatic publishing and unpublishing dates for the selected blocks.',
-      )
+      languageLabels
+        ? $t(
+            'blockSchedulerDialogLeadLanguages',
+            'Schedule automatic publishing and unpublishing dates for the selected blocks. A date set here applies to all languages.',
+          )
+        : $t(
+            'blockSchedulerDialogLead',
+            'Schedule automatic publishing and unpublishing dates for the selected blocks.',
+          )
     "
     :is-loading
     :can-submit
@@ -31,6 +36,8 @@
         :items="publishOnItems"
         :supported-bundles="bundlesWithPublish"
         :disabled="publishDisabled"
+        :language-labels
+        show-status
       />
 
       <ScheduleSection
@@ -47,10 +54,11 @@
         :items="unpublishOnItems"
         :supported-bundles="bundlesWithUnpublish"
         :disabled="unpublishDisabled"
+        :language-labels
       />
 
-      <PanelSection :title="$t('summary', 'Summary')">
-        <table v-if="canSubmit" class="bk-table bk-padded">
+      <PanelSection v-if="canSubmit" :title="$t('summary', 'Summary')">
+        <table class="bk-table bk-padded">
           <thead>
             <tr>
               <th>{{ $t('bundle', 'Bundle') }}</th>
@@ -92,7 +100,7 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-const { state, $t, adapter, ui, types } = useBlokkli()
+const { state, $t, adapter, ui, types, context } = useBlokkli()
 
 const isLoading = ref(false)
 const error = ref('')
@@ -104,15 +112,71 @@ const items = computed(() => {
     })
     .filter(falsy)
     .map((item) => {
+      const isPublished = !!item.editContext?.isPublished
+      const publishOn = item.editContext?.publishOn ?? null
+      const unpublishOn = item.editContext?.unpublishOn ?? null
       return {
         uuid: item.uuid,
         bundle: item.bundle,
-        isPublished: !!item.editContext?.isPublished,
-        publishOn: item.editContext?.publishOn,
-        unpublishOn: item.editContext?.unpublishOn,
+        // A backend that doesn't list them has the current language's.
+        translations: item.editContext?.translations?.map((v) => ({
+          ...v,
+          publishOn: v.publishOn ?? null,
+          unpublishOn: v.unpublishOn ?? null,
+        })) ?? [
+          {
+            langcode: context.value.language,
+            isPublished,
+            publishOn,
+            unpublishOn,
+          },
+        ],
       }
     })
 })
+
+/**
+ * The names of the page's languages, by langcode, when it has several
+ * translations: a schedule applies to all of them.
+ */
+const languageLabels = computed<Record<string, string> | null>(() => {
+  const translations = state.translation.value.translations ?? []
+  const languages = (state.translation.value.availableLanguages ?? []).filter(
+    (language) => translations.some((v) => v.id === language.id && v.exists),
+  )
+  if (languages.length < 2) {
+    return null
+  }
+  return Object.fromEntries(languages.map((v) => [v.id, v.name]))
+})
+
+type Item = (typeof items.value)[number]
+
+/**
+ * Whether a date differs from one of the block's translations: undefined means
+ * no change.
+ */
+function isChanged(
+  item: Item,
+  key: 'publishOn' | 'unpublishOn',
+  date: string | null | undefined,
+): boolean {
+  return date !== undefined && item.translations.some((v) => v[key] !== date)
+}
+
+/**
+ * The block's current date, or that its translations differ.
+ */
+function formatCurrentDate(
+  item: Item,
+  key: 'publishOn' | 'unpublishOn',
+): string {
+  const dates = [...new Set(item.translations.map((v) => v[key]))]
+  if (dates.length > 1) {
+    return $t('blockSchedulerDiffersPerLanguage', 'Differs per language')
+  }
+  return dates[0] ? ui.formatDate(dates[0]) : $t('notSet', 'Not set')
+}
 
 const selectedBundles = computed(() => {
   const bundles = items.value.map((item) => item.bundle)
@@ -132,19 +196,26 @@ const unpublishDisabled = computed(() => {
 })
 
 const publishOnItems = computed<ScheduleItemData[]>(() => {
-  return items.value.map((item) => ({
-    uuid: item.uuid,
-    bundle: item.bundle,
-    date: item.publishOn,
-  }))
+  return items.value.flatMap((item) =>
+    item.translations.map((v) => ({
+      uuid: item.uuid,
+      bundle: item.bundle,
+      langcode: v.langcode,
+      date: v.publishOn,
+      isPublished: v.isPublished,
+    })),
+  )
 })
 
 const unpublishOnItems = computed<ScheduleItemData[]>(() => {
-  return items.value.map((item) => ({
-    uuid: item.uuid,
-    bundle: item.bundle,
-    date: item.unpublishOn,
-  }))
+  return items.value.flatMap((item) =>
+    item.translations.map((v) => ({
+      uuid: item.uuid,
+      bundle: item.bundle,
+      langcode: v.langcode,
+      date: v.unpublishOn,
+    })),
+  )
 })
 
 // Helper function to get common date from supported items
@@ -207,9 +278,7 @@ const tableRows = computed(() => {
       publishOnDisplay = $t('notSupported', 'Not supported')
     } else if (publishOn.value === undefined) {
       // undefined = no change, show current value
-      publishOnDisplay = item.publishOn
-        ? ui.formatDate(item.publishOn)
-        : $t('notSet', 'Not set')
+      publishOnDisplay = formatCurrentDate(item, 'publishOn')
     } else if (publishOn.value) {
       publishOnDisplay = ui.formatDate(publishOn.value)
     } else {
@@ -221,9 +290,7 @@ const tableRows = computed(() => {
       unpublishOnDisplay = $t('notSupported', 'Not supported')
     } else if (unpublishOn.value === undefined) {
       // undefined = no change, show current value
-      unpublishOnDisplay = item.unpublishOn
-        ? ui.formatDate(item.unpublishOn)
-        : $t('notSet', 'Not set')
+      unpublishOnDisplay = formatCurrentDate(item, 'unpublishOn')
     } else if (unpublishOn.value) {
       unpublishOnDisplay = ui.formatDate(unpublishOn.value)
     } else {
@@ -243,27 +310,10 @@ const canSubmit = computed(() => {
     const supportsPublish = props.bundlesWithPublish.includes(item.bundle)
     const supportsUnpublish = props.bundlesWithUnpublish.includes(item.bundle)
 
-    // Check if publishOn changed for bundles that support it
-    // Only consider it a change if value is not undefined
-    if (
-      supportsPublish &&
-      publishOn.value !== undefined &&
-      item.publishOn !== publishOn.value
-    ) {
-      return true
-    }
-
-    // Check if unpublishOn changed for bundles that support it
-    // Only consider it a change if value is not undefined
-    if (
-      supportsUnpublish &&
-      unpublishOn.value !== undefined &&
-      item.unpublishOn !== unpublishOn.value
-    ) {
-      return true
-    }
-
-    return false
+    return (
+      (supportsPublish && isChanged(item, 'publishOn', publishOn.value)) ||
+      (supportsUnpublish && isChanged(item, 'unpublishOn', unpublishOn.value))
+    )
   })
 })
 
@@ -275,12 +325,9 @@ async function onSubmit() {
     const supportsPublish = props.bundlesWithPublish.includes(item.bundle)
     const supportsUnpublish = props.bundlesWithUnpublish.includes(item.bundle)
 
-    // Only submit publishOn changes if value is not undefined (undefined = no change made)
-    if (
-      supportsPublish &&
-      publishOn.value !== undefined &&
-      item.publishOn !== publishOn.value
-    ) {
+    // A change that one of the translations doesn't have yet: the date is set
+    // in every language.
+    if (supportsPublish && isChanged(item, 'publishOn', publishOn.value)) {
       blocks.push({
         uuid: item.uuid,
         type: 'publish',
@@ -288,11 +335,9 @@ async function onSubmit() {
       })
     }
 
-    // Only submit unpublishOn changes if value is not undefined (undefined = no change made)
     if (
       supportsUnpublish &&
-      unpublishOn.value !== undefined &&
-      item.unpublishOn !== unpublishOn.value
+      isChanged(item, 'unpublishOn', unpublishOn.value)
     ) {
       blocks.push({
         uuid: item.uuid,

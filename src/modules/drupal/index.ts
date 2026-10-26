@@ -1,7 +1,12 @@
 import { createResolver } from '@nuxt/kit'
 import { fileURLToPath } from 'node:url'
 import { join } from 'pathe'
-import { isInterfaceType, isObjectType, type GraphQLField } from 'graphql'
+import {
+  getNamedType,
+  isInterfaceType,
+  isObjectType,
+  type GraphQLField,
+} from 'graphql'
 import { defineBlokkliModule } from '../defineBlokkliModule'
 import { useGraphqlModuleContext } from 'nuxt-graphql-middleware/utils'
 
@@ -574,9 +579,17 @@ fragment blokkliUploadForm on ParagraphsBlokkliUploadForm {
     }
 
     // Build the fragment for the "ParagraphsBlokkliParagraphEditContext" type.
+    // A field of an object type, such as `translations`, selects all fields of
+    // its type, which are scalars.
     const paragraphsBlokkliEditContextFields = [
-      ...getTypeFields('ParagraphsBlokkliParagraphEditContext').keys(),
-    ]
+      ...getTypeFields('ParagraphsBlokkliParagraphEditContext').entries(),
+    ].map(([name, field]) => {
+      const type = getNamedType(field.type)
+      if (isObjectType(type)) {
+        return `${name} { ${Object.keys(type.getFields()).join(' ')} }`
+      }
+      return name
+    })
 
     graphql.addDocument(
       'blokkli:paragraphsBlokkliParagraphEditContext',

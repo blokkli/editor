@@ -1,9 +1,9 @@
 # Publishing per language
 
 What the editor publishes and schedules, and in which languages, and how the
-user sees it. Steps 1 and 2 of the work are done (2026-10-26). It began as two
-findings of the drupal-setup plan, F24 (a paragraph's schedule) and F26
-("Publish if unpublished"), which moved here on 2026-10-25.
+user sees it. The work is done (2026-10-26). It began as two findings of the
+drupal-setup plan, F24 (a paragraph's schedule) and F26 ("Publish if
+unpublished"), which moved here on 2026-10-25.
 
 Code references are relative to the `paragraphs_blokkli` repository at `3d34722`
 (2.0.x), except those under `src/runtime/` and `src/modules/`, which are in this
@@ -39,32 +39,42 @@ language the user is in.
   type's status and dates are. Text field values already carry a flag
   `isTranslatable` per field, and the adapter skips the shared ones when it
   loads a language's texts
-  (`src/modules/drupal/runtime/adapter/index.ts:927-930`): the model for these
-  flags.
+  (`src/modules/drupal/runtime/adapter/index.ts:927-930`). A paragraph's
+  schedule needs no such flags: blökkli's applies to every language (see
+  Decisions).
 
 ## F24: a paragraph's schedule applies to one translation
 
-- **Found:** 2026-09-27, 13e of the drupal-setup plan.
+- **Found:** 2026-09-27, 13e of the drupal-setup plan. Its cause was corrected
+  on 2026-10-26.
 - **Symptom:** "Manage schedule" on a paragraph with a German translation, in
   the English editor, with a "Publish on" date. The English paragraph is hidden
-  until the date; the German one is published at once and has no date.
-- **Cause:** `set_paragraph_schedule` sets `publish_on`, `unpublish_on` and the
-  status on the paragraph of the edit's language
+  until the date; the German one is published at once and has no date. The
+  action is only offered in the original language: it's `edit-only`, and a
+  translation's editor is in the mode "translating".
+- **Cause:** the mutation records no language, and the edit state loads the host
+  and its paragraphs in their original language (`getMutatedState()` loads the
+  host with `loadUnchanged()`, `buildHostProxies()` takes its paragraphs). So
+  `set_paragraph_schedule` writes `publish_on`, `unpublish_on` and the status on
+  the paragraph's original translation
   (`modules/paragraphs_blokkli_scheduler/src/Plugin/ParagraphsBlokkli/Mutation/SetParagraphSchedule.php:130-141`),
-  and Drupal shares what the site shares. That's what Drupal's own form does:
-  Scheduler's presave unpublishes only the translation being saved when its
-  "Publish on" is in the future (`scheduler.module:885-888` in Scheduler).
-  What's missing is in the dialog: it doesn't say which languages a date covers.
+  and Drupal shares what the site shares. The response shows the editor's
+  language (`MutatedFieldParagraphs`). Confirmed on 2026-10-26 by a throwaway
+  kernel test: with German as the current language, the English paragraph got
+  the date and was unpublished; the German one got no date and stayed published.
+  Until then, this plan said that the mutation wrote the edit's language, as
+  Drupal's form does; since the action is only offered in the original language,
+  that's the language being edited.
 - **Impact:** a user who means every language schedules one, and a notice
   scheduled to disappear stays in the other languages.
-- **By the site's settings,** in blökkli as in Drupal's form: with all three
-  shared, every language gets the same values. With the dates shared and the
-  status per language, every language gets the date, but only the edit's
-  language is hidden until then. With the status shared and the dates per
-  language, every language is hidden, only one has the date, and cron publishes
-  all of them at it.
+- **By the site's settings:** with all three shared, every language gets the
+  same values. With the dates shared and the status per language, every language
+  gets the date, but only the original is hidden until then. With the status
+  shared and the dates per language, every language is hidden, only the original
+  has the date, and cron publishes all of them at it.
 - **Tests** can use the Scheduler module: `paragraphs_blokkli_scheduler_test`
   gives it the paragraphs, as the sandbox's patch does.
+- **Fixed** in step 3 (2026-10-26): a schedule applies to every language.
 
 ## F26: "Publish if unpublished" acts on the default translation
 
@@ -136,7 +146,11 @@ Read in the code on 2026-10-12, and on 2026-10-25 where noted:
   a paragraph in some languages only is the job of blökkli's option "Visible
   languages" (`bkVisibleLanguages`), which is shared.
 - Stored mutations don't record their language; only some take one as an
-  argument, such as the text edits (2026-10-25).
+  argument, such as the text edits (2026-10-25). The others write the original
+  language (F24).
+- `set_paragraph_schedule` unpublishes the paragraph for a "Publish on" in the
+  future, and publishes it when the date is removed, whatever its status was
+  before (2026-10-26). A date the dialog doesn't change isn't sent.
 
 ## Decisions
 
@@ -145,7 +159,8 @@ The user, 2026-10-25, unless noted.
 **The editor follows the site's content translation settings:** a field that is
 per language is handled per language, a shared one covers all languages, as in
 Drupal's forms. Otherwise a schedule that Drupal's form keeps per language would
-cover every language in blökkli, without the user knowing why.
+cover every language in blökkli, without the user knowing why. A paragraph's
+schedule is the exception (the user, 2026-10-26, below).
 
 - **The page's status, per language, in the language switcher.** Each language
   gets a dot: published, unpublished, or greyed out without a translation, as
@@ -188,40 +203,40 @@ cover every language in blökkli, without the user knowing why.
   · French: stays unpublished") under one sentence: "Publishing applies all
   pending changes, in every language." The table lists every language, so it
   needs no count of changes per language, which the module doesn't have.
-- **A paragraph's schedule covers the languages its fields cover.**
-  `set_paragraph_schedule` stays as it is, so stored schedules replay unchanged.
-  - Drupal tells the editor, per paragraph type, whether its status, "Publish
-    on" and "Unpublish on" are per language, next to `hasPublishOn` and
-    `hasUnpublishOn`.
-  - Each date in the schedule dialog names its scope: "All languages" or "Only
-    German". The two dates can differ. With several paragraph types selected,
-    the summary table, which has a row per type, gets a column "Languages".
-  - The mixed setups get one sentence each. The date shared, the status per
-    language: "The date applies to all languages; only German is hidden until
-    then." The date per language, the status shared: "The date applies to German
-    only; the paragraph is hidden in all languages until then."
-  - For a date per language, the dialog lists the other languages' dates,
-    read-only. The paragraph's edit context gets every translation's status and
-    dates.
-  - Paragraphs already scheduled in one language are correct data: the dialog
-    says "Only English" and lists the other languages' dates, or that they have
-    none. Nothing is converted.
-- **"Hide non translatable fields on translation forms" is respected.** With it
-  ticked, Drupal's form doesn't let a translation change a shared field, so
-  neither does the dialog: outside the original language, a shared date is
-  read-only, with a note that names the original language. So is "Publish on"
-  when the status is shared, since the date sets it. That also keeps away core's
-  check on shared fields changed in a translation
-  (`EntityUntranslatableFieldsConstraintValidator`), which would refuse to save
-  such a paragraph when another of its translations changed too. Drupal tells
-  the editor the setting per paragraph type, with the flags above.
+- **A paragraph's schedule applies to every language** (the user, 2026-10-26).
+  This replaces the decision of 2026-10-25 that it covers the languages its
+  fields cover. A schedule per language needs a section per language in the
+  dialog, each with its toggles and date pickers, as Drupal's form needs each
+  translation edited. A site that wants one sets it in Drupal.
+  - `set_paragraph_schedule` writes the date on every translation of the
+    paragraph, and the status: a "Publish on" in the future unpublishes every
+    translation. Removing a "Publish on" publishes only the translations that
+    had one, so a translation held back without a date stays unpublished.
+  - Schedules stored in pending changes replay with the new rule, so they cover
+    every language too: writing only the original language was F24.
+  - The dialog's lead says that a date applies to all languages, on every page
+    with more than one translation, whatever the site shares. Drupal doesn't
+    report its field settings for it.
+  - Translations that differ are shown before they're overwritten: while they
+    differ, a section lists each language's date and, under "Publish on", its
+    status (a translation unpublished without a date gets published at a new
+    date). "Set date for all languages" then shows the date picker. A date that
+    the user doesn't touch isn't sent, so a schedule set per language in Drupal
+    stays until the user changes that date. The paragraph's edit context gets
+    every translation's status and dates. Nothing is converted.
+  - A list, not notes (the user, 2026-10-26): three yellow notes and the button
+    between them were too many. The list looks like the publish dialog's section
+    "Languages".
+  - "Hide non translatable fields on translation forms" isn't this step's:
+    whether blökkli's changes to a shared field clash with it concerns every
+    shared field (F122 in
+    [the drupal-setup findings](../drupal-setup/findings.md)).
 
 ## Work
 
 In this order (the user, 2026-10-25): the status per language first, since F26
 can put the wrong language live and its section "Languages" needs that status;
-F24 last, since its mutation already does what Drupal's form does. Each step is
-a commit in both repositories where both change.
+F24 last. Each step is a commit in both repositories where both change.
 
 1. **The status in the language switcher.** Done (2026-10-26). Drupal's flag for
    a shared status, the dots, and the title's tooltip. E2E sandboxes share the
@@ -232,12 +247,10 @@ a commit in both repositories where both change.
    "Languages" and summary. Each language's result sits in its row of the
    section, which the user tried and kept; the summary has the sentence on the
    changes.
-3. **The schedule's languages (F24).** Drupal's flags per paragraph type (the
-   three fields, and the setting "Hide non translatable fields"), every
-   translation's status and dates in the edit context, and the schedule dialog:
-   each date's scope, the sentences for the mixed setups, the other languages'
-   dates, and shared dates read-only outside the original language when the
-   setting is ticked.
+3. **The schedule in every language (F24).** Done (2026-10-26).
+   `set_paragraph_schedule` writes every translation, the edit context has every
+   translation's status and dates, and the schedule dialog lists the languages
+   while they differ, which the user tried and kept.
 
 ## Related
 

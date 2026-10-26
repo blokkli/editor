@@ -6,12 +6,27 @@ import type { ComputedRef } from 'vue'
 
 export type FieldDropAlignment = 'vertical' | 'horizontal'
 
+/**
+ * A block in one of its languages.
+ */
+export type BlockTranslation = {
+  langcode: string
+  isPublished: boolean
+  publishOn?: string | null
+  unpublishOn?: string | null
+}
+
 export type BlockEditContext = {
   isPublished: boolean
   isNew: boolean
   publishOn?: string | null
   unpublishOn?: string | null
   outdatedTranslations?: string[]
+
+  /**
+   * The block in each of its languages, the current one included.
+   */
+  translations?: BlockTranslation[]
 }
 
 export type FieldListItem = {

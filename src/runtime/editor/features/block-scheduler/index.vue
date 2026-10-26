@@ -88,6 +88,13 @@ const selectionHasDates = computed<boolean>(() => {
     if (block.editContext?.publishOn || block.editContext?.unpublishOn) {
       return true
     }
+
+    // A date in another language.
+    if (
+      block.editContext?.translations?.some((v) => v.publishOn || v.unpublishOn)
+    ) {
+      return true
+    }
   }
 
   return false

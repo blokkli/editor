@@ -45,6 +45,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F117 | [An add or a move into a field that blökkli doesn't manage is lost](#f117-an-add-or-a-move-into-a-field-that-blökkli-doesnt-manage-is-lost)                                 | `paragraphs_blokkli`      | low      | to verify  |
 | F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                                                          | `nuxt-graphql-middleware` | low      | workaround |
 | F121 | [The library's query access finds unpublished items that its access handler hides](#f121-the-librarys-query-access-finds-unpublished-items-that-its-access-handler-hides)   | `paragraphs`              | low      | open       |
+| F122 | [A shared field may be refused when shared fields are hidden](#f122-a-shared-field-may-be-refused-when-shared-fields-are-hidden)                                            | `paragraphs_blokkli`      | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -682,3 +683,21 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** the access handler allows viewing for "view any unpublished
   content" too, or the query access only for the admin permission. Upstream, in
   Paragraphs.
+
+## F122: A shared field may be refused when shared fields are hidden
+
+- **Found:** 2026-10-26, by reading, while planning a paragraph's schedule in
+  every language (the publish-per-language plan). Not reproduced.
+- **Symptom:** a paragraph type with "Hide non translatable fields on
+  translation forms" ticked. An edit state changes a shared field of a paragraph
+  (a date, a media reference, a link) and a translated field of one of its
+  translations, such as its German text. Publishing may be refused.
+- **Cause:** with the setting ticked, core lets a shared field change only in
+  the original language, and only when no other translation changes in the same
+  save (`EntityUntranslatableFieldsConstraintValidator`: "Non-translatable
+  fields can only be changed when updating the original language."). An edit
+  state saves the changes of every language at once. Whether its validation runs
+  the check on paragraphs isn't known.
+- **Impact:** low: the setting is off by default and in the sandbox.
+- **Fix idea:** a kernel test with the setting ticked first; what to change
+  depends on where it's refused. Related: F30.

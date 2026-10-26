@@ -1358,6 +1358,15 @@ msgid ""
 "blocks."
 msgstr ""
 
+msgctxt "blockSchedulerDialogLeadLanguages"
+msgid ""
+"Schedule automatic publishing and unpublishing dates for the selected "
+"blocks. A date set here applies to all languages."
+msgstr ""
+"Planifiez des dates de publication et de dépublication automatiques pour "
+"les blocs sélectionnés. Une date définie ici s'applique à toutes les "
+"langues."
+
 msgctxt "blockSchedulerDialogPublishOn"
 msgid "Publish on"
 msgstr ""
@@ -1383,6 +1392,10 @@ msgid ""
 "page."
 msgstr ""
 
+msgctxt "blockSchedulerDiffersPerLanguage"
+msgid "Differs per language"
+msgstr "Diffère selon la langue"
+
 msgctxt "blockSchedulerMixedDates"
 msgid "Selected blocks have different dates: @dates"
 msgstr ""
@@ -1391,9 +1404,21 @@ msgctxt "blockSchedulerOverride"
 msgid "Set date for all"
 msgstr ""
 
+msgctxt "blockSchedulerOverrideLanguages"
+msgid "Set date for all languages"
+msgstr "Définir la date pour toutes les langues"
+
+msgctxt "blockSchedulerPublished"
+msgid "Published"
+msgstr "Publié"
+
 msgctxt "blockSchedulerSuccessMessage"
 msgid "Successfully updated schedule dates."
 msgstr ""
+
+msgctxt "blockSchedulerUnpublished"
+msgid "Unpublished"
+msgstr "Non publié"
 
 msgctxt "blockTransferClipboardError"
 msgid "Failed to write to the clipboard. Please check your browser permissions."

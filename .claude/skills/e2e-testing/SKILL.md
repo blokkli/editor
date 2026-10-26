@@ -305,10 +305,12 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
   status of its own (`status: { en: true, de: false }`,
   `nodes/status-per-language.yml`, `unpublished-translations.yml`,
   `original-unpublished.yml`); the translations of a news item share one
-  (`nodes/shared-status.yml`, unpublished: `shared-draft.yml`). `deleted: true`
-  on a user or node deletes it after seeding, leaving its comments without an
-  author or its notifications without a page (`users.yml`: Nora Huber,
-  `nodes/removed.yml`).
+  (`nodes/shared-status.yml`, unpublished: `shared-draft.yml`). A paragraph's
+  status and dates are per language too; `null` leaves a field empty in its
+  language (`nodes/scheduled-text.yml`: a text scheduled in English only).
+  `deleted: true` on a user or node deletes it after seeding, leaving its
+  comments without an author or its notifications without a page (`users.yml`:
+  Nora Huber, `nodes/removed.yml`).
 - **The widget** (`sandbox/frontend/app/components/Paragraph/Widget`): a
   paragraph type for the tests only. It has an option of every type, each value
   in a cell of its own (`data-test="widget-option-<key>"`), a `field_title`

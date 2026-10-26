@@ -1,0 +1,22 @@
+# A page whose first text is scheduled in English only, as blökkli scheduled
+# the original language before a schedule applied to every language. German is
+# published, French is unpublished without a date. The second text is published
+# in every language: /en/market-day, /de/markttag, /fr/jour-de-marche.
+key: scheduled-text
+type: page
+title: { en: Market day, de: Markttag, fr: Jour de marché }
+field_paragraphs:
+  - type: text
+    key: scheduled-in-english
+    status: { en: false, de: true, fr: false }
+    publish_on: { en: '+5 days 10:00', de: null, fr: null }
+    field_text:
+      en: '<p>The market opens at eight.</p>'
+      de: '<p>Der Markt öffnet um acht.</p>'
+      fr: '<p>Le marché ouvre à huit heures.</p>'
+  - type: text
+    key: published-everywhere
+    field_text:
+      en: '<p>Stalls are free for local farms.</p>'
+      de: '<p>Für Höfe aus der Gegend sind die Stände gratis.</p>'
+      fr: '<p>Les stands sont gratuits pour les fermes de la région.</p>'
