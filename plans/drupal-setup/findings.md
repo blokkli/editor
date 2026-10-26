@@ -45,7 +45,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F117 | [An add or a move into a field that blökkli doesn't manage is lost](#f117-an-add-or-a-move-into-a-field-that-blökkli-doesnt-manage-is-lost)                                 | `paragraphs_blokkli`      | low      | to verify  |
 | F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                                                          | `nuxt-graphql-middleware` | low      | workaround |
 | F121 | [The library's query access finds unpublished items that its access handler hides](#f121-the-librarys-query-access-finds-unpublished-items-that-its-access-handler-hides)   | `paragraphs`              | low      | open       |
-| F122 | [A shared field may be refused when shared fields are hidden](#f122-a-shared-field-may-be-refused-when-shared-fields-are-hidden)                                            | `paragraphs_blokkli`      | low      | to verify  |
+| F123 | [Content moderation decides what blökkli publishes](#f123-content-moderation-decides-what-blökkli-publishes)                                                                | both                      | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -684,20 +684,23 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   content" too, or the query access only for the admin permission. Upstream, in
   Paragraphs.
 
-## F122: A shared field may be refused when shared fields are hidden
+## F123: Content moderation decides what blökkli publishes
 
-- **Found:** 2026-10-26, by reading, while planning a paragraph's schedule in
-  every language. Not reproduced.
-- **Symptom:** a paragraph type with "Hide non translatable fields on
-  translation forms" ticked. An edit state changes a shared field of a paragraph
-  (a date, a media reference, a link) and a translated field of one of its
-  translations, such as its German text. Publishing may be refused.
-- **Cause:** with the setting ticked, core lets a shared field change only in
-  the original language, and only when no other translation changes in the same
-  save (`EntityUntranslatableFieldsConstraintValidator`: "Non-translatable
-  fields can only be changed when updating the original language."). An edit
-  state saves the changes of every language at once. Whether its validation runs
-  the check on paragraphs isn't known.
-- **Impact:** low: the setting is off by default and in the sandbox.
-- **Fix idea:** a kernel test with the setting ticked first; what to change
-  depends on where it's refused. Related: F30.
+- **Found:** 2026-10-26, by reading, while fixing a refused publish for pages
+  that hide their shared fields on translation forms. Not tried.
+- **Symptom:** on a moderated page, the moderation state decides on save whether
+  the new revision is the published one or a draft, and the published status
+  (`EntityOperations::entityPresave()`, `ModerationHandler::onPresave()` in
+  core's content_moderation). blökkli's publish never changes the moderation
+  state; it sets the status of the languages ticked in the publish dialog
+  (`ParagraphsBlokkliManager::publishTranslations()`). Which of the two wins for
+  each language, and whether publishing a draft in blökkli publishes it, isn't
+  known.
+- **Drafts:** core keeps drafts per language, so it lets a moderated bundle's
+  shared fields change only in a save that changes no other translation. The
+  module leaves that violation out for other bundles, not for moderated ones:
+  with host validation, changes to the original language's paragraphs and to a
+  translation (its title, or ticking it in the publish dialog) are refused
+  there. Reproduced with the editorial workflow (`HiddenSharedFieldsTest`).
+- **Impact:** low: the sandbox doesn't use content moderation.
+- **Fix idea:** try a moderated page with drafts in blökkli first. Related: F30.

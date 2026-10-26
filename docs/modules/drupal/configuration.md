@@ -98,7 +98,11 @@ Configure at `/admin/config/content/blokkli`:
   the host entity, its paragraphs fields, and the paragraphs. "Paragraph"
   validates every paragraph, also the ones inside other paragraphs. A violation
   holds the publishing back for everyone without the permission
-  `publish paragraphs blokkli edit state with validation errors`.
+  `publish paragraphs blokkli edit state with validation errors`. One rule of
+  core's is left out: for a bundle that hides its shared fields on translation
+  forms, they may only change in a save that changes no other translation. An
+  edit state saves every language at once. The rule stays for content under
+  moderation, whose save may be a draft.
 
 ### Host Options Field
 
