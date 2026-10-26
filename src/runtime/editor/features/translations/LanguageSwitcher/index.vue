@@ -10,11 +10,18 @@
       )
     "
   >
-    <Dropdown v-if="isDropdown" :items :active-language @select="onClick" />
+    <Dropdown
+      v-if="isDropdown"
+      :items
+      :active-language
+      :show-status
+      @select="onClick"
+    />
     <InlineButtons
       v-else
       :items
       :active-langcode="activeLanguage.id"
+      :show-status
       @select="onClick"
     />
   </PluginTourItem>
@@ -53,6 +60,11 @@ const items = computed<TranslationStateItem[]>(() => {
     })
     .filter(falsy)
 })
+
+// Each translation's status, unless every language shares one.
+const showStatus = computed(
+  () => state.translation.value.isStatusTranslatable === true,
+)
 
 const isDropdown = computed(() => {
   // Always a dropdown on mobile.

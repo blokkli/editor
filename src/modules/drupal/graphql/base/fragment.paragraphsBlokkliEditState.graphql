@@ -57,6 +57,7 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
 
   translationState {
     isTranslatable
+    isStatusTranslatable
     sourceLanguage
     availableLanguages {
       id

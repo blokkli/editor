@@ -9,8 +9,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #    | Finding                                                                                                                                                                     | Project                   | Severity | Status     |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F24  | [Paragraph schedules apply to one translation](#f24-paragraph-schedules-apply-to-one-translation)                                                                           | `paragraphs_blokkli`      | medium   | parked     |
-| F26  | ["Publish if unpublished" acts on the default translation](#f26-publish-if-unpublished-acts-on-the-default-translation)                                                     | both                      | medium   | parked     |
 | F28  | [Labels that can't be translated](#f28-labels-that-cant-be-translated)                                                                                                      | `@blokkli/editor`         | low      | workaround |
 | F29  | [Drops write only the source's link](#f29-drops-write-only-the-sources-link)                                                                                                | `paragraphs_blokkli`      | low      | workaround |
 | F30  | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                                                                               | `paragraphs_blokkli`      | low      | open       |
@@ -49,87 +47,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F121 | [The library's query access finds unpublished items that its access handler hides](#f121-the-librarys-query-access-finds-unpublished-items-that-its-access-handler-hides)   | `paragraphs`              | low      | open       |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
-(the sandbox works around it), `parked` (part of a plan of its own, in
-[README](README.md)'s "Features that need their own plan").
-
-## F24: Paragraph schedules apply to one translation
-
-- **Found:** 2026-09-27, 13e.
-- **Symptom:** "Manage schedule" on a paragraph with a German translation, in
-  the English editor, with a "Publish on" date. The English paragraph is hidden
-  until the date; the German one is published at once and has no date.
-- **Cause:** `set_paragraph_schedule` sets `publish_on`, `unpublish_on` and the
-  status on the paragraph of the edit's language
-  (`Mutation/SetParagraphSchedule.php:120-133`). All three are translatable. The
-  dialog doesn't mention languages.
-- **Impact:** a notice scheduled to disappear stays in the other languages.
-- **Depends on the site:** it takes translatable fields, the default. Scheduler
-  defines both dates as translatable, core the status; a site can make each one
-  shared in its content translation settings. The sandbox keeps the defaults.
-  - All three shared: one value for every language, no F24.
-  - All three per language: F24.
-  - Dates shared, status per language: the date is set everywhere, but only the
-    edit's language is hidden; the others are live before the date.
-  - Status shared, dates per language: hidden everywhere, but only one language
-    has the date; cron publishes all of them at that date.
-  - Scheduler's cron handles each translation's dates on their own.
-- **Fix idea:** a new version of `set_paragraph_schedule` that sets the dates
-  and the status on every translation. That's right for shared fields as well,
-  but rules out schedules per language, which the dialog can't set today either.
-  Or schedules per language, with the language in the dialog.
-- **Parked** (the user, 2026-10-14): part of the plan for publish status per
-  language ([README](README.md), "Features that need their own plan"), with F26.
-  Tests can use the Scheduler module since the fix of F23:
-  `paragraphs_blokkli_scheduler_test` gives it the paragraphs, as the sandbox's
-  patch does.
-
-## F26: "Publish if unpublished" acts on the default translation
-
-- **Found:** 2026-09-27, 13f. Reproduced 2026-10-12 over GraphQL, in sandboxes
-  with English and with German as the original language.
-- **Symptom:** a news item published in English and unpublished in German,
-  published from the German editor with the mode "Publish": German stays
-  unpublished. The other way round (English unpublished, German published),
-  publishing from the German editor publishes English. English is the original
-  language here; with German as the original, it shows from the English editor.
-- **Cause:** publishing loads the host through `getHostEntity()`, which returns
-  the original language (`src/Entity/ParagraphsBlokkliEditState.php:317-347` at
-  `0f3e2e8`), and sets that one published
-  (`src/ParagraphsBlokkliManager.php:323-325`). The publish dialog shows the
-  status of the editor's language.
-- **Impact:** an editor can't publish a translation from the editor, and may
-  publish the original language by accident.
-- **Decision (the user, 2026-10-12): no patch.** Publishing the editor's
-  language, or a list of languages to tick in the dialog, would paper over what
-  is missing: the editor has no notion of a publish status per language. That is
-  a feature with a plan of its own, not started
-  ([README](README.md#features-that-need-their-own-plan)).
-- **What the feature must do:** show clearly that only some languages are
-  published, whichever language the user is in.
-- **The open UX problem:** the status sits next to the entity's title in the
-  toolbar, the language switcher at the toolbar's other end. Showing the status
-  with the language switcher is the obvious choice, but then the one at the
-  title is in limbo: it changes with the language the user is in.
-- **What exists today** (2026-10-12, read in the code):
-  - The editor acts on one status, `state.entity.status`
-    (`src/runtime/editor/features/publish/`). The Drupal adapter fills it with
-    the status of the language being edited.
-  - The state already has every translation's `exists` and `status`
-    (`state.translation.value.translations`, `EntityTranslation` in
-    `src/runtime/editor/types/state.ts`). Only `exists` is used, by the language
-    switcher.
-  - `publish()` sends one flag, `publishIfUnpublished`, without a language. A
-    page that is published only has the mode "Publish", so the flag is sent on
-    every publish: publishing every language on it would put a translation live
-    that was held back on purpose.
-  - The publish button is disabled without pending changes, so a language can't
-    be published on its own without changing something.
-  - The module creates a page's translation as a copy of the original
-    (`addTranslation()` with its values), status included.
-  - By a search: the scheduler submodule doesn't pass the flag, so a scheduled
-    publish doesn't change the page's status.
-- **Related:** F24 (a paragraph's schedule applies to one translation) and the
-  sandbox's scheduler dates, which are translatable to match `status`.
+(the sandbox works around it).
 
 ## F28: Labels that can't be translated
 

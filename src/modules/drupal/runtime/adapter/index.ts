@@ -408,6 +408,8 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
 
       const translationState: TranslationState = {
         isTranslatable: !!state.translationState?.isTranslatable,
+        isStatusTranslatable:
+          state.translationState?.isStatusTranslatable ?? null,
         sourceLanguage: state.translationState?.sourceLanguage || '',
         availableLanguages: (
           state.translationState?.availableLanguages || []

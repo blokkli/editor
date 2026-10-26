@@ -7327,6 +7327,12 @@ type ParagraphsBlokkliTranslationState {
   "Whether the entity is translatable."
   isTranslatable: Boolean
 
+  """
+  Whether each translation has a publish status of its own. False when the
+  status is shared by every language, null when the entity has no status.
+  """
+  isStatusTranslatable: Boolean
+
   "The source language."
   sourceLanguage: String
 

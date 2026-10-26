@@ -30,6 +30,11 @@ export interface EntityTranslation {
 
 export interface TranslationState {
   isTranslatable?: boolean | null
+  /**
+   * Whether each translation has a publish status of its own. False when every
+   * language shares one, null when the backend doesn't say.
+   */
+  isStatusTranslatable?: boolean | null
   sourceLanguage?: string | null
   availableLanguages?: Language[]
   translations?: EntityTranslation[]

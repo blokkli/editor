@@ -1,0 +1,11 @@
+# News in every language, which share one status (blokkli_playground_test):
+# /en/news/pool-reopens.
+key: shared-status
+type: news
+title: { en: Pool reopens, de: Badi wieder offen, fr: La piscine rouvre }
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>The pool reopens on Monday.</p>'
+      de: '<p>Die Badi ist ab Montag wieder offen.</p>'
+      fr: '<p>La piscine rouvre lundi.</p>'

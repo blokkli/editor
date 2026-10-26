@@ -14,6 +14,10 @@ use Drupal\field\Entity\FieldConfig;
  *
  * Allows the widget on detail pages. No field of the site allows it, so only
  * E2E sandboxes have widgets.
+ *
+ * Every translation of a news item shares its status and the scheduler's
+ * dates, as the content translation settings allow. The site gives each
+ * translation its own.
  */
 function blokkli_playground_test_install(): void {
   $field = FieldConfig::loadByName('node', 'page', 'field_paragraphs');
@@ -22,4 +26,9 @@ function blokkli_playground_test_install(): void {
   $settings['target_bundles']['widget'] = 'widget';
   $field->setSetting('handler_settings', $settings);
   $field->save();
+
+  $definitions = \Drupal::service('entity_field.manager')->getBaseFieldDefinitions('node');
+  foreach (['status', 'publish_on', 'unpublish_on'] as $name) {
+    $definitions[$name]->getConfig('news')->setTranslatable(FALSE)->save();
+  }
 }

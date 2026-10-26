@@ -460,6 +460,7 @@ export default async function (
   const mutatedItemProps = reactive<MutatedItemProps>({})
   const translation = ref<TranslationState>({
     isTranslatable: false,
+    isStatusTranslatable: null,
     sourceLanguage: '',
     availableLanguages: [],
     translations: [],
@@ -524,6 +525,8 @@ export default async function (
 
     translation.value.isTranslatable =
       !!context?.translationState?.isTranslatable
+    translation.value.isStatusTranslatable =
+      context?.translationState?.isStatusTranslatable ?? null
     translation.value.translations =
       context?.translationState?.translations?.filter(falsy) || []
     translation.value.sourceLanguage =

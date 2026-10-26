@@ -2461,9 +2461,33 @@ msgctxt "editingDisabled"
 msgid "Editing is disabled for this block type."
 msgstr ""
 
+msgctxt "entityTitleLanguageNotPublished"
+msgid "@language: not published"
+msgstr "@language : non publiée"
+
+msgctxt "entityTitleLanguagePublished"
+msgid "@language: published"
+msgstr "@language : publiée"
+
+msgctxt "entityTitleLanguagePublishedWithPendingChanges"
+msgid "@language: published (changes pending)"
+msgstr "@language : publiée (modifications en attente)"
+
 msgctxt "entityTitleLastChanged"
 msgid "Last changed"
 msgstr "Dernière modification"
+
+msgctxt "entityTitleNotPublishedInAnyLanguage"
+msgid "Page is not published in any language"
+msgstr "La page n’est publiée dans aucune langue"
+
+msgctxt "entityTitlePublishedInAllLanguages"
+msgid "Page is published in all languages"
+msgstr "La page est publiée dans toutes les langues"
+
+msgctxt "entityTitlePublishedInAllLanguagesWithPendingChanges"
+msgid "Page is published in all languages (changes pending)"
+msgstr "La page est publiée dans toutes les langues (modifications en attente)"
 
 msgctxt "entityTitleTourText"
 msgid ""
@@ -2789,6 +2813,14 @@ msgstr ""
 msgctxt "keyboardSpace"
 msgid "Space"
 msgstr ""
+
+msgctxt "languageSwitcherNotPublished"
+msgid "Not published"
+msgstr "Non publiée"
+
+msgctxt "languageSwitcherPublished"
+msgid "Published"
+msgstr "Publiée"
 
 msgctxt "libraryAddDescription"
 msgid ""

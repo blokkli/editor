@@ -22,6 +22,9 @@
       class="bk-toolbar-button group/tooltip w-full justify-start relative"
       data-test="entity-title"
       :data-test-entity-status="statusIndicatorStatus"
+      :data-test-entity-status-scope="
+        languageName ? 'language' : isStatusShared ? 'all-languages' : 'page'
+      "
       :disabled="!state.canEdit.value"
       @click="onEditEntity"
     >
@@ -67,8 +70,8 @@ defineBlokkliFeature({
   description: 'Renders the title and status of the page entity.',
 })
 
-const { state, eventBus, $t, ui } = useBlokkli()
-const { entity, mutations, lastChanged } = state
+const { state, eventBus, $t, ui, context } = useBlokkli()
+const { entity, mutations, lastChanged, translation } = state
 const buttonEl = useTemplateRef('buttonEl')
 
 // Persist any pending option changes before opening the entity edit form
@@ -99,7 +102,69 @@ const formattedScheduledDate = computed(() => {
   })
 })
 
+/**
+ * The name of the language being edited, when the page has several and each
+ * of them has a status of its own.
+ */
+const languageName = computed<string | null>(() => {
+  if (
+    !translation.value.isTranslatable ||
+    translation.value.isStatusTranslatable !== true ||
+    (translation.value.availableLanguages?.length ?? 0) < 2
+  ) {
+    return null
+  }
+  const language = translation.value.availableLanguages?.find(
+    (v) => v.id === context.value.language,
+  )
+  return language?.name ?? context.value.language
+})
+
+/**
+ * Whether every language of the page shares one status.
+ */
+const isStatusShared = computed(
+  () =>
+    !!translation.value.isTranslatable &&
+    translation.value.isStatusTranslatable === false &&
+    (translation.value.availableLanguages?.length ?? 0) > 1,
+)
+
 const tooltipLabel = computed(() => {
+  if (languageName.value) {
+    let label = $t(
+      'entityTitleLanguageNotPublished',
+      '@language: not published',
+    )
+    if (entity.value.status && mutations.value.length) {
+      label = $t(
+        'entityTitleLanguagePublishedWithPendingChanges',
+        '@language: published (changes pending)',
+      )
+    } else if (entity.value.status) {
+      label = $t('entityTitleLanguagePublished', '@language: published')
+    }
+    return label.replace('@language', languageName.value)
+  }
+
+  if (isStatusShared.value) {
+    if (!entity.value.status) {
+      return $t(
+        'entityTitleNotPublishedInAnyLanguage',
+        'Page is not published in any language',
+      )
+    }
+    return mutations.value.length
+      ? $t(
+          'entityTitlePublishedInAllLanguagesWithPendingChanges',
+          'Page is published in all languages (changes pending)',
+        )
+      : $t(
+          'entityTitlePublishedInAllLanguages',
+          'Page is published in all languages',
+        )
+  }
+
   if (entity.value.status && !mutations.value.length) {
     return $t('pageIsPublished', 'Page is published')
   } else if (entity.value.status && mutations.value.length) {

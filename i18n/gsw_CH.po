@@ -2515,9 +2515,33 @@ msgctxt "editingDisabled"
 msgid "Editing is disabled for this block type."
 msgstr ""
 
+msgctxt "entityTitleLanguageNotPublished"
+msgid "@language: not published"
+msgstr "@language: nid publiziert"
+
+msgctxt "entityTitleLanguagePublished"
+msgid "@language: published"
+msgstr "@language: publiziert"
+
+msgctxt "entityTitleLanguagePublishedWithPendingChanges"
+msgid "@language: published (changes pending)"
+msgstr "@language: publiziert (Änderige usstehend)"
+
 msgctxt "entityTitleLastChanged"
 msgid "Last changed"
 msgstr "Zletscht gänderet"
+
+msgctxt "entityTitleNotPublishedInAnyLanguage"
+msgid "Page is not published in any language"
+msgstr "Die Sitte isch in keinere Sprooch publiziert"
+
+msgctxt "entityTitlePublishedInAllLanguages"
+msgid "Page is published in all languages"
+msgstr "Die Sitte isch in allne Sprooche publiziert"
+
+msgctxt "entityTitlePublishedInAllLanguagesWithPendingChanges"
+msgid "Page is published in all languages (changes pending)"
+msgstr "Die Sitte isch in allne Sprooche publiziert (Änderige usstehend)"
 
 msgctxt "entityTitleTourText"
 msgid ""
@@ -2852,6 +2876,14 @@ msgstr "Kursiv"
 msgctxt "keyboardSpace"
 msgid "Space"
 msgstr "Leertaste"
+
+msgctxt "languageSwitcherNotPublished"
+msgid "Not published"
+msgstr "Nid publiziert"
+
+msgctxt "languageSwitcherPublished"
+msgid "Published"
+msgstr "Publiziert"
 
 msgctxt "libraryAddDescription"
 msgid ""
