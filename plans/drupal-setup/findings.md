@@ -9,7 +9,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 | #    | Finding                                                                                                                                                                     | Project                   | Severity | Status     |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F30  | [No hint for shared fields in a translation](#f30-no-hint-for-shared-fields-in-a-translation)                                                                               | `paragraphs_blokkli`      | low      | open       |
 | F35  | [A data source's colour overrides apply to one language](#f35-a-data-sources-colour-overrides-apply-to-one-language)                                                        | `@blokkli/editor`         | low      | open       |
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                     | `paragraphs_blokkli`      | low      | open       |
 | F43  | [Translators can't be limited to translating](#f43-translators-cant-be-limited-to-translating)                                                                              | both                      | low      | open       |
@@ -46,17 +45,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
-
-## F30: No hint for shared fields in a translation
-
-- **Found:** 2026-09-27, 13f (read in the code).
-- **Symptom:** "Edit translation" on a button in German shows its link like any
-  other field. Changing it changes every language.
-- **Cause:** content translation marks untranslatable fields "(all languages)"
-  or hides them (`untranslatable_fields_hide`) only on content entity forms.
-  `EditParagraphForm` extends `ParagraphsBlokkliFormBase`, a plain form.
-- **Fix idea:** hide untranslatable fields in the translation form, or mark
-  them.
 
 ## F35: A data source's colour overrides apply to one language
 
@@ -653,4 +641,4 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   translation (its title, or ticking it in the publish dialog) are refused
   there. Reproduced with the editorial workflow (`HiddenSharedFieldsTest`).
 - **Impact:** low: the sandbox doesn't use content moderation.
-- **Fix idea:** try a moderated page with drafts in blökkli first. Related: F30.
+- **Fix idea:** try a moderated page with drafts in blökkli first.
