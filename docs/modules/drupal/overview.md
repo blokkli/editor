@@ -46,6 +46,10 @@ entity that stores all mutations as a history. This gives you:
 When the user publishes, all mutations are replayed and applied to the actual
 Drupal entities.
 
+The edit state is blökkli's draft, so blökkli doesn't edit content that Drupal's
+content moderation moderates: it's off for a bundle in a workflow. The module's
+settings form and the status report name such a bundle.
+
 ### GraphQL as the Contract
 
 The entire communication between Nuxt and Drupal happens through GraphQL. The
@@ -71,7 +75,7 @@ independently from the content data.
 
 ## Prerequisites
 
-- **Drupal 10 or 11** with the Paragraphs module
+- **Drupal 11.2 or later** with the Paragraphs module
 - **Nuxt 4.4 or later** with `nuxt-graphql-middleware`
 - A GraphQL server module for Drupal (e.g., `graphql_core_schema`)
 

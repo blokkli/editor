@@ -4,13 +4,16 @@ Common issues when using blökkli with Drupal and how to solve them.
 
 ## The edit button does not appear on the page
 
-For the edit button to appear, three conditions must be met:
+For the edit button to appear, four conditions must be met:
 
 1. **The entity type and bundle must be enabled** in the Drupal blökkli settings
    at `/admin/config/content/blokkli`
-2. **The user must have the correct permissions** — at minimum
+2. **The bundle must not be moderated** — blökkli doesn't edit content under
+   Drupal's content moderation. The settings form lists such a bundle under
+   "Potential issues"
+3. **The user must have the correct permissions** — at minimum
    `view paragraphs blokkli edit state` and `edit paragraphs blokkli edit state`
-3. **The `blokkliProps` data must be passed to `<BlokkliProvider>`** — make sure
+4. **The `blokkliProps` data must be passed to `<BlokkliProvider>`** — make sure
    your GraphQL query includes the `blokkliProps` field and you spread it onto
    the provider with `v-bind="blokkliProps"`
 

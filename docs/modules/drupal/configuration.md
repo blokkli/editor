@@ -82,7 +82,8 @@ Drupal configuration.
 Configure at `/admin/config/content/blokkli`:
 
 - **Enabled entity types** — Which content types/bundles are editable with
-  blökkli
+  blökkli. Not a bundle that content moderation moderates: blökkli is off for
+  it, and the form lists it under "Potential issues"
 - **Media bundle for images** — Which media type to use for pasted and dropped
   images (see [Uploads](#uploads))
 - **Media bundle for files** — Which media type to use for other pasted and
