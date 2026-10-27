@@ -23,7 +23,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F113 | [The comment module's schema extension needs the GraphQL submodule](#f113-the-comment-modules-schema-extension-needs-the-graphql-submodule)                               | `paragraphs_blokkli`      | low      | to verify  |
 | F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                                                                       | `paragraphs_blokkli`      | low      | open       |
 | F115 | [A violation of a host's paragraphs field names no entity](#f115-a-violation-of-a-hosts-paragraphs-field-names-no-entity)                                                 | `paragraphs_blokkli`      | low      | to verify  |
-| F117 | [The editor offers fields that blökkli doesn't manage](#f117-the-editor-offers-fields-that-blökkli-doesnt-manage)                                                         | both                      | low      | to verify  |
 | F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                                                        | `nuxt-graphql-middleware` | low      | workaround |
 | F121 | [The library's query access finds unpublished items that its access handler hides](#f121-the-librarys-query-access-finds-unpublished-items-that-its-access-handler-hides) | `paragraphs`              | low      | open       |
 | F124 | [The lists of pages show one name for bundles of the same name](#f124-the-lists-of-pages-show-one-name-for-bundles-of-the-same-name)                                      | both                      | low      | to verify  |
@@ -269,32 +268,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Impact:** low: only with the validation of fields on, and the message is
   still shown.
 - **Fix idea:** rebuild those violations as `setValidFieldValue()` does.
-
-## F117: The editor offers fields that blökkli doesn't manage
-
-- **Found:** 2026-10-21, by reading, in a review of the plan for F107. The
-  module's part is fixed: it refuses an add or a move into such a field, and
-  publishing leaves the field as it's stored. Before, publishing replaced the
-  field's stored paragraphs with the ones put there.
-- **Symptom (by reading):** with "Restrict paragraph fields" on, a frontend that
-  renders a field of the page that blökkli doesn't manage with `BlokkliField`
-  gets a field to drop into, and the drop is refused. While editing, the field
-  looks empty, though it has paragraphs.
-- **Cause:**
-  - The field config lists every paragraphs field with `canEdit: TRUE`
-    (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/ParagraphsBlokkliFieldConfig.php:113`
-    at `0f8397e`). The adapter queries `canEdit`
-    (`src/modules/drupal/graphql/base/query.pbConfig.graphql:51`), but
-    `BlokkliField` doesn't use it: it's always true
-    (`src/runtime/components/BlokkliField.vue:224-225`, "@TODO: How to
-    canEdit?").
-  - While editing, `BlokkliField` shows the list of the mutated state
-    (`BlokkliField.vue:261-279`), which has no entry for such a field.
-- **Impact:** low: only sites with the restriction whose frontend renders such a
-  field with `BlokkliField`.
-- **Fix idea:** the field config's `canEdit` says whether blökkli manages the
-  field. `BlokkliField` renders a field that it can't edit from its own list,
-  without a place to drop.
 
 ## F120: A mutation from a text or form body runs as the user
 

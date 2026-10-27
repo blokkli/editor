@@ -52,7 +52,8 @@ export default defineBlokkliEditAdapter((ctx) => {
           // The maximum number of blocks in this field. -1 means unlimited.
           cardinality: -1,
 
-          // Whether the current user is allowed to edit the field.
+          // Whether the editor can edit the field. One that it can't edit
+          // shows the blocks of its list while editing, and takes none.
           canEdit: true,
 
           // The block bundles that are allowed in this field.

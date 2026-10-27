@@ -392,6 +392,9 @@ provide(INJECT_EDIT_CONTEXT, {
   definitions,
   useBlockRegistration,
   selectedUuids: computed<string[]>(() => selection.uuids.value),
+  isFieldEditable: (entityType, entityBundle, fieldName) =>
+    types.getFieldConfig(entityType, entityBundle, fieldName)?.canEdit !==
+    false,
 })
 const app: BlokkliApp = {
   $t,

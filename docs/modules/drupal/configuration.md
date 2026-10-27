@@ -84,6 +84,10 @@ Configure at `/admin/config/content/blokkli`:
 - **Enabled entity types** — Which content types/bundles are editable with
   blökkli. Not a bundle that content moderation moderates: blökkli is off for
   it, and the form lists it under "Potential issues"
+- **Restrict paragraph fields** — Which paragraphs fields of an enabled bundle
+  blökkli manages; without the restriction, all of them. The others keep what is
+  stored: the editor shows what they hold, and takes no paragraphs into them.
+  The fields of paragraphs, library items and templates are always managed.
 - **Media bundle for images** — Which media type to use for pasted and dropped
   images (see [Uploads](#uploads))
 - **Media bundle for files** — Which media type to use for other pasted and
@@ -102,8 +106,7 @@ Configure at `/admin/config/content/blokkli`:
   `publish paragraphs blokkli edit state with validation errors`. One rule of
   core's is left out: for a bundle that hides its shared fields on translation
   forms, they may only change in a save that changes no other translation. An
-  edit state saves every language at once. The rule stays for content under
-  moderation, whose save may be a draft.
+  edit state saves every language at once.
 
 ### Host Options Field
 

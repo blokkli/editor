@@ -22,7 +22,7 @@ import {
   INJECT_APP,
   INJECT_EDIT_CONTEXT,
   INJECT_ENTITY_CONTEXT,
-  INJECT_IS_IN_REUSABLE,
+  INJECT_IS_OUTSIDE_STATE,
 } from '#blokkli/helpers/injections'
 import type { EditableFieldUpdateEvent } from '#blokkli/editor/events'
 
@@ -47,7 +47,7 @@ const root = useTemplateRef('root')
 const entity = inject(INJECT_ENTITY_CONTEXT, null)
 const editContext = inject(INJECT_EDIT_CONTEXT, null)
 const app = inject(INJECT_APP, null)
-const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
+const isOutsideState = inject(INJECT_IS_OUTSIDE_STATE, false)
 
 const valueOverride = ref('')
 
@@ -89,7 +89,7 @@ function unregisterDirective(name: string | null | undefined) {
 }
 
 onMounted(() => {
-  if (!editContext || !app || isInReusable) {
+  if (!editContext || !app || isOutsideState) {
     return
   }
 
@@ -102,7 +102,7 @@ onMounted(() => {
 watch(
   () => props.name,
   (newName, oldName) => {
-    if (!app || !entity || isInReusable) {
+    if (!app || !entity || isOutsideState) {
       return
     }
     unregisterDirective(oldName)

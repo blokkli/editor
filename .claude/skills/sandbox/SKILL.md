@@ -306,10 +306,13 @@ Traefik sends every hostname to the web container's nginx on port 80.
   status and the scheduler's dates of news between their translations, makes a
   teaser's link and media and a news item's hero image translatable (the editor
   then asks whether a drop changes them in all languages), maps documents to the
-  widget's links (`field_link_items`), and adds the roles `comment_reader` (a
-  reviewer who may read comments but not post them) and `comment_administrator`
-  (one who administers comments). Neither has `view any blokkli entity label`:
-  they are the roles without the list of all pages.
+  widget's links (`field_link_items`), leaves a detail page's related topics
+  (`field_related`) out of the fields that blökkli manages ("Restrict paragraph
+  fields"; the editor shows them as they're stored), and adds the roles
+  `comment_reader` (a reviewer who may read comments but not post them) and
+  `comment_administrator` (one who administers comments). Neither has
+  `view any blokkli entity label`: they are the roles without the list of all
+  pages.
 
 ## Sandboxes
 

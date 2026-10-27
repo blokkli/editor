@@ -27,6 +27,10 @@ use Drupal\paragraphs_blokkli\Model\ParagraphMapping;
  *
  * A document can go into the widget's links, which take several values, as
  * into its media.
+ *
+ * blökkli manages every paragraphs field of the enabled bundles but the
+ * related topics of a detail page: the editor shows them as they're stored.
+ * The site restricts no field.
  */
 function blokkli_playground_test_install(): void {
   $field = FieldConfig::loadByName('node', 'page', 'field_paragraphs');
@@ -58,4 +62,23 @@ function blokkli_playground_test_install(): void {
     new ParagraphMapping('widget', 'field_link_items'),
   ]);
   $mapping->save();
+
+  $settings = \Drupal::configFactory()->getEditable('paragraphs_blokkli.settings');
+  $fieldManager = \Drupal::service('entity_field.manager');
+  $enabledFields = [];
+  foreach ($settings->get('enabled_types') ?? [] as $entityType => $bundles) {
+    foreach ($bundles as $bundle) {
+      foreach ($fieldManager->getFieldDefinitions($entityType, $bundle) as $name => $definition) {
+        $isParagraphsField = $definition->getType() === 'entity_reference_revisions'
+          && $definition->getSetting('target_type') === 'paragraph';
+        if ($isParagraphsField && "$entityType.$bundle.$name" !== 'node.page.field_related') {
+          $enabledFields[$entityType][$bundle][] = $name;
+        }
+      }
+    }
+  }
+  $settings
+    ->set('restrict_fields', TRUE)
+    ->set('enabled_fields', $enabledFields)
+    ->save();
 }

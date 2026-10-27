@@ -64,6 +64,7 @@ const context = computed<AdapterContext>(() => {
 })
 const interfaceLanguage = computed(() => context.value.language)
 const adapter = await getAdapter(context)
+const fieldConfig = await adapter.getFieldConfig()
 const router = useRouter()
 const broadcast = broadcastProvider()
 const definitions = definitionProvider(props.providerType, interfaceLanguage)
@@ -141,6 +142,13 @@ provide(INJECT_EDIT_CONTEXT, {
   selectedUuids: computed<string[]>(() => {
     return []
   }),
+  isFieldEditable: (entityType, entityBundle, fieldName) =>
+    fieldConfig.find(
+      (field) =>
+        field.entityType === entityType &&
+        field.entityBundle === entityBundle &&
+        field.name === fieldName,
+    )?.canEdit !== false,
 })
 
 /**

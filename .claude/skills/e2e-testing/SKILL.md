@@ -290,9 +290,10 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
 - **The content model:** a `page` allows neither `section` nor `call_to_action`,
   an `editorial` node does; only editorial and office nodes allow fragments (the
   front page, `home`, is editorial). While editing, a `page` always shows an H2
-  ("Related topics"). Text fields are `frame`, string fields `plain`; a
-  paragraph's `field_title` holds 255 characters at most. A converted paragraph
-  gets a new UUID.
+  ("Related topics"); blökkli doesn't manage its `field_related`: the editor
+  shows it as it's stored, and it takes no paragraphs. Text fields are `frame`,
+  string fields `plain`; a paragraph's `field_title` holds 255 characters at
+  most. A converted paragraph gets a new UUID.
 - **Media:** numeric IDs follow the order of creation; don't rely on them.
   Adding one through the adapter needs its ID: find it in the media library by
   its name (`mediaLibraryGetResults`, see `features/analyze/alt-text`).

@@ -7463,7 +7463,10 @@ type ParagraphsBlokkliFieldConfig {
   ""
   cardinality: Int!
 
-  ""
+  """
+  Whether blökkli edits the field. With "Restrict paragraph fields", it doesn't
+  edit the other fields of a host bundle: the editor shows what they hold.
+  """
   canEdit: Boolean!
 
   ""
