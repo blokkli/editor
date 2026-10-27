@@ -30,6 +30,7 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F121 | [The library's query access finds unpublished items that its access handler hides](#f121-the-librarys-query-access-finds-unpublished-items-that-its-access-handler-hides) | `paragraphs`              | low      | open       |
 | F123 | [Content moderation decides what blökkli publishes](#f123-content-moderation-decides-what-blökkli-publishes)                                                              | both                      | low      | to verify  |
 | F124 | [The lists of pages show one name for bundles of the same name](#f124-the-lists-of-pages-show-one-name-for-bundles-of-the-same-name)                                      | both                      | low      | to verify  |
+| F125 | [The state at a history index may be the current state](#f125-the-state-at-a-history-index-may-be-the-current-state)                                                      | `paragraphs_blokkli`      | medium   | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -409,3 +410,37 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   type and bundle, and `getBundleLabel(entityType, bundle)` takes both.
 - **Also:** `labelMap.label` is the first entity type's name only, and nothing
   in the editor reads it.
+
+## F125: The state at a history index may be the current state
+
+- **Found:** 2026-10-27, by reading, while looking into F89. Not reproduced.
+- **Symptom:** the Diff view compares the current state with the state before
+  any change, which it loads with `pbEditState` at history index -1
+  (`loadStateAtIndex(-1)`,
+  `src/runtime/editor/features/diff/DiffView/index.vue:19`). The `mutatedState`
+  of that response may be the current state; the view would then show no
+  changes.
+- **Cause:**
+  - `LoadEditState` puts the index into the GraphQL context
+    (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/LoadEditState.php:107-110`
+    at `cb281e6`), and only `mutatedState` reads it
+    (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/SchemaExtension/EditExtension.php:795`).
+  - The editor's fragment selects `textFieldValues` and `droppableFieldValues`
+    before `mutatedState`
+    (`src/modules/drupal/graphql/base/fragment.paragraphsBlokkliEditState.graphql:13-29`,
+    since `a0bd2c683` and `1ff0f5f16`, spring 2026). Their producers build the
+    state without the index (`TextFieldValues.php:86`,
+    `DroppableFieldValues.php:79`).
+  - `getMutatedState()` returns the build it already has, whatever index it's
+    asked for (`src/Entity/ParagraphsBlokkliEditState.php:386-389`). If the
+    fields resolve in the order of the query, `mutatedState` gets the current
+    build.
+  - The text and droppable values of the response are the current ones in any
+    case: their fields take no index.
+- **Impact:** medium, if it holds: the Diff view would show nothing. No test
+  covers the view or a history index.
+- **Fix idea:** check it first, with a kernel test of the GraphQL query or the
+  Diff view in the sandbox. Then let every field of the response use the index,
+  e.g. by applying it to the state when it's loaded, rather than with a build
+  per index: until F89 is fixed, a second build in the same request loses the
+  nested paragraphs.
