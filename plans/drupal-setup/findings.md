@@ -12,7 +12,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                   | `paragraphs_blokkli`      | low      | open       |
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                      | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
-| F89  | [Building an edit state empties the fields of the cached entities](#f89-building-an-edit-state-empties-the-fields-of-the-cached-entities)                                 | `paragraphs_blokkli`      | low      | open       |
 | F95  | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                        | both                      | low      | open       |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli`      | low      | to verify  |
 | F102 | [The library search fails for an empty list of types](#f102-the-library-search-fails-for-an-empty-list-of-types)                                                          | `paragraphs_blokkli`      | low      | open       |
@@ -30,6 +29,8 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F121 | [The library's query access finds unpublished items that its access handler hides](#f121-the-librarys-query-access-finds-unpublished-items-that-its-access-handler-hides) | `paragraphs`              | low      | open       |
 | F124 | [The lists of pages show one name for bundles of the same name](#f124-the-lists-of-pages-show-one-name-for-bundles-of-the-same-name)                                      | both                      | low      | to verify  |
 | F125 | [The state at a history index may be the current state](#f125-the-state-at-a-history-index-may-be-the-current-state)                                                      | `paragraphs_blokkli`      | medium   | to verify  |
+| F126 | [A build starts from another revision than the forms](#f126-a-build-starts-from-another-revision-than-the-forms)                                                          | `paragraphs_blokkli`      | low      | to verify  |
+| F127 | [Some fields of the edit state read the page without building it](#f127-some-fields-of-the-edit-state-read-the-page-without-building-it)                                  | `paragraphs_blokkli`      | medium   | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -72,25 +73,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   (`app/graphql/fragment.easyTexts.graphql`). From 2026-10-14, nginx refused
   `/graphql`, but any logged-in user still reached it as `/index.php/graphql`.
 - **Fix idea:** create keys only with a permission, or only in development.
-
-## F89: Building an edit state empties the fields of the cached entities
-
-- **Found:** 2026-10-12, in a kernel test for the validation of nested
-  paragraphs (the former F81): a grid that was loaded and saved after the edit
-  state was built lost its paragraphs.
-- **Symptom:** after an edit state is built for editing, the page and its nested
-  paragraphs are in Drupal's entity cache with empty paragraphs fields. Code
-  that loads one of them later in the same request gets it without its
-  paragraphs, and stores it that way when it saves it.
-- **Cause:** `ParagraphsBlokkliEditState::executeMutations()`
-  (`src/Entity/ParagraphsBlokkliEditState.php:472-490` at `4b5c6e7`) empties the
-  fields on the objects that it loaded, which are the cached ones. The module's
-  tests clear the cache for that reason
-  (`ParagraphsBlokkliTestTrait::paragraphsBlokkliPublish()`).
-- **Impact:** low: nothing in the module saves these entities in such a request.
-  A hook of a site could.
-- **Fix idea:** build the state on clones, or put the fields back after the
-  mutated state is built.
 
 ## F95: A refused batch of texts names one text, without its language
 
@@ -391,7 +373,8 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 
 ## F125: The state at a history index may be the current state
 
-- **Found:** 2026-10-27, by reading, while looking into F89. Not reproduced.
+- **Found:** 2026-10-27, by reading, while looking into the former F89. Not
+  reproduced.
 - **Symptom:** the Diff view compares the current state with the state before
   any change, which it loads with `pbEditState` at history index -1
   (`loadStateAtIndex(-1)`,
@@ -418,7 +401,66 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Impact:** medium, if it holds: the Diff view would show nothing. No test
   covers the view or a history index.
 - **Fix idea:** check it first, with a kernel test of the GraphQL query or the
-  Diff view in the sandbox. Then let every field of the response use the index,
-  e.g. by applying it to the state when it's loaded, rather than with a build
-  per index: until F89 is fixed, a second build in the same request loses the
-  nested paragraphs.
+  Diff view in the sandbox. Then let every field of the response use the index:
+  apply it to the state when it's loaded, or build once per index. A second
+  build in the same request starts from the stored entities, as the first.
+
+## F126: A build starts from another revision than the forms
+
+- **Found:** 2026-10-27, by reading, while fixing the former F89. Not
+  reproduced.
+- **Symptom:** when a page's latest revision isn't its default one, the editor
+  shows the default revision with the changes of the edit state, while the forms
+  and the access checks use the latest revision. Publishing saves on top of the
+  default revision, so what the latest revision changed is lost.
+- **Cause:**
+  - `getHostEntity()` loads the latest revision
+    (`src/Entity/ParagraphsBlokkliEditState.php:345-353` at `ebb510d`). A build
+    asks for `force_reload`, which loads the default revision with
+    `loadUnchanged()` (:359).
+  - The forms run the mutations on the latest revision, without a build
+    (`src/Traits/EditStateFormTrait.php:39`).
+  - Access is checked for the latest revision: "an edit state shows the latest
+    revision of its host entity"
+    (`src/ParagraphsBlokkliEditStateAccessControlHandler.php:48-50`,
+    `ParagraphsBlokkliHelper::getHostAccess()`,
+    `src/ParagraphsBlokkliHelper.php:1546-1576`). Its doc names a draft of
+    content moderation as the example, which blökkli no longer edits.
+- **Impact:** low: only a page with a latest revision that isn't the default
+  one. Content moderation makes such revisions, and blökkli is off for moderated
+  bundles; Workspaces, or code that saves such a revision, still can. With
+  hidden shared fields, validation would also report core's message about a
+  revision that isn't the default one (`defaultRevisionMessage` of
+  `EntityUntranslatableFieldsConstraint`), which
+  `ParagraphsBlokkliHelper::isSharedFieldChangeViolation()` doesn't filter.
+- **Fix idea:** decide which revision an edit state is built on, and use it for
+  the build, the forms, the access checks and the publishing.
+
+## F127: Some fields of the edit state read the page without building it
+
+- **Found:** 2026-10-27, by reading, while fixing the former F89. Not
+  reproduced.
+- **Symptom:** the editor's dialog for a reference field of the page lists the
+  items as they're stored: what the edit state changed in that field is missing.
+  Saving the dialog sends the whole list
+  (`src/runtime/editor/features/droppable-field-edit/Overlay/index.vue:325-336`,
+  `:594-599`), so it would undo those changes.
+- **Cause:**
+  - `DroppableFieldItems::findTarget()` returns `$state->getHostEntity()` for a
+    field of the page, without building the state
+    (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/DroppableFieldItems.php:113-116`
+    at `ebb510d`). A paragraph's field comes from the built state (:118-124).
+  - The adapter queries the field on its own
+    (`src/modules/drupal/graphql/features/droppable-field-items.graphql`), so no
+    other field of the request builds the state first.
+  - `translationState` and `publishOptions` also read `getHostEntity()` without
+    a build (`ParagraphsBlokkliTranslationState.php:81`,
+    `PublishOptions.php:84`). In the editor's fragment they come after
+    `textFieldValues`, which builds
+    (`src/modules/drupal/graphql/base/fragment.paragraphsBlokkliEditState.graphql:13`,
+    `:40`, `:58`), so they see the built page. In another query they would see
+    the stored one.
+- **Impact:** medium, if it holds: a second change of the same field of the page
+  drops the first.
+- **Fix idea:** build the state in these producers before they read the page,
+  e.g. with a method of the edit state that returns the built host.
