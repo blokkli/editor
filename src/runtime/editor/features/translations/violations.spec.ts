@@ -6,11 +6,16 @@ const TITLE = 'a4f1b3c2-0000-4000-8000-000000000001'
 const LINK = 'a4f1b3c2-0000-4000-8000-000000000002'
 const PAGE = 'a4f1b3c2-0000-4000-8000-000000000003'
 
-const KEYS = [
-  `${TITLE}:field_title`,
-  `${LINK}:field_link.title`,
-  `${PAGE}:title`,
+const TEXTS = [
+  { key: `${TITLE}:field_title` },
+  { key: `${LINK}:field_link.title` },
+  { key: `${PAGE}:title` },
 ]
+
+/** The keys of the texts that the violations are about. */
+function keysOf(messages: Map<{ key: string }, string>): string[] {
+  return [...messages.keys()].map((text) => text.key)
+}
 
 describe('getViolationText', () => {
   it('keeps a plain message', () => {
@@ -42,7 +47,7 @@ describe('matchViolationsToTexts', () => {
           entityUuid: TITLE,
         },
       ],
-      KEYS,
+      TEXTS,
     )
 
     expect([...messages.values()]).toEqual(['Title: too long.'])
@@ -58,11 +63,11 @@ describe('matchViolationsToTexts', () => {
           entityUuid: TITLE,
         },
       ],
-      KEYS,
+      TEXTS,
     )
 
     expect([...messages]).toEqual([
-      [`${TITLE}:field_title`, 'Title: may not be longer than 255 characters.'],
+      [TEXTS[0], 'Title: may not be longer than 255 characters.'],
     ])
     expect(unmatched).toEqual([])
   })
@@ -76,10 +81,10 @@ describe('matchViolationsToTexts', () => {
           entityUuid: LINK,
         },
       ],
-      KEYS,
+      TEXTS,
     )
 
-    expect([...messages.keys()]).toEqual([`${LINK}:field_link.title`])
+    expect(keysOf(messages)).toEqual([`${LINK}:field_link.title`])
   })
 
   it("finds the host entity's own text", () => {
@@ -91,10 +96,10 @@ describe('matchViolationsToTexts', () => {
           entityUuid: PAGE,
         },
       ],
-      KEYS,
+      TEXTS,
     )
 
-    expect([...messages.keys()]).toEqual([`${PAGE}:title`])
+    expect(keysOf(messages)).toEqual([`${PAGE}:title`])
   })
 
   it('keeps the first message of a text', () => {
@@ -111,7 +116,7 @@ describe('matchViolationsToTexts', () => {
           entityUuid: TITLE,
         },
       ],
-      KEYS,
+      TEXTS,
     )
 
     expect([...messages.values()]).toEqual(['First.'])
@@ -136,10 +141,55 @@ describe('matchViolationsToTexts', () => {
 
     const { messages, unmatched } = matchViolationsToTexts(
       [other, unknown, entity, nobody],
-      KEYS,
+      TEXTS,
     )
 
     expect(messages.size).toBe(0)
     expect(unmatched).toEqual([other, unknown, entity, nobody])
+  })
+
+  it('finds the text in the language of the violation', () => {
+    const german = { key: `${TITLE}:field_title`, langcode: 'de' }
+    const french = { key: `${TITLE}:field_title`, langcode: 'fr' }
+    const violation = (langcode: string) => ({
+      message: `Too long in ${langcode}.`,
+      propertyPath: 'field_title.0.value',
+      entityUuid: TITLE,
+      langcode,
+    })
+
+    expect([
+      ...matchViolationsToTexts([violation('fr')], [german, french]).messages,
+    ]).toEqual([[french, 'Too long in fr.']])
+    expect([
+      ...matchViolationsToTexts(
+        [violation('fr'), violation('de')],
+        [german, french],
+      ).messages,
+    ]).toEqual([
+      [french, 'Too long in fr.'],
+      [german, 'Too long in de.'],
+    ])
+  })
+
+  it('takes the first text of a field for a violation in another language', () => {
+    // A block whose type isn't translatable has one language.
+    const german = { key: `${TITLE}:field_title`, langcode: 'de' }
+    const french = { key: `${TITLE}:field_title`, langcode: 'fr' }
+
+    const { messages, unmatched } = matchViolationsToTexts(
+      [
+        {
+          message: 'Too long.',
+          propertyPath: 'field_title.0.value',
+          entityUuid: TITLE,
+          langcode: 'en',
+        },
+      ],
+      [german, french],
+    )
+
+    expect([...messages]).toEqual([[german, 'Too long.']])
+    expect(unmatched).toEqual([])
   })
 })

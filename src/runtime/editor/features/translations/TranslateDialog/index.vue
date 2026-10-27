@@ -564,23 +564,21 @@ async function applyTranslations() {
       }),
     )
     if (!response?.success) {
-      // Rejected: the dialog stays open with its texts, so the one that is
-      // wrong can be corrected. What the backend said goes to the row of the
+      // Rejected: the dialog stays open with its texts, so the ones that are
+      // wrong can be corrected. What the backend said goes to the row of each
       // text it is about, and beneath the table if it is about none.
-      const sent = new Map(
-        items.map((item) => [
-          `${item.uuid}:${item.fieldName}`,
-          item.fieldValue,
-        ]),
-      )
       const { messages, unmatched } = matchViolationsToTexts(
         response?.violations ?? [],
-        sent.keys(),
+        items.map((item) => ({
+          key: `${item.uuid}:${item.fieldName}`,
+          langcode: item.langcode,
+          value: item.fieldValue,
+        })),
       )
       refused.value = new Map(
-        [...messages].map(([key, message]) => [
-          key,
-          { value: sent.get(key)!, message },
+        [...messages].map(([text, message]) => [
+          text.key,
+          { value: text.value, message },
         ]),
       )
       if (unmatched.length) {

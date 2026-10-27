@@ -12,7 +12,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                   | `paragraphs_blokkli`      | low      | open       |
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                      | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
-| F95  | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                        | both                      | low      | open       |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli`      | low      | to verify  |
 | F102 | [The library search fails for an empty list of types](#f102-the-library-search-fails-for-an-empty-list-of-types)                                                          | `paragraphs_blokkli`      | low      | open       |
 | F103 | [A preview misses a change that is made before its first poll](#f103-a-preview-misses-a-change-that-is-made-before-its-first-poll)                                        | editor                    | low      | open       |
@@ -71,25 +70,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   (`app/graphql/fragment.easyTexts.graphql`). From 2026-10-14, nginx refused
   `/graphql`, but any logged-in user still reached it as `/index.php/graphql`.
 - **Fix idea:** create keys only with a permission, or only in development.
-
-## F95: A refused batch of texts names one text, without its language
-
-- **Found:** 2026-10-12, while the translate dialog and the import of
-  translations got the message of a refused text in its row (the former F87).
-- **Symptom:** when several texts of a batch don't fit their fields, Drupal
-  names the first one. The user corrects it, applies again and gets the next. In
-  an import of several languages, the row is marked but not the language: the
-  message stands beneath the source text.
-- **Cause:** `bulk_translate_field_values` and `bulk_update_field_values` write
-  their items one after the other, and the first value that the field refuses
-  ends the mutation (`UpdateFieldValueTrait::updateFieldValueByType()`). A
-  violation has the entity and the property path, not the language
-  (`ParagraphsEditViolation`).
-- **Impact:** low. The agent's text tools have the same: one refused field per
-  attempt.
-- **Fix idea:** when such a mutation is added, collect the violations of every
-  item and refuse the batch with all of them. Give a violation its `langcode`.
-  Stored mutations aren't validated, so they replay as they do.
 
 ## F97: The edit extension still requires the entity query extension
 

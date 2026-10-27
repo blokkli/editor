@@ -7242,6 +7242,12 @@ type ParagraphsEditViolation {
 
   ""
   entityUuid: String
+
+  """
+  The language of the entity's translation that has the invalid value. Null
+  for a violation that isn't one of an entity.
+  """
+  langcode: String
 }
 
 ""

@@ -4,4 +4,5 @@ fragment paragraphsBlokkliViolation on ParagraphsEditViolation {
   propertyPath
   entityUuid
   entityType
+  langcode
 }

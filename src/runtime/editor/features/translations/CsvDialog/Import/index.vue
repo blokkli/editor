@@ -92,12 +92,6 @@
               </td>
               <td>
                 {{ row.source }}
-                <!-- The backend doesn't say which language it refused. -->
-                <RowError
-                  v-if="isMultiLang && refused.has(row.key)"
-                  :message="refused.get(row.key)!"
-                  :reveal="row.key === firstRefusedKey"
-                />
               </td>
               <template v-if="!isMultiLang">
                 <td>
@@ -111,14 +105,19 @@
                     "
                   />
                   <RowError
-                    v-if="refused.has(row.key)"
-                    :message="refused.get(row.key)!"
+                    v-if="refused.has(singleLangChange(row).id)"
+                    :message="refused.get(singleLangChange(row).id)!"
                     :reveal="row.key === firstRefusedKey"
                   />
                 </td>
               </template>
               <template v-else>
-                <td v-for="lang in languages" :key="lang">
+                <td
+                  v-for="lang in languages"
+                  :key="lang"
+                  data-test="translations-csv-import-cell"
+                  :data-test-langcode="lang"
+                >
                   <div v-if="row.changes[lang]" class="flex items-start gap-8">
                     <div class="bk-checkbox shrink-0">
                       <input
@@ -138,6 +137,13 @@
                     />
                   </div>
                   <span v-else class="bk-is-empty">&mdash;</span>
+                  <RowError
+                    v-if="
+                      row.changes[lang] && refused.has(row.changes[lang]!.id)
+                    "
+                    :message="refused.get(row.changes[lang]!.id)!"
+                    :reveal="row.key === firstRefusedKey"
+                  />
                 </td>
               </template>
             </tr>
@@ -227,7 +233,7 @@ const isMultiLang = computed(() => languages.value.length > 1)
 const selected = ref<Record<string, boolean>>({})
 const fileInputEl = useTemplateRef('fileInputEl')
 const markUpToDate = ref(false)
-/** What the backend said about the texts that it refused, per row. */
+/** What the backend said about the texts that it refused, per change. */
 const refused = ref<Map<string, string>>(new Map())
 
 type ImportRow = {
@@ -252,7 +258,10 @@ const rows = computed<ImportRow[]>(() => {
 
 /** The first refused row: it is brought into view. */
 const firstRefusedKey = computed(
-  () => rows.value.find((row) => refused.value.has(row.key))?.key,
+  () =>
+    rows.value.find((row) =>
+      Object.values(row.changes).some((change) => refused.value.has(change.id)),
+    )?.key,
 )
 
 const sourceLangName = computed(() => {
@@ -516,9 +525,11 @@ async function applyImport() {
   // none.
   const { messages, unmatched } = matchViolationsToTexts(
     response?.violations ?? [],
-    selectedChanges.map((change) => change.key),
+    selectedChanges,
   )
-  refused.value = messages
+  refused.value = new Map(
+    [...messages].map(([change, message]) => [change.id, message]),
+  )
 
   const reasons = unmatched.length
     ? unmatched.map(getViolationText)

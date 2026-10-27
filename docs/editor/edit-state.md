@@ -194,7 +194,9 @@ options in `mutatedOptions`).
 [type.Validation[]] (optional)
 
 An array of validation violations for the current edit state. Each violation has
-a `message` and optional `code`, `propertyPath`, `entityType` and `entityUuid`.
+a `message` and optional `code`, `propertyPath`, `entityType`, `entityUuid` and
+`langcode` (the language of the entity's translation that has the invalid
+value).
 
 ## publishOptions
 

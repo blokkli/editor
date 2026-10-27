@@ -63,6 +63,8 @@ export interface Validation {
   propertyPath?: string
   entityType?: string
   entityUuid?: string
+  /** The language of the entity's translation that has the invalid value. */
+  langcode?: string
 }
 
 export interface MappedState {
