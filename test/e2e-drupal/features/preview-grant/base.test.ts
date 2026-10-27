@@ -77,8 +77,11 @@ const EDITOR_ONLY = `query ($uuid: String!) {
   }
 }`
 
-/** A machine translation: it costs the site's quota at the provider. */
-const TRANSLATE = `mutation {
+/**
+ * What only the editor may change: a machine translation, which costs the
+ * site's quota at the provider, and the notifications.
+ */
+const EDITOR_MUTATIONS = `mutation {
   translation: paragraphsBlokkliRequestTranslation(
     items: [
       {
@@ -92,6 +95,7 @@ const TRANSLATE = `mutation {
   ) {
     success
   }
+  read: pbMarkNotificationsAsRead
 }`
 
 type Answer = {
@@ -299,11 +303,9 @@ describe('The preview link', async () => {
     })
   })
 
-  it('can not request a machine translation', async () => {
-    // The mutation's result can't be null: Drupal answers with an error, and
-    // without data.
-    const answer = await ask(visitor, TRANSLATE)
-    expect(answer.data ?? null).toBeNull()
-    expect(answer.errors?.map((error) => error.path)).toEqual([['translation']])
+  it('can not request a machine translation, or mark notifications', async () => {
+    // Refused without an error: Drupal would log one.
+    const answer = await ask(visitor, EDITOR_MUTATIONS)
+    expect(answer).toEqual({ data: { translation: null, read: null } })
   })
 })

@@ -1147,7 +1147,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       adapter.markAllNotificationsAsRead = () =>
         useGraphqlMutation('pbMarkNotificationsAsRead', {
           uuids: undefined,
-        }).then((v) => v.data.count)
+        }).then((v) => v.data.count ?? 0)
     }
 
     if (hasQuery('pbReferencedEntities')) {

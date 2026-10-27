@@ -13,7 +13,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                      | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli`      | low      | to verify  |
-| F104 | [A refused machine translation answers "Internal server error"](#f104-a-refused-machine-translation-answers-internal-server-error)                                        | `paragraphs_blokkli`      | low      | open       |
 | F110 | [The Search API lists show what the index returns](#f110-the-search-api-lists-show-what-the-index-returns)                                                                | `paragraphs_blokkli`      | low      | to verify  |
 | F111 | [A new target resets the options of a link](#f111-a-new-target-resets-the-options-of-a-link)                                                                              | `paragraphs_blokkli`      | low      | to verify  |
 | F112 | [A text update of a link field does nothing, and is stored](#f112-a-text-update-of-a-link-field-does-nothing-and-is-stored)                                               | `paragraphs_blokkli`      | low      | open       |
@@ -83,21 +82,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Impact:** low: queries in the schema that a project may not want.
 - **Fix idea:** drop the dependency, if a server without the extension still
   builds its schema.
-
-## F104: A refused machine translation answers "Internal server error"
-
-- **Found:** 2026-10-12, with the fix of the editor's gate (the former F99).
-- **Symptom:** `paragraphsBlokkliRequestTranslation` answers someone who may not
-  use the editor with the error "Internal server error" and without data.
-  Verified over HTTP, as an anonymous visitor with a preview grant.
-- **Cause:** the mutation's type is `ParagraphsBlokkliTranslationResult!`, and
-  its resolver returns nothing where the gate refuses
-  (`modules/paragraphs_blokkli_deepl/src/Plugin/GraphQL/SchemaExtension/DeeplExtension.php`).
-  Not checked: whether Drupal logs each of them.
-- **Impact:** low: the editor only sends it for users who may use it. The
-  request is refused; its error names the wrong reason.
-- **Fix idea:** a result that may be null, as the editor's other mutations have,
-  or an error that says "Access denied".
 
 ## F110: The Search API lists show what the index returns
 

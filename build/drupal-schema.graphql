@@ -5962,8 +5962,8 @@ type Mutation {
   paragraphsBlokkliDeleteComment(entityType: EntityType!, entityUuid: String!, langcode: String!, uuid: String!): [ParagraphsBlokkliComment]
   paragraphsBlokkliToggleCommentTaskItem(entityType: EntityType!, entityUuid: String!, langcode: String!, uuid: String!, taskIndex: Int!): [ParagraphsBlokkliComment]
 
-  "Request translations via DeepL."
-  paragraphsBlokkliRequestTranslation(items: [ParagraphsBlokkliTranslationInput!]!): ParagraphsBlokkliTranslationResult!
+  "Request translations via DeepL. Null for a user who may not use blökkli."
+  paragraphsBlokkliRequestTranslation(items: [ParagraphsBlokkliTranslationInput!]!): ParagraphsBlokkliTranslationResult
 
   "Get the edit state for an entity."
   paragraphsEditMutationState(
@@ -5981,9 +5981,10 @@ type Mutation {
   When uuids is empty or omitted, all of the user's notifications are marked
   read. Otherwise only the listed (and owned) notifications are marked read.
   
-  Returns the number of unread notifications remaining afterwards.
+  Returns the number of unread notifications remaining afterwards. Null for a
+  user who may not use blökkli.
   """
-  pbMarkNotificationsAsRead(uuids: [String!]): Int!
+  pbMarkNotificationsAsRead(uuids: [String!]): Int
 
   """
   Create media from files uploaded in the editor, through their forms, in the
