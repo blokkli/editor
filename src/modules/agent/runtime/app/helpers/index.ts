@@ -7,7 +7,6 @@ import type {
   ToolError,
   ToolMeta,
 } from '#blokkli/agent/app/types'
-import type { UsageTurn } from '#blokkli/agent/shared/types'
 import { coerceStringifiedParams } from '#blokkli/agent/shared/toolParams'
 import type { BlokkliAdapter } from '#blokkli/editor/adapter'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
@@ -24,9 +23,8 @@ export function asRecord(value: unknown): Record<string, unknown> | null {
 }
 
 /**
- * Pull component side-channel meta (`_details`, `_usage`, `_skipLlmResponse`)
- * off an emitted tool result so the LLM-facing payload can be sent without
- * them.
+ * Pull component side-channel meta (`_details`, `_skipLlmResponse`) off an
+ * emitted tool result so the LLM-facing payload can be sent without them.
  */
 export function splitMeta(raw: unknown): {
   payload: unknown
@@ -37,14 +35,13 @@ export function splitMeta(raw: unknown): {
 
   const meta: ToolMeta = {}
   if (obj._details !== undefined) meta.details = obj._details
-  if (obj._usage) meta.usage = obj._usage as UsageTurn
   if (obj._skipLlmResponse === true) meta.skipLlmResponse = true
 
   if (Object.keys(meta).length === 0) {
     return { payload: raw, meta }
   }
 
-  const { _details: _, _usage: __, _skipLlmResponse: ___, ...payload } = obj
+  const { _details: _, _skipLlmResponse: __, ...payload } = obj
   return { payload, meta }
 }
 

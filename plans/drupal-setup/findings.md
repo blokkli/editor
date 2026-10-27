@@ -12,7 +12,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                   | `paragraphs_blokkli`      | low      | open       |
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                      | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
-| F85  | [A rejected rewrite drops the token usage of its stream](#f85-a-rejected-rewrite-drops-the-token-usage-of-its-stream)                                                     | editor                    | low      | to verify  |
 | F89  | [Building an edit state empties the fields of the cached entities](#f89-building-an-edit-state-empties-the-fields-of-the-cached-entities)                                 | `paragraphs_blokkli`      | low      | open       |
 | F95  | [A refused batch of texts names one text, without its language](#f95-a-refused-batch-of-texts-names-one-text-without-its-language)                                        | both                      | low      | open       |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli`      | low      | to verify  |
@@ -73,24 +72,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   (`app/graphql/fragment.easyTexts.graphql`). From 2026-10-14, nginx refused
   `/graphql`, but any logged-in user still reached it as `/index.php/graphql`.
 - **Fix idea:** create keys only with a permission, or only in development.
-
-## F85: A rejected rewrite drops the token usage of its stream
-
-- **Found:** 2026-10-12, by reading, when the agent's text tools got their error
-  for a batch that the backend rejects (the former F83). Not reproduced.
-- **Symptom:** `delegate_text_rewrite` streams its texts from the model, and
-  reports the tokens of that stream with its result. When the backend rejects
-  the texts, the tool ends with an error, and the tokens aren't counted.
-- **Cause:** `emitFailure()`
-  (`src/modules/agent/runtime/app/tools/delegate_text_rewrite/Component.vue:110`)
-  emits the error without `_usage`, and the error of a `ToolOutcome` has no
-  `meta` to carry it (`executeComponentTool()`,
-  `providers/toolsProvider.ts:151`).
-- **Impact:** low: the usage of one stream, on a path that is rare.
-- **Fix idea:** give the failed outcome its `meta`.
-- **Also open:** the rejection in `delegate_text_rewrite` has no spec of its
-  own. It shares `applyFieldDiffs()` with `update_text_fields`, whose spec
-  covers it.
 
 ## F89: Building an edit state empties the fields of the cached entities
 

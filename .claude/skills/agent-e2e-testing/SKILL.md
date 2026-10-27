@@ -174,6 +174,11 @@ instead of the configured LLM. `content` is the stream's raw output, in
 Every stream of the conversation replays the same entry. Without one, a mocked
 stream returns no edits.
 
+Mocked turns report no tokens. Give the entry
+`usage: { inputTokens, outputTokens }` and each stream reports them when it
+ends, so a test can check the conversation's usage (the menu "Show more",
+`agent-token-usage`); `features/agent/stream-usage.test.ts` does.
+
 ### Optional `restore` entry — restore the latest conversation
 
 A session with a script skips the auto-restore (see below). Add
@@ -274,6 +279,9 @@ Add new ones following `data-test="agent-<thing>"`:
 | `[data-test="agent-user-message"]`         | Each user message bubble.                                                      |
 | `[data-test="agent-ask-question"]`         | The `ask_question` tool card wrapper. Wait for it to know the UI rendered.     |
 | `[data-test="agent-ask-question-confirm"]` | The Confirm button inside the `ask_question` card.                             |
+| `[data-test="agent-cancel"]`               | The stop button, shown while the agent works.                                  |
+| `[data-test="agent-more"]`                 | The toggle of the menu "Show more".                                            |
+| `[data-test="agent-token-usage"]`          | The token counts in that menu: `data-test-input-tokens`, `-output-tokens`.     |
 
 ## Common patterns
 

@@ -4,7 +4,11 @@ import type {
   StreamEvent,
   StreamOptions,
 } from './types'
-import type { GenericContentBlock, MockScript } from '../../shared/types'
+import type {
+  GenericContentBlock,
+  MockScript,
+  MockStreamEntry,
+} from '../../shared/types'
 
 /**
  * Internal turn representation derived from a script's `agent` entries.
@@ -64,8 +68,14 @@ function normaliseScript(script: MockScript): MockTurn[] {
  * When the script is exhausted (turn index >= number of agent turns in the
  * script), the provider yields a single `message_end { end_turn }` and exits,
  * which terminates the Session loop.
+ *
+ * Every `message_end` reports `usage`, if given: the tokens of a mocked field
+ * edit stream (the script's `stream` entry).
  */
-export function createMockProvider(script: MockScript): AIProvider {
+export function createMockProvider(
+  script: MockScript,
+  usage?: MockStreamEntry['usage'],
+): AIProvider {
   const agentTurns = normaliseScript(script)
 
   return {
@@ -82,7 +92,7 @@ export function createMockProvider(script: MockScript): AIProvider {
       if (options.signal?.aborted) return
 
       if (!turn) {
-        yield { type: 'message_end', stop_reason: 'end_turn' }
+        yield { type: 'message_end', stop_reason: 'end_turn', ...usage }
         return
       }
 
@@ -107,6 +117,7 @@ export function createMockProvider(script: MockScript): AIProvider {
       yield {
         type: 'message_end',
         stop_reason: turn.toolUses?.length ? 'tool_use' : 'end_turn',
+        ...usage,
       }
     },
   }

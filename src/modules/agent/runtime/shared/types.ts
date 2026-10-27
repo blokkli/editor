@@ -565,10 +565,15 @@ export type MockRoutingEntry = z.infer<typeof mockRoutingEntrySchema>
  * `enableMock` is on, the server replays `content` instead of calling the
  * configured LLM. It's the stream's raw output (`[[[FIELD:0]]]`, see
  * `FieldStreamParser`), and every stream of the conversation replays it.
+ * `usage` is the tokens each stream reports when it ends; without it, it
+ * reports none, as the mocked conversation does.
  */
 const mockStreamEntrySchema = z.object({
   type: z.literal('stream'),
   content: z.string(),
+  usage: z
+    .object({ inputTokens: z.number(), outputTokens: z.number() })
+    .optional(),
 })
 
 export type MockStreamEntry = z.infer<typeof mockStreamEntrySchema>

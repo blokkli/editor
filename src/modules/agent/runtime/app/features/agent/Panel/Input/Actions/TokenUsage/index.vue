@@ -1,6 +1,9 @@
 <template>
   <div
     class="py-8 whitespace-nowrap leading-none border-b border-b-mono-300 border-dashed"
+    data-test="agent-token-usage"
+    :data-test-input-tokens="totals.inputTokens"
+    :data-test-output-tokens="totals.outputTokens"
   >
     <ul class="flex justify-evenly flex-1">
       <TokenUsageItem
