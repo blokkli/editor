@@ -70,7 +70,6 @@ const broadcast = broadcastProvider()
 const definitions = definitionProvider(props.providerType, interfaceLanguage)
 
 let timeout: any = null
-let lastChanged: string | null = null
 const mutatedFieldsMap = reactive<Record<string, MutatedField | undefined>>({})
 const mutatedOptions = reactive<MutatedOptions>({})
 const mutatedEntityFromState = ref<T | null>(null)
@@ -82,6 +81,13 @@ const mutatedEntity = computed(
 const { data, refresh, error } = await useAsyncData(() =>
   adapter.loadState().then((v) => adapter.mapState(v)),
 )
+
+/**
+ * When the edit state was last changed, as far as the preview knows. It starts
+ * from the loaded state, so that a change made before the first poll is loaded
+ * as well.
+ */
+let lastChanged: string | null = data.value?.lastChanged ?? null
 
 function onUpdatePreviewState(e: UpdatePreviewStateEvent) {
   const existingKeys = Object.keys(mutatedFieldsMap)

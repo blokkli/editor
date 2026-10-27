@@ -150,6 +150,18 @@ async function hasBlock(page: Page, uuid: string): Promise<boolean> {
 }
 
 /**
+ * Waits until the second of a time is over. Drupal's times are in seconds: a
+ * change within the same second as the state that a preview loaded doesn't
+ * change the time.
+ */
+async function untilNextSecond(time: number): Promise<void> {
+  const wait = Math.floor(time / 1000) * 1000 + 1000 - Date.now()
+  if (wait > 0) {
+    await new Promise((resolve) => setTimeout(resolve, wait))
+  }
+}
+
+/**
  * "Preview (with smartphone)" gives a link that shows the page with its
  * pending changes to whoever opens it: a visitor without an account. The link
  * is for that page's changes, and for nothing else of the editor.
@@ -168,6 +180,14 @@ describe('The preview link', async () => {
   let anna: Page
   let visitor: Page
   let added: string
+  /** When the visitor's preview had loaded. */
+  let loadedAt: number
+
+  /** Lets the preview's requests for the time of the last change through. */
+  let releasePolls = () => {}
+  const polls = new Promise<void>((resolve) => {
+    releasePolls = resolve
+  })
 
   beforeAll(async () => {
     resetSandbox(sandbox)
@@ -195,10 +215,18 @@ describe('The preview link', async () => {
     // A page of its own has a browser context of its own: no session.
     visitor = await createPage(undefined, { ignoreHTTPSErrors: true })
     await installCspCheck(visitor)
+    // The preview asks when the page was last changed, a second after it has
+    // loaded and then every second. It gets no answer until a test lets it.
+    await visitor.route('**/last_changed', async (route) => {
+      await polls
+      await route.continue()
+    })
     await visitor.goto(previewUrl)
+    loadedAt = Date.now()
   })
 
   afterAll(async () => {
+    releasePolls()
     await Promise.all([anna.close(), visitor.close()])
   })
 
@@ -213,13 +241,11 @@ describe('The preview link', async () => {
   })
 
   it('follows the changes that are made meanwhile', async () => {
-    // The preview compares the time of the last change with what it got
-    // from its request before: that one must have happened.
-    await visitor.waitForResponse((response) =>
-      response.url().includes('/last_changed'),
-    )
+    // The change comes before the preview's first answer: the preview
+    // compares that answer with the time of the state that it loaded.
+    await untilNextSecond(loadedAt)
     const later = (await addBlock(anna))!
-    // It asks every second.
+    releasePolls()
     await expect
       .poll(() => hasBlock(visitor, later), { timeout: 10000 })
       .toBe(true)

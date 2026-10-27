@@ -13,7 +13,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                      | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli`      | low      | to verify  |
-| F103 | [A preview misses a change that is made before its first poll](#f103-a-preview-misses-a-change-that-is-made-before-its-first-poll)                                        | editor                    | low      | open       |
 | F104 | [A refused machine translation answers "Internal server error"](#f104-a-refused-machine-translation-answers-internal-server-error)                                        | `paragraphs_blokkli`      | low      | open       |
 | F110 | [The Search API lists show what the index returns](#f110-the-search-api-lists-show-what-the-index-returns)                                                                | `paragraphs_blokkli`      | low      | to verify  |
 | F111 | [A new target resets the options of a link](#f111-a-new-target-resets-the-options-of-a-link)                                                                              | `paragraphs_blokkli`      | low      | to verify  |
@@ -84,24 +83,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Impact:** low: queries in the schema that a project may not want.
 - **Fix idea:** drop the dependency, if a server without the extension still
   builds its schema.
-
-## F103: A preview misses a change that is made before its first poll
-
-- **Found:** 2026-10-12, by the E2E spec for the preview link
-  (`test/e2e-drupal/features/preview-grant/base.test.ts`), which waits for the
-  first poll because of it.
-- **Symptom:** a preview that is opened on its own (a preview link, or "Preview
-  (new window)") follows the changes of the editor. A change that is made within
-  the first second after it has loaded doesn't show, until the next change.
-- **Cause:** `PreviewProvider.vue`
-  (`src/runtime/editor/components/PreviewProvider.vue`) starts with
-  `lastChanged = 0` and asks the adapter for the time of the last change a
-  second after it has mounted (five seconds for an adapter without
-  `getLastChanged`). The first answer is only kept, to compare the next one
-  with: what changed between loading the state and that answer is never loaded.
-- **Impact:** low: a short window, and the next change shows both.
-- **Fix idea:** start from the time of the loaded state (`lastChanged` of
-  `mapState()`'s result, which the Drupal adapter fills).
 
 ## F104: A refused machine translation answers "Internal server error"
 
