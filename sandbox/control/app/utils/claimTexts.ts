@@ -42,8 +42,8 @@ export const CLAIM_TEXTS: Record<Language, Texts> = {
     },
     access: {
       unknown:
-        'This access link isn’t valid any more. Please ask the person who sent it for a new one.',
-      gone: 'The sandbox of this access link no longer exists.',
+        'This link isn’t valid any more. Please ask the person who sent it for a new one.',
+      gone: 'The sandbox of this link no longer exists.',
     },
   },
   de: {
@@ -73,8 +73,8 @@ export const CLAIM_TEXTS: Record<Language, Texts> = {
     },
     access: {
       unknown:
-        'Dieser Zugangslink ist nicht mehr gültig. Bitte fragen Sie die Person, die ihn Ihnen geschickt hat, nach einem neuen.',
-      gone: 'Die Sandbox dieses Zugangslinks gibt es nicht mehr.',
+        'Dieser Link ist nicht mehr gültig. Bitte fragen Sie die Person, die ihn Ihnen geschickt hat, nach einem neuen.',
+      gone: 'Die Sandbox dieses Links gibt es nicht mehr.',
     },
   },
   fr: {
@@ -101,8 +101,8 @@ export const CLAIM_TEXTS: Record<Language, Texts> = {
     },
     access: {
       unknown:
-        'Ce lien d’accès n’est plus valable. Veuillez en demander un nouveau à la personne qui vous l’a envoyé.',
-      gone: 'La sandbox de ce lien d’accès n’existe plus.',
+        'Ce lien n’est plus valable. Veuillez en demander un nouveau à la personne qui vous l’a envoyé.',
+      gone: 'La sandbox de ce lien n’existe plus.',
     },
   },
 }

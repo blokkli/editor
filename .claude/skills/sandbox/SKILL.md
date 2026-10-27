@@ -480,6 +480,13 @@ host, with ddev running: `bun run test:e2e-drupal` or
   credential: nginx doesn't log `/access/`, revoking posts it in the body.
   Revoking ends the link, not the sessions it opened. Access links die with
   their sandbox, and `ddev deploy` deletes every sandbox.
+- **A used invitation logs in again** (`server/middleware/invitation.ts`): a GET
+  of `/`, `/<lang>` or `/<lang>/` with `?invitation=` opens the access link its
+  claim made (`invitations.access_link`), as `/access/<token>` would, but with
+  the invitation's language. That link answers for a gone sandbox, revoking it
+  ends the invitation's logins, and the admin page marks it. nginx doesn't log
+  the control app's requests with `invitation=` in the query. `/api/claim` still
+  answers 410 for a used invitation.
 - **The task `sandbox:cleanup`** runs every 5 minutes: it deletes sandboxes past
   `min(created + 24 h, last use + 2 h)` (premium: created + 21 days) and marks
   rows of sandboxes that are gone. Rows are never removed.
