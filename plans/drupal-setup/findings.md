@@ -13,7 +13,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                      | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli`      | low      | to verify  |
-| F110 | [The Search API lists show what the index returns](#f110-the-search-api-lists-show-what-the-index-returns)                                                                | `paragraphs_blokkli`      | low      | to verify  |
 | F111 | [A new target resets the options of a link](#f111-a-new-target-resets-the-options-of-a-link)                                                                              | `paragraphs_blokkli`      | low      | to verify  |
 | F112 | [A text update of a link field does nothing, and is stored](#f112-a-text-update-of-a-link-field-does-nothing-and-is-stored)                                               | `paragraphs_blokkli`      | low      | open       |
 | F113 | [The comment module's schema extension needs the GraphQL submodule](#f113-the-comment-modules-schema-extension-needs-the-graphql-submodule)                               | `paragraphs_blokkli`      | low      | to verify  |
@@ -82,29 +81,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Impact:** low: queries in the schema that a project may not want.
 - **Fix idea:** drop the dependency, if a server without the extension still
   builds its schema.
-
-## F110: The Search API lists show what the index returns
-
-- **Found:** 2026-10-13, by reading, when the lists from an entity query got
-  their check for view access (the former F101). Not reproduced; the sandbox's
-  editor uses the entity query plugins.
-- **Symptom:** none seen. By reading: the content search and the media library
-  of `paragraphs_blokkli_search_api` list the title, the text and the image that
-  the index has for a result. No entity is loaded and nobody asks whether the
-  user may view it. What a user finds depends on the index alone: on its
-  processors "Content access" and "Entity status", if they're enabled.
-- **Cause:** `SearchApi::getResults()` and
-  `SearchApiMediaLibrary::getMediaLibraryResults()`
-  (`modules/paragraphs_blokkli_search_api/src/Plugin/ParagraphsBlokkli/Search/`)
-  map the result items of the query. The entity query plugins load the entities
-  and call `filterViewable()`.
-- **Also:** the search skill (`skills/blokkli-setup-search`, "Permissions") says
-  that each result is access-checked. That holds for the entity query plugin.
-- **Impact:** low, to verify: titles and text excerpts, on a site whose index
-  has what its editors may not view.
-- **Fix idea:** load the entities of a page of results and leave out what the
-  user may not view, as the entity query plugins do. Or say in the skill which
-  processors the index needs.
 
 ## F111: A new target resets the options of a link
 
