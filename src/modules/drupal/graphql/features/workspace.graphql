@@ -10,10 +10,7 @@ query pbEntitiesSearch {
       context
     }
     bundleLabels {
-      id
-      label
-    }
-    entityTypeLabels {
+      entityType
       id
       label
     }

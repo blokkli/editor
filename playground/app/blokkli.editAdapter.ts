@@ -2486,10 +2486,11 @@ export default defineBlokkliEditAdapter((ctx) => {
       return Promise.resolve({
         items,
         labelMap: {
-          label: 'Page',
           bundles: {
-            page: 'Page',
-            landing_page: 'Landing Page',
+            page: {
+              page: 'Page',
+              landing_page: 'Landing Page',
+            },
           },
         },
       })

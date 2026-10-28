@@ -8088,6 +8088,21 @@ type ParagraphsBlokkliEntitiesSearchLabel {
 }
 
 ""
+type ParagraphsBlokkliEntitiesSearchBundleLabel {
+  """
+  The bundle's entity type: bundles of different entity types can have the
+  same ID.
+  """
+  entityType: String!
+
+  ""
+  id: String!
+
+  ""
+  label: String!
+}
+
+""
 type ParagraphsBlokkliEntitiesSearchResult {
   ""
   items: [ParagraphsBlokkliEntitiesSearchItem!]!
@@ -8096,7 +8111,7 @@ type ParagraphsBlokkliEntitiesSearchResult {
   entityTypeLabels: [ParagraphsBlokkliEntitiesSearchLabel!]!
 
   ""
-  bundleLabels: [ParagraphsBlokkliEntitiesSearchLabel!]!
+  bundleLabels: [ParagraphsBlokkliEntitiesSearchBundleLabel!]!
 }
 
 ""

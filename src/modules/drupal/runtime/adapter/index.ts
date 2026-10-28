@@ -1888,9 +1888,10 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             )
           }
 
-          const bundles: Record<string, string> = {}
+          const bundles: Record<string, Record<string, string>> = {}
           for (const bundle of result?.bundleLabels ?? []) {
-            bundles[bundle.id] = bundle.label
+            const forType = (bundles[bundle.entityType] ??= {})
+            forType[bundle.id] = bundle.label
           }
 
           return {
@@ -1909,7 +1910,6 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
               }
             }),
             labelMap: {
-              label: result?.entityTypeLabels?.[0]?.label ?? '',
               bundles,
             },
           }
