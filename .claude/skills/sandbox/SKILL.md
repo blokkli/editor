@@ -308,11 +308,12 @@ Traefik sends every hostname to the web container's nginx on port 80.
   then asks whether a drop changes them in all languages), maps documents to the
   widget's links (`field_link_items`), leaves a detail page's related topics
   (`field_related`) out of the fields that blökkli manages ("Restrict paragraph
-  fields"; the editor shows them as they're stored), and adds the roles
-  `comment_reader` (a reviewer who may read comments but not post them) and
-  `comment_administrator` (one who administers comments). Neither has
-  `view any blokkli entity label`: they are the roles without the list of all
-  pages.
+  fields"; the editor shows them as they're stored), validates a page's
+  paragraphs fields too (`validation_types`; the site validates only
+  paragraphs), and adds the roles `comment_reader` (a reviewer who may read
+  comments but not post them) and `comment_administrator` (one who administers
+  comments). Neither has `view any blokkli entity label`: they are the roles
+  without the list of all pages.
 
 ## Sandboxes
 
@@ -437,9 +438,10 @@ host, with ddev running: `bun run test:e2e-drupal` or
   editor, all with an English UI), config pages, menus and nodes. A paragraph a
   spec refers to gets a `key`; its UUID is `seedUuid('paragraph', key)`. Content
   the site doesn't allow is marked `invalid: true` (see the content README):
-  `nodes/broken.yml` has a title in a gallery. Users and nodes marked
-  `deleted: true` are deleted after seeding: Nora Huber's comment has no author,
-  the notification about `nodes/removed.yml` no page.
+  `nodes/broken.yml` has a title in a gallery, `nodes/misplaced.yml` a call to
+  action on a page. Users and nodes marked `deleted: true` are deleted after
+  seeding: Nora Huber's comment has no author, the notification about
+  `nodes/removed.yml` no page.
 - **They run against the dev server** (`ddev nuxt`) locally, and against the E2E
   build on GitHub (see Checks): both have the agent's mock and the Test Cases
   sidebar. They typecheck with the frontend: `typecheck:sandbox-frontend` covers

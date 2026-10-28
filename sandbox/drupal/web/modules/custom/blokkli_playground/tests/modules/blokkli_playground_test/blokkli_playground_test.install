@@ -31,6 +31,9 @@ use Drupal\paragraphs_blokkli\Model\ParagraphMapping;
  * blökkli manages every paragraphs field of the enabled bundles but the
  * related topics of a detail page: the editor shows them as they're stored.
  * The site restricts no field.
+ *
+ * The paragraphs fields of a page are validated as well as its paragraphs.
+ * The site validates only the paragraphs.
  */
 function blokkli_playground_test_install(): void {
   $field = FieldConfig::loadByName('node', 'page', 'field_paragraphs');
@@ -80,5 +83,6 @@ function blokkli_playground_test_install(): void {
   $settings
     ->set('restrict_fields', TRUE)
     ->set('enabled_fields', $enabledFields)
+    ->set('validation_types', ['paragraph', 'field'])
     ->save();
 }

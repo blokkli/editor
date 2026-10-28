@@ -14,7 +14,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli`      | low      | to verify  |
 | F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                                                                       | `paragraphs_blokkli`      | low      | open       |
-| F115 | [A violation of a host's paragraphs field names no entity](#f115-a-violation-of-a-hosts-paragraphs-field-names-no-entity)                                                 | `paragraphs_blokkli`      | low      | to verify  |
 | F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                                                        | `nuxt-graphql-middleware` | low      | workaround |
 | F121 | [The library's query access finds unpublished items that its access handler hides](#f121-the-librarys-query-access-finds-unpublished-items-that-its-access-handler-hides) | `paragraphs`              | low      | open       |
 | F124 | [The lists of pages show one name for bundles of the same name](#f124-the-lists-of-pages-show-one-name-for-bundles-of-the-same-name)                                      | both                      | low      | to verify  |
@@ -95,25 +94,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   date input lets a user pick such a date is not checked.
 - **Fix idea:** refuse a date that the column can't hold, with a message, where
   the date is read (`BlokkliDate::parse()` or its two callers).
-
-## F115: A violation of a host's paragraphs field names no entity
-
-- **Found:** 2026-10-14, by reading, when the fields of a violation got their
-  resolvers without a callback.
-- **Symptom (by reading):** with the validation of fields on,
-  `ParagraphsBlokkliEditState::validate()` adds what `$field->validate()`
-  returns for each of the host's paragraphs fields. The root of those violations
-  is the field item list, not the entity, so their `entityType` and `entityUuid`
-  are NULL, and their property path starts below the field (empty, or e.g.
-  `0.target_id`) without the field's name. The editor lists such a violation
-  without a target, in the publish dialog and in the validations analyzer, so a
-  user can't go to the field from it. Not checked in the browser.
-- **Cause:** `ParagraphsBlokkliHelper::setValidFieldValue()` rebuilds a field's
-  violations with the entity as their root and the field's name in the path ("As
-  validating the entity reports it"); `validate()` doesn't.
-- **Impact:** low: only with the validation of fields on, and the message is
-  still shown.
-- **Fix idea:** rebuild those violations as `setValidFieldValue()` does.
 
 ## F120: A mutation from a text or form body runs as the user
 

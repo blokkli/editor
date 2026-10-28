@@ -1,0 +1,11 @@
+# A call to action on a page, which doesn't allow one (`invalid: true`), at
+# /en/misplaced: a violation of the page's paragraphs field. Only E2E sandboxes
+# validate the paragraphs fields of a page (blokkli_playground_test).
+key: misplaced
+type: page
+title: Misplaced
+field_paragraphs:
+  - type: call_to_action
+    key: misplaced-call-to-action
+    invalid: true
+    field_title: A call to action on a page
