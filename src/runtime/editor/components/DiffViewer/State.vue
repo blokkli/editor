@@ -14,6 +14,9 @@
         v-for="item in diffItems"
         :key="item.uuid"
         class="bk-diff-item"
+        data-test="diff-item"
+        :data-test-uuid="item.uuid"
+        :data-test-status="item.status"
         :class="{
           'bk-is-muted': showSelect && !selected?.includes(item.uuid),
         }"
