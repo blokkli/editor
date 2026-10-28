@@ -116,6 +116,7 @@
     "typecheck:sandbox-control": "vue-tsc --noEmit -p ./sandbox/control/.nuxt/tsconfig.app.json && vue-tsc --noEmit -p ./sandbox/control/.nuxt/tsconfig.server.json",
     "dev:minimal": "nuxi dev playground-minimal --host",
     "drupal:schema": "sandbox/drupal/vendor/bin/drush cr && sandbox/drupal/vendor/bin/drush blokkli-playground:schema \"$PWD/build/drupal-schema.graphql\"",
+    "sandbox:block-images": "bun scripts/block-images/index.ts",
     "sandbox:build": "bun run sandbox:prepare && nuxi build sandbox/frontend && nuxi build sandbox/control",
     "sandbox:prepare": "bun run changelog && bun run styles:build && PLAYGROUND_MODULE_BUILD=true nuxt-module-build prepare && nuxi prepare sandbox/frontend --envName development && nuxi prepare sandbox/control --envName development",
     "styles:build": "postcss ./css/index.css -o ./src/runtime/editor/css/output.css",

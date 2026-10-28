@@ -61,6 +61,7 @@
     # Disappears itself when the pool opens, in every language (the editor's
     # schedule dialog sets one translation's).
     - type: banner
+      key: notice-banner
       options: { color: warning }
       unpublish_on: '+4 days 10:00'
       field_title:

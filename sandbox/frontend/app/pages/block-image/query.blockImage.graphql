@@ -1,0 +1,12 @@
+# One block, wherever it is: the picture of its type in the editor's add list
+# (pages/block-image).
+query blockImage($uuid: String!) {
+  entityByUuid(entityType: PARAGRAPH, uuid: $uuid) {
+    ... on Paragraph {
+      ...paragraphsFieldItem
+      props {
+        ...paragraph
+      }
+    }
+  }
+}

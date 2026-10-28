@@ -384,15 +384,24 @@ export default defineNuxtConfig({
     strict: true,
     tsConfig: {
       // The E2E tests against the sandboxes run against this app, and use the
-      // test-cases feature's `window.__BLOKKLI__.test`.
-      include: ['../blokkli/features/**/*', '../../../test/e2e-drupal/**/*'],
+      // test-cases feature's `window.__BLOKKLI__.test`. So does the script
+      // that takes the pictures of the blocks.
+      include: [
+        '../blokkli/features/**/*',
+        '../../../test/e2e-drupal/**/*',
+        '../../../scripts/block-images/**/*',
+      ],
     },
   },
 
   // The Test Cases sidebar (blokkli/features/test-cases), only where the
   // agent's mock is. blökkli finds its features through Nuxt, which skips what
-  // it ignores; `devOnly` would leave it out of the E2E build too.
-  ignore: testSeams ? [] : ['blokkli/features/test-cases'],
+  // it ignores; `devOnly` would leave it out of the E2E build too. The page
+  // that the pictures of the blocks are taken of, only on the dev server.
+  ignore: [
+    ...(testSeams ? [] : ['blokkli/features/test-cases']),
+    ...(devServer ? [] : ['app/pages/block-image']),
+  ],
 
   $production: {
     // A build empties its build directory first: its own, so that it can run

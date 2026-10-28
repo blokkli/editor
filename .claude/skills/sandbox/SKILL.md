@@ -536,6 +536,19 @@ host, with ddev running: `bun run test:e2e-drupal` or
   (`Paragraph/BlokkliFragment/*`) must be allowed by name on the field
   (`allowed-fragments`): `today` and `quick_links` on the front page,
   `office_pages` on offices.
+- **Pictures of the blocks** (the add list's `image.png` next to each
+  paragraph's component, 600 × 400, shown at 300 × 200):
+  `bun run sandbox:block-images [bundle…]` on the host takes them, in a sandbox
+  of its own from the German template. Each is a block of the page "Blöcke"
+  (`content/nodes/blocks.yml`, keys `blocks-<type>`; the banner is the site's
+  notice, `notice-banner`), alone on `pages/block-image/[uuid]` (dev server
+  only, Nuxt's `ignore`). Per type, `scripts/block-images/index.ts` sets the
+  window's width (the layout and its media queries), how much the picture shows
+  across (300 is the block's own size; a part of a large block is fine) and
+  where it starts. After a change to a block's look or its content on that page:
+  bake, run it, commit the pictures. A new picture reaches the editor after
+  `ddev nuxt restart`. None for video (the content has no remote video),
+  `from_library` and fragments (their components are blökkli's).
 - **Containers:** `container-content` and `container-wide` (`main.css`) never
   depend on ancestors. A block has its own container only when
   `useHasContainer()` says so: not nested, in the `default` field list, not on a
