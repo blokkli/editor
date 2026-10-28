@@ -16,8 +16,9 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                                                                       | `paragraphs_blokkli`      | low      | open       |
 | F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                                                        | `nuxt-graphql-middleware` | low      | workaround |
 | F121 | [The library's query access finds unpublished items that its access handler hides](#f121-the-librarys-query-access-finds-unpublished-items-that-its-access-handler-hides) | `paragraphs`              | low      | open       |
-| F126 | [A build starts from another revision than the forms](#f126-a-build-starts-from-another-revision-than-the-forms)                                                          | `paragraphs_blokkli`      | low      | to verify  |
 | F127 | [Some fields of the edit state read the page without building it](#f127-some-fields-of-the-edit-state-read-the-page-without-building-it)                                  | `paragraphs_blokkli`      | medium   | to verify  |
+| F128 | [The list of pages offers pages that blökkli doesn't edit](#f128-the-list-of-pages-offers-pages-that-blökkli-doesnt-edit)                                                 | `paragraphs_blokkli`      | low      | to verify  |
+| F129 | [The page attachments name a route that doesn't exist](#f129-the-page-attachments-name-a-route-that-doesnt-exist)                                                         | `paragraphs_blokkli`      | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -137,37 +138,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   content" too, or the query access only for the admin permission. Upstream, in
   Paragraphs.
 
-## F126: A build starts from another revision than the forms
-
-- **Found:** 2026-10-27, by reading, while fixing the former F89. Not
-  reproduced.
-- **Symptom:** when a page's latest revision isn't its default one, the editor
-  shows the default revision with the changes of the edit state, while the forms
-  and the access checks use the latest revision. Publishing saves on top of the
-  default revision, so what the latest revision changed is lost.
-- **Cause:**
-  - `getHostEntity()` loads the latest revision
-    (`src/Entity/ParagraphsBlokkliEditState.php:345-353` at `ebb510d`). A build
-    asks for `force_reload`, which loads the default revision with
-    `loadUnchanged()` (:359).
-  - The forms run the mutations on the latest revision, without a build
-    (`src/Traits/EditStateFormTrait.php:39`).
-  - Access is checked for the latest revision: "an edit state shows the latest
-    revision of its host entity"
-    (`src/ParagraphsBlokkliEditStateAccessControlHandler.php:48-50`,
-    `ParagraphsBlokkliHelper::getHostAccess()`,
-    `src/ParagraphsBlokkliHelper.php:1546-1576`). Its doc names a draft of
-    content moderation as the example, which blökkli no longer edits.
-- **Impact:** low: only a page with a latest revision that isn't the default
-  one. Content moderation makes such revisions, and blökkli is off for moderated
-  bundles; Workspaces, or code that saves such a revision, still can. With
-  hidden shared fields, validation would also report core's message about a
-  revision that isn't the default one (`defaultRevisionMessage` of
-  `EntityUntranslatableFieldsConstraint`), which
-  `ParagraphsBlokkliHelper::isSharedFieldChangeViolation()` doesn't filter.
-- **Fix idea:** decide which revision an edit state is built on, and use it for
-  the build, the forms, the access checks and the publishing.
-
 ## F127: Some fields of the edit state read the page without building it
 
 - **Found:** 2026-10-27, by reading, while fixing the former F89. Not
@@ -196,3 +166,50 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   drops the first.
 - **Fix idea:** build the state in these producers before they read the page,
   e.g. with a method of the edit state that returns the built host.
+
+## F128: The list of pages offers pages that blökkli doesn't edit
+
+- **Found:** 2026-10-28, by reading, while fixing the former F126. Not
+  reproduced.
+- **Symptom:** "Switch page" lists a page whose latest revision isn't its
+  default one. Opening it leads to the page without the editor, and nothing says
+  why.
+- **Cause:**
+  - `EntitiesSearch::resolve()` leaves out the bundles that content moderation
+    moderates
+    (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/EntitiesSearch.php:154-157`
+    at `5ca540b`), but a bundle's items come from one query, without a look at
+    their revisions (`queryItemsForBundle()`, :262).
+  - Since the fix of the former F126,
+    `ParagraphsBlokkliConfig::isEnabledForEntity()` is false for such a page
+    (`hasPendingRevision()`). `BlokkliProps` then gives no permissions
+    (`BlokkliProps.php:129-131` at `5ca540b`), so the editor doesn't start.
+  - The settings form and the status report name a moderated bundle; a page with
+    a pending revision isn't named anywhere.
+- **Impact:** low: only pages with a pending revision, which blökkli itself
+  never saves.
+- **Fix idea:** leave such entities out of the query (a condition against the
+  revision table), and say why blökkli is off for a page, e.g. in what the
+  frontend reads from `BlokkliProps`, or in the entity's form.
+
+## F129: The page attachments name a route that doesn't exist
+
+- **Found:** 2026-10-28, by reading, while fixing the former F126. Not
+  reproduced.
+- **Symptom:** perhaps none: the node form that blökkli opens in its iframe may
+  lack the module's iframe styles (`css/iframe_modal.css`).
+- **Cause:**
+  - `paragraphs_blokkli_preprocess_html()` and
+    `paragraphs_blokkli_page_attachments()` check for a route
+    `paragraphs_blokkli.edit_host_entity_form` (`paragraphs_blokkli.module:32`,
+    `:55` at `5ca540b`). `paragraphs_blokkli.routing.yml` doesn't define it, and
+    never did in this repository.
+  - blökkli opens the node form through `EntityFormController`, a redirect to
+    the entity's `edit-form` with `?paragraphsBlokkli=true`
+    (`src/Controller/EntityFormController.php:36-41`). The preprocess hook
+    checks that query parameter as well; the attachments hook only checks
+    routes, so it never attaches `iframe_modal` to the node form.
+- **Impact:** low: dead code, and perhaps a missing stylesheet.
+- **Fix idea:** remove the route name; check whether the node form needs
+  `iframe_modal`, and if so attach it for the query parameter, as the preprocess
+  hook does.

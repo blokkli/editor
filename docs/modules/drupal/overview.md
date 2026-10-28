@@ -48,7 +48,9 @@ Drupal entities.
 
 The edit state is blökkli's draft, so blökkli doesn't edit content that Drupal's
 content moderation moderates: it's off for a bundle in a workflow. The module's
-settings form and the status report name such a bundle.
+settings form and the status report name such a bundle. Nor does it edit a page
+whose latest revision isn't its default one, such as a draft that a workflow
+left behind: publishing would lose what that revision changed.
 
 ### GraphQL as the Contract
 
