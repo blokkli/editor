@@ -13,7 +13,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                      | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli`      | low      | to verify  |
-| F112 | [A text update of a link field does nothing, and is stored](#f112-a-text-update-of-a-link-field-does-nothing-and-is-stored)                                               | `paragraphs_blokkli`      | low      | open       |
 | F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                                                                       | `paragraphs_blokkli`      | low      | open       |
 | F115 | [A violation of a host's paragraphs field names no entity](#f115-a-violation-of-a-hosts-paragraphs-field-names-no-entity)                                                 | `paragraphs_blokkli`      | low      | to verify  |
 | F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                                                        | `nuxt-graphql-middleware` | low      | workaround |
@@ -78,23 +77,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Impact:** low: queries in the schema that a project may not want.
 - **Fix idea:** drop the dependency, if a server without the extension still
   builds its schema.
-
-## F112: A text update of a link field does nothing, and is stored
-
-- **Found:** 2026-10-13, in the sandbox check of the link titles (the former
-  F9), over GraphQL.
-- **Symptom:** `update_field_value` with the name of a link field and a URI as
-  its value answers with success. The link has no URL afterwards, and the edit
-  state has a mutation that changes nothing. The editor doesn't send this: it
-  sets a URL with `bulk_update_field_values`, which writes the URI.
-- **Cause:** `UpdateFieldValueTrait::updateTextFieldValue()`
-  (`src/Plugin/ParagraphsBlokkli/UpdateFieldValueTrait.php`) writes a value
-  without a property into the item's `value`, which a link item doesn't have. By
-  reading, the same goes for every field whose items have no `value`.
-- **Impact:** low: a client of its own, or a tool of the agent, that picks the
-  wrong mutation gets no error.
-- **Fix idea:** refuse a field whose items have no `value` when the mutation is
-  added, or write the value as `bulk_update_field_values` does.
 
 ## F114: A date after 2038 can't be scheduled on MySQL
 
