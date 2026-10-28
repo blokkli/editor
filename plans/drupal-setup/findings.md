@@ -13,7 +13,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                      | low      | open       |
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli`      | low      | to verify  |
-| F111 | [A new target resets the options of a link](#f111-a-new-target-resets-the-options-of-a-link)                                                                              | `paragraphs_blokkli`      | low      | to verify  |
 | F112 | [A text update of a link field does nothing, and is stored](#f112-a-text-update-of-a-link-field-does-nothing-and-is-stored)                                               | `paragraphs_blokkli`      | low      | open       |
 | F113 | [The comment module's schema extension needs the GraphQL submodule](#f113-the-comment-modules-schema-extension-needs-the-graphql-submodule)                               | `paragraphs_blokkli`      | low      | to verify  |
 | F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                                                                       | `paragraphs_blokkli`      | low      | open       |
@@ -80,23 +79,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Impact:** low: queries in the schema that a project may not want.
 - **Fix idea:** drop the dependency, if a server without the extension still
   builds its schema.
-
-## F111: A new target resets the options of a link
-
-- **Found:** 2026-10-13, by reading, when a link kept its title on a new target
-  (the former F9). Not reproduced.
-- **Symptom:** none seen. By reading: a link item also has options, such as the
-  attributes that the Link Attributes module stores. Replacing the target of a
-  link through an entity mapping (`replace_entity_reference`, `replace_media`)
-  writes an item with a URI and a title only, so the options are gone. Typing or
-  pasting a URL keeps them: that path merges into the item.
-- **Cause:** `LinkOrReferenceFieldTrait::getLinkOrEntityReferenceFieldValue()`
-  (`src/Traits/LinkOrReferenceFieldTrait.php`) returns the URI and the title,
-  and the mutations set that as the field's value.
-- **Impact:** low: blökkli has no UI for a link's options, so they come from
-  Drupal's form on a site with such a module.
-- **Fix idea:** keep the options of the item, as the title is kept. Behind a new
-  version of the two mutations.
 
 ## F112: A text update of a link field does nothing, and is stored
 
