@@ -14,7 +14,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli`      | low      | to verify  |
 | F112 | [A text update of a link field does nothing, and is stored](#f112-a-text-update-of-a-link-field-does-nothing-and-is-stored)                                               | `paragraphs_blokkli`      | low      | open       |
-| F113 | [The comment module's schema extension needs the GraphQL submodule](#f113-the-comment-modules-schema-extension-needs-the-graphql-submodule)                               | `paragraphs_blokkli`      | low      | to verify  |
 | F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                                                                       | `paragraphs_blokkli`      | low      | open       |
 | F115 | [A violation of a host's paragraphs field names no entity](#f115-a-violation-of-a-hosts-paragraphs-field-names-no-entity)                                                 | `paragraphs_blokkli`      | low      | to verify  |
 | F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                                                        | `nuxt-graphql-middleware` | low      | workaround |
@@ -96,30 +95,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   wrong mutation gets no error.
 - **Fix idea:** refuse a field whose items have no `value` when the mutation is
   added, or write the value as `bulk_update_field_values` does.
-
-## F113: The comment module's schema extension needs the GraphQL submodule
-
-- **Found:** 2026-10-13, by reading, when the tests of the schema extensions'
-  resolvers were written. Not reproduced: a kernel test loads the classes of
-  every module, enabled or not.
-- **Symptom:** none seen. By reading: `paragraphs_blokkli_comment` doesn't
-  depend on `paragraphs_blokkli_graphql`, but its schema extension resolves its
-  queries with data producers of that module
-  (`paragraphs_blokkli_can_use_blokkli`, `paragraphs_blokkli_load_host_entity`,
-  `paragraphs_blokkli_load_edit_state`). On a site with the GraphQL module and
-  the comment module, but without the GraphQL submodule, a server with this
-  extension fails.
-- **Cause:**
-  `modules/paragraphs_blokkli_comment/paragraphs_blokkli_comment.info.yml` lists
-  `paragraphs_blokkli`, `filter` and `text` only. The agent's module names the
-  dependency. The extension also resolves four fields with `call_method`, a data
-  producer of `graphql_core_schema`: that module provides the extension's schema
-  (`core_composable`), and the GraphQL submodule depends on it.
-- **Impact:** low: comments are of no use over GraphQL without the edit
-  extension, so no site is set up this way.
-- **Fix idea:** add the dependency, or move the schema extension into
-  `paragraphs_blokkli_graphql`, where the library's, the search's and the
-  transform's are.
 
 ## F114: A date after 2038 can't be scheduled on MySQL
 
