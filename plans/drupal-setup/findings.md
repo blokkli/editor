@@ -17,7 +17,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                                                        | `nuxt-graphql-middleware` | low      | workaround |
 | F121 | [The library's query access finds unpublished items that its access handler hides](#f121-the-librarys-query-access-finds-unpublished-items-that-its-access-handler-hides) | `paragraphs`              | low      | open       |
 | F128 | [The list of pages offers pages that blökkli doesn't edit](#f128-the-list-of-pages-offers-pages-that-blökkli-doesnt-edit)                                                 | `paragraphs_blokkli`      | low      | to verify  |
-| F129 | [The page attachments name a route that doesn't exist](#f129-the-page-attachments-name-a-route-that-doesnt-exist)                                                         | `paragraphs_blokkli`      | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -161,25 +160,3 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** leave such entities out of the query (a condition against the
   revision table), and say why blökkli is off for a page, e.g. in what the
   frontend reads from `BlokkliProps`, or in the entity's form.
-
-## F129: The page attachments name a route that doesn't exist
-
-- **Found:** 2026-10-28, by reading, while fixing the former F126. Not
-  reproduced.
-- **Symptom:** perhaps none: the node form that blökkli opens in its iframe may
-  lack the module's iframe styles (`css/iframe_modal.css`).
-- **Cause:**
-  - `paragraphs_blokkli_preprocess_html()` and
-    `paragraphs_blokkli_page_attachments()` check for a route
-    `paragraphs_blokkli.edit_host_entity_form` (`paragraphs_blokkli.module:32`,
-    `:55` at `5ca540b`). `paragraphs_blokkli.routing.yml` doesn't define it, and
-    never did in this repository.
-  - blökkli opens the node form through `EntityFormController`, a redirect to
-    the entity's `edit-form` with `?paragraphsBlokkli=true`
-    (`src/Controller/EntityFormController.php:36-41`). The preprocess hook
-    checks that query parameter as well; the attachments hook only checks
-    routes, so it never attaches `iframe_modal` to the node form.
-- **Impact:** low: dead code, and perhaps a missing stylesheet.
-- **Fix idea:** remove the route name; check whether the node form needs
-  `iframe_modal`, and if so attach it for the query parameter, as the preprocess
-  hook does.
