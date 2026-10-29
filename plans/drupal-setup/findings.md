@@ -7,16 +7,15 @@ removed; its commit names it.
 Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 (2.0.x), unless noted otherwise.
 
-| #    | Finding                                                                                                                                                                   | Project                   | Severity | Status     |
-| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                                                                   | `paragraphs_blokkli`      | low      | open       |
-| F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                                                                  | both                      | low      | open       |
-| F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                                                                       | `texts`                   | low      | open       |
-| F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension)                                         | `paragraphs_blokkli`      | low      | to verify  |
-| F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                                                                       | `paragraphs_blokkli`      | low      | open       |
-| F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                                                        | `nuxt-graphql-middleware` | low      | workaround |
-| F121 | [The library's query access finds unpublished items that its access handler hides](#f121-the-librarys-query-access-finds-unpublished-items-that-its-access-handler-hides) | `paragraphs`              | low      | open       |
-| F128 | [The list of pages offers pages that blökkli doesn't edit](#f128-the-list-of-pages-offers-pages-that-blökkli-doesnt-edit)                                                 | `paragraphs_blokkli`      | low      | to verify  |
+| #    | Finding                                                                                                                           | Project                   | Severity | Status     |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
+| F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                           | `paragraphs_blokkli`      | low      | open       |
+| F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                          | both                      | low      | open       |
+| F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                               | `texts`                   | low      | open       |
+| F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension) | `paragraphs_blokkli`      | low      | to verify  |
+| F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                               | `paragraphs_blokkli`      | low      | open       |
+| F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                | `nuxt-graphql-middleware` | low      | workaround |
+| F128 | [The list of pages offers pages that blökkli doesn't edit](#f128-the-list-of-pages-offers-pages-that-blökkli-doesnt-edit)         | `paragraphs_blokkli`      | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -114,27 +113,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   other people's content.
 - **Fix idea:** refuse a mutation whose content type isn't `application/json`,
   with a 415. A JSON POST from another origin needs a CORS preflight.
-
-## F121: The library's query access finds unpublished items that its access handler hides
-
-- **Found:** 2026-10-25, while fixing the library search's totals, by reading. A
-  kernel test showed that content moderation's access makes the two agree.
-- **Symptom:** a user with "view any unpublished content" but without
-  "administer paragraphs library" gets unpublished library items from an entity
-  query with access checks, but may not view them. The library search counts
-  them in its total and then leaves them out, so a page of results comes up
-  short. The sandbox's editors are such users: `view_unpublished` gives them the
-  permission.
-- **Cause:** Paragraphs 8.x-1.23. Its query access
-  (`paragraphs_library_query_paragraphs_library_item_access_alter()`) lets
-  either permission see unpublished items. Its access handler
-  (`LibraryItemAccessControlHandler`) only lets the admin permission view them.
-  With content moderation, the two agree: content moderation lets "view any
-  unpublished content" view any unpublished entity. `view_unpublished` only
-  grants access to nodes.
-- **Fix idea:** the access handler allows viewing for "view any unpublished
-  content" too, or the query access only for the admin permission. Upstream, in
-  Paragraphs.
 
 ## F128: The list of pages offers pages that blökkli doesn't edit
 
