@@ -8,10 +8,9 @@ to `plans/features/`, a file per feature.
 Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 (2.0.x), unless noted otherwise.
 
-| #    | Finding                                                                                                                   | Project                   | Severity | Status     |
-| ---- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)        | `nuxt-graphql-middleware` | low      | workaround |
-| F128 | [The list of pages offers pages that blökkli doesn't edit](#f128-the-list-of-pages-offers-pages-that-blökkli-doesnt-edit) | `paragraphs_blokkli`      | low      | to verify  |
+| #    | Finding                                                                                                            | Project                   | Severity | Status     |
+| ---- | ------------------------------------------------------------------------------------------------------------------ | ------------------------- | -------- | ---------- |
+| F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user) | `nuxt-graphql-middleware` | low      | workaround |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -37,28 +36,3 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
   other people's content.
 - **Fix idea:** refuse a mutation whose content type isn't `application/json`,
   with a 415. A JSON POST from another origin needs a CORS preflight.
-
-## F128: The list of pages offers pages that blökkli doesn't edit
-
-- **Found:** 2026-10-28, by reading, while fixing the former F126. Not
-  reproduced.
-- **Symptom:** "Switch page" lists a page whose latest revision isn't its
-  default one. Opening it leads to the page without the editor, and nothing says
-  why.
-- **Cause:**
-  - `EntitiesSearch::resolve()` leaves out the bundles that content moderation
-    moderates
-    (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/EntitiesSearch.php:154-157`
-    at `5ca540b`), but a bundle's items come from one query, without a look at
-    their revisions (`queryItemsForBundle()`, :262).
-  - Since the fix of the former F126,
-    `ParagraphsBlokkliConfig::isEnabledForEntity()` is false for such a page
-    (`hasPendingRevision()`). `BlokkliProps` then gives no permissions
-    (`BlokkliProps.php:129-131` at `5ca540b`), so the editor doesn't start.
-  - The settings form and the status report name a moderated bundle; a page with
-    a pending revision isn't named anywhere.
-- **Impact:** low: only pages with a pending revision, which blökkli itself
-  never saves.
-- **Fix idea:** leave such entities out of the query (a condition against the
-  revision table), and say why blökkli is off for a page, e.g. in what the
-  frontend reads from `BlokkliProps`, or in the entity's form.
