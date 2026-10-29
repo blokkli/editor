@@ -2,46 +2,19 @@
 
 Bugs found while building the sandbox that belong in other projects, mostly
 `paragraphs_blokkli`. They're tracked here and fixed separately. A fixed one is
-removed; its commit names it.
+removed; its commit names it. One that turns out to be a missing feature moves
+to `plans/features/`, a file per feature.
 
 Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 (2.0.x), unless noted otherwise.
 
 | #    | Finding                                                                                                                   | Project                   | Severity | Status     |
 | ---- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                   | `paragraphs_blokkli`      | low      | open       |
-| F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                  | both                      | low      | open       |
 | F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)        | `nuxt-graphql-middleware` | low      | workaround |
 | F128 | [The list of pages offers pages that blökkli doesn't edit](#f128-the-list-of-pages-offers-pages-that-blökkli-doesnt-edit) | `paragraphs_blokkli`      | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
-
-## F40: A new comment without a mention notifies nobody
-
-- **Found:** 2026-09-28, 13h.
-- **Symptom:** an editor comments on a page; the other people working on it
-  aren't notified unless they're mentioned.
-- **Cause:** the comment module only creates `comment:mention`, `comment:reply`,
-  `comment:thread` and `comment:resolved`
-  (`modules/paragraphs_blokkli_comment/src/CommentNotifier.php`).
-- **Workaround:** mention the reviewer (the demo's flow, 13h).
-- **Fix idea:** notify the edit state's owner of new comments on their page.
-
-## F46: A pasted URL can't become a link
-
-- **Found:** 2026-09-28, with the generic `link` paragraph, by reading the code.
-- **Symptom:** pasting a URL creates a text paragraph with the URL, even where a
-  link paragraph would fit.
-- **Cause:** the editor asks the adapter for a bundle for `{ type: 'link' }`
-  (`src/runtime/editor/features/clipboard/index.vue:701`, in this repository),
-  but the Drupal adapter's `clipboardMapBundle` only maps video, plain text,
-  images and files (`src/modules/drupal/runtime/adapter/index.ts:1420`, in this
-  repository). The clipboard item is then text, and paragraphs_blokkli has no
-  mutation that creates a link paragraph from a URL.
-- **Fix idea:** a clipboard config for URLs in paragraphs_blokkli (paragraph
-  types with a link field, like the file mapping), a mutation that sets the link
-  field, and the mapping in the Drupal adapter.
 
 ## F120: A mutation from a text or form body runs as the user
 
