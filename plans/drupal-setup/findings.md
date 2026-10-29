@@ -16,7 +16,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                                                                       | `paragraphs_blokkli`      | low      | open       |
 | F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                                                        | `nuxt-graphql-middleware` | low      | workaround |
 | F121 | [The library's query access finds unpublished items that its access handler hides](#f121-the-librarys-query-access-finds-unpublished-items-that-its-access-handler-hides) | `paragraphs`              | low      | open       |
-| F127 | [Some fields of the edit state read the page without building it](#f127-some-fields-of-the-edit-state-read-the-page-without-building-it)                                  | `paragraphs_blokkli`      | medium   | to verify  |
 | F128 | [The list of pages offers pages that blökkli doesn't edit](#f128-the-list-of-pages-offers-pages-that-blökkli-doesnt-edit)                                                 | `paragraphs_blokkli`      | low      | to verify  |
 | F129 | [The page attachments name a route that doesn't exist](#f129-the-page-attachments-name-a-route-that-doesnt-exist)                                                         | `paragraphs_blokkli`      | low      | to verify  |
 
@@ -137,35 +136,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** the access handler allows viewing for "view any unpublished
   content" too, or the query access only for the admin permission. Upstream, in
   Paragraphs.
-
-## F127: Some fields of the edit state read the page without building it
-
-- **Found:** 2026-10-27, by reading, while fixing the former F89. Not
-  reproduced.
-- **Symptom:** the editor's dialog for a reference field of the page lists the
-  items as they're stored: what the edit state changed in that field is missing.
-  Saving the dialog sends the whole list
-  (`src/runtime/editor/features/droppable-field-edit/Overlay/index.vue:325-336`,
-  `:594-599`), so it would undo those changes.
-- **Cause:**
-  - `DroppableFieldItems::findTarget()` returns `$state->getHostEntity()` for a
-    field of the page, without building the state
-    (`modules/paragraphs_blokkli_graphql/src/Plugin/GraphQL/DataProducer/DroppableFieldItems.php:113-116`
-    at `ebb510d`). A paragraph's field comes from the built state (:118-124).
-  - The adapter queries the field on its own
-    (`src/modules/drupal/graphql/features/droppable-field-items.graphql`), so no
-    other field of the request builds the state first.
-  - `translationState` and `publishOptions` also read `getHostEntity()` without
-    a build (`ParagraphsBlokkliTranslationState.php:81`,
-    `PublishOptions.php:84`). In the editor's fragment they come after
-    `textFieldValues`, which builds
-    (`src/modules/drupal/graphql/base/fragment.paragraphsBlokkliEditState.graphql:13`,
-    `:40`, `:58`), so they see the built page. In another query they would see
-    the stored one.
-- **Impact:** medium, if it holds: a second change of the same field of the page
-  drops the first.
-- **Fix idea:** build the state in these producers before they read the page,
-  e.g. with a method of the edit state that returns the built host.
 
 ## F128: The list of pages offers pages that blökkli doesn't edit
 
