@@ -11,7 +11,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | ---- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                           | `paragraphs_blokkli`      | low      | open       |
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                          | both                      | low      | open       |
-| F50  | [Any GraphQL user can create text keys](#f50-any-graphql-user-can-create-text-keys)                                               | `texts`                   | low      | open       |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension) | `paragraphs_blokkli`      | low      | to verify  |
 | F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                               | `paragraphs_blokkli`      | low      | open       |
 | F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                | `nuxt-graphql-middleware` | low      | workaround |
@@ -45,19 +44,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** a clipboard config for URLs in paragraphs_blokkli (paragraph
   types with a link field, like the file mapping), a mutation that sets the link
   field, and the mapping in the Drupal adapter.
-
-## F50: Any GraphQL user can create text keys
-
-- **Found:** 2026-09-27, 13f.
-- **Symptom:** the texts resolvers create a text for every unknown key, without
-  an access check (`TextsTranslator::trans()`, `src/TextsTranslator.php:117` in
-  `texts`). Any user with GraphQL access can fill the table: on the dev site,
-  everyone, with `blokkli_playground_public`. Sandboxes are safe from it since
-  2026-10-25: nginx refuses Drupal's GraphQL endpoint to the browser there, and
-  the app's operations name their keys as literals
-  (`app/graphql/fragment.easyTexts.graphql`). From 2026-10-14, nginx refused
-  `/graphql`, but any logged-in user still reached it as `/index.php/graphql`.
-- **Fix idea:** create keys only with a permission, or only in development.
 
 ## F97: The edit extension still requires the entity query extension
 
