@@ -7,13 +7,12 @@ removed; its commit names it.
 Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 (2.0.x), unless noted otherwise.
 
-| #    | Finding                                                                                                                           | Project                   | Severity | Status     |
-| ---- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
-| F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                           | `paragraphs_blokkli`      | low      | open       |
-| F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                          | both                      | low      | open       |
-| F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension) | `paragraphs_blokkli`      | low      | to verify  |
-| F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                | `nuxt-graphql-middleware` | low      | workaround |
-| F128 | [The list of pages offers pages that blökkli doesn't edit](#f128-the-list-of-pages-offers-pages-that-blökkli-doesnt-edit)         | `paragraphs_blokkli`      | low      | to verify  |
+| #    | Finding                                                                                                                   | Project                   | Severity | Status     |
+| ---- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------- | -------- | ---------- |
+| F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                   | `paragraphs_blokkli`      | low      | open       |
+| F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                  | both                      | low      | open       |
+| F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)        | `nuxt-graphql-middleware` | low      | workaround |
+| F128 | [The list of pages offers pages that blökkli doesn't edit](#f128-the-list-of-pages-offers-pages-that-blökkli-doesnt-edit) | `paragraphs_blokkli`      | low      | to verify  |
 
 Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 (the sandbox works around it).
@@ -43,21 +42,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Fix idea:** a clipboard config for URLs in paragraphs_blokkli (paragraph
   types with a link field, like the file mapping), a mutation that sets the link
   field, and the mapping in the Drupal adapter.
-
-## F97: The edit extension still requires the entity query extension
-
-- **Found:** 2026-10-12, by reading, when the editor got the paragraph types
-  from a query of the module's own (the former F38).
-- **Symptom:** none. A GraphQL server with `paragraphs_blokkli_edit` must have
-  graphql_core_schema's `entity_query` extension enabled, which adds
-  `entityQuery`, `entityById` and `entityByUuid` to the schema of every site.
-- **Cause:** `EditExtension::getExtensionDependencies()` returns
-  `['entity_query']`. The editor's only use of it was the list of paragraph
-  types. Not checked: whether the module's schema needs anything else of that
-  extension.
-- **Impact:** low: queries in the schema that a project may not want.
-- **Fix idea:** drop the dependency, if a server without the extension still
-  builds its schema.
 
 ## F120: A mutation from a text or form body runs as the user
 
