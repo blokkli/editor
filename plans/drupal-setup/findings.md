@@ -12,7 +12,6 @@ Code references are relative to the `paragraphs_blokkli` repository at `32bbcfe`
 | F40  | [A new comment without a mention notifies nobody](#f40-a-new-comment-without-a-mention-notifies-nobody)                           | `paragraphs_blokkli`      | low      | open       |
 | F46  | [A pasted URL can't become a link](#f46-a-pasted-url-cant-become-a-link)                                                          | both                      | low      | open       |
 | F97  | [The edit extension still requires the entity query extension](#f97-the-edit-extension-still-requires-the-entity-query-extension) | `paragraphs_blokkli`      | low      | to verify  |
-| F114 | [A date after 2038 can't be scheduled on MySQL](#f114-a-date-after-2038-cant-be-scheduled-on-mysql)                               | `paragraphs_blokkli`      | low      | open       |
 | F120 | [A mutation from a text or form body runs as the user](#f120-a-mutation-from-a-text-or-form-body-runs-as-the-user)                | `nuxt-graphql-middleware` | low      | workaround |
 | F128 | [The list of pages offers pages that blökkli doesn't edit](#f128-the-list-of-pages-offers-pages-that-blökkli-doesnt-edit)         | `paragraphs_blokkli`      | low      | to verify  |
 
@@ -59,24 +58,6 @@ Statuses: `to verify` (read in the code, not reproduced), `open`, `workaround`
 - **Impact:** low: queries in the schema that a project may not want.
 - **Fix idea:** drop the dependency, if a server without the extension still
   builds its schema.
-
-## F114: A date after 2038 can't be scheduled on MySQL
-
-- **Found:** 2026-10-13, in a kernel test of the scheduling (MariaDB), when the
-  dates got their one format.
-- **Symptom:** scheduling an edit state for a date after 2038-01-19 fails with
-  "Numeric value out of range: 1264 Out of range value for column 'publish_on'".
-  The mutation answers with a server error, not with a reason. On SQLite, as in
-  the sandbox, the date is stored. By reading, the same goes for the dates of a
-  paragraph, which are the scheduler module's fields of the same type.
-- **Cause:** `publish_on` is a `timestamp` field, which Drupal stores in a
-  signed 32-bit column. `ScheduleEditState`
-  (`modules/paragraphs_blokkli_scheduler/src/Plugin/GraphQL/DataProducer/ScheduleEditState.php`)
-  only refuses a date that is too soon.
-- **Impact:** low: no one schedules that far ahead today. Whether the editor's
-  date input lets a user pick such a date is not checked.
-- **Fix idea:** refuse a date that the column can't hold, with a message, where
-  the date is read (`BlokkliDate::parse()` or its two callers).
 
 ## F120: A mutation from a text or form body runs as the user
 
