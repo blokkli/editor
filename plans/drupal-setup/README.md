@@ -44,15 +44,9 @@ Statuses: `todo`, `in progress`.
   sandboxes (21 days, handed to customers) need to survive it: a plan of its
   own.
 
-## Upstream bugs
-
-[findings.md](findings.md): bugs in `paragraphs_blokkli`, `@blokkli/editor` and
-other projects, found along the way and fixed separately.
-
 ## Working on this plan
 
 - Set a chunk to `in progress` when you start it, in its file and above.
 - Tick tasks as you go. Write findings and deviations under "Notes".
 - When a chunk is done, move what's worth keeping into the `sandbox` skill, the
   code or `CONTRIBUTING.md`, then delete the chunk.
-- A bug that belongs in another project goes into [findings.md](findings.md).
