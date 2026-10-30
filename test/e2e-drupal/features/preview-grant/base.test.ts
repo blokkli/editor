@@ -1,12 +1,11 @@
-import { execFileSync } from 'node:child_process'
 import { createPage, setup } from '@nuxt/test-utils/e2e'
 import type { Page } from 'playwright-core'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { addBlock } from '../../support/blocks'
 import { installCspCheck } from '../../support/csp'
+import { askDrupal, type DrupalAnswer } from '../../support/drupal'
 import { dialog } from '../../support/overlays'
 import {
-  ROOT,
   resetSandbox,
   sandboxHost,
   seedUuid,
@@ -23,16 +22,23 @@ import { toolbarButton } from '../../support/toolbar'
 const BLOCKS = seedUuid('node', 'blocks')
 const NOTICES = seedUuid('node', 'notices')
 
-/** The pending changes of a page: what a preview shows. */
-const EDIT_STATE = `query ($uuid: String!) {
+/**
+ * The pending changes of a page: what a preview shows. The editor's history
+ * shows them at an index of its own.
+ */
+const EDIT_STATE = `query ($uuid: String!, $historyIndex: Int) {
   state: getParagraphsEditState(
     entityType: NODE
     entityUuid: $uuid
     langcode: "en"
+    historyIndex: $historyIndex
   ) {
     mutatedState {
       fields(langcode: "en") {
         name
+        list {
+          uuid
+        }
       }
     }
   }
@@ -98,54 +104,16 @@ const EDITOR_MUTATIONS = `mutation {
   read: pbMarkNotificationsAsRead
 }`
 
-type Answer = {
-  data?: Record<string, unknown> | null
-  errors?: { path?: string[] }[]
-}
+type EditStateAnswer = {
+  mutatedState: { fields: { list: { uuid: string }[] }[] }
+} | null
 
-/** Quotes a value for the shell of `ddev exec`. */
-function shellQuote(value: string): string {
-  return `'${value.replaceAll("'", `'\\''`)}'`
-}
-
-/**
- * Asks Drupal directly, as the page's visitor. nginx refuses Drupal's
- * endpoint to the browser on a sandbox's host, but Drupal has to refuse these
- * by itself: Nuxt's server passes the browser's cookie on with every operation
- * of the app. So this asks the way Nuxt's server does, from inside the
- * container.
- */
-async function ask(
-  page: Page,
-  query: string,
-  variables: Record<string, string> = {},
-): Promise<Answer> {
-  const url = new URL(page.url())
-  const cookies = await page.context().cookies(url.origin)
-  const command = [
-    'curl',
-    '-s',
-    '-X',
-    'POST',
-    'http://127.0.0.1/en/graphql',
-    '-H',
-    'Content-Type: application/json',
-    '-H',
-    `X-Forwarded-Host: ${url.host}`,
-    '-H',
-    'X-Forwarded-Proto: https',
-    '-H',
-    `Cookie: ${cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join('; ')}`,
-    '--data-binary',
-    '@-',
-  ]
-    .map(shellQuote)
-    .join(' ')
-  const output = execFileSync('ddev', ['exec', command], {
-    cwd: ROOT,
-    input: JSON.stringify({ query, variables }),
-  })
-  return JSON.parse(output.toString())
+/** The UUIDs of the paragraphs in an answer to EDIT_STATE. */
+function paragraphUuids(answer: DrupalAnswer): string[] {
+  const state = answer.data?.state as EditStateAnswer | undefined
+  return (state?.mutatedState.fields ?? []).flatMap((field) =>
+    field.list.map((paragraph) => paragraph.uuid),
+  )
 }
 
 /** Whether the page renders the block. */
@@ -256,16 +224,16 @@ describe('The preview link', async () => {
   })
 
   it('is for the changes of its page only', async () => {
-    const own = await ask(visitor, EDIT_STATE, { uuid: BLOCKS })
+    const own = await askDrupal(visitor, EDIT_STATE, { uuid: BLOCKS })
     expect(own.data?.state).toBeTruthy()
 
-    const other = await ask(visitor, EDIT_STATE, { uuid: NOTICES })
+    const other = await askDrupal(visitor, EDIT_STATE, { uuid: NOTICES })
     expect(other.data).toEqual({ state: null })
   })
 
   it('does not say who changed the page, or how', async () => {
     // The editor's user gets it.
-    const editor = await ask(anna, HISTORY, { uuid: BLOCKS })
+    const editor = await askDrupal(anna, HISTORY, { uuid: BLOCKS })
     expect(editor.data?.state).toMatchObject({
       ownerName: 'Anna Keller',
       currentIndex: 1,
@@ -273,7 +241,7 @@ describe('The preview link', async () => {
       history: { count: 2 },
     })
 
-    const answer = await ask(visitor, HISTORY, { uuid: BLOCKS })
+    const answer = await askDrupal(visitor, HISTORY, { uuid: BLOCKS })
     expect(answer.data).toEqual({
       state: {
         ownerName: null,
@@ -285,8 +253,22 @@ describe('The preview link', async () => {
     })
   })
 
+  it('shows the page as it is, not as it was before', async () => {
+    // The history index -1 is the page without the changes. An index above
+    // the current one would show the changes that were undone.
+    const variables = { uuid: BLOCKS, historyIndex: -1 }
+    const editor = paragraphUuids(await askDrupal(anna, EDIT_STATE, variables))
+    expect(editor).toContain(seedUuid('paragraph', 'first-title'))
+    expect(editor).not.toContain(added)
+
+    const visitorUuids = paragraphUuids(
+      await askDrupal(visitor, EDIT_STATE, variables),
+    )
+    expect(visitorUuids).toContain(added)
+  })
+
   it('gets nothing else of the editor from Drupal', async () => {
-    const answer = await ask(visitor, EDITOR_ONLY, { uuid: BLOCKS })
+    const answer = await askDrupal(visitor, EDITOR_ONLY, { uuid: BLOCKS })
     expect(answer.data).toEqual({
       types: null,
       fields: null,
@@ -305,7 +287,7 @@ describe('The preview link', async () => {
 
   it('can not request a machine translation, or mark notifications', async () => {
     // Refused without an error: Drupal would log one.
-    const answer = await ask(visitor, EDITOR_MUTATIONS)
+    const answer = await askDrupal(visitor, EDITOR_MUTATIONS)
     expect(answer).toEqual({ data: { translation: null, read: null } })
   })
 })

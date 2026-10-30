@@ -8,8 +8,32 @@ import {
   editorPath,
   openEditor,
 } from '../../support/session'
+import { addBlock } from '../../support/blocks'
+import { askDrupal } from '../../support/drupal'
 import { nextMutation } from '../../support/mutations'
-import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import {
+  resetSandbox,
+  sandboxHost,
+  seedUuid,
+  workerSandbox,
+} from '../../support/sandbox'
+
+const LIBRARY = seedUuid('node', 'translated')
+
+/** Who owns the page's edit state, and its changes. */
+const EDIT_STATE = `query ($uuid: String!) {
+  state: getParagraphsEditState(
+    entityType: NODE
+    entityUuid: $uuid
+    langcode: "en"
+  ) {
+    ownerName
+    mutations {
+      pluginId
+      enabled
+    }
+  }
+}`
 
 /**
  * Tests for the ownership feature (`features/ownership/index.vue`).
@@ -37,9 +61,9 @@ import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
  * `true`, permanently unmounting the banner — so it must run last on this
  * page.
  *
- * `elodiePage` (Élodie Favre, a translator, on the French page) serves test 3
- * only: translators may not take ownership. It opens while Anna still owns the
- * edit state.
+ * `elodiePage` (Élodie Favre, a translator, on the French page) serves tests 3
+ * and 4: translators may not take ownership. It opens while Anna still owns
+ * the edit state; test 4 runs after Lea has taken it over.
  */
 describe('Ownership', async () => {
   const sandbox = workerSandbox()
@@ -138,5 +162,36 @@ describe('Ownership', async () => {
     // `undefined`, so its `v-if="button"` drops the action entirely. No
     // banner-button rendered means the banner is informational only.
     expect(await banner.locator('[data-test="banner-button"]').count()).toBe(0)
+  })
+
+  test('Drupal refuses changes to the edit state from who does not own it', async () => {
+    // Lea owns the edit state since test 2. Élodie may edit the page, but not
+    // take the edit state over: she sends the changes to Drupal directly, as
+    // the editor's operations would.
+    await addBlock(leaPage)
+    for (const change of [
+      'add(type: "text", hostType: "node", hostUuid: $uuid, hostFieldName: "field_paragraphs") { success }',
+      'setMutationStatus(index: 0, status: false) { success }',
+      'publish { success }',
+      'revertAllChanges { success }',
+    ]) {
+      const answer = await askDrupal(
+        elodiePage,
+        `mutation ($uuid: String!) {
+          state: paragraphsEditMutationState(entityType: NODE, entityUuid: $uuid) {
+            change: ${change}
+          }
+        }`,
+        { uuid: LIBRARY },
+      )
+      expect(answer, change).toEqual({ data: { state: { change: null } } })
+    }
+
+    // Lea's edit state is as it was: neither published nor discarded.
+    const answer = await askDrupal(leaPage, EDIT_STATE, { uuid: LIBRARY })
+    expect(answer.data?.state).toEqual({
+      ownerName: 'Lea Steiner',
+      mutations: [{ pluginId: 'add', enabled: true }],
+    })
   })
 })

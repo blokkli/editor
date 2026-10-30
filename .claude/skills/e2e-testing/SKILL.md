@@ -19,7 +19,7 @@ frame-timed drop logic, DOM lifecycle.
   `diff`, `events`, `toolbar`, `menu`, `sidebar`, `overlays`, `options`,
   `preview`, `schedule`, `publish`, `selection`, `clipboard`, `bundleSelector`,
   `history`, `itemActions`, `keyboard`, `translations`, `agent`, `charts`,
-  `complexOptions`, `dropAreas`, `library`.
+  `complexOptions`, `dropAreas`, `library`, `drupal`.
 - Fixtures: `test/e2e-drupal/content` (see "Fixtures" below).
 
 For the agent's tests (`features/agent/`) see `/agent-e2e-testing` — covers the
@@ -150,6 +150,12 @@ the action, await it after; then reload to see what Drupal stored. That nothing
 was sent: `countMutations(page, name)` returns a counter of the mutation's
 requests from then on. `storedFieldValue(page, uuid, field)` reads the raw value
 the adapter supplies, not the rendered one.
+
+What Drupal must refuse by itself: `askDrupal(page, query, variables)`
+(`support/drupal.ts`) sends any GraphQL document to Drupal as the page's user,
+the way Nuxt's server passes the cookie on, past nginx's block of the endpoint.
+`features/preview-grant` and `features/ownership` check what a visitor or a
+non-owner gets with it.
 
 ## The CSP check
 
