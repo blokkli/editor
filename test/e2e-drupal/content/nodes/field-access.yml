@@ -1,9 +1,10 @@
-# The page "Field access", at /en/field-access (features/field-access). The
-# test module blokkli_playground_test locks its aside, the right column and the
-# widget's title and media for Tim Fischer.
+# The page "Field access", at /en/field-access and /de/field-access
+# (features/field-access). The test module blokkli_playground_test locks its
+# aside, the right column and the widget's title and media for Tim Fischer.
+# Its paragraphs' values are English only.
 key: field-access
 type: page
-title: Field access
+title: { en: Field access, de: Field access }
 field_aside:
   - type: title
     key: field-access-aside-title

@@ -23,6 +23,7 @@ import { openSidebar } from '../../support/sidebar'
 
 // The page "Field access" (content/nodes/field-access.yml), whose aside, right
 // column and widget's title and media Tim may not edit.
+const PAGE = seedUuid('node', 'field-access')
 const ASIDE_TITLE = seedUuid('paragraph', 'field-access-aside-title')
 const ASIDE_LINKS = seedUuid('paragraph', 'field-access-aside-links')
 const ASIDE_LINK = seedUuid('paragraph', 'field-access-aside-link')
@@ -32,6 +33,7 @@ const RIGHT = seedUuid('paragraph', 'field-access-right')
 const WIDGET = seedUuid('paragraph', 'field-access-widget')
 
 // The same blocks on the page "Field access control", for Anna.
+const CONTROL_PAGE = seedUuid('node', 'field-access-control')
 const CONTROL_ASIDE_TITLE = seedUuid(
   'paragraph',
   'field-access-control-aside-title',
@@ -40,6 +42,54 @@ const CONTROL_COLUMNS = seedUuid('paragraph', 'field-access-control-columns')
 
 const RESTRICTED = '[data-test="item-actions-restricted"]'
 const MOVE = '[data-test="interaction-move"]'
+const LABEL = '[data-test="dragging-overlay-label"]'
+
+/**
+ * Whether a field has a drop target while a new link is dragged: a link may go
+ * into the aside and both columns.
+ *
+ * The editor scrolls to the field's first drop target when asked
+ * (`dragging:moveToDropTarget`), with the same targets that it draws, and does
+ * nothing if the field has none. Ends the drag.
+ */
+async function hasDropTarget(
+  page: Page,
+  host: string,
+  fieldName: string,
+): Promise<boolean> {
+  await page.evaluate(() => {
+    window.__BLOKKLI__!.app!.eventBus.emit('dragging:start', {
+      items: [
+        {
+          itemType: 'new',
+          itemBundle: 'link',
+          element: () => document.createElement('div'),
+        },
+      ],
+      coords: { x: 10, y: 10 },
+      mode: 'mouse',
+    })
+  })
+  const label = page.locator(LABEL)
+  await label.waitFor({ state: 'attached' })
+  const scrolled = await page.evaluate(
+    ({ host, fieldName }) => {
+      const { eventBus } = window.__BLOKKLI__!.app!
+      let scrolled = false
+      const onScroll = () => {
+        scrolled = true
+      }
+      eventBus.on('scrollIntoView', onScroll)
+      eventBus.emit('dragging:moveToDropTarget', { host, fieldName })
+      eventBus.off('scrollIntoView', onScroll)
+      return scrolled
+    },
+    { host, fieldName },
+  )
+  await emitEvent(page, 'dragging:end')
+  await label.waitFor({ state: 'detached' })
+  return scrolled
+}
 
 /** The IDs of the commands that the editor offers now. */
 function commandIds(page: Page): Promise<string[]> {
@@ -176,6 +226,20 @@ describe('Read-only fields', async () => {
     expect(await itemActionDisabled(page, 'duplicate')).toBe(false)
     expect(await page.locator(MOVE).isDisabled()).toBe(false)
     expect(await page.locator(RESTRICTED).isVisible()).toBe(false)
+  })
+
+  test('a read-only field is no drop target', async () => {
+    expect(await hasDropTarget(controlPage, CONTROL_PAGE, 'field_aside')).toBe(
+      true,
+    )
+    expect(
+      await hasDropTarget(controlPage, CONTROL_COLUMNS, 'field_right'),
+    ).toBe(true)
+
+    expect(await hasDropTarget(page, PAGE, 'field_aside')).toBe(false)
+    expect(await hasDropTarget(page, COLUMNS, 'field_right')).toBe(false)
+    expect(await hasDropTarget(page, COLUMNS, 'field_left')).toBe(true)
+    expect(await hasDropTarget(page, PAGE, 'field_paragraphs')).toBe(true)
   })
 
   test('the editor offers no command that adds to a read-only field', async () => {
