@@ -42,7 +42,7 @@ export default defineBlokkliAgentTool({
     const reason = getSwapDisabledReason(blockA, blockB, {
       getFieldConfig: types.getFieldConfig,
       checkBlockBundlePermission: permissions.checkBlockBundlePermission,
-      blockHasRestrictedAncestor: permissions.blockHasRestrictedAncestor,
+      canChangeBlockField: permissions.canChangeBlockField,
       isChildOf: state.isChildOf,
     })
     if (reason) {

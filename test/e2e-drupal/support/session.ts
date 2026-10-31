@@ -15,6 +15,7 @@ export type TestUser =
   | 'Jonas Weber'
   | 'Sara Gerber'
   | 'David Meier'
+  | 'Tim Fischer'
 
 /** The path of a seeded node in the editor: its alias, with edit mode on. */
 export function editorPath(path: string, nodeKey: string): string {

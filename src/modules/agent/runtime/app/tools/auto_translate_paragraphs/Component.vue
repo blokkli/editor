@@ -110,7 +110,13 @@ onMounted(async () => {
   const sourceValues =
     await adapter.loadTextFieldValuesForLanguage!(sourceLanguage)
   const toTranslate = sourceValues.filter(
-    (v) => requestedUuids.has(v.uuid) && v.value.trim().length > 0,
+    (v) =>
+      requestedUuids.has(v.uuid) &&
+      v.value.trim().length > 0 &&
+      blokkli.permissions.canEditFieldValue(
+        { type: v.entityType, bundle: v.entityBundle, uuid: v.uuid },
+        v.fieldName,
+      ),
   )
 
   if (!toTranslate.length) {

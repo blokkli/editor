@@ -49,7 +49,8 @@ import type {
 } from '#blokkli/editor/components/DiffApproval/types'
 import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 
-const { adapter, $t, state, context, selection, types, ui } = useBlokkli()
+const { adapter, $t, state, context, selection, types, ui, permissions } =
+  useBlokkli()
 
 const phase = ref<'idle' | 'loading' | 'approving'>('idle')
 const approvalItems = ref<ApprovalItem[]>([])
@@ -97,7 +98,14 @@ async function onClick() {
 
     const sourceValues =
       await adapter.loadTextFieldValuesForLanguage!(sourceLanguage)
-    const toTranslate = sourceValues.filter((v) => selectedUuids.has(v.uuid))
+    const toTranslate = sourceValues.filter(
+      (v) =>
+        selectedUuids.has(v.uuid) &&
+        permissions.canEditFieldValue(
+          { type: v.entityType, bundle: v.entityBundle, uuid: v.uuid },
+          v.fieldName,
+        ),
+    )
 
     if (!toTranslate.length) {
       return

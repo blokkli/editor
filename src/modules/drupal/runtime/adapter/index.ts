@@ -342,8 +342,27 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     }).then((v) => {
       return {
         linkPath: v.data.config?.linkPath ?? '',
+        readOnlyFields: v.data.config?.readOnlyFields ?? [],
+        canEditHostOptions: v.data.config?.canEditHostOptions ?? true,
       }
     })
+
+    // The fields that the user may not edit, of the page and of each paragraph
+    // type. A link's title is a property of its field.
+    const readOnlyFieldKeys = new Set(
+      entityConfig.readOnlyFields.map(
+        (v) => `${v.entityType}:${v.entityBundle}:${v.name}`,
+      ),
+    )
+    function withReadOnly<
+      T extends { entityType: string; entityBundle: string; name: string },
+    >(field: T): T & { readOnly?: boolean } {
+      const key = `${field.entityType}:${field.entityBundle}:${field.name.split('.')[0]}`
+      return readOnlyFieldKeys.has(key) ? { ...field, readOnly: true } : field
+    }
+    config.fieldConfig = config.fieldConfig.map(withReadOnly)
+    config.editableFieldConfig = config.editableFieldConfig.map(withReadOnly)
+    config.droppableFieldConfig = config.droppableFieldConfig.map(withReadOnly)
 
     const loadState: DrupalAdapter['loadState'] = async () => {
       const response = await useGraphqlQuery('pbEditState', {
@@ -783,7 +802,8 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         useGraphqlMutation('pbTakeOwnership', ctx.value).then(mapMutation)
     }
 
-    if (hasMutation('pbUpdateHostOptions')) {
+    // Without it, the editor offers no change to the page's options.
+    if (hasMutation('pbUpdateHostOptions') && entityConfig.canEditHostOptions) {
       adapter.updateHostOptions = (items) =>
         useGraphqlMutation('pbUpdateHostOptions', {
           ...ctx.value,

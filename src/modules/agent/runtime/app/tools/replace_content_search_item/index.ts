@@ -3,7 +3,7 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
 import {
   requireBundlePermission,
-  requireNoRestrictedAncestor,
+  requireCanChangeBlockField,
 } from '../../helpers/validation'
 import type { SearchContentItem } from '#blokkli/editor/features/search/types'
 
@@ -57,7 +57,7 @@ export default defineBlokkliAgentTool({
     if (denied) return denied
 
     // Check ancestor restrictions
-    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, [params.uuid])
+    const ancestorDenied = requireCanChangeBlockField(ctx.app, [params.uuid])
     if (ancestorDenied) return ancestorDenied
 
     // Validate field exists and is a droppable field.
@@ -70,6 +70,9 @@ export default defineBlokkliAgentTool({
       return {
         error: `Field "${params.field}" is not a reference content field on ${block.bundle} paragraphs`,
       }
+    }
+    if (config.readOnly) {
+      return { error: `Field "${params.field}" is read-only` }
     }
     const allowedRestriction = config.allowed.find(
       (v) => v.type === params.itemEntityType,

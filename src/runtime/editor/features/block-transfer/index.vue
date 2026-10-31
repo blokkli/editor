@@ -207,10 +207,21 @@ onBlokkliEvent('clipboard:paste', ({ data }) => {
   // not via mutatedFields, which is empty on a brand-new page. When
   // the host has exactly one block field there's only one place the
   // import could possibly go, so skip the drag and paste straight in.
-  const hostFields = types.fieldConfig.forEntityTypeAndBundle(
-    context.value.entityType,
-    context.value.entityBundle,
-  )
+  const hostFields = types.fieldConfig
+    .forEntityTypeAndBundle(
+      context.value.entityType,
+      context.value.entityBundle,
+    )
+    .filter((field) =>
+      permissions.canChangeField(
+        {
+          type: context.value.entityType,
+          bundle: context.value.entityBundle,
+          uuid: context.value.entityUuid,
+        },
+        field.name,
+      ),
+    )
 
   if (!hostFields.length) {
     emitMessage(

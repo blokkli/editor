@@ -195,7 +195,7 @@ const getBundlesForAppendCommands = () => {
     item.host.fieldName,
   )
 
-  if (field) {
+  if (field && permissions.canChangeBlockField(item.uuid)) {
     if (field.cardinality !== -1) {
       const key = getFieldKey(item.host.uuid, item.host.fieldName)
       const count = state.getFieldBlockCount(key)
@@ -221,6 +221,18 @@ const getAppendEndCommands = (): Command[] => {
       context.value.entityBundle,
     )
     .flatMap((field: FieldConfig) => {
+      if (
+        !permissions.canChangeField(
+          {
+            type: context.value.entityType,
+            bundle: context.value.entityBundle,
+            uuid: context.value.entityUuid,
+          },
+          field.name,
+        )
+      ) {
+        return []
+      }
       if (field.cardinality !== -1) {
         const key = getFieldKey(context.value.entityUuid, field.name)
         const count = state.getFieldBlockCount(key)
@@ -310,6 +322,12 @@ const getInsertCommands = (
   const nestedFields = fitsNestingLimit(fieldLevel, 1, maxNestingLevel)
     ? types.fieldConfig
         .forEntityTypeAndBundle(itemEntityType, block.bundle)
+        .filter((field) =>
+          permissions.canChangeField(
+            { type: itemEntityType, bundle: block.bundle, uuid: block.uuid },
+            field.name,
+          ),
+        )
         .map((field) => {
           return {
             ...field,

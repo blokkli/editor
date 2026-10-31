@@ -98,12 +98,9 @@ defineDropAreas((dragItems) => {
         return
       }
 
-      // Skip blocks where the user lacks edit permission or is inside
-      // a restricted ancestor.
-      if (
-        !permissions.checkBlockBundlePermission(field.bundle, 'edit') ||
-        permissions.blockHasRestrictedAncestor(field.uuid)
-      ) {
+      // Skip read-only fields, and blocks where the user lacks edit
+      // permission or that are inside a restricted ancestor.
+      if (!permissions.canEditFieldValue(field, field.fieldName)) {
         return
       }
 

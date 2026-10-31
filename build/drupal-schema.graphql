@@ -7900,6 +7900,31 @@ type ParagraphsBlokkliUploadError {
 type ParagraphsBlokkliEntityConfig {
   ""
   linkPath: String
+
+  """
+  The fields that the current user may not edit: the entity's own, and the
+  fields of each paragraph type, as for a paragraph in the entity. The editor
+  offers no change to them.
+  """
+  readOnlyFields: [ParagraphsBlokkliFieldReference!]!
+
+  """
+  Whether the current user may change the entity's options. TRUE if the entity
+  has no field for them.
+  """
+  canEditHostOptions: Boolean!
+}
+
+""
+type ParagraphsBlokkliFieldReference {
+  ""
+  entityType: String!
+
+  ""
+  entityBundle: String!
+
+  ""
+  name: String!
 }
 
 ""

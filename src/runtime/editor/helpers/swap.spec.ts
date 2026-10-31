@@ -61,7 +61,7 @@ const ctx = {
     allowedBundles: ['grid', 'button'],
   }),
   checkBlockBundlePermission: () => true,
-  blockHasRestrictedAncestor: () => false,
+  canChangeBlockField: () => true,
   isChildOf,
 }
 
@@ -84,6 +84,21 @@ describe('getSwapDisabledReason', () => {
       )
       expect(getSwapDisabledReason(nested, grid, ctx)).toBe(
         'Cannot swap a block with a block nested in it.',
+      )
+    }
+  })
+
+  it('does not swap a block in a field that can not change', () => {
+    const locked = {
+      ...ctx,
+      canChangeBlockField: (uuid: string) => uuid !== 'inner',
+    }
+    for (const [a, b] of [
+      [block('inner', 'grid'), block('button', 'button')],
+      [block('button', 'button'), block('inner', 'grid')],
+    ] as const) {
+      expect(getSwapDisabledReason(a, b, locked)).toContain(
+        'in a field that can not change',
       )
     }
   })

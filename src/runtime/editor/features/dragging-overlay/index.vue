@@ -484,6 +484,20 @@ onBlokkliEvent('keyPressed', (e) => {
 })
 
 onBlokkliEvent('block:append', async (e) => {
+  const field = fields.find(e.host.uuid, e.host.fieldName)
+  if (
+    !field ||
+    !permissions.canChangeField(
+      {
+        type: field.hostEntityType,
+        bundle: field.hostEntityBundle,
+        uuid: field.hostEntityUuid,
+      },
+      field.name,
+    )
+  ) {
+    return
+  }
   const uuidsBefore = state.getAllUuids()
   // Use the new handler to add a block via the 'new' drop handler.
   const handler = dragdrop.getDropHandler('new')
@@ -496,7 +510,7 @@ onBlokkliEvent('block:append', async (e) => {
           element: () => document.createElement('div'),
         },
       ],
-      field: fields.find(e.host.uuid, e.host.fieldName)!,
+      field,
       host: e.host,
       afterUuid: e.afterUuid,
       bundle: e.bundle,

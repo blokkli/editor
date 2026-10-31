@@ -8,7 +8,7 @@ type SwapValidationContext = {
     fieldName: string,
   ) => FieldConfig | undefined
   checkBlockBundlePermission: (bundle: string, operation: 'edit') => boolean
-  blockHasRestrictedAncestor: (uuid: string) => boolean
+  canChangeBlockField: (uuid: string) => boolean
   isChildOf: (childUuid: string, parentUuid: string) => boolean
 }
 
@@ -41,11 +41,12 @@ export function getSwapDisabledReason(
     return 'You do not have permission to edit one or both blocks.'
   }
 
+  // Each field loses a block and takes another one.
   if (
-    ctx.blockHasRestrictedAncestor(blockA.uuid) ||
-    ctx.blockHasRestrictedAncestor(blockB.uuid)
+    !ctx.canChangeBlockField(blockA.uuid) ||
+    !ctx.canChangeBlockField(blockB.uuid)
   ) {
-    return 'One or both blocks are inside a parent with restricted editing permissions.'
+    return 'One or both blocks are in a field that can not change: it is read-only, or inside a parent with restricted editing permissions.'
   }
 
   const fieldConfigA = ctx.getFieldConfig(

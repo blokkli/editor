@@ -11,6 +11,12 @@ export type EditableFieldConfig = {
   type: EditableFieldType
   required: boolean
   maxLength: number
+
+  /**
+   * The user may not change the field: the editor doesn't open it, and
+   * neither translations nor the agent write it.
+   */
+  readOnly?: boolean
 }
 
 export type DroppableFieldConfig = {
@@ -28,6 +34,12 @@ export type DroppableFieldConfig = {
    * whether a drop changes it in every language. Never asks when not set.
    */
   isTranslatable?: boolean
+
+  /**
+   * The user may not change the field: the editor doesn't open it, and it
+   * takes no drops.
+   */
+  readOnly?: boolean
 }
 
 export type UpdateFieldValueEvent = {

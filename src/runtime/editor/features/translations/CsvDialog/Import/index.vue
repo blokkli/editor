@@ -199,6 +199,7 @@ import { emitMessage } from '#blokkli/editor/events'
 import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 import { parseCsv, type CsvRow } from '../csv'
 import { parsePo } from '../po'
+import { itemEntityType } from '#blokkli-build/config'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 import SelectionTable from '../../SelectionTable/index.vue'
@@ -224,7 +225,7 @@ const emit = defineEmits<{
   close: []
 }>()
 
-const { adapter, $t, state, context } = useBlokkli()
+const { adapter, $t, state, context, blocks, permissions } = useBlokkli()
 
 const files = ref<File[]>([])
 const changes = ref<ImportChange[] | null>(null)
@@ -320,6 +321,34 @@ async function loadCurrentValues(
   return map
 }
 
+/**
+ * Whether the field of a row may be changed: its block, or the page, and the
+ * field itself. A row of a block that isn't there is left to the backend.
+ */
+function canImport(key: string): boolean {
+  const separator = key.indexOf(':')
+  const uuid = key.substring(0, separator)
+  const fieldName = key.substring(separator + 1)
+  if (uuid === context.value.entityUuid) {
+    return permissions.canEditFieldValue(
+      {
+        type: context.value.entityType,
+        bundle: context.value.entityBundle,
+        uuid,
+      },
+      fieldName,
+    )
+  }
+  const block = blocks.getBlock(uuid)
+  return (
+    !block ||
+    permissions.canEditFieldValue(
+      { type: itemEntityType, bundle: block.bundle, uuid },
+      fieldName,
+    )
+  )
+}
+
 async function addFiles(newFiles: File[]) {
   const filtered = newFiles.filter(
     (f) => f.name.endsWith('.csv') || f.name.endsWith('.po'),
@@ -386,7 +415,11 @@ async function processPoFiles(files: File[]) {
     for (const row of rowsByLang.get(lang)!.values()) {
       const current = currentMap.get(row.key)
       const currentValue = current?.value ?? ''
-      if (row.translation !== currentValue && row.translation !== '') {
+      if (
+        row.translation !== currentValue &&
+        row.translation !== '' &&
+        canImport(row.key)
+      ) {
         const change: ImportChange = {
           id: `${lang}:${row.key}`,
           key: row.key,
@@ -419,7 +452,11 @@ async function processCsvFile(file: File) {
     for (const row of parsed.rows) {
       const current = currentMap.get(row.key)
       const currentValue = current?.value ?? ''
-      if (row.translation !== currentValue && row.translation !== '') {
+      if (
+        row.translation !== currentValue &&
+        row.translation !== '' &&
+        canImport(row.key)
+      ) {
         const change: ImportChange = {
           id: `${lang}:${row.key}`,
           key: row.key,
@@ -449,7 +486,11 @@ async function processCsvFile(file: File) {
         const translation = row.translations[lang] ?? ''
         const current = currentMaps.get(lang)?.get(row.key)
         const currentValue = current?.value ?? ''
-        if (translation !== currentValue && translation !== '') {
+        if (
+          translation !== currentValue &&
+          translation !== '' &&
+          canImport(row.key)
+        ) {
           const change: ImportChange = {
             id: `${lang}:${row.key}`,
             key: row.key,

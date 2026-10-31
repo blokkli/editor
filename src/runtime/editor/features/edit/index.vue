@@ -85,6 +85,19 @@ const editDisabledReason = computed<false | string>(() => {
     return false
   }
 
+  // Nothing changes in a field that can't change, nor inside a restricted
+  // block. A reusable block edits its library item, which they don't
+  // restrict.
+  if (
+    !item.library?.libraryItemUuid &&
+    !permissions.canChangeBlockField(item.uuid)
+  ) {
+    return $t(
+      'noEditPermission',
+      'You do not have permission to edit this block.',
+    )
+  }
+
   // Fragments provided by features can always be edited.
   if (isFragment(item)) {
     return isFeatureFragment(item)

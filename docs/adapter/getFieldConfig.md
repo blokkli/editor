@@ -58,6 +58,9 @@ export default defineBlokkliEditAdapter((ctx) => {
 
           // The block bundles that are allowed in this field.
           allowedBundles: ['title', 'rich_text', 'link', 'horizontal_rule'],
+
+          // Optional: the user may not change what the field holds.
+          readOnly: false,
         },
       ]
       return Promise.resolve(fieldConfig)
@@ -67,3 +70,17 @@ export default defineBlokkliEditAdapter((ctx) => {
 ```
 
 :::
+
+## Read-only fields
+
+A field with `readOnly: true` shows the blocks of the edit state, but the user
+may not change what it holds: the editor adds no block to it, moves none into,
+out of or within it, and removes none from it. Nothing in it changes either: a
+block in it can be selected, but is shown as restricted and offers no action,
+and the blocks nested in it can't be selected on their own.
+
+Unlike `canEdit: false`, which means the editor doesn't manage the field at all
+and shows its `list` as stored, a read-only field is part of the edit state:
+what the user changes elsewhere is shown, as are the changes in it from before
+it was read-only. The Drupal adapter sets it for the fields that the current
+user may not edit, of the page and of each paragraph type.

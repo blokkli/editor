@@ -374,6 +374,25 @@ the published status for users with `administer nodes`. What makes up an entity
 way. A refused change is reported to the editor, for example "Access denied:
 cannot edit field 'field_lead'."
 
+A paragraphs field that the user may not edit takes no paragraph and gives none
+away, and nothing in it changes, as in the form, which hides it. The options of
+the page are a field too.
+
+The editor knows which fields the user may not edit, of the page and of each
+paragraph type (checked on a new paragraph in the page), and offers no change to
+them:
+
+- a read-only text or reference field doesn't open
+- a paragraph in a read-only paragraphs field is shown as restricted, without
+  actions, and the field takes no paragraphs
+- the options of the page can't be changed
+- translations and the agent leave the fields out
+
+Adding a paragraph that fills one of its own fields is refused when that field
+is read-only for its type: a media from the library, a file, a pasted text or
+video, a search result or a fragment. The editor can't know beforehand which
+field it fills.
+
 Drupal also validates the field that is written, as the form would. A value that
 adds a violation is refused with Drupal's message, for example "Title: may not
 be longer than 255 characters.":

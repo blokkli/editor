@@ -4,7 +4,7 @@ import { mutationResultSchema, parentSchema } from '../schemas'
 import { resolveHost } from '../helpers'
 import {
   requireBundlePermission,
-  requireNoRestrictedAncestor,
+  requireCanChangeBlockField,
 } from '../../helpers/validation'
 
 export const paramsSchema = z.object({
@@ -113,7 +113,7 @@ export default defineBlokkliAgentTool({
     }
 
     // Check ancestor restrictions
-    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, params.uuids)
+    const ancestorDenied = requireCanChangeBlockField(ctx.app, params.uuids)
     if (ancestorDenied) return ancestorDenied
 
     // Check if the order is actually different

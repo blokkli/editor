@@ -102,9 +102,7 @@ class SelectionRectangleBufferCollector extends RectangleBufferCollector<Selecti
           : theme.getDraggableStyle(el)
         const isFromLibrary = state.fromLibraryUuids.value.includes(block.uuid)
         const isRestricted =
-          !permissions.checkBlockBundlePermission(block.bundle, 'edit') ||
-          !permissions.checkBlockBundlePermission(block.bundle, 'delete') ||
-          !permissions.checkBlockBundlePermission(block.bundle, 'add')
+          permissions.getBlockPermissions(block.uuid).length < 3
         // Type: 0=default, 1=inverted, 2=library, 3=host, 4=restricted
         let type = 0
         if (isRestricted) {

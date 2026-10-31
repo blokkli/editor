@@ -252,7 +252,7 @@ const emit = defineEmits<{
   close: []
 }>()
 
-const { adapter, $t, state, context, blocks, types } = useBlokkli()
+const { adapter, $t, state, context, blocks, types, permissions } = useBlokkli()
 
 type SourceItem = TextFieldValue & { key: string }
 
@@ -468,10 +468,18 @@ async function loadTexts() {
     const source = await adapter.loadTextFieldValuesForLanguage!(
       sourceLanguage.value,
     )
-    sourceValues.value = source.map((v) => ({
-      ...v,
-      key: `${v.uuid}:${v.fieldName}`,
-    }))
+    // Only the fields that the user may change.
+    sourceValues.value = source
+      .filter((v) =>
+        permissions.canEditFieldValue(
+          { type: v.entityType, bundle: v.entityBundle, uuid: v.uuid },
+          v.fieldName,
+        ),
+      )
+      .map((v) => ({
+        ...v,
+        key: `${v.uuid}:${v.fieldName}`,
+      }))
 
     // Load current translation values.
     const current = await adapter.loadTextFieldValuesForLanguage!(

@@ -69,7 +69,12 @@ const duplicateDisabledReason = computed<false | string>(() => {
     selected.map((v) => v.bundle),
     'add',
   )
-  if (denied.length) {
+  // The field of every selected block takes a copy, as far as the backend
+  // checks: also one nested in another selected block.
+  const isLocked = selected.some(
+    (block) => !permissions.canChangeBlockField(block.uuid),
+  )
+  if (denied.length || isLocked) {
     return $t(
       'duplicateNoPermission',
       'You do not have permission to duplicate this block.',

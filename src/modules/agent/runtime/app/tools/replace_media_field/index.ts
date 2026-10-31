@@ -3,7 +3,7 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
 import {
   requireBundlePermission,
-  requireNoRestrictedAncestor,
+  requireCanChangeBlockField,
 } from '../../helpers/validation'
 
 export const paramsSchema = z.object({
@@ -54,7 +54,7 @@ export default defineBlokkliAgentTool({
       if (denied) return denied
 
       // Check ancestor restrictions
-      const ancestorDenied = requireNoRestrictedAncestor(ctx.app, [params.uuid])
+      const ancestorDenied = requireCanChangeBlockField(ctx.app, [params.uuid])
       if (ancestorDenied) return ancestorDenied
     }
 
@@ -71,6 +71,9 @@ export default defineBlokkliAgentTool({
       return {
         error: `Field "${params.field}" is not a reference content field on ${bundle}`,
       }
+    }
+    if (config.readOnly) {
+      return { error: `Field "${params.field}" is read-only` }
     }
     const allowedMedia = config.allowed.find((v) => v.type === 'media')
     if (!allowedMedia) {

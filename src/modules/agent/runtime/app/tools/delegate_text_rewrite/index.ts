@@ -4,11 +4,15 @@ import { readAgentFieldValue, resolveHost } from '../helpers'
 import { runReadabilityAnalysis } from '../readability'
 import {
   requireBundlePermission,
-  requireNoRestrictedAncestor,
+  requireCanChangeBlockField,
 } from '../../helpers/validation'
 import { onlyUnique } from '#blokkli/helpers'
 import { fieldDiffResultSchema } from '../schemas'
-import { skippedFieldsMessage, type SkippedField } from '../fieldDiffApproval'
+import {
+  SKIPPED_READ_ONLY,
+  skippedFieldsMessage,
+  type SkippedField,
+} from '../fieldDiffApproval'
 import Component from './Component.vue'
 import DetailsComponent from '../../components/FieldDiffDetails/index.vue'
 
@@ -133,7 +137,7 @@ export default defineBlokkliAgentTool({
       .filter((uuid) => uuid !== context.value.entityUuid)
       .filter(onlyUnique)
     if (blockUuids.length) {
-      const ancestorDenied = requireNoRestrictedAncestor(ctx.app, blockUuids)
+      const ancestorDenied = requireCanChangeBlockField(ctx.app, blockUuids)
       if (ancestorDenied) return ancestorDenied
     }
 
@@ -157,6 +161,13 @@ export default defineBlokkliAgentTool({
       )
       if (!read) {
         skipped.push({ uuid, fieldName, reason: 'field not found' })
+        continue
+      }
+      if (
+        ctx.app.types.editableFieldConfig.forName(entityType, bundle, fieldName)
+          ?.readOnly
+      ) {
+        skipped.push({ uuid, fieldName, reason: SKIPPED_READ_ONLY })
         continue
       }
       const { fieldType, value: currentValue } = read

@@ -54,7 +54,7 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['setBlockScheduleDate'],
 })
 
-const { $t, state, selection, types, ui } = useBlokkli()
+const { $t, state, selection, types, ui, permissions } = useBlokkli()
 
 const bundlesWithPublish = computed(() =>
   types.generallyAvailableBundles
@@ -110,6 +110,12 @@ const disabled = computed<false | string>(() => {
     return $t(
       'schedulerNotSupported',
       'Scheduling is not available for this block type.',
+    )
+  }
+  if (!selection.uuids.value.every((uuid) => permissions.canEditBlock(uuid))) {
+    return $t(
+      'noEditPermission',
+      'You do not have permission to edit this block.',
     )
   }
   return false

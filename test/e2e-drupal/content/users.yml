@@ -63,6 +63,17 @@
   preferred_admin_langcode: en
   status: true
 
+# An editor who may not edit some fields: the page's aside and options, the
+# right column, and a widget's title and media. The role and the lock come from
+# the test module blokkli_playground_test.
+- key: tim
+  name: Tim Fischer
+  mail: tim.fischer@example.com
+  roles: [field_restricted_editor]
+  preferred_langcode: en
+  preferred_admin_langcode: en
+  status: true
+
 # Her account is deleted after seeding: her comment on the page "Feedback"
 # (comments.yml) has no author.
 - key: nora

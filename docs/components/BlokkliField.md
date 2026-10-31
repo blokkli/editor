@@ -37,7 +37,9 @@ Arrays can contain `null` or `undefined` values, which are filtered out.
 While editing, the field shows the blocks of the edit state instead. A field
 that the editor can't edit (`canEdit: false` in its
 [field config](/adapter/getFieldConfig)) shows the blocks of `list` and takes no
-blocks; neither does anything in it.
+blocks; neither does anything in it. A read-only field (`readOnly: true`) shows
+the blocks of the edit state, but the user may not change what it holds, nor
+anything in it.
 
 ### tag
 

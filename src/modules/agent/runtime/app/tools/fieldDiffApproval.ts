@@ -35,8 +35,9 @@ export type RejectedByUser = Record<string, Record<string, FieldRejection>>
 
 /**
  * A field reference (uuid + field name) that was dropped before applying,
- * because the paragraph or the field does not exist. Reported back to the agent
- * so it can correct the reference instead of silently getting no change.
+ * because the paragraph or the field does not exist, or because the user may
+ * not change the field. Reported back to the agent so it can correct the
+ * reference instead of silently getting no change.
  */
 export type SkippedField = {
   uuid: string
@@ -45,18 +46,36 @@ export type SkippedField = {
 }
 
 /**
+ * The reason of a skipped field that the user may not change.
+ */
+export const SKIPPED_READ_ONLY = 'field is read-only'
+
+/**
  * Build the agent-facing note listing skipped field references. Returns
  * undefined when nothing was skipped. Shared by `update_text_fields` and
- * `delegate_text_rewrite`, which both drop references that don't resolve.
+ * `delegate_text_rewrite`, which both drop references that don't resolve, and
+ * fields that the user may not change.
  */
 export function skippedFieldsMessage(
   skipped: SkippedField[],
 ): string | undefined {
   if (!skipped.length) return undefined
-  const list = skipped
-    .map((s) => `"${s.uuid}" ${s.fieldName} (${s.reason})`)
-    .join(', ')
-  return `Skipped ${skipped.length} field update(s) for references that don't exist: ${list}. Use get_page_structure or find_paragraphs to get valid paragraph UUIDs and field names.`
+  const list = (fields: SkippedField[]) =>
+    fields.map((s) => `"${s.uuid}" ${s.fieldName} (${s.reason})`).join(', ')
+  const readOnly = skipped.filter((s) => s.reason === SKIPPED_READ_ONLY)
+  const missing = skipped.filter((s) => s.reason !== SKIPPED_READ_ONLY)
+  const notes: string[] = []
+  if (missing.length) {
+    notes.push(
+      `Skipped ${missing.length} field update(s) for references that don't exist: ${list(missing)}. Use get_page_structure or find_paragraphs to get valid paragraph UUIDs and field names.`,
+    )
+  }
+  if (readOnly.length) {
+    notes.push(
+      `Skipped ${readOnly.length} field update(s) for fields that the user may not change: ${list(readOnly)}.`,
+    )
+  }
+  return notes.join(' ')
 }
 
 /**

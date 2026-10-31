@@ -221,7 +221,11 @@ const fromLibraryAllowedInList = computed(() => {
 })
 
 const detachDisabledReason = computed<false | string>(() => {
-  if (!canEditFromLibrary.value) {
+  const item = selection.item.value
+  if (
+    !canEditFromLibrary.value ||
+    (item && !permissions.canEditBlock(item.uuid))
+  ) {
     return $t(
       'libraryDetachNoPermission',
       'You do not have permission to detach this block.',
@@ -241,7 +245,7 @@ const makeReusableDisabledReason = computed<false | string>(() => {
     )
   }
   const item = selection.item.value
-  if (item && !permissions.checkBlockBundlePermission(item.bundle, 'edit')) {
+  if (item && !permissions.canEditBlock(item.uuid)) {
     return $t(
       'noEditPermission',
       'You do not have permission to edit this block.',

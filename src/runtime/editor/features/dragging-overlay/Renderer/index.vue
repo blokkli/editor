@@ -392,6 +392,13 @@ const selectionUuids = computed<string[]>(() =>
 )
 
 /**
+ * Whether a dragged existing block is in a field that can't change.
+ */
+const hasLockedSource = computed<boolean>(() =>
+  selectionUuids.value.some((uuid) => !permissions.canChangeBlockField(uuid)),
+)
+
+/**
  * How many levels the dragged blocks take, with the blocks nested in them.
  */
 const draggingDepth = computed<number>(() =>
@@ -732,11 +739,19 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
     return
   }
 
-  // Skip fields inside a restricted block.
+  // Skip fields that can't change: read-only ones, and the ones inside a
+  // restricted block. Blocks from such a field can't leave it, not even as
+  // copies, which Drupal duplicates from where they are.
   if (
-    field.hostEntityType === itemEntityType &&
-    (!permissions.checkBlockBundlePermission(field.hostEntityBundle, 'edit') ||
-      permissions.blockHasRestrictedAncestor(field.hostEntityUuid))
+    hasLockedSource.value ||
+    !permissions.canChangeField(
+      {
+        type: field.hostEntityType,
+        bundle: field.hostEntityBundle,
+        uuid: field.hostEntityUuid,
+      },
+      field.name,
+    )
   ) {
     return
   }

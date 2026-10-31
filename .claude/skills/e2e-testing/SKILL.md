@@ -282,10 +282,13 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
   without the permissions to view or post them); these two roles come from the
   test module, and have no list of all pages ("Switch page", "Import from an
   existing page"). Jonas may not change a page's published status: he can't
-  publish what is unpublished (the editors and Élodie can). All have an English
-  UI. Whoever opens a node's editor first owns its edit state; another user gets
-  a read-only editor. Test permissions with users of other roles: there are no
-  permission overrides.
+  publish what is unpublished (the editors and Élodie can). Tim Fischer
+  (`field_restricted_editor`, also from the test module) is an editor who may
+  not edit some fields (`FieldAccessHooks`): a page's `field_aside`, an
+  editorial page's options, the columns' `field_right`, and the widget's
+  `field_title` and `field_media_items`. All have an English UI. Whoever opens a
+  node's editor first owns its edit state; another user gets a read-only editor.
+  Test permissions with users of other roles: there are no permission overrides.
 - **Drupal's names:** fields are `field_paragraphs`, `field_text`, …; bundles
   are the paragraph types.
 - **Harmless choices:** a test that would run "whatever comes first" (the

@@ -44,7 +44,7 @@ const props = withDefaults(
   },
 )
 
-const { types, selection, eventBus, state, element } = useBlokkli()
+const { types, selection, eventBus, state, element, permissions } = useBlokkli()
 
 function getRootEl(): HTMLElement {
   const rootEl = element.query(
@@ -60,7 +60,12 @@ function getRootEl(): HTMLElement {
   return rootEl
 }
 
-const canMove = computed(() => state.editMode.value === 'editing')
+// A block in a field that can't change can't leave it.
+const canMove = computed(
+  () =>
+    state.editMode.value === 'editing' &&
+    permissions.canChangeBlockField(props.uuid),
+)
 
 const isSelected = computed(() => selection.uuids.value.includes(props.uuid))
 

@@ -28,8 +28,8 @@ export type ReplaceMediaTarget = {
 
 /**
  * The droppable fields whose media can be replaced with a media of the bundle:
- * those with a single value that allow the bundle, of the page's entity or of
- * a block the user may edit.
+ * those with a single value that allow the bundle and that the user may edit,
+ * of the page's entity or of a block the user may edit.
  */
 export function getReplaceMediaTargets(
   {
@@ -73,13 +73,9 @@ export function getReplaceMediaTargets(
 
       const isBlock = field.type === itemEntityType
 
-      // Skip blocks where the user lacks edit permission or is inside
-      // a restricted ancestor.
-      if (
-        isBlock &&
-        (!permissions.checkBlockBundlePermission(field.bundle, 'edit') ||
-          permissions.blockHasRestrictedAncestor(field.uuid))
-      ) {
+      // Skip read-only fields, and blocks where the user lacks edit
+      // permission or that are inside a restricted ancestor.
+      if (!permissions.canEditFieldValue(field, field.fieldName)) {
         return
       }
 

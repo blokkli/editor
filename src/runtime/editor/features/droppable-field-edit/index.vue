@@ -100,7 +100,10 @@ defineCommands(() => {
     )
     .map((field) => {
       const config = types.getDroppableFieldConfig(field.fieldName, field)
-      if (config.type !== 'reference') {
+      if (
+        config.type !== 'reference' ||
+        !permissions.canEditFieldValue(field, field.fieldName)
+      ) {
         return
       }
       return {
@@ -143,7 +146,10 @@ onBlokkliEvent('droppable:open', (e) => {
   }
 
   const config = types.getDroppableFieldConfig(e.fieldName, field)
-  if (config.type !== 'reference') {
+  if (
+    config.type !== 'reference' ||
+    !permissions.canEditFieldValue(field, e.fieldName)
+  ) {
     return
   }
 
@@ -202,7 +208,11 @@ defineDropAreas((dragItems) => {
       const config = types.getDroppableFieldConfig(field.fieldName, field)
       // Only a reference field can be edited, as for the command and
       // `droppable:open`.
-      if (config.type !== 'reference' || config.cardinality === 1) {
+      if (
+        config.type !== 'reference' ||
+        config.cardinality === 1 ||
+        !permissions.canEditFieldValue(field, field.fieldName)
+      ) {
         return
       }
 

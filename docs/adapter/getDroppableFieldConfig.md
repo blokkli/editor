@@ -47,6 +47,9 @@ function getDroppableFieldConfig() {
         required: true,
         // Whether the value can differ per language. Optional.
         isTranslatable: false,
+        // The user may not change the field: the editor doesn't open it, and
+        // it takes no drops. Optional.
+        readOnly: false,
       },
     ]
   }
