@@ -489,8 +489,9 @@ host, with ddev running: `bun run test:e2e-drupal` or
   `min(created + 24 h, last use + 2 h)` (premium: created + 21 days) and marks
   rows of sandboxes that are gone. Rows are never removed.
 - It reuses the frontend's stylesheet (its `main.css` imports the frontend's and
-  adds the `Logo` folder as a Tailwind `@source`), the `Logo`, and
-  `shared/utils/{languages,welcome}.ts`, by relative path.
+  adds the `Logo` folder as a Tailwind `@source`), the `Logo`,
+  `shared/utils/{languages,welcome}.ts` and the `public` folder (the favicon,
+  `dir.public`), by relative path.
 
 ## The frontend (`sandbox/frontend/`)
 
@@ -522,7 +523,11 @@ host, with ddev running: `bun run test:e2e-drupal` or
   - `layouts/drupal.vue`: the toolbar (vuepal), the local tasks and the
     "Sandbox" button (`SandboxInfo`, shown when the `sandbox` query isn't null),
     the header (`ConfigPageSite`) and footer (`ConfigPageFooter`), both editable
-    config pages, from the `layout` query.
+    config pages, from the `layout` query. Its title template appends the site
+    name (the site config page's); the pages set their title (the entity's
+    label) and description (its lead), the front page only the description.
+  - `public/favicon.ico`: the coat of arms (`Logo`), 16 and 32 px drawn on whole
+    pixels. The control app serves it too.
 - **Hosts** (`components/Node/*`): each wraps its fields in `BlokkliProvider`.
   The detail page (`Node/Page`) has the sidebar layout: main field, the office's
   contact, related topics (`field-list-type="related"`), and an aside with the

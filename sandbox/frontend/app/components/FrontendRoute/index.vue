@@ -32,6 +32,11 @@ const entity = computed(() => {
     : null
 })
 
+useSeoMeta({
+  title: () => entity.value?.label,
+  description: () => entity.value?.lead,
+})
+
 const breadcrumb = computed(() => {
   const url = data.value?.data.route
   return url && 'breadcrumb' in url ? url.breadcrumb : []
