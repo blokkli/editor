@@ -5,21 +5,27 @@ export default defineCodeTemplate(
   'imports',
   (ctx) => {
     const chunkMapping: Record<string, string> = {}
+    const hydrationMapping: Record<string, string> = {}
 
     for (const file of ctx.blocks.files.values()) {
       if (!file.definition) {
         continue
       }
 
+      const hydrate =
+        'hydrate' in file.definition ? file.definition.hydrate : undefined
       file.variations.forEach((variation) => {
         chunkMapping[variation] = file.chunkName
+        if (hydrate) {
+          hydrationMapping[variation] = hydrate
+        }
       })
     }
-    const lines = Object.entries(chunkMapping).map(
-      ([variation, importName]) => {
-        return `'${variation}': '${importName}'`
-      },
-    )
+    const toLines = (mapping: Record<string, string>) =>
+      Object.entries(mapping)
+        .map(([variation, value]) => `'${variation}': '${value}'`)
+        .sort()
+        .join(',\n  ')
     const chunks = ctx.helper
       .getChunkNames()
       .map((chunkName) => {
@@ -40,7 +46,11 @@ export const chunks = {
 }
 
 export const chunkMapping = {
-  ${lines.sort().join(',\n  ')}
+  ${toLines(chunkMapping)}
+}
+
+export const hydrationMapping = {
+  ${toLines(hydrationMapping)}
 }
 `
   },
@@ -62,6 +72,12 @@ export declare const chunkMapping: Record<string, string>
  * All available chunks.
  */
 export declare const chunks: Record<string, ChunkGroupEntry>
+
+/**
+ * Mapping of block variation ID to its "hydrate" setting, for the variations
+ * that have one.
+ */
+export declare const hydrationMapping: Record<string, 'never'>
 `
   },
   {

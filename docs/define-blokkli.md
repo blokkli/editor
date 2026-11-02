@@ -42,6 +42,31 @@ and can be split into a separate chunk.
 If left empty for all blocks, then all blocks will be part of the same (default)
 import bundle.
 
+## hydrate
+
+**Type:** `'never'|undefined`
+
+With `'never'`, the block keeps the HTML rendered on the server and its
+component never runs on the client. A page with many such blocks hydrates in
+less time and blocks the main thread less. Without a value, the block hydrates
+with the page.
+
+Use it for blocks without client-side behaviour: no event handlers, no
+`onMounted`, no data fetched on the client.
+
+- Links in the block load the page in full instead of navigating on the client.
+- Blocks nested in the block's fields aren't hydrated either. Set it on a block
+  with fields only when every block allowed in them is static too.
+- When its props change after the page loaded, the block is rendered after all.
+- While editing, every block is hydrated.
+
+```typescript
+defineBlokkli({
+  bundle: 'text',
+  hydrate: 'never',
+})
+```
+
 ## options
 
 **Type:** [type.BlockDefinitionOptionsInput]

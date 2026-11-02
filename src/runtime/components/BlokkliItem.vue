@@ -25,7 +25,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, provide, inject, defineAsyncComponent } from '#imports'
+import {
+  computed,
+  provide,
+  inject,
+  defineAsyncComponent,
+  useNuxtApp,
+} from '#imports'
 import { getComponent } from '#blokkli/helpers/imports'
 import {
   INJECT_ALL_COMPONENTS_CHUNK,
@@ -108,6 +114,10 @@ const component =
           fieldListType: fieldListType?.value || 'default',
           parentBundle: componentProps.parentType,
           providerType,
+          applyHydration:
+            import.meta.client &&
+            !isEditingComponent &&
+            !!useNuxtApp().isHydrating,
         },
         allComponentsChunk,
       )

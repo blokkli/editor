@@ -257,6 +257,21 @@ export type BlockDefinitionInputBase<
   chunkName?: ChunkNames
 
   /**
+   * When to hydrate the server-rendered block on the client.
+   *
+   * - `'never'`: the block keeps its server HTML and its component never runs
+   *   on the client, which makes the page interactive sooner. Use it for
+   *   blocks without client-side behaviour (no event handlers, no
+   *   `onMounted`). Links in the block load the page in full instead of
+   *   navigating on the client, and blocks nested in the block's fields are
+   *   not hydrated either. The block is rendered after all when its props
+   *   change, and always while editing.
+   *
+   * Without a value, the block hydrates with the page.
+   */
+  hydrate?: 'never'
+
+  /**
    * Define options available for this block.
    */
   options?: Options

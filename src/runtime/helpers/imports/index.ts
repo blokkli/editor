@@ -1,6 +1,7 @@
-import { chunks, chunkMapping } from '#blokkli-build/imports'
+import { chunks, chunkMapping, hydrationMapping } from '#blokkli-build/imports'
 import type { Component } from 'vue'
 import { defineAsyncComponent } from '#imports'
+import { withoutHydration } from './hydration'
 import type {
   ValidFieldListTypes,
   ValidProviderTypes,
@@ -8,7 +9,15 @@ import type {
 
 function objectOrImport(
   key: string,
-): Component | Promise<() => Component> | undefined {
+  applyHydration?: boolean,
+): Component | undefined {
+  const component = load(key)
+  return component && applyHydration && hydrationMapping[key] === 'never'
+    ? withoutHydration(component)
+    : component
+}
+
+function load(key: string): Component | undefined {
   const chunkName = chunkMapping[key]
   if (!chunkName) {
     return
@@ -43,6 +52,12 @@ type GetComponentContext = {
   fieldListType?: ValidFieldListTypes
   parentBundle?: string
   providerType?: ValidProviderTypes
+
+  /**
+   * Apply the block's "hydrate" setting. Only while hydrating a page rendered
+   * on the server: the editor needs every block hydrated.
+   */
+  applyHydration?: boolean
 }
 
 export function getComponent(
@@ -57,7 +72,7 @@ export function getComponent(
       return allComponents[key]
     }
     if (chunkMapping[key]) {
-      return objectOrImport(key)
+      return objectOrImport(key, context.applyHydration)
     }
   }
 
@@ -67,7 +82,7 @@ export function getComponent(
       return allComponents[key]
     }
     if (chunkMapping[key]) {
-      return objectOrImport(key)
+      return objectOrImport(key, context.applyHydration)
     }
   }
 
@@ -77,7 +92,7 @@ export function getComponent(
       return allComponents[key]
     }
     if (chunkMapping[key]) {
-      return objectOrImport(key)
+      return objectOrImport(key, context.applyHydration)
     }
   }
 
@@ -85,5 +100,5 @@ export function getComponent(
   if (allComponents && allComponents[key]) {
     return allComponents[key]
   }
-  return objectOrImport(key)
+  return objectOrImport(key, context.applyHydration)
 }
