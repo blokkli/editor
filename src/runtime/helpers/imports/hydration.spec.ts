@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, test } from 'vitest'
 import {
+  Fragment,
   Suspense,
   createSSRApp,
   defineAsyncComponent,
@@ -125,5 +126,70 @@ describe('withoutHydration', () => {
       expect(document.querySelectorAll('button')).toHaveLength(1)
       expect(button().textContent).toBe('Changed 0')
     }
+  })
+
+  describe('when the list of blocks is reordered', () => {
+    const roots = {
+      one: (text: string) => h('p', text),
+      several: (text: string) => h(Fragment, [h('p', text), h('hr')]),
+    }
+
+    async function reorder(render: (text: string) => any) {
+      const Block = defineComponent({
+        props: { text: { type: String, required: true } },
+        setup(props) {
+          if (isClient.value) {
+            clientSetups++
+          }
+          return () => render(props.text)
+        },
+      })
+      const items = ref(['a', 'b'])
+      const page = () =>
+        createSSRApp({
+          setup: () => () =>
+            h(Suspense, null, {
+              default: () =>
+                h(
+                  'main',
+                  items.value.map((text) =>
+                    h(Item, { key: text, text, block: Block }),
+                  ),
+                ),
+            }),
+        })
+      // Resolves the block once, like BlokkliItem.
+      const Item = defineComponent({
+        props: ['text', 'block'],
+        setup(props) {
+          const block = isClient.value
+            ? withoutHydration(props.block)
+            : props.block
+          return () => h(block, { text: props.text })
+        },
+      })
+
+      isClient.value = false
+      document.body.innerHTML = `<div id="app">${await renderToString(page())}</div>`
+      isClient.value = true
+      clientSetups = 0
+      page().mount('#app')
+      await settle()
+      items.value = ['b', 'a']
+      await settle()
+      return document.querySelector('main')!.textContent
+    }
+
+    test('moves blocks with one root element without hydrating them', async () => {
+      expect(await reorder(roots.one)).toBe('ba')
+      expect(clientSetups).toBe(0)
+    })
+
+    // Vue can't move a block it didn't hydrate when it has several root
+    // elements.
+    test('hydrates blocks with several root elements, so they can move', async () => {
+      expect(await reorder(roots.several)).toBe('ba')
+      expect(clientSetups).toBe(2)
+    })
   })
 })

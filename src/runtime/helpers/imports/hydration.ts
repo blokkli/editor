@@ -1,7 +1,20 @@
 import { defineAsyncComponent } from '#imports'
 import type { Component, HydrationStrategy } from 'vue'
 
-const neverHydrate: HydrationStrategy = () => {}
+/**
+ * Never hydrates a block with one root element. Vue can't move a block it
+ * didn't hydrate that has several (when its list is reordered), so those
+ * hydrate as usual.
+ */
+const neverHydrate: HydrationStrategy = (hydrate, forEachElement) => {
+  let rootElements = 0
+  forEachElement(() => {
+    rootElements++
+  })
+  if (rootElements > 1) {
+    hydrate()
+  }
+}
 
 /**
  * Returns the component wrapped so that Vue keeps its server-rendered HTML
