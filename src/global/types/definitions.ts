@@ -363,6 +363,12 @@ export type FragmentDefinitionInputBase<
   chunkName?: ChunkNames
 
   /**
+   * When to hydrate the server-rendered fragment on the client: the same as
+   * `hydrate` in `defineBlokkli()`.
+   */
+  hydrate?: 'never'
+
+  /**
    * Define options available for this block.
    */
   options?: Options

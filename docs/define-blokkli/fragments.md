@@ -71,6 +71,14 @@ language.
 
 The chunk group for code splitting, same as in `defineBlokkli()`.
 
+### hydrate
+
+**Type:** `'never'|undefined`
+
+With `'never'`, the fragment keeps the HTML rendered on the server and never
+runs on the client, same as
+[`hydrate` in `defineBlokkli()`](/define-blokkli#hydrate).
+
 ### options
 
 **Type:** [type.BlockDefinitionOptionsInput]

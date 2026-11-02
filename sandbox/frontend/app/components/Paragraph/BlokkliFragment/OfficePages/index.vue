@@ -26,6 +26,7 @@
 // Before the await: the editor needs the definition during setup.
 const block = defineBlokkliFragment({
   name: 'office_pages',
+  hydrate: 'never',
   label: {
     en: 'Pages of the office',
     de: 'Seiten des Amts',

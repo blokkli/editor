@@ -1,7 +1,11 @@
 import { defineAsyncComponent, getCurrentInstance } from '#imports'
 import type { Component } from 'vue'
 
-function isFragmentStart(
+/**
+ * Whether the node opens the server HTML of a component whose template has
+ * several root nodes: Vue marks those with <!--[--> and <!--]-->.
+ */
+function startsSeveralRootNodes(
   node: { nodeType?: number; data?: string } | null | undefined,
 ): boolean {
   return node?.nodeType === Node.COMMENT_NODE && node.data === '['
@@ -12,7 +16,8 @@ function isFragmentStart(
  * and never hydrates it. When its props change, Vue renders it after all.
  *
  * Call it in the setup of the component that renders the block as its root
- * (BlokkliItem), once per rendered block, on the server too:
+ * (BlokkliItem, or the blokkli_fragment block for a blökkli fragment), once
+ * per rendered block, on the server too:
  * - Vue can only update a block it didn't hydrate when the wrapper had not
  *   loaded yet while hydrating: a shared wrapper would throw on the update of
  *   every block after the first.
@@ -25,9 +30,9 @@ export function withoutHydration(component: Component): Component {
   return defineAsyncComponent({
     loader: () => Promise.resolve(component),
     hydrate: (hydrate) => {
-      // Vue can't move a block it didn't hydrate when its root is a fragment
-      // (when its list is reordered): those hydrate as usual.
-      if (isFragmentStart(parent?.vnode.el)) {
+      // Vue can't move a block it didn't hydrate when the block has several
+      // root nodes (when its list is reordered): those hydrate as usual.
+      if (startsSeveralRootNodes(parent?.vnode.el)) {
         hydrate()
       }
     },

@@ -32,6 +32,19 @@ describe('imports template', () => {
 }`)
   })
 
+  test('maps a fragment that is never hydrated', () => {
+    const code = buildCode([
+      {
+        definition: { name: 'quick_links', hydrate: 'never' },
+        variations: ['fragment:quick_links'],
+      },
+    ])
+
+    expect(code).toContain(`export const hydrationMapping = {
+  'fragment:quick_links': 'never'
+}`)
+  })
+
   test('maps nothing when no block sets hydrate', () => {
     const code = buildCode([
       { definition: { bundle: 'accordion' }, variations: ['block:accordion'] },

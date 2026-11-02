@@ -182,7 +182,7 @@ describe('withoutHydration', () => {
       expect(clientSetups).toBe(0)
     })
 
-    // Vue can't move a block it didn't hydrate when its root is a fragment.
+    // Vue can't move a block it didn't hydrate when it has several root nodes.
     test.each([
       [
         'several elements',

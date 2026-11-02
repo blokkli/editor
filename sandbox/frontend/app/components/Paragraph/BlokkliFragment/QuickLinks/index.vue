@@ -17,6 +17,7 @@
 // Before the await: the editor needs the definition during setup.
 defineBlokkliFragment({
   name: 'quick_links',
+  hydrate: 'never',
   label: {
     en: 'Frequently searched',
     de: 'Häufig gesucht',
