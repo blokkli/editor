@@ -129,10 +129,7 @@ describe('withoutHydration', () => {
   })
 
   describe('when the list of blocks is reordered', () => {
-    const roots = {
-      one: (text: string) => h('p', text),
-      several: (text: string) => h(Fragment, [h('p', text), h('hr')]),
-    }
+    const singleRoot = (text: string) => h('p', text)
 
     async function reorder(render: (text: string) => any) {
       const Block = defineComponent({
@@ -180,16 +177,28 @@ describe('withoutHydration', () => {
       return document.querySelector('main')!.textContent
     }
 
-    test('moves blocks with one root element without hydrating them', async () => {
-      expect(await reorder(roots.one)).toBe('ba')
+    test('moves blocks with one root without hydrating them', async () => {
+      expect(await reorder(singleRoot)).toBe('ba')
       expect(clientSetups).toBe(0)
     })
 
-    // Vue can't move a block it didn't hydrate when it has several root
-    // elements.
-    test('hydrates blocks with several root elements, so they can move', async () => {
-      expect(await reorder(roots.several)).toBe('ba')
-      expect(clientSetups).toBe(2)
-    })
+    // Vue can't move a block it didn't hydrate when its root is a fragment.
+    test.each([
+      [
+        'several elements',
+        (text: string) => h(Fragment, [h('p', text), h('hr')]),
+      ],
+      [
+        'an element and text',
+        (text: string) => h(Fragment, [h('p', text), ' ']),
+      ],
+      ['text only', (text: string) => h(Fragment, [text, ' '])],
+    ])(
+      'hydrates blocks with %s at the root, so they can move',
+      async (_, render) => {
+        expect((await reorder(render))?.replace(/\s/g, '')).toBe('ba')
+        expect(clientSetups).toBe(2)
+      },
+    )
   })
 })

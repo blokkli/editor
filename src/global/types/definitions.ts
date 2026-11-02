@@ -265,8 +265,8 @@ export type BlockDefinitionInputBase<
    *   `onMounted`). Links in the block load the page in full instead of
    *   navigating on the client, and blocks nested in the block's fields are
    *   not hydrated either. The block is rendered after all when its props
-   *   change, and always while editing. A block with several root elements
-   *   hydrates as usual.
+   *   change, and always while editing. A block whose template has several
+   *   root nodes hydrates as usual.
    *
    * Without a value, the block hydrates with the page.
    */

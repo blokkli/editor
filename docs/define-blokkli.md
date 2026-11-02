@@ -58,8 +58,8 @@ Use it for blocks without client-side behaviour: no event handlers, no
 - Blocks nested in the block's fields aren't hydrated either. Set it on a block
   with fields only when every block allowed in them is static too.
 - When its props change after the page loaded, the block is rendered after all.
-- A block with several root elements hydrates as usual: Vue can't move it in its
-  list otherwise.
+- A block whose template has several root nodes hydrates as usual: Vue can't
+  move it in its list otherwise.
 - While editing, every block is hydrated.
 
 ```typescript
