@@ -25,13 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  provide,
-  inject,
-  defineAsyncComponent,
-  useNuxtApp,
-} from '#imports'
+import { computed, provide, inject, defineAsyncComponent } from '#imports'
 import { getComponent } from '#blokkli/helpers/imports'
 import {
   INJECT_ALL_COMPONENTS_CHUNK,
@@ -78,19 +72,6 @@ const componentProps = withDefaults(
 
 const isEditingComponent = import.meta.blokkliEditing
 
-const nuxtApp = useNuxtApp()
-
-/**
- * Rendering on the server, or hydrating what the server rendered: not a
- * client-side navigation, nor a page rendered in the browser only.
- */
-function isServerRendering(): boolean {
-  return (
-    import.meta.server ||
-    (nuxtApp.isHydrating === true && !!nuxtApp.payload.serverRendered)
-  )
-}
-
 const isProxyMode = inject(INJECT_FIELD_PROXY_MODE, false)
 const mutatedItemProps = inject(INJECT_ITEM_PROPS_OVERRIDE, null)
 const allComponentsChunk = inject(INJECT_ALL_COMPONENTS_CHUNK, null)
@@ -127,7 +108,6 @@ const component =
           fieldListType: fieldListType?.value || 'default',
           parentBundle: componentProps.parentType,
           providerType,
-          applyHydration: !isEditingComponent && isServerRendering(),
         },
         allComponentsChunk,
       )

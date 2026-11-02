@@ -42,12 +42,6 @@ type GetComponentContext = {
   fieldListType?: ValidFieldListTypes
   parentBundle?: string
   providerType?: ValidProviderTypes
-
-  /**
-   * Apply the block's "hydrate" setting. Only when rendering on the server
-   * and while hydrating what it rendered: the editor needs every block.
-   */
-  applyHydration?: boolean
 }
 
 export function getComponent(
@@ -68,19 +62,20 @@ export function getComponent(
       return allComponents[key]
     }
     if (chunkMapping[key]) {
-      return loadForRendering(key, context.applyHydration)
+      return loadForRendering(key)
     }
   }
 
-  return allComponents?.[base] ?? loadForRendering(base, context.applyHydration)
+  return allComponents?.[base] ?? loadForRendering(base)
 }
 
-function loadForRendering(
-  key: string,
-  applyHydration?: boolean,
-): Component | undefined {
+/**
+ * The editor's components (allComponents) are never wrapped: they always
+ * hydrate. Outside of hydration, Vue renders the wrapper as usual.
+ */
+function loadForRendering(key: string): Component | undefined {
   const component = load(key)
-  return component && applyHydration && hydrationMapping[key] === 'never'
+  return component && hydrationMapping[key] === 'never'
     ? withoutHydration(component)
     : component
 }

@@ -3,10 +3,11 @@ import { defineComponent } from 'vue'
 import type { Component } from 'vue'
 import { getComponent } from './index'
 
-const { Text, TextInList, Accordion } = vi.hoisted(() => ({
+const { Text, TextInList, Accordion, QuickLinks } = vi.hoisted(() => ({
   Text: { name: 'Text' },
   TextInList: { name: 'TextInList' },
   Accordion: { name: 'Accordion' },
+  QuickLinks: { name: 'QuickLinks' },
 }))
 
 vi.mock('#blokkli-build/imports', () => ({
@@ -15,16 +16,19 @@ vi.mock('#blokkli-build/imports', () => ({
       'block:text': Text,
       'block:text__p:list': TextInList,
       'block:accordion': Accordion,
+      'fragment:quick_links': QuickLinks,
     },
   },
   chunkMapping: {
     'block:text': 'global',
     'block:text__p:list': 'global',
     'block:accordion': 'global',
+    'fragment:quick_links': 'global',
   },
   hydrationMapping: {
     'block:text': 'never',
     'block:text__p:list': 'never',
+    'fragment:quick_links': 'never',
   },
 }))
 
@@ -37,7 +41,7 @@ const isWrapped = (component: any) => !!component.__asyncLoader
 
 describe('getComponent', () => {
   test('wraps a block that is never hydrated', async () => {
-    const component = getComponent('block', 'text', { applyHydration: true })
+    const component = getComponent('block', 'text', {})
 
     expect(isWrapped(component)).toBe(true)
     expect(await rendered(component)).toBe(Text)
@@ -46,20 +50,20 @@ describe('getComponent', () => {
   test('wraps the variation that is rendered', async () => {
     const component = getComponent('block', 'text', {
       parentBundle: 'list',
-      applyHydration: true,
     })
 
     expect(await rendered(component)).toBe(TextInList)
   })
 
-  test('leaves a block alone without the hydration setting applied', () => {
-    expect(getComponent('block', 'text', {})).toBe(Text)
+  test('wraps a fragment that is never hydrated', async () => {
+    const component = getComponent('fragment', 'quick_links', {})
+
+    expect(isWrapped(component)).toBe(true)
+    expect(await rendered(component)).toBe(QuickLinks)
   })
 
   test('leaves a block alone that hydrates', () => {
-    expect(getComponent('block', 'accordion', { applyHydration: true })).toBe(
-      Accordion,
-    )
+    expect(getComponent('block', 'accordion', {})).toBe(Accordion)
   })
 
   test('leaves the editing components alone', () => {
@@ -69,7 +73,7 @@ describe('getComponent', () => {
       getComponent(
         'block',
         'text',
-        { applyHydration: true },
+        {},
         {
           'block:text': EditingText,
         },
