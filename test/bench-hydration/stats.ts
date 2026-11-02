@@ -1,18 +1,16 @@
 export type LongTask = { start: number; duration: number }
 
 export type Summary = {
-  n: number
   median: number
   p25: number
   p75: number
-  min: number
-  max: number
 }
 
 export type Comparison = {
   /** Median of the candidate minus median of the baseline. */
   diff: number
-  relative: number
+  /** `diff` relative to the baseline median; null when that is 0. */
+  relative: number | null
   /** 95 % bootstrap interval of `diff`. */
   low: number
   high: number
@@ -33,29 +31,21 @@ export function quantile(values: number[], q: number): number {
   return sorted[lower]! * (1 - weight) + sorted[upper]! * weight
 }
 
-export function median(values: number[]): number {
+function median(values: number[]): number {
   return quantile(values, 0.5)
 }
 
 export function summarize(values: number[]): Summary {
   return {
-    n: values.length,
     median: median(values),
     p25: quantile(values, 0.25),
     p75: quantile(values, 0.75),
-    min: Math.min(...values),
-    max: Math.max(...values),
   }
 }
 
-export function totalBlockingTime(
-  tasks: LongTask[],
-  window: { from?: number; until?: number } = {},
-): number {
-  const from = window.from ?? 0
-  const until = window.until ?? Infinity
+export function totalBlockingTime(tasks: LongTask[], until = Infinity): number {
   return tasks
-    .filter((task) => task.start >= from && task.start <= until)
+    .filter((task) => task.start <= until)
     .reduce(
       (sum, task) => sum + Math.max(0, task.duration - BLOCKING_THRESHOLD_MS),
       0,
@@ -96,12 +86,13 @@ export function compareSamples(
       median(resample(candidate, random)) - median(resample(baseline, random)),
     )
   }
-  const diff = median(candidate) - median(baseline)
+  const baselineMedian = median(baseline)
+  const diff = median(candidate) - baselineMedian
   const low = quantile(diffs, 0.025)
   const high = quantile(diffs, 0.975)
   return {
     diff,
-    relative: diff / median(baseline),
+    relative: baselineMedian === 0 ? null : diff / baselineMedian,
     low,
     high,
     significant: low > 0 || high < 0,

@@ -26,7 +26,6 @@ type Run = {
   tbtMs: number
   longestTaskMs: number
   components: number
-  htmlBytes: number
   payloadBytes: number
   jsBytes: number
 }
@@ -77,8 +76,11 @@ function parseLabelled(value: string, index: number): [string, string] {
 }
 
 const initScripts = Object.fromEntries(
-  (args.init ?? []).map((value, i) => {
-    const [label, file] = parseLabelled(value, i)
+  (args.init ?? []).map((value) => {
+    const [, label, file] = value.match(/^([\w-]+)=(.+)$/) ?? []
+    if (!label || !file) {
+      throw new Error(`--init needs the label of its variant: "${value}"`)
+    }
     return [label, readFileSync(file, 'utf8')]
   }),
 )
@@ -97,6 +99,9 @@ if (!variants.length) {
 const extraHTTPHeaders = Object.fromEntries(
   (args.header ?? []).map((header) => {
     const separator = header.indexOf(':')
+    if (separator < 1) {
+      throw new Error(`--header needs "Name: value": "${header}"`)
+    }
     return [
       header.slice(0, separator).trim(),
       header.slice(separator + 1).trim(),
@@ -240,13 +245,13 @@ async function measure(
   await page.close()
   return {
     hydratedMs: bench.hydratedAt!,
-    blockingUntilHydratedMs: totalBlockingTime(bench.longTasks, {
-      until: bench.hydratedAt!,
-    }),
+    blockingUntilHydratedMs: totalBlockingTime(
+      bench.longTasks,
+      bench.hydratedAt!,
+    ),
     tbtMs: totalBlockingTime(bench.longTasks),
     longestTaskMs: Math.max(0, ...bench.longTasks.map((task) => task.duration)),
     components: bench.components,
-    htmlBytes: html.length,
     payloadBytes: payload?.[1]?.length ?? 0,
     jsBytes,
   }
@@ -268,10 +273,18 @@ function format(value: number, unit: string): string {
   return `${Math.round(value)}${unit ? ' ' + unit : ''}`
 }
 
-function formatChange(baseline: number[], candidate: number[]): string {
+function formatChange(
+  baseline: number[],
+  candidate: number[],
+  unit: string,
+): string {
   const c = compareSamples(baseline, candidate)
-  const sign = c.relative > 0 ? '+' : ''
-  return `${sign}${(c.relative * 100).toFixed(0)} %${c.significant ? '' : ' (n.s.)'}`
+  const sign = c.diff > 0 ? '+' : ''
+  const change =
+    c.relative === null
+      ? `${sign}${format(c.diff, unit)}`
+      : `${sign}${(c.relative * 100).toFixed(0)} %`
+  return `${change}${c.significant ? '' : ' (n.s.)'}`
 }
 
 function table(header: string[], rows: string[][]): string[] {
@@ -300,7 +313,7 @@ function report(results: Run[]): string {
             const cell = `${format(s.median, metric.unit)} (${format(s.p25, metric.unit)}–${format(s.p75, metric.unit)})`
             return variant === baseline
               ? cell
-              : `${cell} **${formatChange(sample(baseline!, metric.key), sample(variant, metric.key))}**`
+              : `${cell} **${formatChange(sample(baseline!, metric.key), sample(variant, metric.key), metric.unit)}**`
           }),
         ]),
       ),
@@ -319,7 +332,11 @@ function report(results: Run[]): string {
           METRICS.map((metric) => [
             metric.label,
             ...pairs.map(([a, b]) =>
-              formatChange(sample(a, metric.key), sample(b, metric.key)),
+              formatChange(
+                sample(a, metric.key),
+                sample(b, metric.key),
+                metric.unit,
+              ),
             ),
           ]),
         ),

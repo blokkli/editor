@@ -19,14 +19,11 @@ describe('quantile', () => {
 })
 
 describe('summarize', () => {
-  it('returns the median, quartiles and range', () => {
+  it('returns the median and quartiles', () => {
     expect(summarize([5, 1, 4, 2, 3])).toEqual({
-      n: 5,
       median: 3,
       p25: 2,
       p75: 4,
-      min: 1,
-      max: 5,
     })
   })
 })
@@ -41,12 +38,12 @@ describe('totalBlockingTime', () => {
     expect(totalBlockingTime(tasks)).toBe(70 + 0 + 250)
   })
 
-  it('only counts tasks that start inside the window', () => {
+  it('only counts tasks that start until the given time', () => {
     const tasks = [
       { start: 100, duration: 120 },
       { start: 900, duration: 300 },
     ]
-    expect(totalBlockingTime(tasks, { until: 500 })).toBe(70)
+    expect(totalBlockingTime(tasks, 500)).toBe(70)
   })
 })
 
@@ -70,6 +67,13 @@ describe('compareSamples', () => {
     expect(compareSamples(baseline, candidate, { seed: 1 }).significant).toBe(
       false,
     )
+  })
+
+  it('has no relative change when the baseline median is 0', () => {
+    const result = compareSamples([0, 0, 0], [0, 12, 30], { seed: 1 })
+
+    expect(result.diff).toBe(12)
+    expect(result.relative).toBeNull()
   })
 
   it('returns the same interval for the same seed', () => {
