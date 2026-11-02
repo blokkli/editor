@@ -37,6 +37,6 @@ describe('imports template', () => {
       { definition: { bundle: 'accordion' }, variations: ['block:accordion'] },
     ])
 
-    expect(code).toContain('export const hydrationMapping = {\n  \n}')
+    expect(code).toMatch(/export const hydrationMapping = \{\s*\}/)
   })
 })

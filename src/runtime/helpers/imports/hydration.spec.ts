@@ -1,6 +1,15 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, test } from 'vitest'
-import { Suspense, createSSRApp, defineComponent, h, nextTick, ref } from 'vue'
+import {
+  Suspense,
+  createSSRApp,
+  defineAsyncComponent,
+  defineComponent,
+  h,
+  nextTick,
+  ref,
+  useId,
+} from 'vue'
 import type { Component } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import { withoutHydration } from './hydration'
@@ -24,30 +33,50 @@ const Counter = defineComponent({
   },
 })
 
+const clientIds: string[] = []
+const WithId = defineComponent({
+  setup() {
+    const id = useId()
+    if (isClient.value) {
+      clientIds.push(id)
+    }
+    return () => h('label', { id })
+  },
+})
+
+// useId() derives its prefix from the async boundaries before it.
+const LaterAsync = defineAsyncComponent(() => Promise.resolve(WithId))
+
 const settle = () => new Promise((resolve) => setTimeout(resolve))
 
 /**
- * Renders the page on the "server" with the block itself, then hydrates the
- * server HTML on the "client" with the block the callback returns, inside
- * <Suspense> like Nuxt does.
+ * Renders a page on the "server", then hydrates it on the "client", inside
+ * <Suspense> like Nuxt. The block component is resolved once per rendered
+ * block on both sides, like BlokkliItem does.
  */
-async function hydrate(clientBlock: () => Component) {
+async function hydrate(resolveBlock: () => Component) {
   const label = ref('Static')
-  const page = (block: () => Component) =>
+  const page = () =>
     createSSRApp({
-      setup: () => () =>
-        h(Suspense, null, {
-          default: () => h('main', [h(block(), { label: label.value })]),
-        }),
+      setup() {
+        const block = resolveBlock()
+        return () =>
+          h(Suspense, null, {
+            default: () =>
+              h('main', [h(block, { label: label.value }), h(LaterAsync)]),
+          })
+      },
     })
 
   isClient.value = false
-  document.body.innerHTML = `<div id="app">${await renderToString(page(() => Counter))}</div>`
+  document.body.innerHTML = `<div id="app">${await renderToString(page())}</div>`
+  const serverId = document.querySelector('label')!.id
   isClient.value = true
   clientSetups = 0
-  page(clientBlock).mount('#app')
+  clientIds.length = 0
+  page().mount('#app')
   await settle()
-  return { button: () => document.querySelector('button')!, label }
+  return { button: () => document.querySelector('button')!, label, serverId }
 }
 
 afterEach(() => {
@@ -72,16 +101,22 @@ describe('withoutHydration', () => {
     await nextTick()
 
     expect(clientSetups).toBe(0)
-    expect(document.querySelector('main')!.outerHTML).toBe(
-      '<main><button>Static 0</button></main>',
+    expect(document.querySelector('main')!.outerHTML).toMatch(
+      /^<main><button>Static 0<\/button><label id="[^"]+"><\/label><\/main>$/,
     )
   })
 
+  test('keeps the ids of later components the same as on the server', async () => {
+    const { serverId } = await hydrate(() => withoutHydration(Counter))
+
+    expect(clientIds).toEqual([serverId])
+  })
+
   // Vue can only update a block it didn't hydrate if the block's component
-  // wasn't loaded yet when the page hydrated: the second page would throw.
-  test.each(['first', 'second'])(
-    'renders the block when its props change, on the %s page',
-    async () => {
+  // wasn't loaded yet when the page hydrated: with one wrapper for all blocks,
+  // every page after the first would throw.
+  test('renders the block when its props change, on every page', async () => {
+    for (let pageLoad = 0; pageLoad < 2; pageLoad++) {
       const { button, label } = await hydrate(() => withoutHydration(Counter))
 
       label.value = 'Changed'
@@ -89,6 +124,6 @@ describe('withoutHydration', () => {
 
       expect(document.querySelectorAll('button')).toHaveLength(1)
       expect(button().textContent).toBe('Changed 0')
-    },
-  )
+    }
+  })
 })

@@ -12,12 +12,12 @@ export default defineCodeTemplate(
         continue
       }
 
-      const hydrate =
-        'hydrate' in file.definition ? file.definition.hydrate : undefined
+      const neverHydrate =
+        'hydrate' in file.definition && file.definition.hydrate === 'never'
       file.variations.forEach((variation) => {
         chunkMapping[variation] = file.chunkName
-        if (hydrate) {
-          hydrationMapping[variation] = hydrate
+        if (neverHydrate) {
+          hydrationMapping[variation] = 'never'
         }
       })
     }

@@ -7,16 +7,6 @@ import type {
   ValidProviderTypes,
 } from '#blokkli-build/generated-types'
 
-function objectOrImport(
-  key: string,
-  applyHydration?: boolean,
-): Component | undefined {
-  const component = load(key)
-  return component && applyHydration && hydrationMapping[key] === 'never'
-    ? withoutHydration(component)
-    : component
-}
-
 function load(key: string): Component | undefined {
   const chunkName = chunkMapping[key]
   if (!chunkName) {
@@ -54,8 +44,8 @@ type GetComponentContext = {
   providerType?: ValidProviderTypes
 
   /**
-   * Apply the block's "hydrate" setting. Only while hydrating a page rendered
-   * on the server: the editor needs every block hydrated.
+   * Apply the block's "hydrate" setting. Only when rendering on the server
+   * and while hydrating what it rendered: the editor needs every block.
    */
   applyHydration?: boolean
 }
@@ -66,39 +56,31 @@ export function getComponent(
   context: GetComponentContext,
   allComponents?: Record<string, Component> | null,
 ): any {
-  if (context.providerType) {
-    const key = `${type}:${bundleOrFragmentName}__t:${context.providerType}`
-    if (allComponents && allComponents[key]) {
+  const base = `${type}:${bundleOrFragmentName}`
+  const variations = [
+    context.providerType && `${base}__t:${context.providerType}`,
+    context.fieldListType && `${base}__f:${context.fieldListType}`,
+    context.parentBundle && `${base}__p:${context.parentBundle}`,
+  ].filter((key): key is string => !!key)
+
+  for (const key of variations) {
+    if (allComponents?.[key]) {
       return allComponents[key]
     }
     if (chunkMapping[key]) {
-      return objectOrImport(key, context.applyHydration)
+      return loadForRendering(key, context.applyHydration)
     }
   }
 
-  if (context.fieldListType) {
-    const key = `${type}:${bundleOrFragmentName}__f:${context.fieldListType}`
-    if (allComponents && allComponents[key]) {
-      return allComponents[key]
-    }
-    if (chunkMapping[key]) {
-      return objectOrImport(key, context.applyHydration)
-    }
-  }
+  return allComponents?.[base] ?? loadForRendering(base, context.applyHydration)
+}
 
-  if (context.parentBundle) {
-    const key = `${type}:${bundleOrFragmentName}__p:${context.parentBundle}`
-    if (allComponents && allComponents[key]) {
-      return allComponents[key]
-    }
-    if (chunkMapping[key]) {
-      return objectOrImport(key, context.applyHydration)
-    }
-  }
-
-  const key = `${type}:${bundleOrFragmentName}`
-  if (allComponents && allComponents[key]) {
-    return allComponents[key]
-  }
-  return objectOrImport(key, context.applyHydration)
+function loadForRendering(
+  key: string,
+  applyHydration?: boolean,
+): Component | undefined {
+  const component = load(key)
+  return component && applyHydration && hydrationMapping[key] === 'never'
+    ? withoutHydration(component)
+    : component
 }
