@@ -23,7 +23,9 @@ permissions:
 jobs:
   checks:
     name: Checks and E2E tests
-    runs-on: ubuntu-latest
+    # ubuntu-latest is 26.04 now, where Playwright 1.60 can't install
+    # Chromium. Back to ubuntu-latest once Playwright supports it.
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     # A newer push to the same branch replaces the run, and its deploy.
     concurrency:
