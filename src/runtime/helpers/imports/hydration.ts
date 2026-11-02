@@ -15,9 +15,9 @@ function startsSeveralRootNodes(
  * Returns the component wrapped so that Vue keeps its server-rendered HTML
  * and never hydrates it. When its props change, Vue renders it after all.
  *
- * Call it in the setup of the component that renders the block as its root
- * (BlokkliItem, or the blokkli_fragment block for a blökkli fragment), once
- * per rendered block, on the server too:
+ * getComponent() calls it once per rendered block, in the setup of the
+ * component that renders the block as its root (BlokkliItem, or the
+ * blokkli_fragment block for a blökkli fragment), on the server too:
  * - Vue can only update a block it didn't hydrate when the wrapper had not
  *   loaded yet while hydrating: a shared wrapper would throw on the update of
  *   every block after the first.

@@ -1,4 +1,4 @@
-import { chunks, chunkMapping, hydrationMapping } from '#blokkli-build/imports'
+import { chunks, chunkMapping, neverHydrated } from '#blokkli-build/imports'
 import type { Component } from 'vue'
 import { defineAsyncComponent } from '#imports'
 import { withoutHydration } from './hydration'
@@ -44,6 +44,10 @@ type GetComponentContext = {
   providerType?: ValidProviderTypes
 }
 
+/**
+ * Call it in setup, once per rendered block, and render the result as the
+ * root: a block that is never hydrated gets its own wrapper (hydration.ts).
+ */
 export function getComponent(
   type: 'block' | 'fragment',
   bundleOrFragmentName: string,
@@ -75,7 +79,7 @@ export function getComponent(
  */
 function loadForRendering(key: string): Component | undefined {
   const component = load(key)
-  return component && hydrationMapping[key] === 'never'
+  return component && neverHydrated.has(key)
     ? withoutHydration(component)
     : component
 }

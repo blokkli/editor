@@ -17,7 +17,7 @@ function buildCode(
 }
 
 describe('imports template', () => {
-  test('maps every variation of a block that is never hydrated', () => {
+  test('lists every variation of a block that is never hydrated', () => {
     const code = buildCode([
       {
         definition: { bundle: 'text', hydrate: 'never' },
@@ -26,13 +26,12 @@ describe('imports template', () => {
       { definition: { bundle: 'accordion' }, variations: ['block:accordion'] },
     ])
 
-    expect(code).toContain(`export const hydrationMapping = {
-  'block:text': 'never',
-  'block:text__p:section': 'never'
-}`)
+    expect(code).toContain(
+      'export const neverHydrated = new Set(["block:text","block:text__p:section"])',
+    )
   })
 
-  test('maps a fragment that is never hydrated', () => {
+  test('lists a fragment that is never hydrated', () => {
     const code = buildCode([
       {
         definition: { name: 'quick_links', hydrate: 'never' },
@@ -40,16 +39,16 @@ describe('imports template', () => {
       },
     ])
 
-    expect(code).toContain(`export const hydrationMapping = {
-  'fragment:quick_links': 'never'
-}`)
+    expect(code).toContain(
+      'export const neverHydrated = new Set(["fragment:quick_links"])',
+    )
   })
 
-  test('maps nothing when no block sets hydrate', () => {
+  test('lists nothing when no block sets hydrate', () => {
     const code = buildCode([
       { definition: { bundle: 'accordion' }, variations: ['block:accordion'] },
     ])
 
-    expect(code).toMatch(/export const hydrationMapping = \{\s*\}/)
+    expect(code).toContain('export const neverHydrated = new Set([])')
   })
 })

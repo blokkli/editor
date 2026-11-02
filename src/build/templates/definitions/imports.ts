@@ -5,27 +5,25 @@ export default defineCodeTemplate(
   'imports',
   (ctx) => {
     const chunkMapping: Record<string, string> = {}
-    const hydrationMapping: Record<string, string> = {}
+    const neverHydrated: string[] = []
 
     for (const file of ctx.blocks.files.values()) {
       if (!file.definition) {
         continue
       }
 
-      const neverHydrate =
-        'hydrate' in file.definition && file.definition.hydrate === 'never'
       file.variations.forEach((variation) => {
         chunkMapping[variation] = file.chunkName
-        if (neverHydrate) {
-          hydrationMapping[variation] = 'never'
-        }
       })
+      if ('hydrate' in file.definition && file.definition.hydrate === 'never') {
+        neverHydrated.push(...file.variations)
+      }
     }
-    const toLines = (mapping: Record<string, string>) =>
-      Object.entries(mapping)
-        .map(([variation, value]) => `'${variation}': '${value}'`)
-        .sort()
-        .join(',\n  ')
+    const lines = Object.entries(chunkMapping).map(
+      ([variation, importName]) => {
+        return `'${variation}': '${importName}'`
+      },
+    )
     const chunks = ctx.helper
       .getChunkNames()
       .map((chunkName) => {
@@ -46,12 +44,10 @@ export const chunks = {
 }
 
 export const chunkMapping = {
-  ${toLines(chunkMapping)}
+  ${lines.sort().join(',\n  ')}
 }
 
-export const hydrationMapping = {
-  ${toLines(hydrationMapping)}
-}
+export const neverHydrated = new Set(${JSON.stringify(neverHydrated.sort())})
 `
   },
   () => {
@@ -74,10 +70,9 @@ export declare const chunkMapping: Record<string, string>
 export declare const chunks: Record<string, ChunkGroupEntry>
 
 /**
- * Mapping of block variation ID to its "hydrate" setting, for the variations
- * that have one.
+ * The block and fragment variations that are never hydrated.
  */
-export declare const hydrationMapping: Record<string, 'never'>
+export declare const neverHydrated: Set<string>
 `
   },
   {

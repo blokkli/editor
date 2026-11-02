@@ -25,11 +25,11 @@ vi.mock('#blokkli-build/imports', () => ({
     'block:accordion': 'global',
     'fragment:quick_links': 'global',
   },
-  hydrationMapping: {
-    'block:text': 'never',
-    'block:text__p:list': 'never',
-    'fragment:quick_links': 'never',
-  },
+  neverHydrated: new Set([
+    'block:text',
+    'block:text__p:list',
+    'fragment:quick_links',
+  ]),
 }))
 
 /** The component Vue renders: the block itself, or what a wrapper loads. */

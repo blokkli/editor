@@ -11,7 +11,7 @@ import {
   ref,
   useId,
 } from 'vue'
-import type { Component } from 'vue'
+import type { Component, VNode } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import { withoutHydration } from './hydration'
 
@@ -51,32 +51,38 @@ const LaterAsync = defineAsyncComponent(() => Promise.resolve(WithId))
 const settle = () => new Promise((resolve) => setTimeout(resolve))
 
 /**
- * Renders a page on the "server", then hydrates it on the "client", inside
- * <Suspense> like Nuxt. The block component is resolved once per rendered
- * block on both sides, like BlokkliItem does.
+ * Renders the page on the "server", then hydrates its HTML on the "client",
+ * inside <Suspense> like Nuxt. Returns the server HTML.
  */
-async function hydrate(resolveBlock: () => Component) {
-  const label = ref('Static')
+async function renderThenHydrate(main: () => VNode): Promise<string> {
   const page = () =>
-    createSSRApp({
-      setup() {
-        const block = resolveBlock()
-        return () =>
-          h(Suspense, null, {
-            default: () =>
-              h('main', [h(block, { label: label.value }), h(LaterAsync)]),
-          })
-      },
-    })
+    createSSRApp({ render: () => h(Suspense, null, { default: main }) })
 
   isClient.value = false
-  document.body.innerHTML = `<div id="app">${await renderToString(page())}</div>`
-  const serverId = document.querySelector('label')!.id
+  const html = await renderToString(page())
+  document.body.innerHTML = `<div id="app">${html}</div>`
   isClient.value = true
   clientSetups = 0
   clientIds.length = 0
   page().mount('#app')
   await settle()
+  return html
+}
+
+/**
+ * A page with one block, resolved once per rendered block on both sides like
+ * BlokkliItem does, and an async component after it.
+ */
+async function hydrate(resolveBlock: () => Component) {
+  const label = ref('Static')
+  const Page = defineComponent({
+    setup() {
+      const block = resolveBlock()
+      return () => h('main', [h(block, { label: label.value }), h(LaterAsync)])
+    },
+  })
+  const html = await renderThenHydrate(() => h(Page))
+  const serverId = /<label id="([^"]+)"/.exec(html)![1]
   return { button: () => document.querySelector('button')!, label, serverId }
 }
 
@@ -142,19 +148,6 @@ describe('withoutHydration', () => {
         },
       })
       const items = ref(['a', 'b'])
-      const page = () =>
-        createSSRApp({
-          setup: () => () =>
-            h(Suspense, null, {
-              default: () =>
-                h(
-                  'main',
-                  items.value.map((text) =>
-                    h(Item, { key: text, text, block: Block }),
-                  ),
-                ),
-            }),
-        })
       // Resolves the block once, like BlokkliItem.
       const Item = defineComponent({
         props: ['text', 'block'],
@@ -166,12 +159,12 @@ describe('withoutHydration', () => {
         },
       })
 
-      isClient.value = false
-      document.body.innerHTML = `<div id="app">${await renderToString(page())}</div>`
-      isClient.value = true
-      clientSetups = 0
-      page().mount('#app')
-      await settle()
+      await renderThenHydrate(() =>
+        h(
+          'main',
+          items.value.map((text) => h(Item, { key: text, text, block: Block })),
+        ),
+      )
       items.value = ['b', 'a']
       await settle()
       return document.querySelector('main')!.textContent

@@ -70,14 +70,17 @@ const recorded: Recorded | undefined = args.from
   ? JSON.parse(readFileSync(args.from, 'utf8'))
   : undefined
 
+// "label=value", as --url and --init take it.
+const LABELLED = /^([\w-]+)=(.+)$/
+
 function parseLabelled(value: string, index: number): [string, string] {
-  const match = value.match(/^([\w-]+)=(.+)$/)
+  const match = value.match(LABELLED)
   return match ? [match[1]!, match[2]!] : [`variant-${index + 1}`, value]
 }
 
 const initScripts = Object.fromEntries(
   (args.init ?? []).map((value) => {
-    const [, label, file] = value.match(/^([\w-]+)=(.+)$/) ?? []
+    const [, label, file] = value.match(LABELLED) ?? []
     if (!label || !file) {
       throw new Error(`--init needs the label of its variant: "${value}"`)
     }
