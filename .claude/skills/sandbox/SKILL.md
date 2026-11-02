@@ -528,6 +528,10 @@ host, with ddev running: `bun run test:e2e-drupal` or
   `../../src/modules/*`): changes in `src/` hot-reload here. Module order
   matters: graphql-middleware before blökkli, vuepal before
   language-negotiation.
+- **What a starterkit project already has, port from the starterkit**
+  (`blokkli_starterkit/frontend`) instead of writing it anew, e.g. how a page
+  loads its global data. The sandbox started from a list of starterkit files,
+  not the whole frontend.
 - **Auto-imports are on** (as in a consumer project). Helpers go into
   `app/utils/`, code shared with the server into `shared/utils/`, never next to
   a component (Nuxt registers every file in `app/components/` as a component).
@@ -537,6 +541,9 @@ host, with ddev running: `bun run test:e2e-drupal` or
   - `pages/[...slug].vue` runs the `route` query and renders `Node<Bundle>` by
     `__typename`; `pages/index.vue` is the front page (`HomeHero` and the
     editorial page).
+  - The layout and the pages share one `route` and one `layout` request
+    (`useRouteQuery()`, `useLayoutQuery()`, with `reuseOnServer`: on the server,
+    Nuxt fetches again otherwise). The layout loads both at once.
   - Overviews and search (`events`, `news`, `publications`, `search`) are
     frontend routes: `definePageMeta` with `languageMapping` and
     `drupalFrontendRoute`. vuepal writes their paths into

@@ -15,10 +15,7 @@
 // brings the header and blocks; the page's own part follows in the slot.
 const route = useRoute()
 
-const { data, error } = await useAsyncGraphqlQuery(
-  'route',
-  computed(() => ({ path: route.path })),
-)
+const { data, error } = await useRouteQuery()
 
 if (error.value) {
   // 403: anonymous users, who can't see anything.

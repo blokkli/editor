@@ -11,5 +11,6 @@ export function useLayoutQuery() {
   return useAsyncData(
     () => `layout:${language.value}`,
     () => useGraphqlQuery('layout').then((response) => response.data),
+    { getCachedData: reuseOnServer },
   )
 }

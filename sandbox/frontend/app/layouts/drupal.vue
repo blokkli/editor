@@ -41,7 +41,12 @@
 const route = useRoute()
 const language = useLanguage()
 
-const { data: layout } = await useLayoutQuery()
+// The route query is the page's too, and brings the language links. Both
+// load at once.
+const [{ data: layout }, { data: routeData }] = await Promise.all([
+  useLayoutQuery(),
+  useRouteQuery(),
+])
 
 // "<page title> – <site name>"; the front page sets no title: the site name.
 const siteName = computed(() => layout.value?.siteConfig?.siteName)
@@ -52,14 +57,6 @@ useHead(() => {
       title && name ? `${title} – ${name}` : title || name || null,
   }
 })
-
-// The page's route query (pages/[...slug].vue, pages/index.vue and the
-// frontend routes): the same path, so the same request. It brings the
-// language links and the breadcrumb.
-const { data: routeData } = await useAsyncGraphqlQuery(
-  'route',
-  computed(() => ({ path: route.path })),
-)
 
 // Only in the browser: the server renders for anonymous users only (see
 // server/middleware/spa.ts).
