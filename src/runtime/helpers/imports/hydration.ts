@@ -2,16 +2,6 @@ import { defineAsyncComponent, getCurrentInstance } from '#imports'
 import type { Component } from 'vue'
 
 /**
- * Whether the node opens the server HTML of a component whose template has
- * several root nodes: Vue marks those with <!--[--> and <!--]-->.
- */
-function startsSeveralRootNodes(
-  node: { nodeType?: number; data?: string } | null | undefined,
-): boolean {
-  return node?.nodeType === Node.COMMENT_NODE && node.data === '['
-}
-
-/**
  * Returns the component wrapped so that Vue keeps its server-rendered HTML
  * and never hydrates it. When its props change, Vue renders it after all.
  *
@@ -31,8 +21,10 @@ export function withoutHydration(component: Component): Component {
     loader: () => Promise.resolve(component),
     hydrate: (hydrate) => {
       // Vue can't move a block it didn't hydrate when the block has several
-      // root nodes (when its list is reordered): those hydrate as usual.
-      if (startsSeveralRootNodes(parent?.vnode.el)) {
+      // root nodes (when its list is reordered): those hydrate as usual. Vue
+      // marks their server HTML with <!--[--> and <!--]-->.
+      const firstNode = parent?.vnode.el
+      if (firstNode?.nodeType === Node.COMMENT_NODE && firstNode.data === '[') {
         hydrate()
       }
     },

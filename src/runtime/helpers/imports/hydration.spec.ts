@@ -102,7 +102,7 @@ describe('withoutHydration', () => {
   })
 
   test('keeps the server HTML and never runs the block on the client', async () => {
-    const { button } = await hydrate(() => withoutHydration(Counter))
+    const { button, serverId } = await hydrate(() => withoutHydration(Counter))
 
     button().click()
     await nextTick()
@@ -111,11 +111,7 @@ describe('withoutHydration', () => {
     expect(document.querySelector('main')!.outerHTML).toMatch(
       /^<main><button>Static 0<\/button><label id="[^"]+"><\/label><\/main>$/,
     )
-  })
-
-  test('keeps the ids of later components the same as on the server', async () => {
-    const { serverId } = await hydrate(() => withoutHydration(Counter))
-
+    // Later components get the same ids as on the server.
     expect(clientIds).toEqual([serverId])
   })
 

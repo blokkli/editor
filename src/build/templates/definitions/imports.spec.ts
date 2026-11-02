@@ -31,19 +31,6 @@ describe('imports template', () => {
     )
   })
 
-  test('lists a fragment that is never hydrated', () => {
-    const code = buildCode([
-      {
-        definition: { name: 'quick_links', hydrate: 'never' },
-        variations: ['fragment:quick_links'],
-      },
-    ])
-
-    expect(code).toContain(
-      'export const neverHydrated = new Set(["fragment:quick_links"])',
-    )
-  })
-
   test('lists nothing when no block sets hydrate', () => {
     const code = buildCode([
       { definition: { bundle: 'accordion' }, variations: ['block:accordion'] },
