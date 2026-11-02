@@ -25,6 +25,7 @@ const url = computed(() => target.value.url)
 
 defineBlokkli({
   bundle: 'teaser',
+  hydrate: 'never',
   renderFor: [{ fieldListType: 'related' }],
   globalOptions: ['bkVisibleLanguages'],
   // As in index.vue.

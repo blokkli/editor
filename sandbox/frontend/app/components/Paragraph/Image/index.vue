@@ -30,6 +30,7 @@ defineProps<ParagraphImageFragment>()
 
 const block = defineBlokkli({
   bundle: 'image',
+  hydrate: 'never',
   globalOptions: ['width', 'bkVisibleLanguages'],
   editor: {
     icon: 'bk_mdi_image',

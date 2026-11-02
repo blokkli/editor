@@ -19,6 +19,7 @@ defineProps<ParagraphTitleFragment>()
 
 const block = defineBlokkli({
   bundle: 'title',
+  hydrate: 'never',
   globalOptions: ['bkVisibleLanguages'],
   options: {
     anchor: {

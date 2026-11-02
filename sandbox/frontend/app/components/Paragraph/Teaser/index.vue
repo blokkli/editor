@@ -41,6 +41,7 @@ const url = computed(() => target.value.url)
 
 const block = defineBlokkli({
   bundle: 'teaser',
+  hydrate: 'never',
   globalOptions: ['bkVisibleLanguages'],
   options: {
     display: {

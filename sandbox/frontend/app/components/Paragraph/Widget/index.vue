@@ -64,6 +64,7 @@ defineProps<ParagraphWidgetFragment>()
 
 const block = defineBlokkli({
   bundle: 'widget',
+  hydrate: 'never',
   globalOptions: ['bkVisibleLanguages'],
   propsFieldMapping: {
     title: { type: 'editable', name: 'field_title' },

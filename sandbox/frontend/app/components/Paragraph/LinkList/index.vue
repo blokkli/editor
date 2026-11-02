@@ -32,6 +32,7 @@ defineProps<ParagraphLinkListFragment>()
 
 const block = defineBlokkli({
   bundle: 'link_list',
+  hydrate: 'never',
   globalOptions: ['bkVisibleLanguages'],
   propsFieldMapping: {
     paragraphs: { type: 'field', name: 'field_paragraphs' },

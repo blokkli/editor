@@ -24,6 +24,7 @@ const label = computed(
 
 defineBlokkli({
   bundle: 'link',
+  hydrate: 'never',
   renderFor: [{ fieldListType: 'service' }],
   globalOptions: ['bkVisibleLanguages'],
   editor: {

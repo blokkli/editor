@@ -46,6 +46,7 @@ const STYLES = {
 
 const { options } = defineBlokkli({
   bundle: 'banner',
+  hydrate: 'never',
   globalOptions: ['bkVisibleLanguages'],
   options: {
     // The swatches are the -mid colours of the bands' light ones (main.css).

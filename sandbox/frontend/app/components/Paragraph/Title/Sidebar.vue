@@ -17,6 +17,7 @@ defineProps<ParagraphTitleFragment>()
 
 defineBlokkli({
   bundle: 'title',
+  hydrate: 'never',
   renderFor: [{ fieldListType: 'sidebar' }],
   globalOptions: ['bkVisibleLanguages'],
   editor: {

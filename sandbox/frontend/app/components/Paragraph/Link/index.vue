@@ -31,6 +31,7 @@ const label = computed(
 
 const block = defineBlokkli({
   bundle: 'link',
+  hydrate: 'never',
   globalOptions: ['bkVisibleLanguages'],
   options: {
     style: {

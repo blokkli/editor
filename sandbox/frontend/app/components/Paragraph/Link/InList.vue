@@ -56,6 +56,7 @@ const meta = computed(() => {
 
 const { parentType, siblings } = defineBlokkli({
   bundle: 'link',
+  hydrate: 'never',
   renderFor: [
     { parentBundle: 'link_list' },
     { parentBundle: 'call_to_action' },

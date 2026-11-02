@@ -52,6 +52,7 @@ defineProps<ParagraphTeaserListFragment>()
 // Before the await: the editor needs the definition during setup.
 const block = defineBlokkli({
   bundle: 'teaser_list',
+  hydrate: 'never',
   globalOptions: ['bkVisibleLanguages'],
   options: {
     source: {

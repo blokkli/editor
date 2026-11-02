@@ -15,6 +15,7 @@ defineProps<ParagraphTextFragment>()
 
 const block = defineBlokkli({
   bundle: 'text',
+  hydrate: 'never',
   globalOptions: ['bkVisibleLanguages'],
   options: {
     // The swatches are the -mid colours of the boxes' light ones (main.css).

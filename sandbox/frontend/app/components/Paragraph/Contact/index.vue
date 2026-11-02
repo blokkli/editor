@@ -55,6 +55,7 @@ defineProps<ParagraphContactFragment>()
 
 const block = defineBlokkli({
   bundle: 'contact',
+  hydrate: 'never',
   globalOptions: ['bkVisibleLanguages'],
   options: {
     display: {

@@ -44,6 +44,7 @@ const thumbnail = computed(() => props.video?.thumbnail?.derivative)
 
 const block = defineBlokkli({
   bundle: 'video',
+  hydrate: 'never',
   globalOptions: ['width', 'bkVisibleLanguages'],
   editor: {
     icon: 'bk_mdi_smart_display',

@@ -29,6 +29,7 @@ defineProps<ParagraphStepFragment>()
 
 const { index } = defineBlokkli({
   bundle: 'step',
+  hydrate: 'never',
   globalOptions: ['bkVisibleLanguages'],
   editor: {
     // Added with the title's default text, which is then edited in place.

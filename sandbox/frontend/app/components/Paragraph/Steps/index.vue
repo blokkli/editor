@@ -30,6 +30,7 @@ defineProps<ParagraphStepsFragment>()
 
 const block = defineBlokkli({
   bundle: 'steps',
+  hydrate: 'never',
   globalOptions: ['bkVisibleLanguages'],
   propsFieldMapping: {
     paragraphs: { type: 'field', name: 'field_paragraphs' },

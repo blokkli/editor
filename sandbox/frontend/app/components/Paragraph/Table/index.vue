@@ -17,6 +17,7 @@ defineProps<ParagraphTableFragment>()
 
 const block = defineBlokkli({
   bundle: 'table',
+  hydrate: 'never',
   globalOptions: ['bkVisibleLanguages'],
   options: {
     striped: {

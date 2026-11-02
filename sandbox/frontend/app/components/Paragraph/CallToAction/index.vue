@@ -58,6 +58,7 @@ defineProps<ParagraphCallToActionFragment>()
 
 const block = defineBlokkli({
   bundle: 'call_to_action',
+  hydrate: 'never',
   globalOptions: ['bkVisibleLanguages'],
   options: {
     date: {
