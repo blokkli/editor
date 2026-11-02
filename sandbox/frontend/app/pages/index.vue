@@ -18,8 +18,6 @@
 // "quick_links". Every other path is [...slug].vue.
 definePageMeta({ layout: 'drupal' })
 
-const route = useRoute()
-
 const { data, error } = await useRouteQuery()
 
 if (error.value) {
