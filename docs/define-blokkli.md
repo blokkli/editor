@@ -35,12 +35,12 @@ met. With that it's possible to render block components based on context.
 
 **Type:** `string|undefined`
 
-blökkli can create multiple chunks that contain the components. This is useful
-for larger sites that have a lot of block components. Some might be used rarely
-and can be split into a separate chunk.
+Bundles the component with the other components of the same chunk name, which
+then load together.
 
-If left empty for all blocks, then all blocks will be part of the same (default)
-import bundle.
+If left empty, the block is in the default `global` chunk: in production it is
+loaded on its own, only on pages that render it. See
+[chunkNames](/configuration#chunknames).
 
 ## options
 
