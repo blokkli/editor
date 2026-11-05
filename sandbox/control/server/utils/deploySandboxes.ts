@@ -8,6 +8,15 @@ export type DeployPlan = {
   delete: string[]
 }
 
+/**
+ * What a deploy did. A sandbox whose drush command failed is in `failed` only.
+ */
+export type DeployResult = {
+  updated: string[]
+  deleted: string[]
+  failed: string[]
+}
+
 export type Drush = (...args: string[]) => Promise<string>
 
 /**
@@ -22,7 +31,8 @@ export function deployPlan(
 ): DeployPlan {
   const kept = new Set(
     rows
-      // Only premium rows: a normal row's expiry reads its last use.
+      // Only premium rows: a normal row's expiry reads its last use, through
+      // the app's runtimeConfig, which the deploy's script runs without.
       .filter((row) => row.premium && row.deleted === null)
       .filter((row) => expires(row) > time)
       .map((row) => row.id),
@@ -35,17 +45,18 @@ export function deployPlan(
 
 /**
  * Deletes the sandboxes that don't survive a deploy and marks their rows,
- * then runs `drush deploy` on the others. A failed update throws: the deploy
- * stops, and running it again retries.
+ * then updates the others (`blokkli-sandbox:update`). A sandbox whose deletion
+ * or update fails stays as it is, and the others go on: a broken sandbox
+ * doesn't hold up the rest. The next deploy tries it again.
  */
 export async function deploySandboxes(
   databaseFile: string,
   drush: Drush,
   time: number,
-): Promise<DeployPlan> {
+): Promise<DeployResult> {
   const ids = await listSandboxes(drush)
   if (!ids.length) {
-    return { update: [], delete: [] }
+    return { updated: [], deleted: [], failed: [] }
   }
   const database = openExistingDatabase(databaseFile)
   try {
@@ -53,11 +64,10 @@ export async function deploySandboxes(
       .prepare('SELECT * FROM sandboxes')
       .all() as SandboxRow[]
     const plan = deployPlan(ids, rows, time)
-    await deleteSandboxes(database, drush, plan.delete, time)
-    for (const id of plan.update) {
-      await drush('blokkli-sandbox:update', id)
-    }
-    return plan
+    const deleted = await deleteSandboxes(database, drush, plan.delete, time)
+    const updated = await updateSandboxes(drush, plan.update)
+    const done = new Set([...deleted, ...updated])
+    return { updated, deleted, failed: ids.filter((id) => !done.has(id)) }
   } finally {
     database.close()
   }
@@ -87,20 +97,58 @@ function openExistingDatabase(file: string): DatabaseSync {
 }
 
 /**
- * Deletes sandboxes and marks their rows, one after the other: a failure
- * leaves the rows of those not deleted yet as they were.
+ * Deletes sandboxes and marks their rows, one after the other. Returns those
+ * deleted: one that fails keeps its row as it was.
  */
 async function deleteSandboxes(
   database: DatabaseSync,
   drush: Drush,
   ids: string[],
   time: number,
-): Promise<void> {
+): Promise<string[]> {
   const markDeleted = database.prepare(
     'UPDATE sandboxes SET deleted = ? WHERE id = ? AND deleted IS NULL',
   )
+  const deleted: string[] = []
   for (const id of ids) {
-    await drush('blokkli-sandbox:delete', id)
-    markDeleted.run(time, id)
+    if (await succeeds(drush, 'blokkli-sandbox:delete', id)) {
+      markDeleted.run(time, id)
+      deleted.push(id)
+    }
+  }
+  return deleted
+}
+
+/**
+ * Updates premium sandboxes, one after the other. Returns those updated.
+ */
+async function updateSandboxes(drush: Drush, ids: string[]): Promise<string[]> {
+  const updated: string[] = []
+  for (const id of ids) {
+    if (await succeeds(drush, 'blokkli-sandbox:update', id)) {
+      updated.push(id)
+    }
+  }
+  return updated
+}
+
+/**
+ * Runs a drush command on a sandbox. A failure is logged, not thrown: drush
+ * printed its output already.
+ */
+async function succeeds(
+  drush: Drush,
+  command: string,
+  id: string,
+): Promise<boolean> {
+  try {
+    await drush(command, id)
+    return true
+  } catch (error) {
+    console.error(
+      `${command} ${id} failed:`,
+      error instanceof Error ? error.message : error,
+    )
+    return false
   }
 }

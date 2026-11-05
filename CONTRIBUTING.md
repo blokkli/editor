@@ -181,12 +181,14 @@ web_environment:
   bakes the templates and restarts. The premium sandboxes that the control app's
   cleanup keeps stay, with their content and files:
   `drush blokkli-sandbox:update` runs `drush deploy` on each (database updates
-  and config import). Every other sandbox is deleted
-  (`sandbox/control/scripts/deploy-sandboxes.ts`). A failed update stops the
-  deploy. The running apps keep serving until the new builds are swapped in, so
-  a failed build or bake leaves them running. Run it again every week or so: the
-  seeded dates are relative to the bake. A premium sandbox keeps the content it
-  was created with. It refuses to run locally.
+  and config import) and imports the modules' changed translation files. Every
+  other sandbox is deleted (`sandbox/control/scripts/deploy-sandboxes.ts`). A
+  sandbox that fails to update or to be deleted stays as it is: the others go
+  on, and the deploy fails after restarting. The running apps keep serving until
+  the new builds are swapped in, so a failed build or bake leaves them running.
+  Run it again every week or so: the seeded dates are relative to the bake. A
+  premium sandbox keeps the content it was created with. It refuses to run
+  locally.
 - **GitHub deploys `dev`** (`.github/workflows/ci.yml`): every push and pull
   request runs the gates (`bun run verify -- ci`), the production build, a bake
   and the E2E tests. They run against an E2E build of the frontend, a production

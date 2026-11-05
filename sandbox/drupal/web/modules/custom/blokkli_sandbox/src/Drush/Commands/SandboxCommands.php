@@ -76,8 +76,9 @@ final class SandboxCommands extends DrushCommands {
   /**
    * Updates a sandbox to the code: `drush deploy` on its site.
    *
-   * Database updates, config import, cache rebuild and deploy hooks. The
-   * sandbox keeps its content and files.
+   * Database updates, config import, cache rebuild and deploy hooks, then the
+   * interface translations of the files that changed (`drush deploy` leaves
+   * them out). The sandbox keeps its content and files.
    */
   #[CLI\Command(name: 'blokkli-sandbox:update')]
   #[CLI\Argument(name: 'id', description: 'The sandbox.')]
@@ -87,8 +88,10 @@ final class SandboxCommands extends DrushCommands {
       throw new \InvalidArgumentException("There's no sandbox '$id'.");
     }
     $sandbox = new SiteAlias(['uri' => $this->url($id)] + $this->siteAliasManager->getSelf()->export(), "@$id");
-    $process = $this->processManager()->drush($sandbox, 'deploy', [], ['yes' => TRUE]);
-    $process->mustRun($process->showRealtime());
+    foreach (['deploy', 'blokkli-sandbox:check-translations', 'locale:update'] as $command) {
+      $process = $this->processManager()->drush($sandbox, $command, [], ['yes' => TRUE]);
+      $process->mustRun($process->showRealtime());
+    }
     $this->logger()->success("Updated the sandbox $id.");
   }
 

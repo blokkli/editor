@@ -193,8 +193,10 @@ Traefik sends every hostname to the web container's nginx on port 80.
 
 - `SandboxManager` and the drush commands
   `blokkli-sandbox:create <id> [--source=en|de|fr] [--expires=<unix>] [--idle=<seconds>] [--premium]`,
-  `:update <id>` (`drush deploy` on its site), `:delete <id>`, `:list`. They run
-  on the dev site.
+  `:update <id>` (`drush deploy` on its site, then its translations),
+  `:delete <id>`, `:list`. They run on the dev site. `:check-translations`
+  (`SandboxTranslationCommands`) is the one `:update` runs on the sandbox's
+  site.
 - `/blokkli-sandbox/login/{token}` (`SandboxLoginController`): verifies the
   token (`LoginToken`), logs the user in, redirects to the front page's editor
   (`/<lang>?blokkliEditing=<uuid>`) or to `?destination=`.
@@ -288,12 +290,18 @@ sandbox/drupal/web/sites/default/files/sandboxes/<id>/   its public files
   has no `node:sqlite`). A premium row the cleanup keeps (`expires()`) is
   updated: `drush blokkli-sandbox:update <id>` runs `drush deploy` on its site
   (database updates, config import), so it keeps its content, files, row and
-  access links. Every other sandbox is deleted and its row marked, drush-made
-  ones included. Without the control app's database, the script refuses to
-  delete anything. A weekly deploy still refreshes the templates' seeded dates;
-  a premium sandbox keeps the content it was created with.
+  access links. Then `blokkli-sandbox:check-translations` and `locale:update`
+  import the translation files that changed, by their content's hash: the
+  modules' own. `locale:check` would ask drupal.org about every project
+  (`use_source: remote_and_local`); drupal.org's files came with the template.
+  Every other sandbox is deleted and its row marked, drush-made ones included. A
+  sandbox whose update or deletion fails stays as it is, and the others go on.
+  Without the control app's database, the script refuses to delete anything. A
+  weekly deploy still refreshes the templates' seeded dates; a premium sandbox
+  keeps the content it was created with.
   `test/e2e-drupal/sandbox-update.test.ts` runs an update with a schema change
-  in an E2E sandbox (`blokkli_sandbox_update_test`).
+  (`blokkli_sandbox_update_test`) and a changed translation file in an E2E
+  sandbox.
 - **`lifetime.json`** (`{expires, idle, premium}`) is for Drupal: the `sandbox`
   query (the "Sandbox" button) and the agent. The agent's secret is only set on
   the dev site and in sandboxes with `"premium": true`; without it,
@@ -596,10 +604,11 @@ outgoing allowlist, monitoring): `plans/drupal-setup/12-hosted-deploy.md`.
   stops the control app (no claims while the templates change), bakes the de, fr
   and en templates, stops the frontend, swaps the builds, updates premium
   sandboxes and deletes the others, and restarts. A failure starts the apps it
-  stopped again, and a failed update of a premium sandbox stops the deploy. It
-  refuses to run without `IS_DDEV_HOSTED=true`, with `ddev.site` hostnames, or
-  without the three secrets above, so it can't run locally. Run it again every
-  week or so: seeded dates are relative to the bake.
+  stopped again. A sandbox that fails to update or to be deleted doesn't stop
+  the others or the restart: the deploy fails at its end. It refuses to run
+  without `IS_DDEV_HOSTED=true`, with `ddev.site` hostnames, or without the
+  three secrets above, so it can't run locally. Run it again every week or so:
+  seeded dates are relative to the bake.
 - **GitHub** (`.github/workflows/ci.yml`) runs it after every push to `dev` that
   passes the checks (below), unless the push only changes `plans/`, `docs/`,
   `skills/`, `.claude/` or `test/`.

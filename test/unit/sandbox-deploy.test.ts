@@ -1,6 +1,6 @@
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { afterEach, beforeEach, describe, expect, test } from 'vitest'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import {
   openDatabase,
   type SandboxRow,
@@ -97,30 +97,54 @@ describe('deploySandboxes', () => {
 
   afterEach(() => {
     rmSync(directory, { recursive: true, force: true })
+    vi.restoreAllMocks()
   })
 
-  test('deletes the others, updates the premium ones', async () => {
+  function insertRows(...rows: [id: string, premium: number][]) {
     const database = openDatabase(file)
     const insert = database.prepare(
       'INSERT INTO sandboxes (id, source, premium, created) VALUES (?, ?, ?, ?)',
     )
-    insert.run('p1', 'en', 1, time - 3600)
-    insert.run('n1', 'en', 0, time - 3600)
+    for (const [id, premium] of rows) {
+      insert.run(id, 'en', premium, time - 3600)
+    }
     database.close()
+  }
+
+  function deletedColumn() {
+    return openDatabase(file)
+      .prepare('SELECT id, deleted FROM sandboxes ORDER BY id')
+      .all()
+  }
+
+  // A drush that fails the given command on the given sandbox.
+  function failing(command: string, id: string) {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    return async (...args: string[]) => {
+      const output = await drush(...args)
+      if (args[0] === command && args[1] === id) {
+        throw new Error(`${command} failed`)
+      }
+      return output
+    }
+  }
+
+  test('deletes the others, updates the premium ones', async () => {
+    insertRows(['p1', 1], ['n1', 0])
     onDisk = ['n1', 'p1', 'e2e1']
 
-    await deploySandboxes(file, drush, time)
-
+    expect(await deploySandboxes(file, drush, time)).toEqual({
+      updated: ['p1'],
+      deleted: ['n1', 'e2e1'],
+      failed: [],
+    })
     expect(calls).toEqual([
       ['blokkli-sandbox:list', '--format=json'],
       ['blokkli-sandbox:delete', 'n1'],
       ['blokkli-sandbox:delete', 'e2e1'],
       ['blokkli-sandbox:update', 'p1'],
     ])
-    const rows = openDatabase(file)
-      .prepare('SELECT id, deleted FROM sandboxes ORDER BY id')
-      .all()
-    expect(rows).toEqual([
+    expect(deletedColumn()).toEqual([
       { id: 'n1', deleted: time },
       { id: 'p1', deleted: null },
     ])
@@ -139,23 +163,41 @@ describe('deploySandboxes', () => {
     expect(calls).toEqual([['blokkli-sandbox:list', '--format=json']])
   })
 
-  test('stops at a failed update', async () => {
-    const database = openDatabase(file)
-    database
-      .prepare(
-        'INSERT INTO sandboxes (id, source, premium, created) VALUES (?, ?, ?, ?)',
-      )
-      .run('p1', 'en', 1, time - 3600)
-    database.close()
-    onDisk = ['p1']
-    const failing = async (...args: string[]) => {
-      if (args[0] === 'blokkli-sandbox:update') {
-        throw new Error('updatedb failed')
-      }
-      return drush(...args)
-    }
-    await expect(deploySandboxes(file, failing, time)).rejects.toThrow(
-      'updatedb failed',
-    )
+  // A sandbox whose data breaks an update would otherwise stop every deploy
+  // at the same place.
+  test('updates the others after a failed update', async () => {
+    insertRows(['p1', 1], ['p2', 1])
+    onDisk = ['p1', 'p2']
+
+    expect(
+      await deploySandboxes(
+        file,
+        failing('blokkli-sandbox:update', 'p1'),
+        time,
+      ),
+    ).toEqual({ updated: ['p2'], deleted: [], failed: ['p1'] })
+    expect(calls).toEqual([
+      ['blokkli-sandbox:list', '--format=json'],
+      ['blokkli-sandbox:update', 'p1'],
+      ['blokkli-sandbox:update', 'p2'],
+    ])
+  })
+
+  test('keeps the row of a sandbox it fails to delete, and goes on', async () => {
+    insertRows(['n1', 0], ['n2', 0], ['p1', 1])
+    onDisk = ['n1', 'n2', 'p1']
+
+    expect(
+      await deploySandboxes(
+        file,
+        failing('blokkli-sandbox:delete', 'n1'),
+        time,
+      ),
+    ).toEqual({ updated: ['p1'], deleted: ['n2'], failed: ['n1'] })
+    expect(deletedColumn()).toEqual([
+      { id: 'n1', deleted: null },
+      { id: 'n2', deleted: time },
+      { id: 'p1', deleted: null },
+    ])
   })
 })

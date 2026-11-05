@@ -17,8 +17,9 @@
 # The premium sandboxes the control app's cleanup keeps stay, with their
 # content and files: `drush blokkli-sandbox:update` runs `drush deploy` on
 # each. Every other sandbox is deleted and its row marked
-# (sandbox/control/scripts/deploy-sandboxes.ts). A failed update stops the
-# deploy; run it again.
+# (sandbox/control/scripts/deploy-sandboxes.ts). A sandbox that fails to update
+# stays as it is: the others go on, the deploy restarts the apps, then fails.
+# The next deploy tries it again.
 
 set -euo pipefail
 
@@ -126,13 +127,18 @@ for app in frontend control; do
   mv "sandbox/$app/.output-next" "sandbox/$app/.output"
 done
 
-# The control app decides which survive, while it's stopped.
+# The control app decides which survive, while it's stopped. A failure here
+# doesn't skip the restart: the new builds are in place.
 echo "== Sandboxes"
-ddev exec -d /var/www/html node_modules/.bin/tsx sandbox/control/scripts/deploy-sandboxes.ts
+sandboxes=0
+ddev exec -d /var/www/html node_modules/.bin/tsx sandbox/control/scripts/deploy-sandboxes.ts || sandboxes=$?
 
 # nginx's config, and the Nuxt apps with their new builds.
 echo "== Restarting"
 ddev restart
 stopped=()
+
+[ "$sandboxes" -eq 0 ] ||
+  fail "the sandboxes' step failed (above). The rest is deployed; the next deploy tries again."
 
 echo "Deployed $(git rev-parse --short HEAD) (paragraphs_blokkli $(git -C sandbox/drupal/paragraphs_blokkli rev-parse --short HEAD))."
