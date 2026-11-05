@@ -2931,7 +2931,7 @@ type TranslatableConfigPagesFooter implements TranslatableConfigPages & Entity &
   ): TranslatableConfigPagesFooter
 }
 
-"Site {entity_type: translatable_config_pages, bundle: site}"
+"Global settings {entity_type: translatable_config_pages, bundle: site}"
 type TranslatableConfigPagesSite implements TranslatableConfigPages & Entity & EntityLinkable & EntityTranslatable {
   "{field: field_notice} "
   fieldNoticeRawField: FieldItemListEntityReferenceRevisions
@@ -6485,13 +6485,22 @@ type ParagraphsEditMutationState {
     afterUuid: String
   ): ParagraphsBlokkliMutationResult
 
-  "Duplicates multiple paragraphs."
+  "Duplicates multiple paragraphs, in place or into another field."
   duplicate_multiple(
     "The UUIDs of the paragraphs being duplicated."
     uuids: [String]!
 
     "The UUID of the paragraph after which to duplicate this one."
     afterUuid: String
+
+    "The entity type of the target host."
+    hostType: String
+
+    "The UUID of the target host."
+    hostUuid: String
+
+    "The field name of the target host."
+    hostFieldName: String
   ): ParagraphsBlokkliMutationResult
 
   "Handles file upload, creating a media entity and adding a matching paragraph."

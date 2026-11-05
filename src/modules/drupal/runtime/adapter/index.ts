@@ -882,6 +882,9 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           ...ctx.value,
           uuids: e.uuids,
           afterUuid: e.preceedingUuid,
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
         }).then(mapMutation)
       }
     }
