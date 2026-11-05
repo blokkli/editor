@@ -118,7 +118,7 @@
     "drupal:schema": "sandbox/drupal/vendor/bin/drush cr && sandbox/drupal/vendor/bin/drush blokkli-playground:schema \"$PWD/build/drupal-schema.graphql\"",
     "sandbox:block-images": "bun scripts/block-images/index.ts",
     "sandbox:build": "bun run sandbox:prepare && nuxi build sandbox/frontend && nuxi build sandbox/control",
-    "sandbox:prepare": "bun run changelog && bun run styles:build && PLAYGROUND_MODULE_BUILD=true nuxt-module-build prepare && nuxi prepare sandbox/frontend --envName development && nuxi prepare sandbox/control --envName development",
+    "sandbox:prepare": "bun run changelog && bun run styles:build && PLAYGROUND_MODULE_BUILD=true nuxt-module-build prepare && NODE_ENV=development nuxi prepare sandbox/frontend --envName development && NODE_ENV=development nuxi prepare sandbox/control --envName development",
     "styles:build": "postcss ./css/index.css -o ./src/runtime/editor/css/output.css",
     "styles:watch": "postcss ./css/index.css -o ./src/runtime/editor/css/output.css --watch",
     "dev:build": "bun run changelog && bun run dev:prepare && nuxi generate playground",

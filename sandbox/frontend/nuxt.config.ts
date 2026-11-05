@@ -38,7 +38,9 @@ if (e2eBuild && process.env.IS_DDEV_HOSTED === 'true') {
 }
 const testSeams = process.env.NODE_ENV !== 'production' || e2eBuild
 
-// The dev server, as opposed to a build.
+// The dev server, as opposed to a build. `nuxi prepare` counts as a build
+// unless NODE_ENV says otherwise: `sandbox:prepare` sets it to development, so
+// that the .nuxt folder the typecheck reads has what the dev server has.
 const devServer = process.env.NODE_ENV !== 'production'
 
 // The Content-Security-Policy: the strictest that the site and the editor work

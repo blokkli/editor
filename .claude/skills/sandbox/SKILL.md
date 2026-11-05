@@ -639,11 +639,13 @@ The same ddev project runs on a server, for internal use (the hosted instance).
   `bun run sandbox:build` builds both (about 20 s). It first runs
   `sandbox:prepare`, for a fresh checkout: the gitignored `output.css` and
   `changelog.json`, and the `.nuxt` folders that the `tsconfig.json` files
-  reference (the build fails without them, though it builds elsewhere). A
-  production build has its own build directory (`$production.buildDir`, under
-  `node_modules/.cache`), so it can run next to the dev servers; `nuxi build`
-  empties its build directory. To try a build locally, start it on a spare port
-  in the container
+  reference (the build fails without them, though it builds elsewhere). It
+  prepares them with `NODE_ENV=development`, as the dev servers have them:
+  `nuxi prepare` otherwise counts as a build, which ignores the dev-only page of
+  the block pictures, and GitHub's typecheck fails on it. A production build has
+  its own build directory (`$production.buildDir`, under `node_modules/.cache`),
+  so it can run next to the dev servers; `nuxi build` empties its build
+  directory. To try a build locally, start it on a spare port in the container
   (`NITRO_HOST=127.0.0.1 NITRO_PORT=3010 node sandbox/frontend/.output/server/index.mjs`)
   and ask it with curl and the `X-Forwarded-*` headers that nginx sends.
 - **What else changes when hosted:** settings.php throws without
