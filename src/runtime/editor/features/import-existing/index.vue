@@ -46,7 +46,7 @@ const { adapter, settings } = defineBlokkliFeature({
   },
 })
 
-const { ui, state, $t, types, context } = useBlokkli()
+const { ui, state, $t, types, context, permissions } = useBlokkli()
 
 const isEmpty = computed(
   () => !state.mutatedFields.value.find((v) => v.list?.length),
@@ -54,11 +54,23 @@ const isEmpty = computed(
 
 const showModal = useDialog('import-existing', 'center')
 
+// The fields of the page that can take blocks.
 const fields = computed<FieldConfig[]>(() =>
-  types.fieldConfig.forEntityTypeAndBundle(
-    context.value.entityType,
-    context.value.entityBundle,
-  ),
+  types.fieldConfig
+    .forEntityTypeAndBundle(
+      context.value.entityType,
+      context.value.entityBundle,
+    )
+    .filter((field) =>
+      permissions.canChangeField(
+        {
+          type: context.value.entityType,
+          bundle: context.value.entityBundle,
+          uuid: context.value.entityUuid,
+        },
+        field.name,
+      ),
+    ),
 )
 
 function onSubmit(sourceUuid: string, sourceFields: string[]) {

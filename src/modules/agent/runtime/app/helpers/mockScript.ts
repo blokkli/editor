@@ -42,13 +42,14 @@ export function readMockRouting():
 /**
  * Extract the script's optional `stream` entry — what the stream endpoint
  * replays for every field edit stream (`delegate_text_rewrite`) instead of
- * calling the configured LLM. A script without the entry streams no edits.
+ * calling the configured LLM, and the tokens it reports. A script without the
+ * entry streams no edits.
  */
-export function readMockStream(): string | undefined {
+export function readMockStream(): Omit<MockStreamEntry, 'type'> | undefined {
   const script = readMockScript()
   if (!script) return undefined
   const entry = script.find((e): e is MockStreamEntry => e.type === 'stream')
-  return entry?.content ?? ''
+  return { content: entry?.content ?? '', usage: entry?.usage }
 }
 
 /**

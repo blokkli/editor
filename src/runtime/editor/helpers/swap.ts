@@ -8,7 +8,8 @@ type SwapValidationContext = {
     fieldName: string,
   ) => FieldConfig | undefined
   checkBlockBundlePermission: (bundle: string, operation: 'edit') => boolean
-  blockHasRestrictedAncestor: (uuid: string) => boolean
+  canChangeBlockField: (uuid: string) => boolean
+  isChildOf: (childUuid: string, parentUuid: string) => boolean
 }
 
 /**
@@ -24,6 +25,15 @@ export function getSwapDisabledReason(
     return 'Cannot swap a block with itself.'
   }
 
+  // Each block goes to the place of the other one: a block nested in the
+  // other would take it into its own field.
+  if (
+    ctx.isChildOf(blockA.uuid, blockB.uuid) ||
+    ctx.isChildOf(blockB.uuid, blockA.uuid)
+  ) {
+    return 'Cannot swap a block with a block nested in it.'
+  }
+
   if (
     !ctx.checkBlockBundlePermission(blockA.bundle, 'edit') ||
     !ctx.checkBlockBundlePermission(blockB.bundle, 'edit')
@@ -31,11 +41,12 @@ export function getSwapDisabledReason(
     return 'You do not have permission to edit one or both blocks.'
   }
 
+  // Each field loses a block and takes another one.
   if (
-    ctx.blockHasRestrictedAncestor(blockA.uuid) ||
-    ctx.blockHasRestrictedAncestor(blockB.uuid)
+    !ctx.canChangeBlockField(blockA.uuid) ||
+    !ctx.canChangeBlockField(blockB.uuid)
   ) {
-    return 'One or both blocks are inside a parent with restricted editing permissions.'
+    return 'One or both blocks are in a field that can not change: it is read-only, or inside a parent with restricted editing permissions.'
   }
 
   const fieldConfigA = ctx.getFieldConfig(

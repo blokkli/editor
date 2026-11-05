@@ -194,7 +194,9 @@ options in `mutatedOptions`).
 [type.Validation[]] (optional)
 
 An array of validation violations for the current edit state. Each violation has
-a `message` and optional `code`, `propertyPath`, `entityType` and `entityUuid`.
+a `message` and optional `code`, `propertyPath`, `entityType`, `entityUuid` and
+`langcode` (the language of the entity's translation that has the invalid
+value).
 
 ## publishOptions
 
@@ -220,6 +222,9 @@ title and status.
   "bundleLabel": "Landing Page" // Human-readable label of the entity bundle
 }
 ```
+
+`status` is the status of the language being edited. The status of each language
+goes into [translationState.translations](#translationstate-translations).
 
 ## mutatedEntity
 
@@ -280,6 +285,19 @@ and language selector are disabled.
 The source language of the host entity. If the current language does not match
 the source language, blökkli assumes the user is editing the translation, which
 disables most of the features (so only blocks can be translated).
+
+## translationState.isStatusTranslatable
+
+`boolean|null` (optional)
+
+Whether each translation has a publish status of its own:
+
+- `true`: the language switcher shows each translation's status, and the publish
+  dialog lists the translations, so that the user ticks the ones to publish.
+- `false`: every language shares one status. The language switcher shows none,
+  and the publish dialog's section "Languages" has one row: "All languages".
+- `null` or missing: the backend doesn't say. The publish dialog has no section
+  "Languages", and publishing an unpublished page publishes its source language.
 
 ## translationState.availableLanguages
 
@@ -345,6 +363,20 @@ can't be selected.
 
 `editUrl` is optional in the type, but the Drupal adapter drops an entry that
 has neither `url` nor `editUrl`.
+
+`status` is whether the translation is published. While each translation has a
+status of its own
+([isStatusTranslatable](#translationstate-isstatustranslatable) is `true`), the
+language switcher shows it for each language, and the publish dialog lists the
+existing translations with it.
+
+`canChangeStatus` (optional) is whether the user may change the translation's
+status, which publishing an unpublished translation does. When it's `false`, the
+publish dialog doesn't let the user tick the translation, or publish the page
+when it's the source language's translation and every language shares one
+status. When it's missing, the dialog assumes the user may. The Drupal adapter
+sets it from the access to edit the published field: Drupal's node form also
+needs it to change the status.
 
 ## Edit mode
 
@@ -465,6 +497,7 @@ This is an example of a full edit state object that should be returned by
 
   "translationState": {
     "isTranslatable": true,
+    "isStatusTranslatable": true,
     "sourceLanguage": "en",
     "availableLanguages": [
       {

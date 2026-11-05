@@ -54,7 +54,7 @@ language.
 | Path                                            | What                                                                                                                                        |
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `.ddev/config.yaml`                             | Hostnames, the two daemons, SQLite (no db container), `composer install` on start                                                           |
-| `.ddev/nginx_full/`                             | `nginx-site.conf` (all routing), `proxy.inc`, `headers.inc` (CSP), the 502 and "unknown sandbox" pages                                      |
+| `.ddev/nginx_full/`                             | `nginx-site.conf` (all routing), `proxy.inc`, `headers.inc` (the CSP of responses without one), the 502 and "unknown sandbox" pages         |
 | `.ddev/commands/web/{bake,bake-e2e,reset,nuxt}` | Container commands                                                                                                                          |
 | `.ddev/commands/host/check-routes`              | The routing test table (also read by a unit test)                                                                                           |
 | `.ddev/commands/host/deploy`                    | `ddev deploy`, on the hosted instance only (see "Hosting")                                                                                  |
@@ -81,7 +81,12 @@ Traefik sends every hostname to the web container's nginx on port 80.
     …), with an optional `/en|/de|/fr` prefix and anchored to a whole segment;
     the entity forms (`/node/add`,
     `/node/<n>/edit|delete|revisions|translations|usage`, the same for
-    `taxonomy/term`); `*.php` and `/.well-known/`.
+    `taxonomy/term`); the front controllers `/index.php` (not `/index.php/…`:
+    Drupal would route the path after it) and `/update.php`, and
+    `/.well-known/`.
+  - The internal server runs PHP only for Drupal's front controllers (core's
+    come with `/core`), and serves none of Drupal's source files (`.yml`,
+    `.twig`, `.module`, `composer.json`, …).
   - Everything else goes to the frontend on `:3000`: pages, `/_nuxt/` (HMR) and
     `/api/blokkli/agent` (the agent's WebSocket, 1-day timeouts).
   - Canonical entity pages (`/node/1`) are Nuxt's. An alias that starts with one
@@ -94,8 +99,39 @@ Traefik sends every hostname to the web container's nginx on port 80.
   `sandbox-unknown.html` (links to the claim page). A sandbox's public files are
   served only on its own host.
 - **Every response** has `X-Blokkli-Upstream` (`nuxt`, `drupal`, `control`,
-  `nginx`, `sandbox-unknown`) and the CSP from `headers.inc`
-  (`connect-src 'self'`, which covers the WebSockets).
+  `nginx`, `sandbox-unknown`) and a Content-Security-Policy:
+  - the frontend's comes from nuxt-security, in strict mode
+    (`sandbox/frontend/nuxt.config.ts`): a nonce per response,
+    `'strict-dynamic'`, no `'unsafe-inline'` or `'unsafe-eval'`. The dev server
+    allows inline styles, for Nuxt devtools and the error overlay; a build
+    doesn't. A build enforces Trusted Types
+    (`trusted-types vue dompurify blokkli default`): the editor's markup comes
+    with its policy, the dependencies' through the page's `default` policy
+    (`app/plugins/trustedTypes.client.ts`, DOMPurify). Builds also send
+    `Cross-Origin-Embedder-Policy: require-corp`, so the Drupal pages the editor
+    frames send it too (`sandbox/drupal/services.yml`,
+    `paragraphs_blokkli.frame_embedder_policy`);
+  - Drupal's comes from the `csp` module
+    (`sandbox/drupal/config/sync/csp.settings.yml`): `script-src 'self'`,
+    `style-src 'self'` (the module adds `'unsafe-inline'` to pages with CKEditor
+    5), `img-src 'self' data:` (Claro's and Gin's icons). No Trusted Types:
+    core's jQuery and htmx, CKEditor 5 and Gin pass strings to their sinks.
+    `blokkli_playground` keeps htmx from adding its indicator styles
+    (`Hook/HtmxHooks.php`). A few admin pages lose a style: Claro's sticky bar
+    on listings, environment_indicator's toolbar colours;
+  - every other response gets nginx's from `headers.inc`, only if the upstream
+    sent none: the control app's, nginx's own pages and the files it serves.
+  - nuxt-security's XSS validator is off for the editor's routes (it refuses
+    markup), its rate limiter off everywhere (behind nginx every request comes
+    from 127.0.0.1). `xss` is pinned to 1.0.15 (`overrides` in the root
+    `package.json`): 1.0.16 crashes the validator (nuxt-security#767).
+- **Mutations only as JSON:** nginx answers 415 to a request to
+  `/api/graphql_middleware/mutation/…` whose content type isn't
+  `application/json`. The middleware would read a `text/plain` or form body too,
+  and run it with the session cookie: the hosts are same-site to each other, so
+  `SameSite=Lax` doesn't stop a sibling's page from posting one. A JSON POST
+  from another origin needs a CORS preflight, which nothing answers. A client
+  that posts a mutation must send JSON (`useGraphqlMutation()` does).
 - **Adding a Drupal path** means three places: the regex in `nginx-site.conf`,
   `sandbox/frontend/app/utils/drupalPath.ts` (`SiteLink` uses it to leave the
   SPA), and the table in `check-routes`. `test/unit/drupal-path.test.ts`
@@ -124,6 +160,13 @@ Traefik sends every hostname to the web container's nginx on port 80.
 - **Languages:** en (Drupal's default), de, fr, each with a path prefix. The
   GraphQL request's language comes first in negotiation
   (`language-graphql-operation`), then the URL. Time zone Europe/Zurich.
+- **Language order:** the content's original language first, then the config's
+  weights (en, de, fr). The seed stores its `--source` in the state, which the
+  templates and sandboxes copy, and `SourceLanguageOverride`
+  (`blokkli_playground`) gives that language a lower weight. An override is
+  never exported, so `drush cex` stays clean whatever the bake's language. The
+  schema dump turns it off (below), so `build/drupal-schema.graphql` is the same
+  whatever the bake's language.
 - **Theme:** Gin for everything Drupal renders (admin and the login). The
   frontend shows Drupal's toolbar and local tasks through vuepal.
 - **Hosts** (`paragraphs_blokkli.settings.yml`, `enabled_types`): the node types
@@ -143,19 +186,21 @@ Traefik sends every hostname to the web container's nginx on port 80.
 - **Roles and test users** (`content/users.yml`, no passwords:
   `ddev drush uli --name="Anna Keller"`; `ddev drush uli` is the admin, uid 1):
 
-  | User         | Role                                 | Can                                                                        |
-  | ------------ | ------------------------------------ | -------------------------------------------------------------------------- |
-  | Anna Keller  | `content_editor` ("Editor")          | everything editorial, any media, templates, library, scheduling, the agent |
-  | Marc Brunner | `reviewer` ("Head of department")    | view, comment, review; no editing                                          |
-  | Élodie Favre | `translator` ("Translator (French)") | translate, edit translations; can't take over an edit state                |
-  | Jonas Weber  | `restricted_editor`                  | edit, but not charts or others' media, and can't add or delete sections    |
+  | User         | Role                                 | Can                                                                                                  |
+  | ------------ | ------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+  | Anna Keller  | `content_editor` ("Editor")          | everything editorial, any media, templates, library, scheduling, the agent                           |
+  | Marc Brunner | `reviewer` ("Head of department")    | view, comment, review; no editing                                                                    |
+  | Élodie Favre | `translator` ("Translator (French)") | translate, edit translations; can't take over an edit state                                          |
+  | Jonas Weber  | `restricted_editor`                  | edit, but not charts or others' media, can't add or delete sections, nor publish what is unpublished |
 
   All four have `view any unpublished content` (contrib `view_unpublished`),
   `use paragraphs blokkli agent` and `view any blokkli entity label` (the list
   of all pages: "Switch page" and "Import from an existing page"). The two
   editor roles may export and import paragraphs (`transfer blokkli paragraphs`).
-  Élodie can't take over an edit state: it covers every language, so she would
-  take over the editors' unfinished changes.
+  Anna and Élodie may publish what is unpublished
+  (`administer node published status`), Jonas only saves it. Élodie can't take
+  over an edit state: it covers every language, so she would take over the
+  editors' unfinished changes.
 
 - **Access:** the anonymous role only has `view media`, so a site is private
   ("This sandbox is private", `app/error.vue`). `blokkli_playground`'s
@@ -218,6 +263,10 @@ Traefik sends every hostname to the web container's nginx on port 80.
   warm-up, then `VACUUM INTO <dir>/db.sqlite`, switched to WAL mode: otherwise
   the first parallel requests to a fresh copy race to switch it, and the losers
   fail with "database is locked").
+- Drush `blokkli-playground:schema <file>`, which `bun run drupal:schema` runs:
+  the GraphQL schema as a site baked in English has it. It turns the language
+  order's override off and builds the schema anew: the cached one may come from
+  a request with the override.
 - The access policy above; class-based hooks (`src/Hook`): previews of
   unpublished entities, menu access, an event's `unpublish_on` from its date.
 - Editor plugins: conversions (link → text, text ↔ title) and the transform
@@ -256,11 +305,18 @@ Traefik sends every hostname to the web container's nginx on port 80.
   -100).
 - Moves the config pages' canonical route to `/blokkli/config-page/{id}`.
 - `tests/modules/blokkli_playground_test`, only in E2E sandboxes (`bake-e2e`
-  installs it): allows the widget on pages, fakes YouTube and Vimeo, and adds
-  the roles `comment_reader` (a reviewer who may read comments but not post
-  them) and `comment_administrator` (one who administers comments). Neither has
-  `view any blokkli entity label`: they are the roles without the list of all
-  pages.
+  installs it): allows the widget on pages, fakes YouTube and Vimeo, shares the
+  status and the scheduler's dates of news between their translations, makes a
+  teaser's link and media and a news item's hero image translatable (the editor
+  then asks whether a drop changes them in all languages), maps documents to the
+  widget's links (`field_link_items`), leaves a detail page's related topics
+  (`field_related`) out of the fields that blökkli manages ("Restrict paragraph
+  fields"; the editor shows them as they're stored), validates a page's
+  paragraphs fields too (`validation_types`; the site validates only
+  paragraphs), and adds the roles `comment_reader` (a reviewer who may read
+  comments but not post them) and `comment_administrator` (one who administers
+  comments). Neither has `view any blokkli entity label`: they are the roles
+  without the list of all pages.
 
 ## Sandboxes
 
@@ -314,8 +370,8 @@ sandbox/drupal/web/sites/default/files/sandboxes/<id>/   its public files
   definitions.** After changing services, routes or a plugin's attribute (e.g. a
   mutation's `version`, which new mutations are stored with): `ddev drush cr`
   (dev site), the same with `--uri` for a sandbox, and a bake so that new
-  sandboxes get it. The E2E template's fingerprint doesn't cover the module's
-  code: run `ddev bake-e2e` after such a change.
+  sandboxes get it. The E2E template's fingerprint covers the plugins, so the
+  next E2E run bakes it.
 - **Logins** are `<payload>.<signature>`: base64url JSON
   `{sandbox, user, expires}` and base64url HMAC-SHA256 with
   `NUXT_SANDBOX_LOGIN_SECRET`. The control app makes them
@@ -369,8 +425,9 @@ host, with ddev running: `bun run test:e2e-drupal` or
   `sandbox/drupal/content`. `ddev bake-e2e` installs into a scratch sandbox
   (`e2ebake`), so the dev site stays as it is. vitest's global setup bakes when
   its fingerprint changes: config, the seed code, the fixtures, the fakes,
-  `bake-e2e`, the dumped GraphQL schema (the template caches it), and the date
-  (seeded dates are relative to the bake). About 16 s.
+  `bake-e2e`, the dumped GraphQL schema and the plugins of the module and the
+  custom modules (the template caches the schema and the plugin definitions),
+  and the date (seeded dates are relative to the bake). About 16 s.
 - **One sandbox per vitest worker:** `e2e1`, `e2e2`, … (`VITEST_POOL_ID`).
   `resetSandbox()` makes it a fresh copy of the template in about 20 ms: plain
   file copies on the host, the database last. Each spec file resets in
@@ -401,9 +458,10 @@ host, with ddev running: `bun run test:e2e-drupal` or
   editor, all with an English UI), config pages, menus and nodes. A paragraph a
   spec refers to gets a `key`; its UUID is `seedUuid('paragraph', key)`. Content
   the site doesn't allow is marked `invalid: true` (see the content README):
-  `nodes/broken.yml` has a title in a gallery. Users and nodes marked
-  `deleted: true` are deleted after seeding: Nora Huber's comment has no author,
-  the notification about `nodes/removed.yml` no page.
+  `nodes/broken.yml` has a title in a gallery, `nodes/misplaced.yml` a call to
+  action on a page. Users and nodes marked `deleted: true` are deleted after
+  seeding: Nora Huber's comment has no author, the notification about
+  `nodes/removed.yml` no page.
 - **They run against the dev server** (`ddev nuxt`) locally, and against the E2E
   build on GitHub (see Checks): both have the agent's mock and the Test Cases
   sidebar. They typecheck with the frontend: `typecheck:sandbox-frontend` covers
@@ -452,8 +510,9 @@ host, with ddev running: `bun run test:e2e-drupal` or
   `min(created + 24 h, last use + 2 h)` (premium: created + 21 days) and marks
   rows of sandboxes that are gone. Rows are never removed.
 - It reuses the frontend's stylesheet (its `main.css` imports the frontend's and
-  adds the `Logo` folder as a Tailwind `@source`), the `Logo`, and
-  `shared/utils/{languages,welcome}.ts`, by relative path.
+  adds the `Logo` folder as a Tailwind `@source`), the `Logo`,
+  `shared/utils/{languages,welcome}.ts` and the `public` folder (the favicon,
+  `dir.public`), by relative path.
 
 ## The frontend (`sandbox/frontend/`)
 
@@ -479,12 +538,17 @@ host, with ddev running: `bun run test:e2e-drupal` or
     Nuxt-only: its texts are in `app/utils/welcomeTexts.ts`, its paths also in
     `shared/utils/welcome.ts` (the control app's redirect target).
   - `/<lang>/design-system` documents the design system, with mockups.
-  - `blokkli/template/[uuid]` and `blokkli/library-item/[uuid]` edit templates
-    and library items; `embed/fee-calculator` is embedded in a page.
+  - `blokkli/template/[id]` and `blokkli/library-item/[id]` edit templates and
+    library items, at their canonical URLs; `embed/fee-calculator` is embedded
+    in a page.
   - `layouts/drupal.vue`: the toolbar (vuepal), the local tasks and the
     "Sandbox" button (`SandboxInfo`, shown when the `sandbox` query isn't null),
     the header (`ConfigPageSite`) and footer (`ConfigPageFooter`), both editable
-    config pages, from the `layout` query.
+    config pages, from the `layout` query. Its title template appends the site
+    name (the site config page's); the pages set their title (the entity's
+    label) and description (its lead), the front page only the description.
+  - `public/favicon.ico`: the coat of arms (`Logo`), 16 and 32 px drawn on whole
+    pixels. The control app serves it too.
 - **Hosts** (`components/Node/*`): each wraps its fields in `BlokkliProvider`.
   The detail page (`Node/Page`) has the sidebar layout: main field, the office's
   contact, related topics (`field-list-type="related"`), and an aside with the
@@ -500,6 +564,19 @@ host, with ddev running: `bun run test:e2e-drupal` or
   (`Paragraph/BlokkliFragment/*`) must be allowed by name on the field
   (`allowed-fragments`): `today` and `quick_links` on the front page,
   `office_pages` on offices.
+- **Pictures of the blocks** (the add list's `image.png` next to each
+  paragraph's component, 600 × 400, shown at 300 × 200):
+  `bun run sandbox:block-images [bundle…]` on the host takes them, in a sandbox
+  of its own from the German template. Each is a block of the page "Blöcke"
+  (`content/nodes/blocks.yml`, keys `blocks-<type>`; the banner is the site's
+  notice, `notice-banner`), alone on `pages/block-image/[uuid]` (dev server
+  only, Nuxt's `ignore`). Per type, `scripts/block-images/index.ts` sets the
+  window's width (the layout and its media queries), how much the picture shows
+  across (300 is the block's own size; a part of a large block is fine) and
+  where it starts. After a change to a block's look or its content on that page:
+  bake, run it, commit the pictures. A new picture reaches the editor after
+  `ddev nuxt restart`. None for video (the content has no remote video),
+  `from_library` and fragments (their components are blökkli's).
 - **Containers:** `container-content` and `container-wide` (`main.css`) never
   depend on ancestors. A block has its own container only when
   `useHasContainer()` says so: not nested, in the `default` field list, not on a
@@ -517,8 +594,7 @@ host, with ddev running: `bun run test:e2e-drupal` or
   prompt (nginx: 502): fix it, then `ddev nuxt restart`.
 - **The schema loop:** change the module (submodule) → `ddev drush cr` →
   `bun run drupal:schema` (container; dumps `build/drupal-schema.graphql`, the
-  daemon restarts) → `bun run dev:prepare` for the root types (revert its change
-  to `playground/app/options-schema.json`).
+  daemon restarts) → `bun run dev:prepare` for the root types.
 - **UI strings:** `$texts('key', 'English default')` (nuxt-easy-texts), stored
   in Drupal's texts module, seeded from `content/texts.csv`. Pages outside
   Drupal's reach (welcome, the control app) keep their texts in code.
@@ -565,8 +641,6 @@ that with settings management, which is off).
 ## Hosting
 
 The same ddev project runs on a server, for internal use (the hosted instance).
-What the server needs besides the repository (VM, firewall, certificates,
-outgoing allowlist, monitoring): `plans/drupal-setup/12-hosted-deploy.md`.
 
 - **The switch** is `.ddev/config.local.yaml` (gitignored) on the server:
   `IS_DDEV_HOSTED=true` in `web_environment`, and `project_tld: <domain>`. The
@@ -586,11 +660,13 @@ outgoing allowlist, monitoring): `plans/drupal-setup/12-hosted-deploy.md`.
   `bun run sandbox:build` builds both (about 20 s). It first runs
   `sandbox:prepare`, for a fresh checkout: the gitignored `output.css` and
   `changelog.json`, and the `.nuxt` folders that the `tsconfig.json` files
-  reference (the build fails without them, though it builds elsewhere). A
-  production build has its own build directory (`$production.buildDir`, under
-  `node_modules/.cache`), so it can run next to the dev servers; `nuxi build`
-  empties its build directory. To try a build locally, start it on a spare port
-  in the container
+  reference (the build fails without them, though it builds elsewhere). It
+  prepares them with `NODE_ENV=development`, as the dev servers have them:
+  `nuxi prepare` otherwise counts as a build, which ignores the dev-only page of
+  the block pictures, and GitHub's typecheck fails on it. A production build has
+  its own build directory (`$production.buildDir`, under `node_modules/.cache`),
+  so it can run next to the dev servers; `nuxi build` empties its build
+  directory. To try a build locally, start it on a spare port in the container
   (`NITRO_HOST=127.0.0.1 NITRO_PORT=3010 node sandbox/frontend/.output/server/index.mjs`)
   and ask it with curl and the `X-Forwarded-*` headers that nginx sends.
 - **What else changes when hosted:** settings.php throws without

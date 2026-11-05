@@ -27,6 +27,9 @@ import { nextMutation } from '../../support/mutations'
 /** A text, added to the page's paragraphs field. */
 const TEXT = { bundle: 'text', fieldName: 'field_paragraphs' }
 
+/** The front page's call to action, with four links. */
+const CALL_TO_ACTION = seedUuid('paragraph', 'home-call-to-action')
+
 /** A link of the front page's call to action, whose field holds four at most. */
 const FULL_FIELD_LINK = seedUuid('paragraph', 'home-link')
 
@@ -44,9 +47,10 @@ const STATISTICS_TEXT = seedUuid('paragraph', 'statistics-text')
  *
  * We exercise: the happy path (click + Cmd/Ctrl+D shortcut), a block in a full
  * field (a link of the front page's call to action, which holds four at most),
- * the `add` permission (Jonas, a `restricted_editor`, may not add charts), and
+ * the `add` permission (Jonas, a `restricted_editor`, may not add charts),
  * both "one block blocks the whole selection" cases (cardinality +
- * permission).
+ * permission), and a selection of a block with a block nested in it: the
+ * nested one is copied with the other, so its full field doesn't count.
  *
  * Assertions are locale-independent: `blockCount`, `selectedUuids`, and the
  * native `disabled` state via `itemActionDisabled` — never the tooltip copy.
@@ -54,10 +58,11 @@ const STATISTICS_TEXT = seedUuid('paragraph', 'statistics-text')
 
 /**
  * Page lifecycle: two editor pages opened in parallel — Anna on the front page
- * (`defaultPage`) for tests 1/2/3/5 and Jonas on the page "Statistics"
- * (`denyPage`) for tests 4/6. Each on its own page: the edit state belongs to
+ * (`defaultPage`) for tests 1/2/3/4/6 and Jonas on the page "Statistics"
+ * (`denyPage`) for tests 5/7. Each on its own page: the edit state belongs to
  * whoever opens it first, anyone else gets a read-only editor. No test mutates
- * the full call to action or the chart. `afterEach` deselects both pages.
+ * the full call to action or the chart: test 4 adds a copy of the call to
+ * action. `afterEach` deselects both pages.
  */
 describe('The duplicate feature', async () => {
   const sandbox = workerSandbox()
@@ -130,6 +135,35 @@ describe('The duplicate feature', async () => {
     await itemAction(defaultPage, 'duplicate').click({ force: true })
     await defaultPage.waitForTimeout(300)
     expect(await blockCount(defaultPage)).toBe(countBefore)
+  })
+
+  test('a block with a block nested in it gets one copy, with copies of the nested blocks', async () => {
+    const countBefore = await blockCount(defaultPage)
+
+    // The link gets no copy of its own: its copy comes with the call to
+    // action's. So its full field doesn't disable the action.
+    await selectBlocks(defaultPage, [CALL_TO_ACTION, FULL_FIELD_LINK])
+    await expect
+      .poll(() => itemActionDisabled(defaultPage, 'duplicate'))
+      .toBe(false)
+
+    const duplicated = nextMutation(
+      defaultPage,
+      'pbDuplicateMultipleParagraphs',
+    )
+    await clickItemAction(defaultPage, 'duplicate')
+    // Both are sent: Drupal leaves out the link.
+    expect([...(await duplicated).uuids].sort()).toEqual(
+      [CALL_TO_ACTION, FULL_FIELD_LINK].sort(),
+    )
+
+    // The call to action and its four links.
+    await expect.poll(() => blockCount(defaultPage)).toBe(countBefore + 5)
+    // Only the copy of the call to action becomes the selection.
+    await expect
+      .poll(async () => (await selectedUuids(defaultPage)).length)
+      .toBe(1)
+    expect((await selectedUuids(defaultPage))[0]).not.toBe(CALL_TO_ACTION)
   })
 
   test('without add permission, duplicate is disabled', async () => {

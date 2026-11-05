@@ -1,5 +1,6 @@
 import type { BlokkliFieldElement } from '#blokkli/editor/types/field'
 import type { DraggableItem } from '#blokkli/editor/types/draggable'
+import type { StateProvider } from '#blokkli/editor/providers/state'
 
 export type Orientation = 'horizontal' | 'vertical'
 
@@ -87,6 +88,48 @@ export function getDraggingBundleGroups(items: DraggableItem[]): string[][] {
       ? item.itemBundleGroups
       : [],
   )
+}
+
+/**
+ * How many levels the dragged blocks take: one, and one more for every level
+ * of blocks nested in them. New items take one level.
+ *
+ * @param uuids - The UUIDs of the dragged blocks.
+ */
+export function getDraggingDepth(
+  uuids: string[],
+  state: Pick<StateProvider, 'getAllUuids' | 'getNestingLevel' | 'isChildOf'>,
+): number {
+  let depth = 1
+  if (!uuids.length) {
+    return depth
+  }
+  const all = state.getAllUuids()
+  for (const uuid of uuids) {
+    const level = state.getNestingLevel(uuid)
+    for (const other of all) {
+      if (state.isChildOf(other, uuid)) {
+        depth = Math.max(depth, state.getNestingLevel(other) - level + 1)
+      }
+    }
+  }
+  return depth
+}
+
+/**
+ * Whether blocks fit into a field without being nested deeper than the
+ * adapter allows.
+ *
+ * @param fieldLevel - The nesting level of the field: 0 for a field of the host entity.
+ * @param depth - How many levels the blocks take.
+ * @param maxLevel - The deepest level from the adapter, where the blocks in a field of the host entity are on level 1. Undefined for no limit.
+ */
+export function fitsNestingLimit(
+  fieldLevel: number,
+  depth: number,
+  maxLevel: number | undefined,
+): boolean {
+  return maxLevel === undefined || fieldLevel + depth <= maxLevel
 }
 
 export function determineCanAddChildren(

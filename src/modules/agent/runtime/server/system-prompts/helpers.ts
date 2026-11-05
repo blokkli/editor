@@ -62,8 +62,9 @@ export function formatItems(
  * Format a content field as a prompt line.
  */
 export function formatContentField(field: BlockBundleContentField): string {
+  const readOnly = field.readOnly ? ' (read-only)' : ''
   if (field.type === 'reference' || field.type === 'link') {
-    return `- ${field.name} (${field.type}): ${field.allowed.map((a) => `${a.type} [${a.bundles.join(', ')}]`).join(', ')}`
+    return `- ${field.name} (${field.type})${readOnly}: ${field.allowed.map((a) => `${a.type} [${a.bundles.join(', ')}]`).join(', ')}`
   }
-  return `- ${field.name} (${field.type})`
+  return `- ${field.name} (${field.type})${readOnly}`
 }

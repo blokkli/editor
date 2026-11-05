@@ -2,22 +2,31 @@ import type { Coord } from '#blokkli/editor/types/geometry'
 
 /**
  * Recursively clone an element and inline its styles.
+ *
+ * With `keepAttributes`, the copy keeps its attributes, so that its
+ * pseudo-elements still get their styles (as long as those don't depend on its
+ * ancestors), including those that read an attribute (`content: attr(…)`).
  */
-export function cloneWithInlineStyles(node: Element): Element {
+export function cloneWithInlineStyles(
+  node: Element,
+  options: { keepAttributes?: boolean } = {},
+): Element {
   // Clone the element.
   const clone = node.cloneNode(false) as Element
 
-  // Remove attributes.
-  clone.removeAttribute('class')
-  clone.removeAttribute('id')
-  clone.removeAttribute('name')
-  clone.removeAttribute('for')
-  clone.removeAttribute('style')
+  if (!options.keepAttributes) {
+    // Remove attributes.
+    clone.removeAttribute('class')
+    clone.removeAttribute('id')
+    clone.removeAttribute('name')
+    clone.removeAttribute('for')
+    clone.removeAttribute('style')
 
-  // Remove all data attributes.
-  if (clone instanceof HTMLElement || clone instanceof SVGElement) {
-    Object.keys(clone.dataset).forEach((key) => {
-      clone.dataset[key] = ''
+    // Remove all data attributes.
+    clone.getAttributeNames().forEach((name) => {
+      if (name.startsWith('data-')) {
+        clone.removeAttribute(name)
+      }
     })
   }
 
@@ -34,7 +43,7 @@ export function cloneWithInlineStyles(node: Element): Element {
   Array.from(node.childNodes).forEach((child) => {
     if (child.nodeType === Node.ELEMENT_NODE) {
       // Clone child elements.
-      clone.appendChild(cloneWithInlineStyles(child as Element))
+      clone.appendChild(cloneWithInlineStyles(child as Element, options))
     } else if (child.nodeType === Node.TEXT_NODE) {
       // Directly append text nodes.
       clone.appendChild(child.cloneNode(true))
@@ -42,27 +51,6 @@ export function cloneWithInlineStyles(node: Element): Element {
   })
 
   return clone
-}
-
-export function cloneElementWithStyles(
-  element: Element,
-  isRoot?: boolean,
-): string {
-  // Create a deep clone of the element with inline styles
-  const clonedElement = cloneWithInlineStyles(element)
-  if (
-    isRoot &&
-    (clonedElement instanceof HTMLElement ||
-      clonedElement instanceof SVGElement)
-  ) {
-    clonedElement.style.opacity = '1'
-  }
-
-  // Create a temporary container to generate the outer HTML
-  const container = document.createElement('div')
-  container.appendChild(clonedElement)
-
-  return container.innerHTML
 }
 
 /**

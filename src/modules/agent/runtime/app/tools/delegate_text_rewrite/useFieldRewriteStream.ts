@@ -1,7 +1,6 @@
 import { useBlokkli, ref, reactive } from '#imports'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { ComponentParams } from './index'
-import type { UsageTurn } from '#blokkli/agent/shared/types'
 import { enableMock, routeStream } from '#blokkli-build/agent-client'
 import { readMockStream } from '#blokkli/agent/app/helpers/mockScript'
 import type { EntityContext } from '#blokkli/types'
@@ -68,7 +67,6 @@ export function useFieldRewriteStream(options: {
 
   const phase = ref<Phase>('streaming')
   const errorMessage = ref('')
-  const streamUsage = ref<UsageTurn>()
 
   // Readability retry configuration.
   const MAX_READABILITY_RETRIES = 10
@@ -316,21 +314,6 @@ export function useFieldRewriteStream(options: {
   }
 
   /**
-   * Accumulate usage from a streaming pass into the total.
-   */
-  function addUsage(usage: UsageTurn) {
-    if (!streamUsage.value) {
-      streamUsage.value = { ...usage }
-    } else {
-      streamUsage.value.inputTokens += usage.inputTokens
-      streamUsage.value.outputTokens += usage.outputTokens
-      streamUsage.value.cacheCreationInputTokens +=
-        usage.cacheCreationInputTokens
-      streamUsage.value.cacheReadInputTokens += usage.cacheReadInputTokens
-    }
-  }
-
-  /**
    * Find the nearest block-level child element within a field element that
    * contains the given text. Falls back to the field element itself.
    */
@@ -471,8 +454,10 @@ export function useFieldRewriteStream(options: {
           break
         }
         case 'done': {
+          // Counted when the pass ends, whether the texts are then applied,
+          // rejected or cancelled.
           if (parsed.usage) {
-            addUsage(parsed.usage)
+            context.reportUsage(parsed.usage)
           }
           break
         }
@@ -781,7 +766,6 @@ export function useFieldRewriteStream(options: {
     phase,
     errorMessage,
     streamingTitle,
-    streamUsage,
     fieldStates,
     findFieldState,
     findOverride,

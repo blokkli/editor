@@ -12,7 +12,11 @@ import { resolve, join, dirname } from 'node:path'
 import type { NuxtModule } from 'nuxt/schema'
 import { RuntimeDefinitionPlugin } from './build/unplugin/RuntimeDefinition'
 import { BlokkliEditingPlugin } from './build/unplugin/BlokkliEditing'
-import { BK_HIDDEN_GLOBALLY, BK_VISIBLE_LANGUAGES } from './global/constants'
+import {
+  BK_HIDDEN_GLOBALLY,
+  BK_VISIBLE_LANGUAGES,
+  BUILT_IN_OPTION_TEXTS,
+} from './global/constants'
 import type { ModuleOptions } from './build/types'
 import { IconCollector } from './build/Collector/Icons'
 import type { Collector, ModuleHooks } from './build/Collector'
@@ -44,15 +48,13 @@ export default defineNuxtModule<ModuleOptions>({
     globalOptions: {
       [BK_VISIBLE_LANGUAGES]: {
         type: 'checkboxes',
-        label: 'Visible languages',
-        description: 'Only show on specific languages.',
+        ...BUILT_IN_OPTION_TEXTS[BK_VISIBLE_LANGUAGES],
         options: {},
         default: [],
       },
       [BK_HIDDEN_GLOBALLY]: {
         type: 'checkbox',
-        label: 'Hide globally',
-        description: 'Always hides the block.',
+        ...BUILT_IN_OPTION_TEXTS[BK_HIDDEN_GLOBALLY],
         default: false,
       },
     },

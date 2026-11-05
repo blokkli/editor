@@ -1,0 +1,24 @@
+uuid: 78e68bd3-43fe-4256-9247-4e25e6ef15be
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_media_items
+    - media.type.document
+    - paragraphs.paragraphs_type.widget
+id: paragraph.widget.field_media_items
+field_name: field_media_items
+entity_type: paragraph
+bundle: widget
+label: Media
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      document: document
+field_type: entity_reference

@@ -1,7 +1,7 @@
 <template>
   <div class="bk-status-icon" :class="`bk-is-${status}`">
     <Icon v-if="icon" :name="icon" />
-    <span v-else class="bk-status-icon-bullet" v-html="bulletText" />
+    <span v-else class="bk-status-icon-bullet">{{ bulletText }}</span>
   </div>
 </template>
 

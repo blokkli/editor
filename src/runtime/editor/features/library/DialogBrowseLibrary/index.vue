@@ -37,6 +37,9 @@
               :class="{
                 'bk-is-selected': selectedItem === item.uuid,
               }"
+              data-test="library-item"
+              :data-test-library-item-uuid="item.uuid"
+              :data-test-selected="selectedItem === item.uuid"
               @click="selectedItem = item.uuid"
             >
               <LibraryListItem v-bind="item" />
@@ -50,7 +53,11 @@
     </div>
 
     <template #footer>
-      <button class="bk-button bk-scheme-accent" @click="onSubmit">
+      <button
+        class="bk-button bk-scheme-accent"
+        data-test="library-submit"
+        @click="onSubmit"
+      >
         {{ $t('libraryPlaceDialogSubmit', 'Add reusable block') }}
       </button>
     </template>

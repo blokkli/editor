@@ -3,7 +3,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: site
-label: Site
+label: 'Global settings'
 menu:
-  description: Site
+  description: 'Global settings'
   menu_parent: 'admin:translates_config_pages.parent'

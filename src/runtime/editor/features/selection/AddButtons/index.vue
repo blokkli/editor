@@ -100,9 +100,11 @@ const emptyBlockFields = computed(() => {
   }
 
   const uuid = block.value.uuid
+  const host = { type: itemEntityType, bundle: block.value.bundle, uuid }
 
   return types.fieldConfig
     .forEntityTypeAndBundle(itemEntityType, block.value.bundle)
+    .filter((field) => permissions.canChangeField(host, field.name))
     .map((field) => {
       const key = getFieldKey(uuid, field.name)
       const count = state.getFieldBlockCount(key)
@@ -122,6 +124,16 @@ const emptyHostFields = computed(() => {
     .forEntityTypeAndBundle(
       context.value.entityType,
       context.value.entityBundle,
+    )
+    .filter((field) =>
+      permissions.canChangeField(
+        {
+          type: context.value.entityType,
+          bundle: context.value.entityBundle,
+          uuid: context.value.entityUuid,
+        },
+        field.name,
+      ),
     )
     .map((field) => {
       const key = getFieldKey(context.value.entityUuid, field.name)
@@ -504,11 +516,17 @@ function setAddData(
   anchorEl?: HTMLElement,
   anchorCoordinates?: { x: number; y: number },
 ) {
-  // Don't show add buttons for fields inside a restricted block.
+  // Don't show add buttons for fields that can't change: read-only ones, and
+  // the ones inside a restricted block.
   if (
-    field.hostEntityType === itemEntityType &&
-    (!permissions.checkBlockBundlePermission(field.hostEntityBundle, 'edit') ||
-      permissions.blockHasRestrictedAncestor(field.hostEntityUuid))
+    !permissions.canChangeField(
+      {
+        type: field.hostEntityType,
+        bundle: field.hostEntityBundle,
+        uuid: field.hostEntityUuid,
+      },
+      field.name,
+    )
   ) {
     return
   }

@@ -60,6 +60,7 @@ function mapPublishOptions(context?: MappedState): PublishOptions {
     canSchedule: !!context?.publishOptions?.canSchedule,
     lastChanged: context?.publishOptions?.lastChanged ?? null,
     publishOn: context?.publishOptions?.publishOn ?? null,
+    publishLanguages: context?.publishOptions?.publishLanguages ?? [],
     revisionLogMessage: context?.publishOptions?.revisionLogMessage ?? null,
   }
 }
@@ -406,6 +407,7 @@ export default async function (
     lastChanged: null,
     canSchedule: false,
     publishOn: null,
+    publishLanguages: [],
     revisionLogMessage: null,
   })
   const currentMutationIndex = ref(-1)
@@ -460,6 +462,7 @@ export default async function (
   const mutatedItemProps = reactive<MutatedItemProps>({})
   const translation = ref<TranslationState>({
     isTranslatable: false,
+    isStatusTranslatable: null,
     sourceLanguage: '',
     availableLanguages: [],
     translations: [],
@@ -524,6 +527,8 @@ export default async function (
 
     translation.value.isTranslatable =
       !!context?.translationState?.isTranslatable
+    translation.value.isStatusTranslatable =
+      context?.translationState?.isStatusTranslatable ?? null
     translation.value.translations =
       context?.translationState?.translations?.filter(falsy) || []
     translation.value.sourceLanguage =

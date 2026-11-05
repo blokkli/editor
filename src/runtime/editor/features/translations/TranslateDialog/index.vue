@@ -112,6 +112,7 @@
                       v-if="effectiveValue(item) !== undefined"
                       :before="currentValues.get(item.key) || ''"
                       :after="effectiveValue(item)!"
+                      :plain="item.fieldType === 'plain'"
                       :after-only="
                         !currentValues.get(item.key) ||
                         currentValues.get(item.key) === item.value
@@ -243,6 +244,7 @@ import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 import SelectionTable from '../SelectionTable/index.vue'
 import RowError from '../RowError/index.vue'
+import { parseHtml } from '#blokkli/editor/helpers/html'
 import { getViolationText, matchViolationsToTexts } from '../violations'
 import Editor from './Editor/index.vue'
 
@@ -250,7 +252,7 @@ const emit = defineEmits<{
   close: []
 }>()
 
-const { adapter, $t, state, context, blocks, types } = useBlokkli()
+const { adapter, $t, state, context, blocks, types, permissions } = useBlokkli()
 
 type SourceItem = TextFieldValue & { key: string }
 
@@ -384,9 +386,7 @@ function toggleAll() {
 }
 
 function stripHtml(text: string): string {
-  const div = document.createElement('div')
-  div.innerHTML = text
-  return div.textContent || ''
+  return parseHtml(text).textContent || ''
 }
 
 /**
@@ -468,10 +468,18 @@ async function loadTexts() {
     const source = await adapter.loadTextFieldValuesForLanguage!(
       sourceLanguage.value,
     )
-    sourceValues.value = source.map((v) => ({
-      ...v,
-      key: `${v.uuid}:${v.fieldName}`,
-    }))
+    // Only the fields that the user may change.
+    sourceValues.value = source
+      .filter((v) =>
+        permissions.canEditFieldValue(
+          { type: v.entityType, bundle: v.entityBundle, uuid: v.uuid },
+          v.fieldName,
+        ),
+      )
+      .map((v) => ({
+        ...v,
+        key: `${v.uuid}:${v.fieldName}`,
+      }))
 
     // Load current translation values.
     const current = await adapter.loadTextFieldValuesForLanguage!(
@@ -564,23 +572,21 @@ async function applyTranslations() {
       }),
     )
     if (!response?.success) {
-      // Rejected: the dialog stays open with its texts, so the one that is
-      // wrong can be corrected. What the backend said goes to the row of the
+      // Rejected: the dialog stays open with its texts, so the ones that are
+      // wrong can be corrected. What the backend said goes to the row of each
       // text it is about, and beneath the table if it is about none.
-      const sent = new Map(
-        items.map((item) => [
-          `${item.uuid}:${item.fieldName}`,
-          item.fieldValue,
-        ]),
-      )
       const { messages, unmatched } = matchViolationsToTexts(
         response?.violations ?? [],
-        sent.keys(),
+        items.map((item) => ({
+          key: `${item.uuid}:${item.fieldName}`,
+          langcode: item.langcode,
+          value: item.fieldValue,
+        })),
       )
       refused.value = new Map(
-        [...messages].map(([key, message]) => [
-          key,
-          { value: sent.get(key)!, message },
+        [...messages].map(([text, message]) => [
+          text.key,
+          { value: text.value, message },
         ]),
       )
       if (unmatched.length) {

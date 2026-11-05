@@ -173,10 +173,77 @@
 .bk .bk-prose-mirror {
   @apply p-10 outline-none min-h-[100px];
 
+  /* TipTap's base CSS (@tiptap/core, src/style.ts). TipTap would add it as a
+     <style> element, which a strict Content-Security-Policy blocks
+     (`injectCSS: false` in RichText/Editor). ProseMirror's classes are
+     attribute selectors: the build prefixes class selectors
+     (src/build/postcssMangleClasses.cjs). */
+  position: relative;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  white-space: break-spaces;
+  font-variant-ligatures: none;
+  font-feature-settings: 'liga' 0;
+
+  [contenteditable='false'] {
+    white-space: normal;
+  }
+
+  [contenteditable='false'] [contenteditable='true'] {
+    white-space: pre-wrap;
+  }
+
+  pre {
+    white-space: pre-wrap;
+  }
+
+  img[class~='ProseMirror-separator'] {
+    display: inline !important;
+    border: none !important;
+    margin: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  [class~='ProseMirror-gapcursor'] {
+    display: none;
+    pointer-events: none;
+    position: absolute;
+    margin: 0;
+
+    &::after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: -2px;
+      width: 20px;
+      border-top: 1px solid black;
+      animation: bk-prose-mirror-cursor-blink 1.1s steps(2, start) infinite;
+    }
+  }
+
+  &[class~='ProseMirror-focused'] [class~='ProseMirror-gapcursor'] {
+    display: block;
+  }
+
+  &[class~='ProseMirror-hideselection'] * {
+    caret-color: transparent;
+
+    &::selection {
+      background: transparent;
+    }
+  }
+
   /* Placeholder for empty editor — provided by TipTap's placeholder extension. */
   p.is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     @apply text-mono-400 pointer-events-none float-left h-0;
+  }
+}
+
+@keyframes bk-prose-mirror-cursor-blink {
+  to {
+    visibility: hidden;
   }
 }
 

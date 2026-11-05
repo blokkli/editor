@@ -1,6 +1,8 @@
 import type { Nuxt } from 'nuxt/schema'
 import type { BuildRelativeImports, ModuleOptions } from './types'
+import { readFileSync } from 'node:fs'
 import { relative } from 'pathe'
+import { defu } from 'defu'
 import {
   type Resolver,
   type useLogger,
@@ -10,22 +12,13 @@ import {
 } from '@nuxt/kit'
 import { FileCache } from './FileCache'
 import { onlyUnique } from './helpers'
+import { translateBuiltInOptions } from './helpers/blockOptions'
+import { getDefaultColorOptions } from './helpers/colorOptions'
 import type { ValidationInterface } from './ValidationInterface'
 import type { IconCollector } from './Collector/Icons'
 import { validateOptions } from './validation/validateOptions'
 import { validateColorOptions } from './validation/validateColorOptions'
-import type { ColorOption } from '../global/types/colorOptions'
-
-const defaultColorOptions: Record<string, ColorOption> = {
-  blue: { hex: '#3b82f6', label: 'Blue' },
-  red: { hex: '#ef4444', label: 'Red' },
-  green: { hex: '#10b981', label: 'Green' },
-  amber: { hex: '#f59e0b', label: 'Amber' },
-  purple: { hex: '#8b5cf6', label: 'Purple' },
-  pink: { hex: '#ec4899', label: 'Pink' },
-  teal: { hex: '#14b8a6', label: 'Teal' },
-  orange: { hex: '#f97316', label: 'Orange' },
-}
+import { TRANSLATION_LANGUAGES } from '../global/constants'
 
 type ModuleHelperResolvers = {
   /**
@@ -171,16 +164,42 @@ export class ModuleHelper implements ValidationInterface {
       chunkNames.push('global')
     }
 
+    const translations = this.getTranslations(providedOptions.translations)
+
     this.options = {
       ...providedOptions,
       pattern,
       fieldListTypes: fieldListTypes.filter(onlyUnique),
       providerTypes: providerTypes.filter(onlyUnique),
       chunkNames: chunkNames.filter(onlyUnique),
-      colorOptions: providedOptions.colorOptions || defaultColorOptions,
+      colorOptions:
+        providedOptions.colorOptions || getDefaultColorOptions(translations),
+      globalOptions: translateBuiltInOptions(
+        providedOptions.globalOptions || {},
+        translations,
+      ),
     }
 
     this.paths.editAdapter = this.findEditAdapterPath()
+  }
+
+  /**
+   * The editor's texts, keyed by language: the project's own ones and the
+   * shipped translations.
+   */
+  private getTranslations(
+    projectTranslations: ModuleOptions['translations'],
+  ): Record<string, Record<string, string>> {
+    const shipped = TRANSLATION_LANGUAGES.reduce<
+      Record<string, Record<string, string>>
+    >((acc, langcode) => {
+      const path = this.resolvers.module.resolve(
+        `./runtime/editor/translations/${langcode}.json`,
+      )
+      acc[langcode] = JSON.parse(readFileSync(path, 'utf-8'))
+      return acc
+    }, {})
+    return defu(projectTranslations || {}, shipped)
   }
 
   /**

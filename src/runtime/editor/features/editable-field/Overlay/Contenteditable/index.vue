@@ -1,5 +1,6 @@
 <template>
   <div class="bk-editable-field-contenteditable">
+    <!-- eslint-disable vue/no-v-html -- the stored value, sanitised -->
     <div
       ref="input"
       contenteditable
@@ -7,11 +8,13 @@
       @input="onInput"
       v-html="original"
     />
+    <!-- eslint-enable vue/no-v-html -->
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted } from '#imports'
+import { sanitizeHtml } from '#blokkli/editor/helpers/html'
 
 const props = defineProps<{
   modelValue: string
@@ -37,6 +40,7 @@ const onKeyDown = (e: KeyboardEvent) => {
 }
 
 onMounted(() => {
-  original.value = props.modelValue
+  // The raw stored value, sanitised. An edit saves what's shown.
+  original.value = sanitizeHtml(props.modelValue, 'richText')
 })
 </script>

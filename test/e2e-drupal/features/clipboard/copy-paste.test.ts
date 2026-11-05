@@ -7,7 +7,12 @@ import {
   BLOCKS_EDITOR_PATH,
   openEditor,
 } from '../../support/session'
-import { blockCount, blockState, selectBlock } from '../../support/blocks'
+import {
+  blockCount,
+  blockState,
+  fieldUuids,
+  selectBlock,
+} from '../../support/blocks'
 import { topLevelBlockUuids } from '../../support/selection'
 import {
   copySelection,
@@ -17,7 +22,12 @@ import {
   dispatchPaste,
   dropDragInto,
 } from '../../support/clipboard'
-import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
+import {
+  resetSandbox,
+  sandboxHost,
+  seedUuid,
+  workerSandbox,
+} from '../../support/sandbox'
 
 /**
  * Copy/paste of existing blocks. `Cmd/Ctrl+C` serialises the selection into a
@@ -25,8 +35,8 @@ import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
  * Pasting that envelope is detected by `onPaste` (JSON starting with `{`),
  * unwrapped (`parseClipboardEnvelope`) and dispatched as `clipboard:paste`; the
  * `selection` listener starts an `existing` *copy* drag, whose drop calls
- * `adapter.pasteExistingBlocks` (Drupal duplicates the paragraphs,
- * `pbDuplicateMultipleParagraphs`).
+ * `adapter.pasteExistingBlocks` (Drupal duplicates the paragraphs into the
+ * field they're dropped on, `pbDuplicateMultipleParagraphs`).
  *
  * The envelope carries the source host's uuid, and the listener ignores a
  * payload whose `hostUuid` differs from the current host — the copied block
@@ -124,5 +134,27 @@ describe('Copying and pasting a selection', async () => {
     // The paste is a copy: a new block of the same bundle as the source.
     expect(added).not.toBe(first)
     expect((await blockState(page, added)).bundle).toBe(sourceBundle)
+    // Dropped at the start of the field, it comes first, before its source.
+    expect((await fieldUuids(page)).slice(0, 2)).toEqual([added, first])
+  })
+
+  test('pasting into another field puts the copy there', async () => {
+    await captureClipboard(page)
+    const title = seedUuid('paragraph', 'first-title')
+    await selectBlock(page, title)
+    await copySelection(page)
+    await expect.poll(() => copiedText(page)).toHaveLength(1)
+
+    const before = await fieldUuids(page)
+    expect(await fieldUuids(page, 'field_aside')).toEqual([])
+    await pasteText(page, (await copiedText(page))[0]!)
+    await dropDragInto(page, { fieldName: 'field_aside' })
+
+    await expect.poll(() => fieldUuids(page, 'field_aside')).toHaveLength(1)
+    const [copy] = await fieldUuids(page, 'field_aside')
+    expect(copy).not.toBe(title)
+    expect((await blockState(page, copy!)).bundle).toBe('title')
+    // The field of its source is as it was.
+    expect(await fieldUuids(page)).toEqual(before)
   })
 })

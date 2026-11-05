@@ -2,6 +2,9 @@ import type {
   BlockOptionDefinitionBase,
   RuntimeBlockOptionArray,
 } from '../../global/types/blockOptions'
+import type { BlockDefinitionOptionsInputBase } from '../../global/types/definitions'
+import { BUILT_IN_OPTION_TEXTS } from '../../global/constants'
+import { translateText } from './translations'
 
 export function toRuntimeOptionArray(
   option: BlockOptionDefinitionBase,
@@ -37,4 +40,48 @@ export function toRuntimeOptionArray(
     return [option.type, option.default]
   }
   return [option.type, option.default]
+}
+
+/**
+ * Replace the texts of blökkli's own global options with their translations,
+ * unless the project changed them. The editor and Drupal's forms (through the
+ * options schema) then show them in the page's language.
+ *
+ * @param globalOptions - The global options.
+ * @param translations - The editor's texts, keyed by language.
+ */
+export function translateBuiltInOptions(
+  globalOptions: BlockDefinitionOptionsInputBase,
+  translations: Record<string, Record<string, string>>,
+): BlockDefinitionOptionsInputBase {
+  const translated = { ...globalOptions }
+
+  for (const [property, texts] of Object.entries(BUILT_IN_OPTION_TEXTS)) {
+    const option = globalOptions[property]
+    if (!option) {
+      continue
+    }
+
+    translated[property] = {
+      ...option,
+      label:
+        option.label === texts.label
+          ? translateText(
+              `blockOption_${property}_label`,
+              texts.label,
+              translations,
+            )
+          : option.label,
+      description:
+        option.description === texts.description
+          ? translateText(
+              `blockOption_${property}_description`,
+              texts.description,
+              translations,
+            )
+          : option.description,
+    }
+  }
+
+  return translated
 }

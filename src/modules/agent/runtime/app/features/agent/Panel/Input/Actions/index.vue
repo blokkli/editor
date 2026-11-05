@@ -21,6 +21,7 @@
         <button
           class="bk-agent-input-actions-button group/tooltip"
           :class="{ 'bk-is-active': isExpanded }"
+          data-test="agent-more"
           :disabled="!isConnected"
           @click="isExpanded = !isExpanded"
         >
@@ -53,6 +54,7 @@
         <button
           v-if="isProcessing"
           class="bk-button bk-scheme-red bk-is-small bk-is-icon-only"
+          data-test="agent-cancel"
           :disabled="!isConnected"
           @click="$emit('cancel')"
         >

@@ -12,6 +12,14 @@ function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.length > 0
 }
 
+function isDefinitionString(value: unknown): boolean {
+  if (value && typeof value === 'object') {
+    const texts = Object.values(value)
+    return texts.length > 0 && texts.every(isNonEmptyString)
+  }
+  return isNonEmptyString(value)
+}
+
 function hasShades(
   option: ColorOption,
 ): option is Extract<ColorOption, { shades: Record<string, string> }> {
@@ -36,7 +44,7 @@ export function validateColorOption(
     })
   }
 
-  if (!isNonEmptyString(option.label)) {
+  if (!isDefinitionString(option.label)) {
     errors.push({
       message: `Option "${colorId}" is missing a non-empty "label".`,
       optionKey: colorId,

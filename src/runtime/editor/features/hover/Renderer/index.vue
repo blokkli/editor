@@ -13,6 +13,7 @@ import { toShaderColor } from '#blokkli/editor/helpers/color'
 import type { RGB } from './../../../../../global/types/theme'
 import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
 import type { Rectangle } from '#blokkli/editor/types/geometry'
+import { itemEntityType } from '#blokkli-build/config'
 
 const {
   animation,
@@ -27,7 +28,29 @@ const {
   permissions,
   types,
   keyboard,
+  context,
 } = useBlokkli()
+
+/**
+ * Whether the field of a block or the page can be changed.
+ */
+function canEditFieldValue(
+  entityType: string,
+  entityUuid: string,
+  fieldName: string,
+): boolean {
+  const bundle =
+    entityType === itemEntityType
+      ? blocks.getBlock(entityUuid)?.bundle
+      : context.value.entityBundle
+  if (!bundle) {
+    return false
+  }
+  return permissions.canEditFieldValue(
+    { type: entityType, bundle, uuid: entityUuid },
+    fieldName,
+  )
+}
 
 // How many hover quads are supported.
 // This means that we support 10 blocks + 1 editable field + 1 droppable field.
@@ -249,15 +272,14 @@ function updateHoverState(
 
       // Extract entity UUID from the rect key (format: directive:entityType:uuid:fieldName).
       const key = (editableRect as Rectangle & { key: string }).key
-      const entityUuid = key.split(':')[2]!
+      const [, entityType = '', entityUuid = '', ...fieldNameParts] =
+        key.split(':')
 
-      // Skip editable fields on blocks where the user lacks edit permission
-      // or that are inside a restricted ancestor.
-      const block = blocks.getBlock(entityUuid)
+      // Skip editable fields that can't be changed: read-only ones, and the
+      // ones of blocks where the user lacks edit permission or that are
+      // inside a restricted ancestor.
       if (
-        block &&
-        (!permissions.checkBlockBundlePermission(block.bundle, 'edit') ||
-          permissions.blockHasRestrictedAncestor(entityUuid))
+        !canEditFieldValue(entityType, entityUuid, fieldNameParts.join(':'))
       ) {
         continue
       }
@@ -289,7 +311,11 @@ function updateHoverState(
     const excludedKeys = new Set<string>()
     for (const el of directive.getDroppableElements()) {
       const config = types.getDroppableFieldConfig(el.fieldName, el)
-      if (config.type !== 'reference' || config.cardinality === 1) {
+      if (
+        config.type !== 'reference' ||
+        config.cardinality === 1 ||
+        !permissions.canEditFieldValue(el, el.fieldName)
+      ) {
         excludedKeys.add(el.key)
       }
     }
@@ -397,10 +423,7 @@ function updateHoverState(
     // Type: 0=mono, 1=accent, 3=white (inverted), 4=lime (library), 5=yellow (restricted).
     let type = 0
     if (isDeepest) {
-      const isRestricted =
-        !permissions.checkBlockBundlePermission(block.bundle, 'edit') ||
-        !permissions.checkBlockBundlePermission(block.bundle, 'delete') ||
-        !permissions.checkBlockBundlePermission(block.bundle, 'add')
+      const isRestricted = permissions.getBlockPermissions(uuid).length < 3
       if (isRestricted) {
         type = 5
       } else if (state.fromLibraryUuids.value.includes(uuid)) {

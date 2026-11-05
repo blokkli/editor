@@ -3,7 +3,9 @@ import type {
   BlockPermission,
   BlockBundleDefinition,
 } from '../types/definitions'
+import type { RenderedFieldListItem } from '../types/field'
 import type { UserPermissions } from '../types/permissions'
+import type { EntityContext } from '#blokkli/types'
 import type { BlocksProvider } from './blocks'
 import { useStateBasedCache } from '#blokkli/editor/composables'
 import { itemEntityType } from '#blokkli-build/config'
@@ -20,24 +22,95 @@ export type PermissionsProvider = {
   ) => string[]
 
   /**
-   * Check if a block has any ancestor whose bundle lacks 'edit' permission.
+   * Check if a block has any ancestor that restricts editing.
    *
-   * When an ancestor is restricted, all descendants are considered restricted
-   * too — the user cannot add, edit, or delete blocks inside a restricted
-   * parent.
+   * An ancestor restricts editing if its bundle lacks 'edit' permission, or
+   * if the field holding it is read-only. All descendants are then
+   * restricted too: the user cannot add, edit, or delete blocks inside it.
    */
   blockHasRestrictedAncestor: (uuid: string) => boolean
 
   /**
-   * Get the nearest ancestor block that restricts editing.
+   * Get the outermost ancestor block that restricts editing.
    *
-   * Walks up the parent chain and returns the UUID of the first ancestor
-   * whose bundle lacks 'edit' permission, or undefined if no ancestor is
-   * restricted.
+   * Walks up the parent chain and returns the UUID of the outermost ancestor
+   * that restricts editing (see blockHasRestrictedAncestor), or undefined if
+   * no ancestor does.
    */
   getRestrictedAncestor: (uuid: string) => string | undefined
 
-  getBlockBundlePermissions: (bundle: string) => BlockPermission[]
+  /**
+   * Whether a paragraphs field is read-only: the user may not change what it
+   * holds.
+   */
+  isFieldReadOnly: (
+    entityType: string,
+    entityBundle: string,
+    fieldName: string,
+  ) => boolean
+
+  /**
+   * Whether blocks can be added to a field, moved into, out of or within it,
+   * or removed from it.
+   *
+   * The field must not be read-only, and a block that holds it must be
+   * editable (see canEditBlock).
+   */
+  canChangeField: (host: EntityContext, fieldName: string) => boolean
+
+  /**
+   * Whether the field holding a block can change: whether the block can be
+   * removed, moved, duplicated or swapped, as far as its field decides.
+   *
+   * The bundle permissions of the block are checked separately.
+   */
+  canChangeBlockField: (uuid: string) => boolean
+
+  /**
+   * Whether a block can be edited: its options, its texts, its fields.
+   *
+   * The bundle must have 'edit' permission and the field holding the block
+   * must be able to change.
+   */
+  canEditBlock: (uuid: string) => boolean
+
+  /**
+   * Whether a text, reference or link field of a block or the page can be
+   * changed.
+   *
+   * The field must not be read-only, and a block that holds it must be
+   * editable.
+   */
+  canEditFieldValue: (host: EntityContext, fieldName: string) => boolean
+
+  /**
+   * The permissions the user has for a block: those of its bundle, or none
+   * if the field holding the block can't change.
+   */
+  getBlockPermissions: (uuid: string) => BlockPermission[]
+}
+
+function buildKey(
+  entityType: string,
+  entityBundle: string,
+  fieldName: string,
+): string {
+  return entityType + ':' + entityBundle + ':' + fieldName
+}
+
+type FieldWithReadOnly = {
+  entityType: string
+  entityBundle: string
+  name: string
+  readOnly?: boolean
+}
+
+function getReadOnlyKeys(fields: FieldWithReadOnly[]): Set<string> {
+  return new Set(
+    fields
+      .filter((v) => v.readOnly)
+      .map((v) => buildKey(v.entityType, v.entityBundle, v.name)),
+  )
 }
 
 export default async function (
@@ -45,9 +118,18 @@ export default async function (
   blocks: BlocksProvider,
 ): Promise<PermissionsProvider> {
   const getAncestorCache = useStateBasedCache(() => new Map<string, boolean>())
-  const [permissionsArray, bundleDefinitions] = await Promise.all([
+  const [
+    permissionsArray,
+    bundleDefinitions,
+    fieldConfig,
+    editableFieldConfig,
+    droppableFieldConfig,
+  ] = await Promise.all([
     adapter.getUserPermissions(),
     adapter.getAllBundles(),
+    adapter.getFieldConfig(),
+    adapter.getEditableFieldConfig?.() ?? [],
+    adapter.getDroppableFieldConfig?.() ?? [],
   ])
 
   const bundleMap = bundleDefinitions.reduce<
@@ -64,6 +146,18 @@ export default async function (
   const allBundlesUnrestricted = bundleDefinitions.every((def) =>
     allPermissions.every((p) => def.permissions.includes(p)),
   )
+
+  // The paragraphs fields that are read-only, and the text, reference and
+  // link fields.
+  const readOnlyFields = getReadOnlyKeys(fieldConfig)
+  const readOnlyValueFields = getReadOnlyKeys([
+    ...editableFieldConfig,
+    ...droppableFieldConfig,
+  ])
+
+  // Without restricted bundles and read-only paragraphs fields, no block is
+  // restricted by its ancestors or its field.
+  const blocksUnrestricted = allBundlesUnrestricted && !readOnlyFields.size
 
   const bundlePermissionCache = new Map<string, boolean>()
 
@@ -104,8 +198,27 @@ export default async function (
     )
   }
 
+  function isFieldReadOnly(
+    entityType: string,
+    entityBundle: string,
+    fieldName: string,
+  ): boolean {
+    return readOnlyFields.has(buildKey(entityType, entityBundle, fieldName))
+  }
+
+  /**
+   * Whether a block restricts the blocks nested in it: its bundle can't be
+   * edited, or the field holding it is read-only.
+   */
+  function restrictsDescendants(block: RenderedFieldListItem): boolean {
+    return (
+      !checkBlockBundlePermission(block.bundle, 'edit') ||
+      isFieldReadOnly(block.host.type, block.host.bundle, block.host.fieldName)
+    )
+  }
+
   function blockHasRestrictedAncestor(uuid: string): boolean {
-    if (allBundlesUnrestricted) {
+    if (blocksUnrestricted) {
       return false
     }
     const cache = getAncestorCache()
@@ -119,7 +232,7 @@ export default async function (
     if (block && block.host.type === itemEntityType) {
       const parent = blocks.getBlock(block.host.uuid)
       if (parent) {
-        if (!checkBlockBundlePermission(parent.bundle, 'edit')) {
+        if (restrictsDescendants(parent)) {
           restricted = true
         } else {
           restricted = blockHasRestrictedAncestor(parent.uuid)
@@ -132,7 +245,7 @@ export default async function (
   }
 
   function getRestrictedAncestor(uuid: string): string | undefined {
-    if (allBundlesUnrestricted) {
+    if (blocksUnrestricted) {
       return undefined
     }
     const block = blocks.getBlock(uuid)
@@ -145,24 +258,78 @@ export default async function (
       return undefined
     }
 
-    // Walk up first — the deepest restricted ancestor wins.
+    // Walk up first — the outermost restricted ancestor wins.
     const higherRestriction = getRestrictedAncestor(parent.uuid)
     if (higherRestriction) {
       return higherRestriction
     }
 
-    if (!checkBlockBundlePermission(parent.bundle, 'edit')) {
+    if (restrictsDescendants(parent)) {
       return parent.uuid
     }
 
     return undefined
   }
 
-  function getBlockBundlePermissions(bundle: string): BlockPermission[] {
+  function canChangeBlockField(uuid: string): boolean {
+    const block = blocks.getBlock(uuid)
+    if (!block) {
+      return false
+    }
+    if (blocksUnrestricted) {
+      return true
+    }
+    return (
+      !isFieldReadOnly(
+        block.host.type,
+        block.host.bundle,
+        block.host.fieldName,
+      ) && !blockHasRestrictedAncestor(uuid)
+    )
+  }
+
+  function canEditBlock(uuid: string): boolean {
+    const block = blocks.getBlock(uuid)
+    if (!block) {
+      return false
+    }
+    return (
+      checkBlockBundlePermission(block.bundle, 'edit') &&
+      canChangeBlockField(uuid)
+    )
+  }
+
+  function canChangeField(host: EntityContext, fieldName: string): boolean {
+    if (isFieldReadOnly(host.type, host.bundle, fieldName)) {
+      return false
+    }
+    // A field of the page.
+    if (host.type !== itemEntityType) {
+      return true
+    }
+    return canEditBlock(host.uuid)
+  }
+
+  function canEditFieldValue(host: EntityContext, fieldName: string): boolean {
+    if (readOnlyValueFields.has(buildKey(host.type, host.bundle, fieldName))) {
+      return false
+    }
+    // A field of the page.
+    if (host.type !== itemEntityType) {
+      return true
+    }
+    return canEditBlock(host.uuid)
+  }
+
+  function getBlockPermissions(uuid: string): BlockPermission[] {
+    const block = blocks.getBlock(uuid)
+    if (!block || !canChangeBlockField(uuid)) {
+      return []
+    }
     if (allBundlesUnrestricted) {
       return allPermissions
     }
-    return bundleDefinitions.find((v) => v.id === bundle)?.permissions ?? []
+    return bundleMap[block.bundle]?.permissions ?? []
   }
 
   return {
@@ -171,6 +338,11 @@ export default async function (
     filterDeniedBundles,
     blockHasRestrictedAncestor,
     getRestrictedAncestor,
-    getBlockBundlePermissions,
+    isFieldReadOnly,
+    canChangeField,
+    canChangeBlockField,
+    canEditBlock,
+    canEditFieldValue,
+    getBlockPermissions,
   }
 }

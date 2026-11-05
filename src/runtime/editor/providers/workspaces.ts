@@ -7,8 +7,11 @@ import type {
 import type { StateProvider } from './state'
 
 export type HostEntitySearchResultLabelMap = {
-  label: string
-  bundles: Record<string, string>
+  /**
+   * The bundles' labels, keyed by entity type and then by bundle: bundles of
+   * different entity types can have the same key.
+   */
+  bundles: Record<string, Record<string, string>>
 }
 
 export type HostEntitySearchResultItem = {
@@ -64,7 +67,7 @@ export type HostEntitySearchResult = {
   items: HostEntitySearchResultItem[]
 
   /**
-   * A map with keys that are entity types.
+   * The labels of the items' bundles.
    */
   labelMap: HostEntitySearchResultLabelMap
 }
@@ -100,9 +103,10 @@ export type WorkspacesProvider = {
   search: (query: string) => Promise<HostEntitySearchResultItem[]>
 
   /**
-   * Translated label for a bundle key, falling back to the key itself.
+   * Translated label for a bundle of an entity type, falling back to the
+   * bundle's key.
    */
-  getBundleLabel: (bundle: string) => string
+  getBundleLabel: (entityType: string, bundle: string) => string
 }
 
 declare module '#blokkli/editor/adapter' {
@@ -206,8 +210,8 @@ export default function workspacesProvider(
       .filter((v) => v.uuid !== currentEntityUuid.value)
   }
 
-  function getBundleLabel(bundle: string): string {
-    return labelMap.value?.bundles[bundle] ?? bundle
+  function getBundleLabel(entityType: string, bundle: string): string {
+    return labelMap.value?.bundles[entityType]?.[bundle] ?? bundle
   }
 
   return {

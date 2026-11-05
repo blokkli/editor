@@ -8,8 +8,7 @@
 # The deploy's key (SANDBOX_SSH_KEY) may only run `ddev deploy` on the server:
 # its entry in liip@starterkit.blokk.li's authorized_keys has a forced command
 # (under flock, so that deploys never overlap). The server pulls the branch
-# itself. A deploy updates premium sandboxes and deletes the others
-# (plans/drupal-setup/12a-server-setup.md).
+# itself. A deploy updates premium sandboxes and deletes the others.
 name: CI
 
 on:
@@ -24,7 +23,9 @@ permissions:
 jobs:
   checks:
     name: Checks and E2E tests
-    runs-on: ubuntu-latest
+    # ubuntu-latest is 26.04 now, where Playwright 1.60 can't install
+    # Chromium. Back to ubuntu-latest once Playwright supports it.
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     # A newer push to the same branch replaces the run, and its deploy.
     concurrency:
@@ -69,10 +70,7 @@ jobs:
         run: SANDBOX_E2E_BUILD=true bunx nuxi build sandbox/frontend
 
       - name: Prepare the module and the playground
-        run: |
-          bun run dev:prepare
-          # It rewrites the playground's options schema.
-          git checkout -- playground/app/options-schema.json
+        run: bun run dev:prepare
 
       # The agent's secret, for its E2E tests in premium sandboxes. The others
       # have local defaults. No key for DeepL, Rokka or a model: E2E sandboxes

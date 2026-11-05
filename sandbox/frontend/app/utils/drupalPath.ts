@@ -4,7 +4,7 @@
 const DRUPAL_PATHS = [
   /^(?:\/(?:en|de|fr))?\/(?:admin|batch|big_pipe|block|block-category|blokkli-sandbox|ckeditor5|comment|comments|contextual|core|cron|editor|entity_reference_autocomplete|file|filter|graphql|history|layout_builder|libraries|masquerade|media|media-library|modules|paragraphs_blokkli|paragraphs_blokkli_graphql|profiles|scheduler|session|sites|system|themes|token|toolbar|unmasquerade|user|views)(?:\/|$)/,
   /^(?:\/(?:en|de|fr))?\/(?:node|taxonomy\/term)\/(?:add|preview|\d+\/(?:edit|delete|revisions|translations|usage))(?:\/|$)/,
-  /^\/\.well-known\/|\.php(?:\/|$)/,
+  /^\/(?:\.well-known\/|index\.php$|update\.php(?:\/|$))/,
 ]
 
 /**

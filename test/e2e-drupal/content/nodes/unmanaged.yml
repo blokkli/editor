@@ -1,0 +1,15 @@
+# A detail page with a related topic, at /en/unmanaged. blökkli doesn't manage
+# the related topics of a detail page in E2E sandboxes (the test module): the
+# editor shows them as they're stored, and takes no paragraphs into them.
+key: unmanaged
+type: page
+title: Unmanaged
+field_paragraphs:
+  - type: text
+    key: unmanaged-text
+    field_text: '<p>A text.</p>'
+field_related:
+  - type: teaser
+    key: unmanaged-teaser
+    field_title: A related topic
+    field_link: { node: blank }

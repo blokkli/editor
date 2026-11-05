@@ -64,18 +64,29 @@ const childFieldSchema = z.object({
   count: z.number().describe('Number of paragraphs in this field'),
   cardinality: z.number().describe('Max paragraphs allowed (-1 = unlimited)'),
   bundles: z.array(z.string()).describe('Unique bundle types in this field'),
+  readOnly: z
+    .boolean()
+    .optional()
+    .describe('No paragraph may be added to, moved or removed from the field'),
 })
+
+const readOnlySchema = z
+  .boolean()
+  .optional()
+  .describe('The user may not change this field')
 
 const contentFieldSchema = z.discriminatedUnion('type', [
   z.object({
     field: z.string().describe('The field name'),
     type: z.literal('plain').describe('Plain text field'),
     currentValue: z.string().describe('Current field value'),
+    readOnly: readOnlySchema,
   }),
   z.object({
     field: z.string().describe('The field name'),
     type: z.literal('markup').describe('Rich text / HTML field'),
     currentValue: z.string().describe('Current field value'),
+    readOnly: readOnlySchema,
   }),
   z.object({
     field: z.string().describe('The field name'),
@@ -91,6 +102,7 @@ const contentFieldSchema = z.discriminatedUnion('type', [
         }),
       )
       .describe('Entity types and bundles this field accepts'),
+    readOnly: readOnlySchema,
   }),
   z.object({
     field: z.string().describe('The field name'),
@@ -106,6 +118,7 @@ const contentFieldSchema = z.discriminatedUnion('type', [
         }),
       )
       .describe('Entity types and bundles this field accepts'),
+    readOnly: readOnlySchema,
   }),
 ])
 
@@ -164,7 +177,8 @@ export default defineBlokkliAgentTool({
   paramsSchema,
   resultSchema,
   execute(ctx, params) {
-    const { blocks, state, context, types, selection, $t } = ctx.app
+    const { blocks, state, context, types, selection, $t, permissions } =
+      ctx.app
 
     // Get the block
     const block = blocks.getBlock(params.uuid)
@@ -175,6 +189,11 @@ export default defineBlokkliAgentTool({
     }
 
     const bundleLabel = types.getBlockLabel(block.bundle)
+    const blockHost = {
+      type: ctx.itemEntityType,
+      bundle: block.bundle,
+      uuid: block.uuid,
+    }
 
     // Get parent information
     const fieldList = state.getFieldListForBlock(params.uuid)
@@ -275,6 +294,9 @@ export default defineBlokkliAgentTool({
             count: field.list.length,
             cardinality: fieldConfig?.cardinality ?? -1,
             bundles: uniqueBundles,
+            ...(permissions.canChangeField(blockHost, field.name)
+              ? {}
+              : { readOnly: true }),
           })
         }
       }
@@ -299,6 +321,9 @@ export default defineBlokkliAgentTool({
           field: f.fieldName,
           type: f.fieldType,
           currentValue: f.value,
+          ...(permissions.canEditFieldValue(blockHost, f.fieldName)
+            ? {}
+            : { readOnly: true }),
         })
       }
 
@@ -314,6 +339,9 @@ export default defineBlokkliAgentTool({
           label: config.label,
           type: config.type as 'reference' | 'link',
           allowed: config.allowed,
+          ...(permissions.canEditFieldValue(blockHost, config.name)
+            ? {}
+            : { readOnly: true }),
         })
       }
 

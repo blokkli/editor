@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\blokkli_playground\Seed;
 
+use Drupal\blokkli_playground\Config\SourceLanguageOverride;
 use Drupal\Component\Serialization\Exception\InvalidDataTypeException;
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Component\Utility\Html;
@@ -222,6 +223,7 @@ final class Seeder {
       $this->createComments($comments);
       $this->createTexts($texts);
       $this->deleteRemoved($items);
+      $this->state->set(SourceLanguageOverride::STATE_KEY, $this->source);
     }
     catch (\Throwable $e) {
       $transaction->rollBack();
@@ -516,14 +518,16 @@ final class Seeder {
   /**
    * A value in one language: the language maps replaced by their value.
    *
-   * A language that a map doesn't have gets the source language's value.
+   * A language that a map doesn't have gets the source language's value; a
+   * null leaves the field empty in its language.
    */
   private function pick(mixed $value, string $langcode, string $source): mixed {
     if (!is_array($value)) {
       return $value;
     }
     if ($this->isLanguageMap($value)) {
-      return $this->pick($value[$langcode] ?? $value[$source] ?? NULL, $langcode, $source);
+      $picked = array_key_exists($langcode, $value) ? $value[$langcode] : ($value[$source] ?? NULL);
+      return $this->pick($picked, $langcode, $source);
     }
     return array_map(fn (mixed $child) => $this->pick($child, $langcode, $source), $value);
   }

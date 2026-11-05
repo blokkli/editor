@@ -124,6 +124,7 @@ const {
   types,
   definitions,
   blocks,
+  permissions,
 } = useBlokkli()
 
 const showCsvDialog = useDialog('translations-csv', 'center')
@@ -188,6 +189,13 @@ const translateDisabledReason = computed<false | string>(() => {
     )
   }
 
+  if (!permissions.canEditBlock(block.uuid)) {
+    return $t(
+      'noEditPermission',
+      'You do not have permission to edit this block.',
+    )
+  }
+
   const definition = definitions.getBlockDefinition(
     block.bundle,
     block.fieldListType,
@@ -211,6 +219,12 @@ const translateDisabledReason = computed<false | string>(() => {
 
 const markUpToDateDisabledReason = computed<false | string>(() => {
   const lang = context.value.language
+  if (!selection.uuids.value.every((uuid) => permissions.canEditBlock(uuid))) {
+    return $t(
+      'noEditPermission',
+      'You do not have permission to edit this block.',
+    )
+  }
   if (
     selection.items.value.some((item) =>
       item.outdatedTranslations.includes(lang),
@@ -249,6 +263,8 @@ function onMarkUpToDate(items: RenderedFieldListItem[] | string[]) {
       return null
     })
     .filter(falsy)
+    // Including from the menu, which marks every outdated block.
+    .filter((uuid) => permissions.canEditBlock(uuid))
 
   if (!uuids.length) {
     return
@@ -260,7 +276,11 @@ function onMarkUpToDate(items: RenderedFieldListItem[] | string[]) {
 }
 
 onBlokkliEvent('item:doubleClick', function (block) {
-  if (isTranslating.value && !translateDisabledReason.value) {
+  if (
+    isTranslating.value &&
+    !translateDisabledReason.value &&
+    permissions.canEditBlock(block.uuid)
+  ) {
     onTranslate([block])
   }
 })

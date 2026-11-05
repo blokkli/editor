@@ -3,7 +3,7 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
 import {
   requireBundlePermission,
-  requireNoRestrictedAncestor,
+  requireCanChangeBlockField,
 } from '../../helpers/validation'
 import type { SearchContentItem } from '#blokkli/editor/features/search/types'
 
@@ -15,6 +15,12 @@ export const paramsSchema = z.object({
   itemId: z.string().describe('Content item ID from search_content_* results'),
   itemEntityType: z.string().describe('Entity type of the content item'),
   itemEntityBundle: z.string().describe('Entity bundle of the content item'),
+  allLanguages: z
+    .boolean()
+    .optional()
+    .describe(
+      'Whether to replace it in every translation of the paragraph (or of the page, for a field of the page). Omit to change only the edited language. Only matters for a translatable field.',
+    ),
 })
 
 export const resultSchema = mutationResultSchema
@@ -51,7 +57,7 @@ export default defineBlokkliAgentTool({
     if (denied) return denied
 
     // Check ancestor restrictions
-    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, [params.uuid])
+    const ancestorDenied = requireCanChangeBlockField(ctx.app, [params.uuid])
     if (ancestorDenied) return ancestorDenied
 
     // Validate field exists and is a droppable field.
@@ -64,6 +70,9 @@ export default defineBlokkliAgentTool({
       return {
         error: `Field "${params.field}" is not a reference content field on ${block.bundle} paragraphs`,
       }
+    }
+    if (config.readOnly) {
+      return { error: `Field "${params.field}" is read-only` }
     }
     const allowedRestriction = config.allowed.find(
       (v) => v.type === params.itemEntityType,
@@ -101,6 +110,7 @@ export default defineBlokkliAgentTool({
             fieldName: params.field,
           },
           item,
+          allLanguages: params.allLanguages,
         }),
       affectedUuids: [params.uuid],
     }

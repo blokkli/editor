@@ -1,0 +1,33 @@
+# Charts bound to the data sources of the frontend (server/api/chart-data), at
+# /en/data-sources. The pie has colours for a category of its data and for one
+# that its data doesn't have (any more).
+key: data-sources
+type: page
+title: Data sources
+field_paragraphs:
+  - type: chart
+    key: data-sources-budget
+    options:
+      data:
+        type: pie
+        categories: []
+        series: []
+        categoryColors: []
+        footnotes: []
+        dataSource:
+          id: budget
+          label: 'Budget 2026: expenses by area'
+          categoryColorOverrides: { education: forest, retired: forest }
+        translations: { en: { title: Expenses by area } }
+  - type: chart
+    key: data-sources-population
+    options:
+      data:
+        type: bar
+        categories: []
+        series: []
+        categoryColors: []
+        footnotes: []
+        dataSource:
+          { id: population, label: 'Population by nationality, 2016–2025' }
+        translations: { en: { title: Population by nationality } }

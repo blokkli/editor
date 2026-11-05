@@ -15,7 +15,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.4'
+  version: '1.0.5'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/features/library
 ---
@@ -141,6 +141,7 @@ blökkli renders `from_library` with its own component, which expects this shape
 ```graphql
 fragment paragraphFromLibrary on ParagraphFromLibrary {
   libraryItem: fieldReusableParagraph {
+    id
     uuid
     label
     block: paragraphs {
@@ -155,7 +156,9 @@ fragment paragraphFromLibrary on ParagraphFromLibrary {
 }
 ```
 
-- **Keep the aliases:** `libraryItem`, `uuid`, `label` and `block`.
+- **Keep the aliases:** `libraryItem`, `id`, `uuid`, `label` and `block`.
+- **The `id`** builds the link of "Edit" to the item's page: without it, a
+  placed item can't be edited.
 - **Spread the fragment** of every paragraph type that may become a library
   item.
 - **Don't spread the `paragraph` fragment** there: it contains
@@ -166,82 +169,33 @@ fragment paragraphFromLibrary on ParagraphFromLibrary {
 
 ## 7. The library item page
 
-"Edit" on a placed library item opens the item's page, which blökkli expects at
-`blokkli/library-item/<uuid>`, behind the language prefix if the site has one.
+The item's canonical URL is its page: `/blokkli/library-item/{id}`, behind the
+language prefix if the site has one. Drupal links there (open editing, the
+language switch, the list of edit states when publishing, notifications), and so
+does "Edit" on a placed item.
 
-**Drupal links to the same page with the id**: `/blokkli/library-item/{id}`.
-These links appear in open editing, the language switch, the list of edit states
-when publishing, and notifications. So the page must load by either:
-
-```graphql
-query libraryItem($id: ID!, $uuid: String!, $byId: Boolean!) {
-  byId: entityById(entityType: PARAGRAPHS_LIBRARY_ITEM, id: $id)
-    @include(if: $byId) {
-    ...libraryItemPage
-  }
-  byUuid: entityByUuid(entityType: PARAGRAPHS_LIBRARY_ITEM, uuid: $uuid)
-    @skip(if: $byId) {
-    ...libraryItemPage
-  }
-}
-
-fragment libraryItemPage on ParagraphsLibraryItem {
-  uuid
-  libraryItemLabel: label
-  blokkliProps {
-    ...blokkliProps
-  }
-  paragraphs {
-    ...paragraphsFieldItem
-    props {
-      ...paragraph
-    }
-  }
-}
-```
-
-The page, e.g. `pages/[lang]/blokkli/library-item/[uuid].vue`:
+The page, `pages/blokkli/library-item/[id].vue` (with the site's language prefix
+in front, if the routes have one):
 
 ```vue
 <template>
-  <BlokkliProvider
-    v-if="item"
-    v-slot="{ entity }"
-    v-bind="item.blokkliProps"
-    :entity="item"
-  >
+  <BlokkliDrupalEditLibraryItem v-slot="{ entity }" :id>
     <h1 v-blokkli-editable:label>{{ entity.libraryItemLabel }}</h1>
-    <BlokkliField name="paragraphs" :list="item.paragraphs" />
-  </BlokkliProvider>
+  </BlokkliDrupalEditLibraryItem>
 </template>
 
 <script lang="ts" setup>
-import type { LibraryItemPageFragment } from '#graphql-operations'
+import BlokkliDrupalEditLibraryItem from '#blokkli/drupal/components/BlokkliDrupalEditLibraryItem/index.vue'
 
-const param = String(useRoute().params.uuid)
-const byId = /^\d+$/.test(param)
-
-const { data } = await useAsyncGraphqlQuery('libraryItem', {
-  id: param,
-  uuid: param,
-  byId,
-})
-
-const item = computed(() => {
-  const entity = byId ? data.value?.data.byId : data.value?.data.byUuid
-  return entity && 'blokkliProps' in entity
-    ? (entity as LibraryItemPageFragment)
-    : null
-})
-
-if (!item.value) {
-  throw createError({ statusCode: 404, fatal: true })
-}
+const id = String(useRoute().params.id)
 </script>
 ```
 
-- **No language argument:** the endpoint's language applies, and the item comes
-  in that translation.
+- **The component** loads the item by its id, in the language of the request,
+  and renders its paragraph. It answers 404 when the item doesn't exist or the
+  user may not view it or use blökkli.
+- **The slot** renders above the paragraph, with the item as it is while
+  editing.
 - **The label:** add `libraryItemLabel: label` to the app's `pbMutatedEntity`
   fragment, so that editing it shows at once.
 - The web server or proxy must send the path, with the language prefix, to Nuxt.
@@ -281,7 +235,8 @@ if (!item.value) {
 | No library features at all                                                                | `ParagraphFromLibrary` isn't in the schema (the bundle or the extension is missing)                                                    |
 | `Cycle` or `Cannot spread fragment` errors for `paragraphFromLibrary`                     | The fragment spreads `paragraph`, or a container spread there spreads `paragraphFromLibrary`                                           |
 | A placed library item renders nothing                                                     | The item's paragraph type isn't spread in `paragraphFromLibrary`, or the item is unpublished                                           |
-| The item's page is a 404 from Drupal's links (open editing, language switch)              | The page only loads by uuid; Drupal links with the id                                                                                  |
+| "Edit" on a placed item is disabled: "This reusable block cannot be edited right now."    | `paragraphFromLibrary` doesn't ask for the item's `id`                                                                                 |
+| The item's page is a 404                                                                  | The page isn't at `blokkli/library-item/[id]`, or the user may not view the item                                                       |
 | The item's label is in the source language on a translated page                           | Each translation starts with the source label                                                                                          |
 | Placing a library item fails: "Paragraph type '…' is not allowed in field '…'"            | The field must allow `from_library` and the paragraph type of the item. The same goes for "Add to library" and for detaching an item   |
 | Placing a library item fails: "Access denied: cannot view the library item."              | The item is unpublished, and the user lacks `administer paragraphs library`                                                            |

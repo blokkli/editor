@@ -21,6 +21,10 @@ export type AdapterCreateTemplate = {
 
 export type TemplateItem = {
   uuid: string
+  /**
+   * The ID of the template, e.g. for the URL of its page.
+   */
+  id?: string
   label: string
   description?: string
   items?: FieldListItem[]
@@ -35,7 +39,10 @@ export type AdapterTemplatesGetResult =
   BlokkliAdapterSearchResults<TemplateItem>
 
 export type TemplatesSearchArguments = {
-  host?: BlokkliItemHost
+  /**
+   * The field to add a template to: only templates whose blocks it allows.
+   */
+  host?: BlokkliItemHost & { bundle: string }
   includeItems: boolean
 } & AdapterSearchArguments
 
@@ -45,6 +52,7 @@ export type AdapterDeleteTemplate = {
 
 export type AdapterTemplatesGetEditUrl = {
   templateUuid: string
+  templateId: string | null
 }
 
 declare module '#blokkli/editor/adapter' {
@@ -79,8 +87,10 @@ declare module '#blokkli/editor/adapter' {
 
     /**
      * Get the URL for editing a template.
+     *
+     * Returns null when the URL can't be built, e.g. without the ID.
      */
-    templatesGetEditUrl?: (e: AdapterTemplatesGetEditUrl) => string
+    templatesGetEditUrl?: (e: AdapterTemplatesGetEditUrl) => string | null
   }
 }
 

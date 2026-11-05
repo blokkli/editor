@@ -15,7 +15,7 @@ compatibility: >-
   plus access to the Drupal backend (drush, config export) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.0'
+  version: '1.0.1'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/features/search
 ---
@@ -135,8 +135,24 @@ search_plugin_configuration:
 ## 5. Permissions
 
 The search has no permission of its own. It needs blökkli's edit or review
-permission for edit states, like every editor query, and each result is
-access-checked: editors only find what they may view.
+permission for edit states, like every editor query. What editors find depends
+on the plugin:
+
+- **Entity Query** checks each result: editors only find what they may view.
+- **Search API** lists what the index returns. The index's processors decide
+  what that is:
+  - "Entity status" leaves out what isn't published.
+  - "Content access" applies the node grants, to nodes and comments.
+  - "Role-based access" keeps what the editor's roles may view, for any entity
+    type. It knows roles only (not "view own unpublished content"), and a change
+    of permissions takes effect when the items are indexed again.
+
+  For access that the index doesn't know about, such as a module's access hooks,
+  tick "Check view access of each result" in the provider (the media library's
+  Search API provider has it too). It loads the results and leaves out what the
+  editor may not view: a page then has fewer results, and the media library's
+  total still counts what the index found. Where every editor may view
+  everything that's indexed, neither is needed.
 
 ## 6. Check it
 

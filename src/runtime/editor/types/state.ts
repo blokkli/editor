@@ -26,10 +26,21 @@ export interface EntityTranslation {
   editUrl?: string
   exists: boolean
   status: boolean
+  /**
+   * Whether the user may change the translation's published status, which
+   * publishing an unpublished translation does. The editor assumes so when
+   * the backend doesn't say.
+   */
+  canChangeStatus?: boolean
 }
 
 export interface TranslationState {
   isTranslatable?: boolean | null
+  /**
+   * Whether each translation has a publish status of its own. False when every
+   * language shares one, null when the backend doesn't say.
+   */
+  isStatusTranslatable?: boolean | null
   sourceLanguage?: string | null
   availableLanguages?: Language[]
   translations?: EntityTranslation[]
@@ -52,6 +63,8 @@ export interface Validation {
   propertyPath?: string
   entityType?: string
   entityUuid?: string
+  /** The language of the entity's translation that has the invalid value. */
+  langcode?: string
 }
 
 export interface MappedState {

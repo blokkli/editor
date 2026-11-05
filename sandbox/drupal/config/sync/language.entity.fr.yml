@@ -5,5 +5,5 @@ dependencies: {  }
 id: fr
 label: French
 direction: ltr
-weight: 0
+weight: 2
 locked: false

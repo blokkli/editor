@@ -34,7 +34,10 @@ icon: 'bk_mdi_settings',
 ### 2. Custom SVG icons (no prefix)
 
 SVG files in `src/runtime/editor/icons/svg/` are always included. They use the
-filename (without extension) as the icon name.
+filename (without extension) as the icon name. They're rendered as markup, so a
+strict Content-Security-Policy blocks a `<style>` element or a `style` attribute
+in them: use presentation attributes (`opacity="0.3"`) and SMIL (`<animate>`, as
+in `loader.svg`).
 
 **Available custom icons**:
 

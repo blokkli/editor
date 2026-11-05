@@ -3,6 +3,7 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema, positionSchema } from '../schemas'
 import { resolvePosition } from '../helpers'
 import { fragmentBlockBundle } from '#blokkli-build/config'
+import { requireCanChangeField } from '../../helpers/validation'
 
 export const paramsSchema = z.object({
   name: z.string().describe('The fragment name to add'),
@@ -35,13 +36,9 @@ export default defineBlokkliAgentTool({
       }
     }
 
-    // Check ancestor restrictions on the target parent
-    if (permissions.blockHasRestrictedAncestor(params.parent.uuid)) {
-      return {
-        error:
-          'Permission denied: target parent is inside a block with restricted editing permissions',
-      }
-    }
+    // The target field must be able to change.
+    const fieldDenied = requireCanChangeField(ctx.app, params.parent)
+    if (fieldDenied) return fieldDenied
 
     // Check if the fragment exists
     const fragment = definitions.fragmentDefinitions.value.find(

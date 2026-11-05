@@ -1,0 +1,125 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - media.type.document
+    - media.type.image
+    - media.type.remote_video
+    - node.type.editorial
+    - node.type.event
+    - node.type.news
+    - node.type.office
+    - node.type.page
+    - node.type.publication
+    - taxonomy.vocabulary.location
+  module:
+    - content_translation
+    - contextual
+    - file
+    - media
+    - node
+    - paragraphs
+    - paragraphs_blokkli
+    - paragraphs_blokkli_agent
+    - paragraphs_blokkli_comment
+    - paragraphs_blokkli_template
+    - paragraphs_library
+    - paragraphs_type_permissions
+    - path
+    - scheduler
+    - system
+    - taxonomy
+    - toolbar
+    - translatable_config_pages
+    - view_unpublished
+id: field_restricted_editor
+label: 'Field-restricted editor'
+weight: 11
+is_admin: false
+# The editor's permissions: the hooks of this module lock some fields for
+# the role.
+permissions:
+  - 'access administration pages'
+  - 'access content overview'
+  - 'access contextual links'
+  - 'access files overview'
+  - 'access media overview'
+  - 'access toolbar'
+  - 'administer node published status'
+  - 'bypass paragraphs type content access'
+  - 'create content translations'
+  - 'create document media'
+  - 'create editorial content'
+  - 'create event content'
+  - 'create image media'
+  - 'create news content'
+  - 'create office content'
+  - 'create page content'
+  - 'create paragraph library item'
+  - 'create paragraph template'
+  - 'create paragraphs blokkli edit state'
+  - 'create publication content'
+  - 'create remote_video media'
+  - 'create terms in location'
+  - 'create url aliases'
+  - 'delete own document media'
+  - 'delete own editorial content'
+  - 'delete own event content'
+  - 'delete own files'
+  - 'delete own image media'
+  - 'delete own news content'
+  - 'delete own office content'
+  - 'delete own page content'
+  - 'delete own paragraph template'
+  - 'delete own publication content'
+  - 'delete own remote_video media'
+  - 'delete paragraphs blokkli edit state'
+  - 'edit any document media'
+  - 'edit any editorial content'
+  - 'edit any event content'
+  - 'edit any image media'
+  - 'edit any news content'
+  - 'edit any office content'
+  - 'edit any page content'
+  - 'edit any publication content'
+  - 'edit any remote_video media'
+  - 'edit own document media'
+  - 'edit own image media'
+  - 'edit own paragraph template'
+  - 'edit own remote_video media'
+  - 'edit paragraph library item'
+  - 'edit paragraphs blokkli edit state'
+  - 'edit terms in location'
+  - 'load id and name of blokkli users'
+  - 'manage translatable config pages'
+  - 'post blokkli comments'
+  - 'revert all revisions'
+  - 'schedule publishing of nodes'
+  - 'schedule publishing of paragraph'
+  - 'take ownership of paragraphs blokkli edit state'
+  - 'transfer blokkli paragraphs'
+  - 'translate editorial node'
+  - 'translate event node'
+  - 'translate location taxonomy_term'
+  - 'translate news node'
+  - 'translate office node'
+  - 'translate page node'
+  - 'translate paragraph'
+  - 'translate paragraphs_library_item'
+  - 'translate publication node'
+  - 'translate translatable_config_pages'
+  - 'update content translations'
+  - 'use paragraphs blokkli agent'
+  - 'view all revisions'
+  - 'view any blokkli entity label'
+  - 'view any unpublished content'
+  - 'view blokkli comments'
+  - 'view own unpublished content'
+  - 'view own unpublished media'
+  - 'view paragraph templates'
+  - 'view paragraphs blokkli edit state'
+  - 'view scheduled content'
+  - 'view scheduled paragraph'
+  - 'view the administration theme'
+  - 'view translatable config pages'
+  - 'view unpublished paragraphs'

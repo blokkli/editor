@@ -22,6 +22,7 @@
         }"
       >
         <Icon name="bk_mdi_web_traffic" />
+        <!-- eslint-disable-next-line vue/no-v-html -- a translated text -->
         <div v-html="infoText" />
       </div>
     </div>

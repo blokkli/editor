@@ -17,7 +17,9 @@ export default defineBlokkliAgentSystemPrompt({
               'A reusable paragraph from the library. Its content can not be edited, but it can be moved, deleted or detached.',
           }
         }
-        const paragraphFields = b.paragraphFields.map((v) => v.name).join(', ')
+        const paragraphFields = b.paragraphFields
+          .map((v) => (v.readOnly ? `${v.name} (read-only)` : v.name))
+          .join(', ')
         const contentFields = b.contentFields.map((v) => v.name).join(', ')
         const lines = [b.description]
 

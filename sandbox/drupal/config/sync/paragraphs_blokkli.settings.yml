@@ -19,11 +19,14 @@ enabled_types:
     - footer
     - site
 clipboard_text_paragraphs:
-  - bundle: text
+  -
+    bundle: text
     field: field_text
-  - bundle: title
+  -
+    bundle: title
     field: field_title
 hide_unpublished_paragraphs: true
+disable_shared_fields_in_translations: true
 restrict_fields: false
 enabled_fields: {  }
 disable_notifications: false

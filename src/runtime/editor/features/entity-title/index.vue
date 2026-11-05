@@ -22,6 +22,7 @@
       class="bk-toolbar-button group/tooltip w-full justify-start relative"
       data-test="entity-title"
       :data-test-entity-status="statusIndicatorStatus"
+      :data-test-entity-status-scope="statusScope"
       :disabled="!state.canEdit.value"
       @click="onEditEntity"
     >
@@ -59,6 +60,7 @@ import {
 } from '#blokkli/editor/components'
 import { defineCommands, defineTourItem } from '#blokkli/editor/composables'
 import type { UiStatus } from '#blokkli/editor/types/ui'
+import { getStatusScope } from '#blokkli/editor/helpers/status'
 
 defineBlokkliFeature({
   id: 'entity-title',
@@ -67,8 +69,8 @@ defineBlokkliFeature({
   description: 'Renders the title and status of the page entity.',
 })
 
-const { state, eventBus, $t, ui } = useBlokkli()
-const { entity, mutations, lastChanged } = state
+const { state, eventBus, $t, ui, context } = useBlokkli()
+const { entity, mutations, lastChanged, translation } = state
 const buttonEl = useTemplateRef('buttonEl')
 
 // Persist any pending option changes before opening the entity edit form
@@ -99,7 +101,57 @@ const formattedScheduledDate = computed(() => {
   })
 })
 
+const statusScope = computed(() => getStatusScope(translation.value))
+
+/**
+ * The name of the language being edited, when each language has a status of
+ * its own.
+ */
+const languageName = computed<string | null>(() => {
+  if (statusScope.value !== 'language') {
+    return null
+  }
+  const language = translation.value.availableLanguages?.find(
+    (v) => v.id === context.value.language,
+  )
+  return language?.name ?? context.value.language
+})
+
 const tooltipLabel = computed(() => {
+  if (languageName.value) {
+    let label = $t(
+      'entityTitleLanguageNotPublished',
+      '@language: not published',
+    )
+    if (entity.value.status && mutations.value.length) {
+      label = $t(
+        'entityTitleLanguagePublishedWithPendingChanges',
+        '@language: published (changes pending)',
+      )
+    } else if (entity.value.status) {
+      label = $t('entityTitleLanguagePublished', '@language: published')
+    }
+    return label.replace('@language', languageName.value)
+  }
+
+  if (statusScope.value === 'all-languages') {
+    if (!entity.value.status) {
+      return $t(
+        'entityTitleNotPublishedInAnyLanguage',
+        'Page is not published in any language',
+      )
+    }
+    return mutations.value.length
+      ? $t(
+          'entityTitlePublishedInAllLanguagesWithPendingChanges',
+          'Page is published in all languages (changes pending)',
+        )
+      : $t(
+          'entityTitlePublishedInAllLanguages',
+          'Page is published in all languages',
+        )
+  }
+
   if (entity.value.status && !mutations.value.length) {
     return $t('pageIsPublished', 'Page is published')
   } else if (entity.value.status && mutations.value.length) {

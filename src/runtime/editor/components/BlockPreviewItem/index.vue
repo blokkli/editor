@@ -42,7 +42,7 @@ import {
   INJECT_FIELD_LIST_BLOCKS,
   INJECT_FIELD_LIST_TYPE,
   INJECT_IS_EDITING,
-  INJECT_IS_IN_REUSABLE,
+  INJECT_IS_OUTSIDE_STATE,
   INJECT_PROVIDER_BLOCKS,
 } from '#blokkli/helpers/injections'
 import { fragmentBlockBundle } from '#blokkli-build/config'
@@ -108,7 +108,7 @@ const backgroundClass = computed(
 const blocks = computed(() => [] as FieldListItemTyped[])
 const fieldListType = computed(() => 'default' as ValidFieldListTypes)
 
-provide(INJECT_IS_IN_REUSABLE, true)
+provide(INJECT_IS_OUTSIDE_STATE, true)
 provide(INJECT_IS_EDITING, false)
 provide(INJECT_FIELD_LIST_BLOCKS, blocks)
 provide(INJECT_PROVIDER_BLOCKS, blocks)

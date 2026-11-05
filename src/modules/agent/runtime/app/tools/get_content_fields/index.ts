@@ -17,6 +17,11 @@ export const paramsSchema = tolerantSingularKeys(
   { uuid: 'uuids' },
 )
 
+const readOnlySchema = z
+  .boolean()
+  .optional()
+  .describe('The user may not change this field')
+
 const fieldSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('plain').describe('Plain text field'),
@@ -25,6 +30,7 @@ const fieldSchema = z.discriminatedUnion('type', [
     maxLength: z
       .number()
       .describe('Maximum character length (0 means unlimited)'),
+    readOnly: readOnlySchema,
   }),
   z.object({
     type: z.literal('markup').describe('Rich text / HTML field'),
@@ -33,6 +39,7 @@ const fieldSchema = z.discriminatedUnion('type', [
     maxLength: z
       .number()
       .describe('Maximum character length (0 means unlimited)'),
+    readOnly: readOnlySchema,
   }),
   z.object({
     type: z.literal('reference').describe('Entity reference field'),
@@ -47,6 +54,7 @@ const fieldSchema = z.discriminatedUnion('type', [
         }),
       )
       .describe('Entity types and bundles this field accepts'),
+    readOnly: readOnlySchema,
   }),
   z.object({
     type: z.literal('link').describe('Link field'),
@@ -61,6 +69,7 @@ const fieldSchema = z.discriminatedUnion('type', [
         }),
       )
       .describe('Entity types and bundles this field accepts'),
+    readOnly: readOnlySchema,
   }),
 ])
 
@@ -102,13 +111,27 @@ export default defineBlokkliAgentTool({
   paramsSchema,
   resultSchema,
   execute(ctx, params) {
-    const { blocks, state, types, $t, context } = ctx.app
+    const { blocks, state, types, $t, context, permissions } = ctx.app
     const result: Result = {}
+
+    // Only set when the field can't be changed.
+    const readOnly = (
+      host: { type: string; bundle: string; uuid: string },
+      fieldName: string,
+    ) =>
+      permissions.canEditFieldValue(host, fieldName)
+        ? {}
+        : { readOnly: true as const }
     const processedUuids = new Set<string>()
 
     function processEntity(entityUuid: string) {
       const entityType = context.value.entityType
       const entityBundle = context.value.entityBundle
+      const entityHost = {
+        type: entityType,
+        bundle: entityBundle,
+        uuid: entityUuid,
+      }
 
       const editableConfigs = types.editableFieldConfig
         .forEntityTypeAndBundle(entityType, entityBundle)
@@ -129,6 +152,7 @@ export default defineBlokkliAgentTool({
           currentValue: read.value,
           required: config.required,
           maxLength: config.maxLength,
+          ...readOnly(entityHost, config.name),
         })
       }
 
@@ -142,6 +166,7 @@ export default defineBlokkliAgentTool({
           type: config.type as 'reference' | 'link',
           label: config.label,
           allowed: config.allowed,
+          ...readOnly(entityHost, config.name),
         })
       }
     }
@@ -152,6 +177,11 @@ export default defineBlokkliAgentTool({
 
       const block = blocks.getBlock(blockUuid)
       if (!block) return
+      const blockHost = {
+        type: ctx.itemEntityType,
+        bundle: block.bundle,
+        uuid: blockUuid,
+      }
 
       for (const f of readBlockContentFields(
         ctx.app,
@@ -170,6 +200,7 @@ export default defineBlokkliAgentTool({
           currentValue: f.value,
           required: config?.required ?? false,
           maxLength: config?.maxLength ?? 0,
+          ...readOnly(blockHost, f.fieldName),
         })
       }
 
@@ -183,6 +214,7 @@ export default defineBlokkliAgentTool({
           type: config.type as 'reference' | 'link',
           label: config.label,
           allowed: config.allowed,
+          ...readOnly(blockHost, config.name),
         })
       }
 

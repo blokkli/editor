@@ -40,29 +40,9 @@ Statuses: `todo`, `in progress`.
   `blokkli-sandbox:logout <id> <user>` drush command), since revoking leaves the
   sessions a link opened.
 
-## Features that need their own plan
-
-Not started, and not to be patched in the meantime.
-
-- **Publish status per language** (the user, 2026-10-12). The editor knows one
-  publish status, the one of the language being edited, and "Publish" acts on
-  the original language (F26 in [findings.md](findings.md), with what exists
-  today). The editor must show clearly that only some languages are published,
-  whichever language the user is in. Open: where the status lives. It sits next
-  to the title today, the language switcher at the toolbar's other end.
-  - It includes the paragraphs' schedules (F24, parked into this plan on
-    2026-10-14): whether a schedule is per language or for the whole paragraph,
-    and how the schedule dialog shows it.
-
-## Upstream bugs
-
-[findings.md](findings.md): bugs in `paragraphs_blokkli`, `@blokkli/editor` and
-other projects, found along the way and fixed separately.
-
 ## Working on this plan
 
 - Set a chunk to `in progress` when you start it, in its file and above.
 - Tick tasks as you go. Write findings and deviations under "Notes".
 - When a chunk is done, move what's worth keeping into the `sandbox` skill, the
   code or `CONTRIBUTING.md`, then delete the chunk.
-- A bug that belongs in another project goes into [findings.md](findings.md).

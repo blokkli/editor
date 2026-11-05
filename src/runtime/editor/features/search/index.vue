@@ -51,6 +51,7 @@ import {
   defineDropHandler,
 } from '#blokkli/editor/composables'
 import { falsy } from '#blokkli/helpers'
+import { hasOtherTranslations } from '#blokkli/editor/helpers/translations'
 import { itemEntityType } from '#blokkli-build/config'
 import type { DropArea } from '#blokkli/editor/types/ui'
 import type { BlokkliItemHost } from '#blokkli/editor/types/field'
@@ -97,12 +98,9 @@ defineDropAreas((dragItems) => {
         return
       }
 
-      // Skip blocks where the user lacks edit permission or is inside
-      // a restricted ancestor.
-      if (
-        !permissions.checkBlockBundlePermission(field.bundle, 'edit') ||
-        permissions.blockHasRestrictedAncestor(field.uuid)
-      ) {
+      // Skip read-only fields, and blocks where the user lacks edit
+      // permission or that are inside a restricted ancestor.
+      if (!permissions.canEditFieldValue(field, field.fieldName)) {
         return
       }
 
@@ -139,12 +137,19 @@ defineDropAreas((dragItems) => {
         label,
         element: field.element,
         icon: 'bk_mdi_swap_horiz',
-        onDrop: () => {
+        askLanguages:
+          !!config.isTranslatable &&
+          hasOtherTranslations(
+            state.translation.value,
+            state.getFieldListItem(field.uuid)?.editContext?.translations ?? [],
+          ),
+        onDrop: (options) => {
           return state.mutateWithLoadingState(
             () =>
               adapter.replaceContentSearchItem!({
                 host,
                 item: searchItem,
+                allLanguages: options.allLanguages,
               }),
             ERROR_MESSAGE,
           )

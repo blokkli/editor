@@ -8,7 +8,8 @@ import {
   validateFieldCardinality,
   validateBundlesAllowed,
   requireBundlePermission,
-  requireNoRestrictedAncestor,
+  requireCanChangeBlockField,
+  requireCanChangeField,
 } from '../../helpers/validation'
 import { getFieldKey } from '#blokkli/helpers'
 import { countNewParagraphs } from '#blokkli/agent/app/helpers/mutationResult'
@@ -60,7 +61,7 @@ export default defineBlokkliAgentTool({
     if (denied) return denied
 
     // Check ancestor restrictions on source blocks
-    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, params.uuids)
+    const ancestorDenied = requireCanChangeBlockField(ctx.app, params.uuids)
     if (ancestorDenied) return ancestorDenied
 
     // If parent is provided, duplicate to a different field
@@ -78,18 +79,11 @@ export default defineBlokkliAgentTool({
       if (!host) {
         return { error: 'Target parent not found.' }
       }
-      const { entityType, bundle: targetBundle, isRoot: isRootEntity } = host
+      const { entityType, bundle: targetBundle } = host
 
-      // Check ancestor restrictions on target parent
-      if (
-        !isRootEntity &&
-        ctx.app.permissions.blockHasRestrictedAncestor(params.parent!.uuid)
-      ) {
-        return {
-          error:
-            'Permission denied: target parent is inside a block with restricted editing permissions',
-        }
-      }
+      // The target field must be able to change.
+      const fieldDenied = requireCanChangeField(ctx.app, params.parent!)
+      if (fieldDenied) return fieldDenied
 
       // Validate target field exists
       const fieldConfig = types.getFieldConfig(

@@ -157,7 +157,6 @@ import type {
 import Plan from './Plan/index.vue'
 import DropHandler from './DropHandler/index.vue'
 import { mcpTools } from '#blokkli-build/agent-client'
-import { itemEntityType } from '#blokkli-build/config'
 import { agentName } from '#blokkli-build/agent-prompts'
 import PanelSheet from '#blokkli/editor/components/Panel/Sheet/index.vue'
 import SidebarFloater from '#blokkli/editor/components/SidebarFloater/index.vue'
@@ -184,8 +183,7 @@ const {
   feedbackItemIds,
   toolDetails,
 } = agent.conversation
-const { pendingToolCall, pendingMutation, autoApprove, pageContext } =
-  agent.tools
+const { pendingToolCall, pendingMutation, autoApprove } = agent.tools
 const { plan } = agent.plan
 
 const supportsFeedback = computed(
@@ -203,13 +201,8 @@ watch(
   { immediate: true },
 )
 
-// Create context for tool components locally
-const toolContext = computed(() => ({
-  app,
-  itemEntityType,
-  adapter: app.adapter,
-  pageContext: pageContext.value,
-}))
+// Recomputed when the page context changes.
+const toolContext = computed(() => agent.tools.createToolContext())
 
 const pendingToolComponent = computed(() => {
   if (!pendingToolCall.value) return null

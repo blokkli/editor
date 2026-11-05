@@ -42,7 +42,8 @@ defineBlokkliFragment({
 
 The argument of the composable is similar to the one of `defineBlokkli`, but
 instead of `bundle` you define both a `name` and `label` (both are required) and
-an option `description`. Other properties like `options`, `globalOptions` or
+an option `description`. The label and the description can have one text per
+language, like an option's. Other properties like `options`, `globalOptions` or
 `editor` are also available.
 
 ## Data structure

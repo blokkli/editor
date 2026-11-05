@@ -35,7 +35,11 @@ const deleteDisabledReason = computed<false | string>(() => {
   }
 
   const denied = permissions.filterDeniedBundles(bundles, 'delete')
-  if (denied.length) {
+  // Every selected block leaves its field, also one nested in another.
+  const isLocked = selection.items.value.some(
+    (item) => !permissions.canChangeBlockField(item.uuid),
+  )
+  if (denied.length || isLocked) {
     return $t(
       'deleteNoPermission',
       'You do not have permission to delete this block.',

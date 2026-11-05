@@ -138,6 +138,20 @@ describe('The clipboard feature', async () => {
 
     // The URL was detected as a video, so a single bundle resolves — no choice.
     expect(await draggedBundles(page)).toEqual(['video'])
+    // The dragged item shows the video's thumbnail: openEditor answers its
+    // host with an image of the fixtures. The item is in the page twice, the
+    // drop element and the drag's copy.
+    await expect
+      .poll(() =>
+        page
+          .locator('[data-test="clipboard-video-thumbnail"]')
+          .evaluateAll((images) =>
+            (images as HTMLImageElement[])
+              .filter((img) => img.naturalWidth > 0)
+              .map((img) => img.src),
+          ),
+      )
+      .toContain('https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg')
 
     const uuidsBefore = await withApp(page, (app) => app.state.getAllUuids())
     const added = nextMutation(page, 'pbAddVideoRemote')

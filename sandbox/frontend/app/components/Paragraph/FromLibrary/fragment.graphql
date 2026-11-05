@@ -1,5 +1,6 @@
 fragment paragraphFromLibrary on ParagraphFromLibrary {
   libraryItem: fieldReusableParagraph {
+    id
     uuid
     label
     block: paragraphs {

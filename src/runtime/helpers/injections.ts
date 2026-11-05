@@ -28,6 +28,16 @@ type ItemEditContext = {
   definitions: DefinitionProvider
   selectedUuids: ComputedRef<string[]>
   useBlockRegistration?: (dom: DomProvider, uuid: string) => void
+
+  /**
+   * Whether the editor can edit a field, as its config says. A field without
+   * config can be edited.
+   */
+  isFieldEditable: (
+    entityType: string,
+    entityBundle: string,
+    fieldName: string,
+  ) => boolean
 }
 
 export const INJECT_APP = Symbol('blokkli_app') as InjectionKey<BlokkliApp>
@@ -76,10 +86,14 @@ export const INJECT_IS_PREVIEW = Symbol('blokkli_is_preview') as InjectionKey<
 >
 
 /**
- * Whether the block is rendered inside a from_library block.
+ * Whether the block is outside the edit state.
+ *
+ * It's rendered from what it's given, and nothing in it is edited: the block
+ * of a library item, the preview of a block, and what a field holds that the
+ * editor can't edit.
  */
-export const INJECT_IS_IN_REUSABLE = Symbol(
-  'blokkli_is_in_reusable',
+export const INJECT_IS_OUTSIDE_STATE = Symbol(
+  'blokkli_is_outside_state',
 ) as InjectionKey<boolean>
 
 /**

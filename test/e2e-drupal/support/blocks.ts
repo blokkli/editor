@@ -31,6 +31,28 @@ export function blockViewportRect(page: Page, uuid: string) {
   }, uuid)
 }
 
+/**
+ * The UUIDs of the blocks in a field, in their order. Defaults to the host
+ * entity's `field_paragraphs`; pass `entityUuid` for a block's field.
+ */
+export function fieldUuids(
+  page: Page,
+  fieldName = 'field_paragraphs',
+  entityUuid?: string,
+): Promise<string[]> {
+  return page.evaluate(
+    ({ fieldName, entityUuid }) => {
+      const app = window.__BLOKKLI__!.app!
+      const uuid = entityUuid || app.context.value.entityUuid
+      const field = app.state.mutatedFields.value.find(
+        (f) => f.entityUuid === uuid && f.name === fieldName,
+      )
+      return (field?.list ?? []).map((item) => item.uuid)
+    },
+    { fieldName, entityUuid: entityUuid ?? '' },
+  )
+}
+
 /** Whether a block is still present in the editor state. */
 export function blockExists(page: Page, uuid: string): Promise<boolean> {
   return page.evaluate(

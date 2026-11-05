@@ -17,9 +17,9 @@ frame-timed drop logic, DOM lifecycle.
 - Helpers: `test/e2e-drupal/support/` (no barrel — import direct from each
   module). Modules: `session`, `sandbox`, `mutations`, `blocks`, `editable`,
   `diff`, `events`, `toolbar`, `menu`, `sidebar`, `overlays`, `options`,
-  `preview`, `schedule`, `selection`, `clipboard`, `bundleSelector`, `history`,
-  `itemActions`, `keyboard`, `translations`, `agent`, `charts`,
-  `complexOptions`.
+  `preview`, `schedule`, `publish`, `selection`, `clipboard`, `bundleSelector`,
+  `history`, `itemActions`, `keyboard`, `translations`, `agent`, `charts`,
+  `complexOptions`, `dropAreas`, `library`, `drupal`.
 - Fixtures: `test/e2e-drupal/content` (see "Fixtures" below).
 
 For the agent's tests (`features/agent/`) see `/agent-e2e-testing` — covers the
@@ -151,6 +151,34 @@ was sent: `countMutations(page, name)` returns a counter of the mutation's
 requests from then on. `storedFieldValue(page, uuid, field)` reads the raw value
 the adapter supplies, not the rendered one.
 
+What Drupal must refuse by itself: `askDrupal(page, query, variables)`
+(`support/drupal.ts`) sends any GraphQL document to Drupal as the page's user,
+the way Nuxt's server passes the cookie on, past nginx's block of the endpoint.
+`features/preview-grant` and `features/ownership` check what a visitor or a
+non-owner gets with it.
+
+## The CSP check
+
+The frontend sends a strict Content-Security-Policy (the sandbox skill,
+"Requests"). A test fails on any violation of it that isn't known:
+`support/csp.ts` records the violations of every document of a page, and
+`setup.ts` checks after every test and every file. `openEditor` and `openPage`
+install it; a page made with `createPage` needs `installCspCheck(page)`.
+
+- `KNOWN` lists violations that stay until their fix, each with its fix. What
+  violates the policy: a `<style>` element or a `style` attribute in markup
+  (`v-html`, the SVG icons; Vue's `:style` is fine), `new Function`, an image
+  from another host.
+- The build enforces Trusted Types. The editor's code passes markup through
+  `helpers/html` (`parseHtmlDocument()`, `setSanitizedHtml()`, …), which has its
+  policy. A string given to `innerHTML` or `DOMParser` goes to the page's
+  `default` policy instead: the check records every call of it, and only the
+  dependencies' (`DEPENDENCIES`: TipTap, turndown, ECharts) are expected.
+- Markup can't run script under the policy: a place that renders content as
+  markup shows up as a blocked inline handler, rather than as a canary that ran.
+- The dev server allows inline styles (Nuxt devtools, the error overlay), so a
+  style violation only fails against the build, which GitHub runs.
+
 ## `data-test-*` — the DOM contract
 
 **Specs select on `data-test-*` ONLY.** No ids, no `bk-*` classes (mangled), no
@@ -185,7 +213,10 @@ matches either; assert exact: `getAttribute === 'true'`.
 - `openEditor(sandbox, user, path, { mockScript?, timezoneId?, localStorage? })`
   — logs the user in, pre-dismisses the `agent`/`tour` popups, always gives the
   agent a mock script (default `[]`; `[{ type: 'restore' }]` to test the restore
-  of a conversation), waits for the editor.
+  of a conversation), waits for the editor. It answers requests to YouTube's
+  image host (the clipboard's thumbnails) with an image of the fixtures. It and
+  `openPage` turn Nuxt DevTools off: its panel can throw, and Nuxt's dev error
+  layer then takes the clicks.
 - `openPage(sandbox, user, path)` — logs the user in and opens the path outside
   the editor, e.g. to check what visitors see.
 - `editorPath('/en/blocks', 'blocks')` — a seeded node's path in the editor;
@@ -250,9 +281,14 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
   David Meier (`comment_administrator`: a reviewer who administers comments,
   without the permissions to view or post them); these two roles come from the
   test module, and have no list of all pages ("Switch page", "Import from an
-  existing page"). All have an English UI. Whoever opens a node's editor first
-  owns its edit state; another user gets a read-only editor. Test permissions
-  with users of other roles: there are no permission overrides.
+  existing page"). Jonas may not change a page's published status: he can't
+  publish what is unpublished (the editors and Élodie can). Tim Fischer
+  (`field_restricted_editor`, also from the test module) is an editor who may
+  not edit some fields (`FieldAccessHooks`): a page's `field_aside`, an
+  editorial page's options, the columns' `field_right`, and the widget's
+  `field_title` and `field_media_items`. All have an English UI. Whoever opens a
+  node's editor first owns its edit state; another user gets a read-only editor.
+  Test permissions with users of other roles: there are no permission overrides.
 - **Drupal's names:** fields are `field_paragraphs`, `field_text`, …; bundles
   are the paragraph types.
 - **Harmless choices:** a test that would run "whatever comes first" (the
@@ -263,9 +299,10 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
 - **The content model:** a `page` allows neither `section` nor `call_to_action`,
   an `editorial` node does; only editorial and office nodes allow fragments (the
   front page, `home`, is editorial). While editing, a `page` always shows an H2
-  ("Related topics"). Text fields are `frame`, string fields `plain`; a
-  paragraph's `field_title` holds 255 characters at most. A converted paragraph
-  gets a new UUID.
+  ("Related topics"); blökkli doesn't manage its `field_related`: the editor
+  shows it as it's stored, and it takes no paragraphs. Text fields are `frame`,
+  string fields `plain`; a paragraph's `field_title` holds 255 characters at
+  most. A converted paragraph gets a new UUID.
 - **Media:** numeric IDs follow the order of creation; don't rely on them.
   Adding one through the adapter needs its ID: find it in the media library by
   its name (`mediaLibraryGetResults`, see `features/analyze/alt-text`).
@@ -278,16 +315,25 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
   `invalid: true` (e.g. `nodes/broken.yml`, a title in a gallery): the seed then
   skips its checks. A paragraph with plain values has no translation, even in a
   translated node (`nodes/notices.yml`); `outdated: [de]` flags a translation as
-  outdated (`nodes/waste-collection.yml`). `deleted: true` on a user or node
-  deletes it after seeding, leaving its comments without an author or its
-  notifications without a page (`users.yml`: Nora Huber, `nodes/removed.yml`).
+  outdated (`nodes/waste-collection.yml`). Each translation of a page has a
+  status of its own (`status: { en: true, de: false }`,
+  `nodes/status-per-language.yml`, `unpublished-translations.yml`,
+  `original-unpublished.yml`); the translations of a news item share one
+  (`nodes/shared-status.yml`, unpublished: `shared-draft.yml`). A paragraph's
+  status and dates are per language too; `null` leaves a field empty in its
+  language (`nodes/scheduled-text.yml`: a text scheduled in English only).
+  `deleted: true` on a user or node deletes it after seeding, leaving its
+  comments without an author or its notifications without a page (`users.yml`:
+  Nora Huber, `nodes/removed.yml`).
 - **The widget** (`sandbox/frontend/app/components/Paragraph/Widget`): a
   paragraph type for the tests only. It has an option of every type, each value
   in a cell of its own (`data-test="widget-option-<key>"`), a `field_title`
-  bound to an element, a `field_lead` that is only prop-mapped, and a
-  `field_link` with a title (`field_link.title`). Only E2E sandboxes allow it,
-  on pages. Seeded ones are on `nodes/widgets.yml`; `setupWidget(page)` adds
-  one. A new option type goes here first.
+  bound to an element, a `field_lead` that is only prop-mapped, a `field_link`
+  with a title (`field_link.title`), and documents and links that take several
+  values (`field_media_items`, `field_link_items`; an entity mapping allows
+  documents in the links, so a dropped document can also become a widget). Only
+  E2E sandboxes allow it, on pages. Seeded ones are on `nodes/widgets.yml`;
+  `setupWidget(page)` adds one. A new option type goes here first.
 
 ## Gotchas
 
@@ -297,6 +343,10 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
   nothing). One drag per test sidesteps it.
 - Canvas double-click to edit is unreliable (artboard vs screen coords) — use
   `eventBus.emit('editable:open', { fieldName, uuid? })`.
+- **A drag started on the event bus follows the real pointer:** the browser
+  moves it whenever the layout under it changes, so a drag can end where an
+  earlier click left the pointer (the toolbar). `support/dropAreas.ts` puts it
+  in the middle first (`startDrag`, `pointerToCenter`); drop with `dropOnArea`.
 - **Drop logic without a canvas drop:**
   `app.dragdrop.getDropHandler('<itemType>')` returns the handler; you can
   `await handler.execute({ items, host, afterUuid, field, bundle })` in

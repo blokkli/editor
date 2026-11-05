@@ -93,17 +93,14 @@ const buildEditable = (
   if (!host) {
     return
   }
-  if (host.bundle === fromLibraryBlockBundle) {
+  if (host.type === itemEntityType && host.bundle === fromLibraryBlockBundle) {
     return
   }
 
-  // Block-level editables require edit permission on the bundle
-  // and must not be inside a restricted ancestor.
-  if (
-    host.type === itemEntityType &&
-    (!permissions.checkBlockBundlePermission(host.bundle, 'edit') ||
-      permissions.blockHasRestrictedAncestor(host.uuid))
-  ) {
+  // The field must not be read-only. Block-level editables require edit
+  // permission on the bundle and must not be inside a restricted ancestor or
+  // a field that can't change.
+  if (!permissions.canEditFieldValue(host, fieldName)) {
     return
   }
 

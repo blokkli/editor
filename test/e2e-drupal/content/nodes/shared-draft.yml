@@ -1,0 +1,12 @@
+# Unpublished news in every language, which share one status
+# (blokkli_playground_test): /en/news/pool-closes.
+key: shared-draft
+type: news
+title: { en: Pool closes, de: Badi schliesst, fr: La piscine ferme }
+status: false
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>The pool closes for the winter.</p>'
+      de: '<p>Die Badi schliesst über den Winter.</p>'
+      fr: '<p>La piscine ferme pour l’hiver.</p>'

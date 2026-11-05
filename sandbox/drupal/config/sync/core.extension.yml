@@ -12,6 +12,7 @@ module:
   config: 0
   contextual: 0
   crop: 0
+  csp: 0
   datetime: 0
   datetime_range: 0
   dblog: 0

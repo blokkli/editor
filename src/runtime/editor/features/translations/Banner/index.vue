@@ -23,6 +23,7 @@
               <div
                 class="pb-10 border-b border-b-scheme-dark/40 flex justify-between items-center"
               >
+                <!-- eslint-disable-next-line vue/no-v-html -- a translated text with a count -->
                 <div class="text-base" v-html="outdatedLabel" />
                 <div class="flex gap-5 relative">
                   <button
@@ -118,6 +119,7 @@ import {
   Tooltip,
 } from '#blokkli/editor/components'
 import type { Language } from '#blokkli/editor/types/state'
+import { escapeHtml } from '#blokkli/editor/helpers/string'
 
 const props = defineProps<{
   activeLanguage: Language
@@ -184,7 +186,7 @@ const text = computed(() => {
   return $t(
     'translationsBannerText',
     'You are currently editing the <strong>@language</strong> translation.',
-  ).replace('@language', props.activeLanguage.name)
+  ).replace('@language', escapeHtml(props.activeLanguage.name))
 })
 
 const outdatedLabel = computed(() => {

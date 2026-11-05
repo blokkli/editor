@@ -31,6 +31,8 @@ import type { EntityContext } from '#blokkli/types'
 import { itemEntityType } from '#blokkli-build/config'
 import type { EditableFieldType } from '../../types'
 import type { StyleValue } from 'vue'
+import { getUrlOrigin } from '#blokkli/editor/helpers/url'
+import { isMessageFrom } from '#blokkli/editor/helpers/message'
 
 const { adapter, ui, element } = useBlokkli()
 
@@ -153,13 +155,20 @@ const url = computed(() => {
   })
 })
 
+// The frame's origin. Only the frame gets its value, and only its messages
+// are accepted: they set the value that is saved.
+const origin = computed(() => (url.value ? getUrlOrigin(url.value) : null))
+
 // The field editor inside the iframe posts its first message (usually the
 // height update on mount) once it is fully initialised — only then can a
 // pushed value actually reach the editor instance.
 const isReady = ref(false)
 
 const onMessage = (e: MessageEvent) => {
-  if (typeof e.data === 'object') {
+  if (!isMessageFrom(e, iframe.value?.contentWindow, origin.value)) {
+    return
+  }
+  if (e.data && typeof e.data === 'object') {
     if (
       !isReady.value &&
       typeof e.data.name === 'string' &&
@@ -182,9 +191,12 @@ const onMessage = (e: MessageEvent) => {
  * Push a new value into the iframe's editor.
  */
 function setValue(text: string) {
+  if (!origin.value) {
+    return
+  }
   iframe.value?.contentWindow?.postMessage(
     { name: 'blokkli__editable_field_set_value', data: { text } },
-    '*',
+    origin.value,
   )
 }
 

@@ -5,6 +5,7 @@
       <Icon :name="icon" class="size-25 mr-10 hidden lg:flex" />
       <div class="mr-auto">
         <slot>
+          <!-- eslint-disable-next-line vue/no-v-html -- the callers build the markup and escape the values in it -->
           <p v-if="text" v-html="text" />
         </slot>
       </div>

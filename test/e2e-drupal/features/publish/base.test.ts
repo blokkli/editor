@@ -1,6 +1,6 @@
-import { setup, url } from '@nuxt/test-utils/e2e'
+import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
-import type { Locator, Page } from 'playwright-core'
+import type { Page } from 'playwright-core'
 import {
   appMenu,
   appMenuButton,
@@ -29,6 +29,11 @@ import {
   setScheduleTime,
 } from '../../support/schedule'
 import { nextMutation } from '../../support/mutations'
+import {
+  isModeChecked,
+  publishMode,
+  reopenAfterPublish,
+} from '../../support/publish'
 import { resetSandbox, sandboxHost, workerSandbox } from '../../support/sandbox'
 
 // Two unpublished pages (content/nodes/draft.yml, announcement.yml).
@@ -50,10 +55,6 @@ const YEAR = new Date().getUTCFullYear() + 1
 const NOW = new Date(Date.UTC(YEAR, 5, 15, 10)).toISOString()
 const TODAY = NOW.slice(0, 10)
 
-function publishMode(page: Page, mode: 'save' | 'immediate' | 'scheduled') {
-  return page.locator(`[data-test="publish-mode-${mode}"]`)
-}
-
 /** Schedule `uuids` to be published on `date` (`pbSetParagraphSchedule`). */
 function scheduleBlocksPublish(
   page: Page,
@@ -71,22 +72,6 @@ function scheduleBlocksPublish(
     },
     { uuids, date },
   )
-}
-
-/** Whether a publish-mode option is the currently selected one. */
-async function isModeChecked(mode: Locator): Promise<boolean> {
-  return (await mode.getAttribute('data-test-checked')) === 'true'
-}
-
-/**
- * Close the editor's page after a publish (it leaves the editor), then open
- * the editor again: publishing deleted the edit state, so this shows what
- * Drupal stored.
- */
-async function reopenAfterPublish(page: Page, path: string): Promise<void> {
-  await page.waitForURL((u) => !u.searchParams.has('blokkliEditing'))
-  await page.goto(url(path))
-  await waitForEditorReady(page)
 }
 
 /**
@@ -314,7 +299,7 @@ describe('The publish dialog', async () => {
 
     // Saving calls `publish` but must not flip the page live.
     const variables = await published
-    expect(variables.publishIfUnpublished).toBe(false)
+    expect(variables.languages ?? []).toEqual([])
     expect(variables.revisionLogMessage).toBe(message)
 
     // Drupal stored the changes, and the page is still unpublished.
@@ -334,7 +319,7 @@ describe('The publish dialog', async () => {
     const published = nextMutation(defaultPage, 'pbPublish')
     await dialogSubmit(defaultPage).click()
 
-    expect((await published).publishIfUnpublished).toBe(true)
+    expect((await published).languages).toEqual(['en'])
 
     // Drupal published the page.
     await reopenAfterPublish(defaultPage, DRAFT_PATH)

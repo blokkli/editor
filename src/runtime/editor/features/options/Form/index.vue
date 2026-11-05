@@ -307,21 +307,16 @@ const visibleOptions = computed<OptionItem[]>(() => {
 
 /**
  * Whether the user may edit every selected block. The backend rejects option
- * changes to a block whose type, or an ancestor's, lacks the edit permission.
+ * changes to a block whose type, or an ancestor's, lacks the edit permission,
+ * and to a block in a field that can't change. The page's options can only be
+ * changed if the adapter can update them: it can't for a user who may not.
  */
 const mayEditBlocks = computed(() => {
   if (!Array.isArray(props.uuids)) {
-    return true
+    return !!adapter.updateHostOptions
   }
 
-  return props.uuids.every((uuid) => {
-    const block = blocks.getBlock(uuid)
-    return (
-      !!block &&
-      permissions.checkBlockBundlePermission(block.bundle, 'edit') &&
-      !permissions.blockHasRestrictedAncestor(uuid)
-    )
-  })
+  return props.uuids.every((uuid) => permissions.canEditBlock(uuid))
 })
 
 function isDisabled(plugin: OptionItem) {
@@ -434,12 +429,14 @@ function flushOptions(): Promise<unknown> {
     return Promise.resolve()
   }
 
+  const updateHostOptions = adapter.updateHostOptions
+  if (!Array.isArray(props.uuids) && !updateHostOptions) {
+    return Promise.resolve()
+  }
+
   const run = Array.isArray(props.uuids)
     ? () => adapter.updateOptions!(values)
-    : () =>
-        adapter.updateHostOptions!(
-          values.map((v) => ({ ...v, uuid: undefined })),
-        )
+    : () => updateHostOptions!(values.map((v) => ({ ...v, uuid: undefined })))
 
   inflight = state
     .mutateWithLoadingState(run)

@@ -7,6 +7,7 @@ import {
   isColorIdValid,
 } from '#blokkli/helpers/colors'
 import { useBlokkliRuntimeConfig } from '../../composables/useBlokkliRuntimeConfig'
+import { resolveDefinitionString } from '../helpers/options'
 
 export type ConfigProvider = {
   colorOptions: ComputedRef<ColorOption[]>
@@ -16,15 +17,17 @@ export type ConfigProvider = {
   canonicalColorId: (option: ColorOption) => string
 }
 
-export default function (): ConfigProvider {
+export default function (
+  interfaceLanguage: ComputedRef<string>,
+): ConfigProvider {
   const appConfig = useAppConfig()
   const { resolveColorHex } = useBlokkliRuntimeConfig()
 
   /**
    * The editor's structured view of available colors — same flat hex source
    * as the runtime (`appConfig.blokkli.colorOptions`), enriched with build-
-   * time metadata (labels, shade structure, main flag) for the dropdown
-   * UI. Disable rules:
+   * time metadata (labels in the interface language, shade structure, main
+   * flag) for the dropdown UI. Disable rules:
    *   - bare `<id>: null` → family skipped entirely.
    *   - `<id>.<shade>: null` → that shade dropped from the ramp. If all
    *     shades end up dropped, the family is skipped.
@@ -37,6 +40,10 @@ export default function (): ConfigProvider {
     const result: ColorOption[] = []
     for (const [id, entry] of Object.entries(moduleColorOptions)) {
       if (overrides[id] === null) continue
+      const label = resolveDefinitionString(
+        entry.label,
+        interfaceLanguage.value,
+      )
 
       if ('shades' in entry) {
         const shades: ColorShade[] = []
@@ -51,13 +58,13 @@ export default function (): ConfigProvider {
         }
         if (shades.length === 0) continue
         const main = shades.find((s) => s.isMain) ?? shades[0]!
-        result.push({ id, hex: main.hex, label: entry.label, shades })
+        result.push({ id, hex: main.hex, label, shades })
       } else {
         const value = overrides[id]
         result.push({
           id,
           hex: typeof value === 'string' ? value : entry.hex,
-          label: entry.label,
+          label,
         })
       }
     }

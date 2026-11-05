@@ -107,8 +107,11 @@ export default defineBlokkliAgentTool({
       label: source?.label ?? params.topic,
       description: source?.description ?? '',
       statistics: {
-        categories: data.categories,
-        series: data.series,
+        categories: data.categories.map((category) => category.label),
+        series: data.series.map((series) => ({
+          name: series.name,
+          data: series.data,
+        })),
       },
     }
     return {

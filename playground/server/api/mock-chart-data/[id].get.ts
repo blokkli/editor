@@ -1,11 +1,11 @@
 import { createError, defineEventHandler, getRouterParam } from 'h3'
 
-type ChartDataSourcePayload = {
+type MockSource = {
   categories: string[]
   series: { name: string; data: number[] }[]
 }
 
-const sources: Record<string, ChartDataSourcePayload> = {
+const sources: Record<string, MockSource> = {
   'monthly-sales': {
     categories: [
       'Jan',
@@ -114,10 +114,15 @@ const sources: Record<string, ChartDataSourcePayload> = {
   },
 }
 
-export default defineEventHandler((event): ChartDataSourcePayload => {
+// The mock data has one language, so its labels and names are also the keys.
+export default defineEventHandler((event) => {
   const id = getRouterParam(event, 'id')
   if (!id || !(id in sources)) {
     throw createError({ statusCode: 404, statusMessage: 'Source not found' })
   }
-  return sources[id]!
+  const source = sources[id]!
+  return {
+    categories: source.categories.map((label) => ({ key: label, label })),
+    series: source.series.map((s) => ({ key: s.name, ...s })),
+  }
 })

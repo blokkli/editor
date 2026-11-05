@@ -180,6 +180,17 @@ export interface BlokkliAdapter<T> {
   getFieldConfig(): Promise<FieldConfig[]>
 
   /**
+   * Get the deepest level that blocks may be nested at.
+   *
+   * The blocks in a field of the host entity are on level 1, the blocks in
+   * their fields on level 2. The editor doesn't offer to add or move blocks
+   * to where they, or the blocks nested in them, would end up deeper.
+   *
+   * Without this method, there's no limit.
+   */
+  getMaxNestingLevel?(): number
+
+  /**
    * Add a new block.
    */
   addNewBlock(e: AddNewBlockEvent): Promise<MutationResponseLike<T>>

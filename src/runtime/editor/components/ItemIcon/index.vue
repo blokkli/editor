@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable-next-line vue/no-v-html -- the block definition's SVG icon -->
   <div v-if="markup" class="bk-blokkli-item-icon" v-html="markup" />
   <div v-else class="bk-blokkli-item-icon">
     <Icon :name="iconName" />

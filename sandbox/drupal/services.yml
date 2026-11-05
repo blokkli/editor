@@ -1,0 +1,7 @@
+# The site's container parameters, loaded by settings.php (container_yamls).
+parameters:
+  # The frontend sends COEP "require-corp" (nuxt-security's strict mode,
+  # sandbox/frontend/nuxt.config.ts). The pages the editor frames send it too,
+  # rather than the module's "credentialless", so that they load in Safari,
+  # which doesn't know that value. They load only this site's resources.
+  paragraphs_blokkli.frame_embedder_policy: require-corp

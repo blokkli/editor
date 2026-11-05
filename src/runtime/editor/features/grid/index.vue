@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable-next-line vue/no-v-html -- the adapter's grid markup -->
   <div v-if="isVisible" class="bk-grid-overlay" v-html="gridMarkup" />
 </template>
 

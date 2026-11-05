@@ -160,12 +160,13 @@ function getInteractedElement(
     const editableUuid =
       editableField.type === itemEntityType ? editableField.uuid : undefined
 
-    // Skip editable fields on blocks where the user lacks edit permission
-    // or that are inside a restricted ancestor.
-    const canEdit =
-      !editableUuid ||
-      (permissions.checkBlockBundlePermission(editableField.bundle, 'edit') &&
-        !permissions.blockHasRestrictedAncestor(editableUuid))
+    // Skip editable fields that can't be changed: read-only ones, and the
+    // ones of blocks where the user lacks edit permission or that are inside
+    // a restricted ancestor.
+    const canEdit = permissions.canEditFieldValue(
+      editableField,
+      editableField.fieldName,
+    )
 
     // Use the editable if it belongs to the winning block, or if it's on a
     // non-block entity (e.g. the host entity).
@@ -190,7 +191,11 @@ function getInteractedElement(
       droppableField.fieldName,
       droppableField,
     )
-    if (config.type === 'reference' && config.cardinality !== 1) {
+    if (
+      config.type === 'reference' &&
+      config.cardinality !== 1 &&
+      permissions.canEditFieldValue(droppableField, droppableField.fieldName)
+    ) {
       const droppableUuid =
         droppableField.type === itemEntityType ? droppableField.uuid : undefined
       if (!droppableUuid || droppableUuid === deepestUuid) {
@@ -288,14 +293,16 @@ function onPointerMove(e: PointerEvent) {
   if (uuid) {
     // The block is part of the current selection.
     if (selection.uuids.value.includes(uuid)) {
-      eventBus.emit('dragging:start', {
-        items: toDraggableExisting(selection.items.value),
-        coords: { x: e.clientX, y: e.clientY },
-        mode: 'mouse',
-      })
+      if (canMoveBlocks(selection.uuids.value)) {
+        eventBus.emit('dragging:start', {
+          items: toDraggableExisting(selection.items.value),
+          coords: { x: e.clientX, y: e.clientY },
+          mode: 'mouse',
+        })
+      }
     } else {
       const block = blocks.getBlock(uuid)
-      if (block) {
+      if (block && canMoveBlocks([block.uuid])) {
         eventBus.emit('dragging:start', {
           items: toDraggableExisting(block),
           coords: { x: e.clientX, y: e.clientY },
@@ -305,6 +312,14 @@ function onPointerMove(e: PointerEvent) {
     }
     canvasEl.value?.removeEventListener('pointermove', onPointerMove)
   }
+}
+
+/**
+ * Whether the blocks can be dragged: a block in a field that can't change
+ * can't leave it.
+ */
+function canMoveBlocks(uuids: string[]): boolean {
+  return uuids.every((uuid) => permissions.canChangeBlockField(uuid))
 }
 
 function onPointerDown(e: PointerEvent) {
@@ -572,14 +587,16 @@ function onTouchStart(e: PointerEvent) {
         selection.uuids.value.includes(touchStartInteraction.uuid) &&
         state.editMode.value === 'editing'
       ) {
-        eventBus.emit('dragging:start', {
-          items: toDraggableExisting(selection.items.value),
-          coords: {
-            x: touchStartInteraction.x,
-            y: touchStartInteraction.y,
-          },
-          mode: 'touch',
-        })
+        if (canMoveBlocks(selection.uuids.value)) {
+          eventBus.emit('dragging:start', {
+            items: toDraggableExisting(selection.items.value),
+            coords: {
+              x: touchStartInteraction.x,
+              y: touchStartInteraction.y,
+            },
+            mode: 'touch',
+          })
+        }
         return
       }
 

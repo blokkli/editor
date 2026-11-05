@@ -62,10 +62,34 @@ const duplicateDisabledReason = computed<false | string>(() => {
     { cardinality: number; allowedBundles: string[]; count: number }
   > = {}
 
-  const selectedCount = selection.items.value.length
+  const selected = selection.items.value
 
-  for (let i = 0; i < selectedCount; i++) {
-    const block = selection.items.value[i]!
+  // Check add permission.
+  const denied = permissions.filterDeniedBundles(
+    selected.map((v) => v.bundle),
+    'add',
+  )
+  // The field of every selected block takes a copy, as far as the backend
+  // checks: also one nested in another selected block.
+  const isLocked = selected.some(
+    (block) => !permissions.canChangeBlockField(block.uuid),
+  )
+  if (denied.length || isLocked) {
+    return $t(
+      'duplicateNoPermission',
+      'You do not have permission to duplicate this block.',
+    )
+  }
+
+  // A block nested in another selected block gets no copy of its own: it is
+  // copied with the other block. Only the fields of the others get copies.
+  const copied = selected.filter(
+    (block) =>
+      !selected.some((other) => state.isChildOf(block.uuid, other.uuid)),
+  )
+
+  for (let i = 0; i < copied.length; i++) {
+    const block = copied[i]!
     const field = state.getMutatedField(block.host.uuid, block.host.fieldName)
     if (!field) {
       continue
@@ -121,15 +145,6 @@ const duplicateDisabledReason = computed<false | string>(() => {
     }
 
     const bundles = blocks.map((v) => v.bundle)
-
-    // Check add permission.
-    const denied = permissions.filterDeniedBundles(bundles, 'add')
-    if (denied.length) {
-      return $t(
-        'duplicateNoPermission',
-        'You do not have permission to duplicate this block.',
-      )
-    }
 
     // Check if all bundles are allowed in the field.
     if (

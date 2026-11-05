@@ -1393,6 +1393,14 @@ msgstr ""
 "Automatischi Veröffentlichigs- und Depublikationsdate für d'usgwählte Blöck "
 "plane."
 
+msgctxt "blockSchedulerDialogLeadLanguages"
+msgid ""
+"Schedule automatic publishing and unpublishing dates for the selected "
+"blocks. A date set here applies to all languages."
+msgstr ""
+"Automatischi Veröffentlichigs- und Depublikationsdate für d'usgwählte Blöck "
+"plane. Es Datum, wo do gsetzt wird, gilt für alli Sprache."
+
 msgctxt "blockSchedulerDialogPublishOn"
 msgid "Publish on"
 msgstr "Veröffentliche am"
@@ -1418,6 +1426,10 @@ msgid ""
 "page."
 msgstr ""
 
+msgctxt "blockSchedulerDiffersPerLanguage"
+msgid "Differs per language"
+msgstr "Je nach Sprach verschiede"
+
 msgctxt "blockSchedulerMixedDates"
 msgid "Selected blocks have different dates: @dates"
 msgstr "Usgwählti Blöck hän verschiedeni Date: @dates"
@@ -1426,9 +1438,21 @@ msgctxt "blockSchedulerOverride"
 msgid "Set date for all"
 msgstr "Datum für alli setze"
 
+msgctxt "blockSchedulerOverrideLanguages"
+msgid "Set date for all languages"
+msgstr "Datum für alli Sprache setze"
+
+msgctxt "blockSchedulerPublished"
+msgid "Published"
+msgstr "Publiziert"
+
 msgctxt "blockSchedulerSuccessMessage"
 msgid "Successfully updated schedule dates."
 msgstr "Planungsdate erfolgriich aktualisiert."
+
+msgctxt "blockSchedulerUnpublished"
+msgid "Unpublished"
+msgstr "Nid publiziert"
 
 msgctxt "blockTransferClipboardError"
 msgid "Failed to write to the clipboard. Please check your browser permissions."
@@ -1444,8 +1468,8 @@ msgstr ""
 
 msgctxt "blockTransferDroppedFieldsHelp"
 msgid ""
-"These fields were dropped because they no longer exist on the target block "
-"type."
+"These fields were dropped because they don't exist on the target block type "
+"or their value isn't valid there."
 msgstr ""
 
 msgctxt "blockTransferEntityType"
@@ -2151,6 +2175,38 @@ msgctxt "close"
 msgid "Close"
 msgstr "Zuemache"
 
+msgctxt "colorOption_amber_label"
+msgid "Amber"
+msgstr "Bernstei"
+
+msgctxt "colorOption_blue_label"
+msgid "Blue"
+msgstr "Blau"
+
+msgctxt "colorOption_green_label"
+msgid "Green"
+msgstr "Grüen"
+
+msgctxt "colorOption_orange_label"
+msgid "Orange"
+msgstr "Orange"
+
+msgctxt "colorOption_pink_label"
+msgid "Pink"
+msgstr "Pink"
+
+msgctxt "colorOption_purple_label"
+msgid "Purple"
+msgstr "Violett"
+
+msgctxt "colorOption_red_label"
+msgid "Red"
+msgstr "Rot"
+
+msgctxt "colorOption_teal_label"
+msgid "Teal"
+msgstr "Türkis"
+
 msgctxt "commandGroup.add"
 msgid "Add new"
 msgstr "Drzuefüege"
@@ -2385,6 +2441,18 @@ msgctxt "dragToMove"
 msgid "Drag to move"
 msgstr ""
 
+msgctxt "draggingOverlayAllLanguages"
+msgid "All languages"
+msgstr "Alli Sprache"
+
+msgctxt "draggingOverlayLanguagesDescription"
+msgid "This field can differ per language."
+msgstr "Das Fäld cha pro Sprach andersch sii."
+
+msgctxt "draggingOverlayOnlyLanguage"
+msgid "Only @language"
+msgstr "Nur @language"
+
 msgctxt "draggingOverlaySelectBundle"
 msgid "Select block type to create"
 msgstr "Blocktyp zum Erstelle uswähle"
@@ -2515,9 +2583,33 @@ msgctxt "editingDisabled"
 msgid "Editing is disabled for this block type."
 msgstr ""
 
+msgctxt "entityTitleLanguageNotPublished"
+msgid "@language: not published"
+msgstr "@language: nid publiziert"
+
+msgctxt "entityTitleLanguagePublished"
+msgid "@language: published"
+msgstr "@language: publiziert"
+
+msgctxt "entityTitleLanguagePublishedWithPendingChanges"
+msgid "@language: published (changes pending)"
+msgstr "@language: publiziert (Änderige usstehend)"
+
 msgctxt "entityTitleLastChanged"
 msgid "Last changed"
 msgstr "Zletscht gänderet"
+
+msgctxt "entityTitleNotPublishedInAnyLanguage"
+msgid "Page is not published in any language"
+msgstr "Die Sitte isch in keinere Sprooch publiziert"
+
+msgctxt "entityTitlePublishedInAllLanguages"
+msgid "Page is published in all languages"
+msgstr "Die Sitte isch in allne Sprooche publiziert"
+
+msgctxt "entityTitlePublishedInAllLanguagesWithPendingChanges"
+msgid "Page is published in all languages (changes pending)"
+msgstr "Die Sitte isch in allne Sprooche publiziert (Änderige usstehend)"
 
 msgctxt "entityTitleTourText"
 msgid ""
@@ -2789,6 +2881,10 @@ msgctxt "iframesEditorPresets"
 msgid "Presets"
 msgstr "Voriistellige"
 
+msgctxt "iframesEditorUnsafeSource"
+msgid "Only addresses that start with http or https can be shown here."
+msgstr "Do chönne nur Adrässe aazeigt wärde, wo mit http oder https aafönge."
+
 msgctxt "image"
 msgid "Image"
 msgstr ""
@@ -2848,6 +2944,14 @@ msgstr "Kursiv"
 msgctxt "keyboardSpace"
 msgid "Space"
 msgstr "Leertaste"
+
+msgctxt "languageSwitcherNotPublished"
+msgid "Not published"
+msgstr "Nid publiziert"
+
+msgctxt "languageSwitcherPublished"
+msgid "Published"
+msgstr "Publiziert"
 
 msgctxt "libraryAddDescription"
 msgid ""
@@ -3169,6 +3273,10 @@ msgctxt "publish"
 msgid "Publish"
 msgstr ""
 
+msgctxt "publishAllLanguages"
+msgid "All languages"
+msgstr "Alli Sprache"
+
 msgctxt "publishAlreadyScheduledDescription"
 msgid "This page is already scheduled for publishing"
 msgstr "Die Sitte isch scho zur Veröffentlichig plant"
@@ -3180,6 +3288,14 @@ msgstr "Publiziere & Zuemache"
 msgctxt "publishAndCloseLabelUnpublished"
 msgid "Save & Close"
 msgstr "Speichere & Zuemache"
+
+msgctxt "publishAppliesAllLanguages"
+msgid "Publishing applies all pending changes, in every language."
+msgstr "Bim Veröffentliche wärde alli usstehende Änderige übernoh, i allne Sprache."
+
+msgctxt "publishCurrentLanguage"
+msgid "Current language"
+msgstr "Aktuelli Sprach"
 
 msgctxt "publishCurrentPage"
 msgid "Current page"
@@ -3193,6 +3309,10 @@ msgctxt "publishDescription"
 msgid "Publish all changes."
 msgstr "Alli Änderige veröffentliche."
 
+msgctxt "publishDescriptionPage"
+msgid "Publish the page"
+msgstr "Sitte veröffentliche"
+
 msgctxt "publishDescriptionScheduled"
 msgid "View or change the scheduled publication"
 msgstr "Planti Veröffentlichig aaluege oder ändere"
@@ -3200,6 +3320,10 @@ msgstr "Planti Veröffentlichig aaluege oder ändere"
 msgctxt "publishDescriptionUnpublished"
 msgid "Save all changes while keeping page unpublished"
 msgstr "Alli Änderige speichere ohni d'Sitte z'publiziere"
+
+msgctxt "publishDescriptionUnpublishedLanguages"
+msgid "Publish the languages that are not published yet"
+msgstr "Sprache veröffentliche, wo no nid publiziert sin"
 
 msgctxt "publishDialogTitle"
 msgid "Publish changes"
@@ -3212,6 +3336,16 @@ msgstr "D'Änderige hän nid chönne publiziert wärde."
 msgctxt "publishErrorsTitle"
 msgid "Cannot publish"
 msgstr ""
+
+msgctxt "publishLanguages"
+msgid "Languages"
+msgstr "Sprache"
+
+msgctxt "publishLanguagesNotAllowed"
+msgid "You may not publish the unpublished languages that can't be ticked."
+msgstr ""
+"Di nid publizierte Sprache, wo sich nid uswähle lönd, dörfed Sie nid "
+"publiziere."
 
 msgctxt "publishMode"
 msgid "Publish mode"
@@ -3232,6 +3366,12 @@ msgstr "Änderige plant veröffentliche"
 msgctxt "publishModeScheduledTitle"
 msgid "Schedule"
 msgstr "Plane"
+
+msgctxt "publishPageNotAllowed"
+msgid "You may not publish this page. Saving keeps it unpublished."
+msgstr ""
+"Sie dörfed die Siite nid publiziere. Bim Speichere bliibt sie nid "
+"publiziert."
 
 msgctxt "publishPublicationScheduled"
 msgid "Publication scheduled"
@@ -3284,6 +3424,10 @@ msgstr "Beschriibig vo de Änderige"
 msgctxt "publishRevisionLogMessageDescription"
 msgid "Briefly describe the changes made"
 msgstr "Beschriib churz d'Änderige wo gmacht worde sin"
+
+msgctxt "publishSaveAppliesAllLanguages"
+msgid "Saving applies all pending changes, in every language."
+msgstr "Bim Speichere wärde alli usstehende Änderige übernoh, i allne Sprache."
 
 msgctxt "publishSaveContent"
 msgid "Save content"

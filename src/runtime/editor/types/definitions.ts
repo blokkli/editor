@@ -18,8 +18,20 @@ export type FieldConfig = {
   entityBundle: string
   label: string
   cardinality: number
+
+  /**
+   * Whether blökkli manages the field. If not, the editor shows what the field
+   * holds, as stored, outside the edit state.
+   */
   canEdit: boolean
   allowedBundles: string[]
+
+  /**
+   * The user may not change what the field holds. Unlike a field that blökkli
+   * doesn't manage, it shows the edit state: but nothing is added to it, moved
+   * into, out of or within it, or removed from it, and nothing in it changes.
+   */
+  readOnly?: boolean
 }
 
 export type EntityTypeRestriction = {

@@ -15,17 +15,60 @@
       <TransitionHeight opacity>
         <div v-if="isEnabled">
           <div class="pt-20">
-            <div v-if="hasMixedDates && !overrideMode">
-              <InfoBox :text="mixedDatesMessage" />
-              <div class="mt-15">
-                <button
-                  type="button"
-                  class="bk-button bk-scheme-mono bk-is-light"
-                  @click="enableOverride"
+            <table
+              v-if="languageRows.length"
+              class="bk-table mb-15"
+              :data-test="testId + '-languages'"
+            >
+              <tbody>
+                <tr
+                  v-for="row in languageRows"
+                  :key="row.langcode"
+                  :data-test="testId + '-language-' + row.langcode"
+                  :data-test-dates="row.dates.join(',')"
+                  :data-test-published="row.statuses.join(',')"
                 >
-                  {{ $t('blockSchedulerOverride', 'Set date for all') }}
-                </button>
-              </div>
+                  <td class="w-full">
+                    <strong>{{ row.label }}</strong>
+                  </td>
+                  <td class="whitespace-nowrap pl-18 text-sm">
+                    {{ row.datesLabel }}
+                  </td>
+                  <td v-if="showStatus" class="whitespace-nowrap pl-18 text-sm">
+                    <div class="flex items-center gap-10">
+                      <StatusIndicator
+                        v-if="row.statuses.length === 1"
+                        :status="row.statuses[0] ? 'success' : 'error'"
+                      />
+                      {{ row.statusLabel }}
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div v-if="hasMixedDates && !overrideMode">
+              <InfoBox
+                v-if="!languageRows.length"
+                :text="mixedDatesMessage"
+                class="mb-15"
+                :data-test="testId + '-mixed'"
+              />
+              <button
+                type="button"
+                class="bk-button bk-scheme-mono bk-is-light"
+                :data-test="testId + '-override'"
+                @click="enableOverride"
+              >
+                {{
+                  languageRows.length
+                    ? $t(
+                        'blockSchedulerOverrideLanguages',
+                        'Set date for all languages',
+                      )
+                    : $t('blockSchedulerOverride', 'Set date for all')
+                }}
+              </button>
             </div>
 
             <div v-if="!hasMixedDates || overrideMode">
@@ -44,15 +87,21 @@ import {
   FormToggle,
   ScheduleDate,
   InfoBox,
+  StatusIndicator,
   TransitionHeight,
 } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 
+/**
+ * A date of a block in one of its languages.
+ */
 export type ScheduleItemData = {
   uuid: string
   bundle: string
+  langcode: string
   date: string | null | undefined
+  isPublished?: boolean
 }
 
 const props = withDefaults(
@@ -65,9 +114,20 @@ const props = withDefaults(
     disabled?: boolean
     /** `data-test` id for the section root (e.g. `scheduler-publish`). */
     testId: string
+    /**
+     * The names of the page's languages, by langcode, when it has several.
+     * While the languages differ, each one's dates are listed.
+     */
+    languageLabels?: Record<string, string> | null
+    /**
+     * Whether the list of languages shows their status, which the date sets.
+     */
+    showStatus?: boolean
   }>(),
   {
     disabled: false,
+    languageLabels: null,
+    showStatus: false,
   },
 )
 
@@ -152,6 +212,59 @@ const mixedDatesMessage = computed(() => {
   )
 
   return message.replace('@dates', formattedDates)
+})
+
+/**
+ * Each language's dates and status, while the languages differ: they're
+ * overwritten when a date is set. Empty on a page in one language, and for
+ * blocks that have one translation.
+ */
+const languageRows = computed(() => {
+  if (!props.languageLabels) {
+    return []
+  }
+
+  const supportedItems = props.items.filter((item) =>
+    props.supportedBundles.includes(item.bundle),
+  )
+
+  const rows = Object.entries(props.languageLabels).flatMap(
+    ([langcode, label]) => {
+      const items = supportedItems.filter((item) => item.langcode === langcode)
+      if (!items.length) {
+        return []
+      }
+      // Several selected blocks can differ in one language.
+      const dates = [...new Set(items.map((item) => item.date ?? null))]
+      const statuses = [...new Set(items.map((item) => !!item.isPublished))]
+      return [
+        {
+          langcode,
+          label,
+          dates: dates.map((date) => date ?? ''),
+          statuses,
+          datesLabel: dates
+            .map((date) =>
+              date ? ui.formatDate(date) : $t('notSet', 'Not set'),
+            )
+            .join(' / '),
+          statusLabel: statuses
+            .map((isPublished) =>
+              isPublished
+                ? $t('blockSchedulerPublished', 'Published')
+                : $t('blockSchedulerUnpublished', 'Unpublished'),
+            )
+            .join(' / '),
+        },
+      ]
+    },
+  )
+
+  const statusesDiffer =
+    props.showStatus &&
+    new Set(supportedItems.map((item) => !!item.isPublished)).size > 1
+
+  return rows.length > 1 && (hasMixedDates.value || statusesDiffer) ? rows : []
 })
 
 // Helper function to get tomorrow's date as ISO string

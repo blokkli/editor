@@ -228,7 +228,10 @@ const override = useEditableFieldOverride(props.fieldName, props.host)
 const hasChanged = computed(
   () => modelValue.value.trim() !== originalText.value.trim(),
 )
-const itemBundle = computed(() => props.host.bundle)
+// The host's bundle can have the name of a block bundle.
+const itemBundle = computed(() =>
+  props.host.type === itemEntityType ? props.host.bundle : null,
+)
 const maxlength = computed(() => props.config.maxLength)
 const required = computed(() => !!props.config.required)
 const title = computed(() => {

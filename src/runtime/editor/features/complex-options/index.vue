@@ -42,7 +42,7 @@ defineBlokkliFeature({
   requiredAdapterMethods: ['updateOptions'],
 })
 
-const { $t, state, adapter, dom, blocks } = useBlokkli()
+const { $t, state, adapter, dom, blocks, permissions } = useBlokkli()
 const getText = $t
 
 const uuid = ref<string | null>(null)
@@ -106,7 +106,10 @@ async function onSubmit() {
 }
 
 onBlokkliEvent('option:edit-complex', (e) => {
-  if (!(e.dataType in COMPLEX_OPTION_TYPES)) {
+  if (
+    !(e.dataType in COMPLEX_OPTION_TYPES) ||
+    !permissions.canEditBlock(e.uuid)
+  ) {
     return
   }
   uuid.value = e.uuid

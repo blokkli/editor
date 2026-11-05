@@ -74,6 +74,13 @@ function importRow(page: Page, key: string): Locator {
   )
 }
 
+/** The cell of a language in a row of the import dialog. */
+function importCell(row: Locator, langcode: string): Locator {
+  return row.locator(
+    `[data-test="translations-csv-import-cell"][data-test-langcode="${langcode}"]`,
+  )
+}
+
 /** What Drupal said about the text of a row, in the row. */
 function rowError(row: Locator): Locator {
   return row.locator('[data-test="translations-row-error"]')
@@ -81,9 +88,10 @@ function rowError(row: Locator): Locator {
 
 /**
  * Drupal rejects a batch of translations when one of them doesn't fit its
- * field. Nothing of the batch is stored then, and whatever applied it must
- * neither look applied nor lose its texts: the dialogs stay open and say in
- * the row of the text what Drupal said about it, the approval of an
+ * field, and says it about every text that doesn't. Nothing of the batch is
+ * stored then, and whatever applied it must neither look applied nor lose its
+ * texts: the dialogs stay open and say in the row of each text what Drupal
+ * said about it, in the cell of its language, the approval of an
  * auto-translation starts again, and the agent's tool ends with an error.
  *
  * Drupal's message is in the language of the page, so the specs look for the
@@ -251,11 +259,17 @@ describe('Translations that Drupal rejects', async () => {
   })
 
   test('the import dialog stays open with its selection', async () => {
+    // Both are too long.
     const csv = buildSingleLangCsv([
       {
         key: `${SHORT.uuid}:field_title`,
         source: SHORT.sourceTitle,
         translation: 'a'.repeat(MAX_LENGTH + 1),
+      },
+      {
+        key: `${LONG}:field_title`,
+        source: longTitle,
+        translation: 'b'.repeat(MAX_LENGTH + 1),
       },
     ])
 
@@ -267,16 +281,18 @@ describe('Translations that Drupal rejects', async () => {
       content: csv,
     })
     const rows = page.locator('[data-test="translations-csv-import-row"]')
-    await expect.poll(() => rows.count()).toBe(1)
+    await expect.poll(() => rows.count()).toBe(2)
 
     const rejected = nextMutation(page, 'pbBulkTranslateFieldValues')
     await page.locator('[data-test="translations-csv-import-apply"]').click()
     await rejected
 
-    // The row says what Drupal said, so no message of the editor on top.
-    const row = importRow(page, `${SHORT.uuid}:field_title`)
-    await rowError(row).waitFor({ state: 'visible' })
-    expect(await rowError(row).textContent()).toContain(String(MAX_LENGTH))
+    // Each row says what Drupal said, so no message of the editor on top.
+    for (const uuid of [SHORT.uuid, LONG]) {
+      const row = importRow(page, `${uuid}:field_title`)
+      await rowError(row).waitFor({ state: 'visible' })
+      expect(await rowError(row).textContent()).toContain(String(MAX_LENGTH))
+    }
     expect(await shownMessages(page)).toEqual([])
     // A dialog that closes takes a moment to leave, so "it's still visible"
     // says nothing right away: it must not become hidden.
@@ -286,21 +302,35 @@ describe('Translations that Drupal rejects', async () => {
         timeout: 1000,
       }),
     ).rejects.toThrow()
-    expect(await rows.count()).toBe(1)
+    expect(await rows.count()).toBe(2)
     expect(await storedMutations()).toBe(0)
 
     await page.keyboard.press('Escape')
     await dialog(page, 'translations-csv').waitFor({ state: 'hidden' })
   })
 
-  test('an import of several languages says it in the row', async () => {
-    // Drupal doesn't say which language it refused: German is too long here,
-    // French isn't.
-    const key = `${SHORT.uuid}:field_title`
-    const file = (langcode: string, translation: string) => ({
+  test('an import of several languages says it in the cell of the language', async () => {
+    // The short title is too long in German, the long one in French.
+    const tooLong = 'a'.repeat(MAX_LENGTH + 1)
+    const translations = {
+      de: { [SHORT.uuid]: tooLong, [LONG]: 'Ein Titel' },
+      fr: { [SHORT.uuid]: 'Un titre', [LONG]: tooLong },
+    }
+    const file = (langcode: 'de' | 'fr') => ({
       name: `translations.${langcode}.po`,
       content: buildPoFixture(
-        [{ key, source: SHORT.sourceTitle, translation }],
+        [
+          {
+            key: `${SHORT.uuid}:field_title`,
+            source: SHORT.sourceTitle,
+            translation: translations[langcode][SHORT.uuid]!,
+          },
+          {
+            key: `${LONG}:field_title`,
+            source: longTitle,
+            translation: translations[langcode][LONG]!,
+          },
+        ],
         langcode,
       ),
     })
@@ -308,29 +338,36 @@ describe('Translations that Drupal rejects', async () => {
     await page.locator('[data-test="translations-banner-csv"]').click()
     await dialog(page, 'translations-csv').waitFor({ state: 'visible' })
     await switchToCsvImportTab(page)
-    await uploadTranslationsFile(page, file('de', 'a'.repeat(MAX_LENGTH + 1)))
-    await uploadTranslationsFile(page, file('fr', 'Un titre court'))
+    await uploadTranslationsFile(page, file('de'))
+    await uploadTranslationsFile(page, file('fr'))
 
-    // One row with a change per language, once both files are read.
+    // A row per title with a change per language, once both files are read.
     const applyButton = page.locator(
       '[data-test="translations-csv-import-apply"]',
     )
     await expect
       .poll(() => applyButton.getAttribute('data-test-count'))
-      .toBe('2')
+      .toBe('4')
     const rows = page.locator('[data-test="translations-csv-import-row"]')
-    expect(await rows.count()).toBe(1)
+    expect(await rows.count()).toBe(2)
 
     const rejected = nextMutation(page, 'pbBulkTranslateFieldValues')
     await applyButton.click()
     expect((await rejected).items.map((item) => item?.langcode).sort()).toEqual(
-      ['de', 'fr'],
+      ['de', 'de', 'fr', 'fr'],
     )
 
-    const row = importRow(page, key)
-    await rowError(row).waitFor({ state: 'visible' })
-    expect(await rowError(row).count()).toBe(1)
-    expect(await rowError(row).textContent()).toContain(String(MAX_LENGTH))
+    // Each row says it once, in the cell of the language that is too long.
+    for (const [uuid, langcode] of [
+      [SHORT.uuid, 'de'],
+      [LONG, 'fr'],
+    ] as const) {
+      const row = importRow(page, `${uuid}:field_title`)
+      const cell = importCell(row, langcode)
+      await rowError(cell).waitFor({ state: 'visible' })
+      expect(await rowError(cell).textContent()).toContain(String(MAX_LENGTH))
+      expect(await rowError(row).count()).toBe(1)
+    }
     expect(await storedMutations()).toBe(0)
 
     await page.keyboard.press('Escape')

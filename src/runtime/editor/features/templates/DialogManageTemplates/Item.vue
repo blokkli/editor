@@ -65,7 +65,7 @@
             <Icon name="bk_mdi_delete" />
           </button>
           <button
-            v-if="adapterHasEdit && permissions.includes('edit')"
+            v-if="editUrl && permissions.includes('edit')"
             ref="editButtonEl"
             class="bk-button bk-scheme-accent bk-is-small bk-is-icon-only"
             @click.prevent="isEditing = true"
@@ -122,14 +122,15 @@ const editUrl = computed(() => {
   if (!adapter.templatesGetEditUrl) {
     return null
   }
-  return adapter.templatesGetEditUrl({ templateUuid: props.uuid })
+  return adapter.templatesGetEditUrl({
+    templateUuid: props.uuid,
+    templateId: props.id ?? null,
+  })
 })
 
 function onSubmitEdit() {
   isEditing.value = false
 }
-
-const adapterHasEdit = !!adapter.templatesGetEditUrl
 
 const bundleLabels = computed(() =>
   props.itemBundles

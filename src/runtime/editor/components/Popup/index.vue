@@ -22,7 +22,7 @@
         <div class="bk-popup-content">
           <div class="bk-popup-content-text">
             <slot>
-              <p v-if="text" v-html="text" />
+              <p v-if="text">{{ text }}</p>
             </slot>
           </div>
 

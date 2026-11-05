@@ -127,7 +127,6 @@ const {
   phase,
   errorMessage,
   streamingTitle,
-  streamUsage,
   fieldStates,
   findFieldState,
   findOverride,
@@ -200,7 +199,6 @@ function transitionToApproval() {
       rejectedByUser: {},
       label: $t('aiAgentDelegateRewriteNoChanges', 'No changes detected'),
       agentMessage: 'The rewriting produced no changes to any fields.',
-      _usage: streamUsage.value,
     })
     return
   }
@@ -221,7 +219,6 @@ function onCancel() {
     rejectedByUser: {},
     label: $t('aiAgentDelegateRewriteCancelled', 'Rewriting cancelled'),
     agentMessage: 'Rewriting was cancelled by the user.',
-    _usage: streamUsage.value,
   })
 }
 
@@ -232,7 +229,6 @@ function finishWithError() {
     rejectedByUser: {},
     label: $t('rewritingFailed', 'Rewriting failed'),
     agentMessage: `Rewriting failed: ${errorMessage.value}`,
-    _usage: streamUsage.value,
   })
 }
 
@@ -250,7 +246,6 @@ function rejectAllFromApproval() {
     label: $t('aiAgentDelegateRewriteAllRejected', 'All changes rejected'),
     agentMessage:
       'All proposed changes were rejected by the user. Ask the user what they would like to change instead.',
-    _usage: streamUsage.value,
   })
 }
 
@@ -398,6 +393,10 @@ async function applySelected(data: DiffApplyPayload) {
         after: appliedByItemId[item.id]!,
         mode: (fs?.mode || 'full') as 'full' | 'patch',
         operations,
+        plain:
+          props.params.fields.find(
+            (f) => f.uuid === item.uuid && f.fieldName === item.fieldName,
+          )?.fieldType === 'plain',
       }
     })
 
@@ -418,7 +417,6 @@ async function applySelected(data: DiffApplyPayload) {
     agentMessage,
     historyIndex: state.currentMutationIndex.value,
     _details,
-    _usage: streamUsage.value,
     // Let the agent respond if anything was rejected, skipped or manually
     // revised, so it can retry references and calibrate to the revisions.
     _skipLlmResponse:
@@ -434,7 +432,6 @@ onMounted(async () => {
       rejectedByUser: {},
       label: $t('aiAgentDelegateRewriteCancelled', 'Rewriting cancelled'),
       agentMessage: 'Rewriting was cancelled by the user.',
-      _usage: streamUsage.value,
     })
   }
 })

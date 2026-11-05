@@ -20,6 +20,7 @@
                     :key="index"
                   >
                     <td>{{ item.bundle }}</td>
+                    <!-- eslint-disable-next-line vue/no-v-html -- built below, with the names escaped -->
                     <td v-html="item.validation" />
                   </tr>
                 </tbody>
@@ -40,6 +41,7 @@ import {
   defineViewOption,
 } from '#blokkli/editor/composables'
 import { falsy } from '#blokkli/helpers'
+import { escapeHtml } from '#blokkli/editor/helpers/string'
 import { itemEntityType } from '#blokkli-build/config'
 
 defineBlokkliFeature({
@@ -100,7 +102,7 @@ const fieldMappingValidations = computed(() => {
         .map((mapping) => {
           return {
             bundle,
-            validation: `The props field mapping <code>'${mapping.propName}': '${mapping.fieldName}'</code> is invalid, because <strong>${bundle}</strong> has no field <strong>${mapping.fieldName}</strong>`,
+            validation: `The props field mapping <code>'${escapeHtml(mapping.propName)}': '${escapeHtml(mapping.fieldName)}'</code> is invalid, because <strong>${escapeHtml(bundle)}</strong> has no field <strong>${escapeHtml(mapping.fieldName)}</strong>`,
           }
         })
 
@@ -111,7 +113,7 @@ const fieldMappingValidations = computed(() => {
         .map((fieldName) => {
           return {
             bundle,
-            validation: `Missing props field mapping for field <strong>${fieldName}</strong>`,
+            validation: `Missing props field mapping for field <strong>${escapeHtml(fieldName)}</strong>`,
           }
         })
 

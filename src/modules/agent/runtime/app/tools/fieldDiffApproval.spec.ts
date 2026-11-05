@@ -1,4 +1,4 @@
-// @vitest-environment happy-dom
+// @vitest-environment jsdom
 import { describe, it, expect } from 'vitest'
 import { splitIntoSegments } from '#blokkli/editor/helpers/diff'
 import type { ApprovalItem } from '#blokkli/editor/components/DiffApproval/types'

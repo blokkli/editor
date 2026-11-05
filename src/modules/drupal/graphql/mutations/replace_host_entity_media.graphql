@@ -4,6 +4,7 @@ mutation pbReplaceHostEntityMedia(
   $entityUuid: String!
   $fieldName: String!
   $mediaId: String!
+  $allLanguages: Boolean
 ) {
   state: paragraphsEditMutationState(
     entityType: $entityType
@@ -13,6 +14,7 @@ mutation pbReplaceHostEntityMedia(
       langcode: $langcode
       fieldName: $fieldName
       mediaId: $mediaId
+      allLanguages: $allLanguages
     ) {
       ...paragraphsBlokkliMutationResult
     }

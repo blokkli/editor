@@ -201,6 +201,22 @@ describe('createMockProvider', () => {
     ])
   })
 
+  it('reports the given usage when the message ends', async () => {
+    const usage = { inputTokens: 1200, outputTokens: 340 }
+    const provider = createMockProvider(
+      [{ type: 'agent', content: '[[[FIELD:0]]]\n[[[FULL]]]\nNew text.' }],
+      usage,
+    )
+    const events = await collect(
+      provider.createStream(dummyConfig, { ...EMPTY_OPTIONS, messages: [] }),
+    )
+    expect(events.at(-1)).toEqual({
+      type: 'message_end',
+      stop_reason: 'end_turn',
+      ...usage,
+    })
+  })
+
   it('exits without yielding when the signal is already aborted', async () => {
     const script: MockScript = [
       { type: 'user', content: 'hi' },

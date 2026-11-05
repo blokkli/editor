@@ -293,6 +293,7 @@ async function applySelected(data: DiffApplyPayload) {
       fieldLabel: item.fieldLabel,
       before: beforeValues.get(item.id) || '',
       after: appliedByItemId[item.id]!,
+      plain: getFieldType(item.uuid, item.fieldName) === 'plain',
     }))
 
   const editedByUser: Record<string, Record<string, { value: string }>> = {}
