@@ -1,4 +1,5 @@
 fragment nodeNews on NodeNews {
+  __typename
   uuid
   title
   lead: fieldLead

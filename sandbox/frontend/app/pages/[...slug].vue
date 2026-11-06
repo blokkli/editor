@@ -46,25 +46,14 @@ if (!language) {
   throw createError({ statusCode: 404, fatal: true })
 }
 
-const { data, error } = await useAsyncGraphqlQuery(
-  'route',
-  computed(() => ({ path: route.path })),
-)
-
-if (error.value) {
-  // 403: anonymous users, who can't see anything.
-  throw createError({ statusCode: error.value.statusCode ?? 500, fatal: true })
-}
+const { entity: routeEntity, drupalRoute } = await useRouteQuery('slug')
 
 // The front page (node 1, system.site.page.front) has its own page component
 // (pages/index.vue). Its alias, e.g. from Drupal's "View" tab or the
 // editor's lists, leads there, with the query (editing, previewing).
-const routeUrl = data.value?.data.route
 if (
-  routeUrl &&
-  'entity' in routeUrl &&
-  routeUrl.entity?.__typename === 'NodeEditorial' &&
-  routeUrl.entity.id === '1'
+  drupalRoute.value.entityType === 'node' &&
+  drupalRoute.value.entityId === '1'
 ) {
   await navigateTo({ path: `/${language}`, query: route.query })
 }
@@ -72,11 +61,7 @@ if (
 // A config page on its own route, where it's edited: the layout renders it,
 // the page only its label.
 const entity = computed(() => {
-  const url = data.value?.data.route
-  if (!url || !('entity' in url) || !url.entity) {
-    return null
-  }
-  switch (url.entity.__typename) {
+  switch (routeEntity.value?.__typename) {
     case 'NodePage':
     case 'NodeEditorial':
     case 'NodeNews':
@@ -85,29 +70,20 @@ const entity = computed(() => {
     case 'NodePublication':
     case 'TranslatableConfigPagesFooter':
     case 'TranslatableConfigPagesSite':
-      return url.entity
+      return routeEntity.value
   }
   return null
 })
 
-useSeoMeta({
-  title: () => entity.value?.label,
-  description: () =>
-    entity.value && 'lead' in entity.value ? entity.value.lead : null,
-})
+const breadcrumb = useBreadcrumb()
 
-const breadcrumb = computed(() => {
-  const url = data.value?.data.route
-  return url && 'breadcrumb' in url ? url.breadcrumb : []
-})
+const { mainMenuLinks } = useInitData()
 
-const { data: layout } = await useLayoutQuery()
-
-const subPages = computed(() =>
-  findSubPages(layout.value?.mainMenu?.links ?? [], route.path),
-)
+const subPages = computed(() => findSubPages(mainMenuLinks.value, route.path))
 
 if (!entity.value) {
   throw createError({ statusCode: 404, fatal: true })
 }
+
+await renderPageDependencies()
 </script>

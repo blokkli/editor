@@ -64,8 +64,9 @@ import type { WelcomeTask as Task } from '~/utils/welcomeTexts'
 
 // Where the control app sends a new sandbox's visitor: what to try, each with
 // a link into the editor of the page where it works. About blökkli, not the
-// town, so the texts are in the code. Drupal doesn't know the path, so the
-// header has no language switch here. The paths are shared/utils/welcome.ts's.
+// town, so the texts are in the code. Drupal doesn't know the path: the
+// header's language switch links the page's own paths (languageMapping),
+// which are also shared/utils/welcome.ts's.
 definePageMeta({
   name: 'welcome',
   path: '/welcome',
@@ -194,4 +195,6 @@ const developerLinks = computed(() => [
     url: 'https://github.com/blokkli/editor/tree/main/skills',
   },
 ])
+
+await renderPageDependencies()
 </script>

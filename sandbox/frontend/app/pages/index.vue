@@ -1,10 +1,10 @@
 <template>
-  <NodeEditorial v-if="entity" v-bind="entity" front-page>
-    <template #header="{ entity: node, isEditing, options }">
+  <NodeEditorial v-if="node" v-bind="node" front-page>
+    <template #header="{ entity, isEditing, options }">
       <HomeHero
-        :title="node.title"
-        :lead="node.lead"
-        :image="node.hero"
+        :title="entity.title"
+        :lead="entity.lead"
+        :image="entity.hero"
         :variant="options.header"
         :is-editing
       />
@@ -15,32 +15,11 @@
 <script lang="ts" setup>
 // The front page: Drupal's front page (an editorial page) with a header of its
 // own, with the search. Only its blocks can hold the fragments "today" and
-// "quick_links". Every other path is [...slug].vue.
+// "quick_links". Every other path is [...slug].vue. Its metatags have no title:
+// the layout's template makes it the site name.
 definePageMeta({ layout: 'drupal' })
 
-const route = useRoute()
+const node = await useEditorialRoute()
 
-const { data, error } = await useAsyncGraphqlQuery(
-  'route',
-  computed(() => ({ path: route.path })),
-)
-
-if (error.value) {
-  // 403: anonymous users, who can't see anything.
-  throw createError({ statusCode: error.value.statusCode ?? 500, fatal: true })
-}
-
-const entity = computed(() => {
-  const url = data.value?.data.route
-  return url && 'entity' in url && url.entity?.__typename === 'NodeEditorial'
-    ? url.entity
-    : null
-})
-
-if (!entity.value) {
-  throw createError({ statusCode: 404, fatal: true })
-}
-
-// No title: the layout's template makes it the site name.
-useSeoMeta({ description: () => entity.value?.lead })
+await renderPageDependencies()
 </script>

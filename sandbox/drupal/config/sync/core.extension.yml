@@ -32,6 +32,7 @@ module:
   graphql: 0
   graphql_core_schema: 0
   graphql_environment_indicator: 0
+  graphql_metatag_schema: 0
   graphql_translatable_config_pages: 0
   help: 0
   image: 0
@@ -47,6 +48,7 @@ module:
   menu_breadcrumb: 0
   menu_link_content: 0
   menu_ui: 0
+  metatag: 0
   node: 0
   office_hours: 0
   options: 0
@@ -68,6 +70,7 @@ module:
   paragraphs_type_permissions: 0
   path: 0
   path_alias: 0
+  redirect: 0
   scheduler: 0
   search_api: 0
   search_api_db: 0

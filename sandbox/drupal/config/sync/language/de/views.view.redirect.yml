@@ -1,0 +1,65 @@
+label: Umleiten
+display:
+  default:
+    display_title: Standard
+    display_options:
+      exposed_form:
+        options:
+          submit_button: Filter
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          sort_asc_label: Aufsteigend
+          sort_desc_label: Absteigend
+      pager:
+        options:
+          tags:
+            previous: '‹ vorherige Seite'
+            next: 'nächste Seite ›'
+            first: '« erste Seite'
+            last: 'letzte Seite »'
+          expose:
+            items_per_page_label: 'Elemente pro Seite'
+            items_per_page_options_all_label: '- Alle -'
+            offset_label: Versatz
+      fields:
+        redirect_source__path:
+          label: Von
+          separator: ', '
+        enabled:
+          label: Aktiviert
+          separator: ', '
+        created:
+          label: Erstellt
+      filters:
+        redirect_source__path:
+          expose:
+            label: Von
+        redirect_redirect__uri:
+          expose:
+            label: An
+        status_code:
+          expose:
+            label: Statuscode
+          group_info:
+            label: Statuscode
+            group_items:
+              1:
+                title: '300 Mehrere Auswahlmöglichkeiten'
+              2:
+                title: '301 Dauerhaft verschoben'
+              3:
+                title: '302 Gefunden'
+              4:
+                title: '303 Siehe andere'
+              5:
+                title: '304 Nicht modifiziert'
+              6:
+                title: '305 Proxy verwenden'
+              7:
+                title: '307 Temporäre Weiterleitung'
+        language:
+          expose:
+            label: Originalsprache
+      title: Umleiten
+  page_1:
+    display_title: Seite

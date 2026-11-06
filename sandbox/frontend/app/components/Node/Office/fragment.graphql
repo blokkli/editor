@@ -1,4 +1,5 @@
 fragment nodeOffice on NodeOffice {
+  __typename
   uuid
   title
   lead: fieldLead

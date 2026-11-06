@@ -29,6 +29,7 @@ schema_configuration:
       local_tasks: local_tasks
       media: media
       menu: menu
+      metatag: metatag
       paragraphs_blokkli_agent: paragraphs_blokkli_agent
       paragraphs_blokkli_comment: paragraphs_blokkli_comment
       paragraphs_blokkli_deepl: paragraphs_blokkli_deepl
@@ -63,6 +64,7 @@ schema_configuration:
       paragraph: 1
       paragraphs_blokkli_edit_state: 1
       paragraphs_library_item: 1
+      redirect: 1
       taxonomy_term: 1
       translatable_config_pages: 1
       user: 1
@@ -157,6 +159,8 @@ schema_configuration:
         created: created
         paragraphs: paragraphs
         status: status
+      redirect:
+        status_code: status_code
       taxonomy_term:
         field_address: field_address
         field_image: field_image
@@ -259,6 +263,9 @@ schema_configuration:
           enabled: true
       paragraphs_library_item:
         paragraphs_library_item:
+          enabled: true
+      redirect:
+        redirect:
           enabled: true
       taxonomy_term:
         location:

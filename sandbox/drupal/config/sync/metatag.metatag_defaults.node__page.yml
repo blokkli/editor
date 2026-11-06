@@ -1,0 +1,9 @@
+uuid: 4024ad7c-0c99-46f6-a2a9-47bf6e29219f
+langcode: en
+status: true
+dependencies: {  }
+id: node__page
+label: 'Content: Detail page'
+tags:
+  title: '[node:title]'
+  description: '[node:field_lead]'

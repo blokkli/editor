@@ -1,0 +1,9 @@
+uuid: 3d109c15-aae1-4e83-a89b-6489a7953b71
+langcode: en
+status: true
+dependencies: {  }
+id: node__news
+label: 'Content: News'
+tags:
+  title: '[node:title]'
+  description: '[node:field_lead]'

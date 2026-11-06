@@ -1,5 +1,5 @@
 <template>
-  <FrontendRoute>
+  <FrontendRoute v-if="node" v-bind="node">
     <template #header="{ entity, isEditing, breadcrumb }">
       <HostHeader
         :title="entity.title"
@@ -33,9 +33,14 @@ definePageMeta({
   layout: 'drupal',
 })
 
+// The node assigned to the route, with its metatags.
+const node = await useEditorialRoute()
+
 const route = useRoute()
 
 const text = computed(() =>
   typeof route.query.text === 'string' ? route.query.text.trim() : '',
 )
+
+await renderPageDependencies()
 </script>

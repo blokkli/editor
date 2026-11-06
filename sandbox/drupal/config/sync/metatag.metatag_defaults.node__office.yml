@@ -1,0 +1,9 @@
+uuid: a2b3658d-0ab3-44c3-b4da-44b96131071d
+langcode: en
+status: true
+dependencies: {  }
+id: node__office
+label: 'Content: Office'
+tags:
+  title: '[node:title]'
+  description: '[node:field_lead]'

@@ -1,0 +1,8 @@
+uuid: 2f070b41-e783-42a7-a0d2-2102fb851475
+langcode: en
+status: true
+dependencies: {  }
+id: translatable_config_pages
+label: 'Config page'
+tags:
+  title: '[current-page:title]'

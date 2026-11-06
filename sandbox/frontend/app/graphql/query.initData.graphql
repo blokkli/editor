@@ -1,5 +1,6 @@
-# Around every page of the site (layouts/drupal.vue), once per language.
-query layout {
+# Around every page of the site (layouts/drupal.vue), once per language
+# (plugins/initData.ts).
+query initData {
   # Null if the config page doesn't exist yet.
   siteConfig {
     ...configPageSite

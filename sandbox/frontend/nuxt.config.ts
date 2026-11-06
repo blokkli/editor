@@ -90,6 +90,7 @@ export default defineNuxtConfig({
     'nuxt-graphql-middleware',
     'vuepal',
     'nuxt-language-negotiation',
+    'nuxt-page-dependencies',
     'nuxt-svg-icon-sprite',
     'nuxt-security',
     '../../src/module',
@@ -150,10 +151,19 @@ export default defineNuxtConfig({
     negotiators: [pathPrefix()],
   },
 
+  // The layout's header (language switch, the menu's active trail) needs the
+  // page's route query, so it renders once the page has called
+  // renderPageDependencies(). Every page has to call it.
+  pageDependencies: { checkComposableCalled: true },
+
   // Drupal's toolbar and the local tasks (view, edit, translate…) above the
   // page, for users who may use the toolbar. The pages with
   // `drupalFrontendRoute` (the overviews, the search) write their paths into
   // frontend_routing's config, which locks the aliases of their nodes.
+  //
+  // The pages load their route through a route query (useRouteQuery()), which
+  // sets the metatags and hands the breadcrumb (useBreadcrumb()) and the
+  // language links (useLanguageLinks()) to the layout.
   vuepal: {
     adminToolbar: { enabled: true },
     localTasks: { enabled: true },
@@ -162,6 +172,27 @@ export default defineNuxtConfig({
       defaultLanguage: 'en',
       outputPath: '../drupal/config/sync/frontend_routing.settings.yml',
     },
+    drupalRoute: {
+      enabled: true,
+      routeQueries: {
+        // pages/[...slug].vue: any node, or a config page on its own route.
+        slug: {
+          fragments: [
+            'nodePage',
+            'nodeEditorial',
+            'nodeNews',
+            'nodeEvent',
+            'nodeOffice',
+            'nodePublication',
+            'configPageRoute',
+          ],
+        },
+        // The front page and the frontend routes (useEditorialRoute()).
+        nodeEditorial: { fragments: ['nodeEditorial'] },
+      },
+    },
+    breadcrumb: { enabled: true },
+    languageSwitchLinks: { enabled: true },
   },
 
   // UI strings, translated in Drupal's texts module. The fragment is committed:

@@ -1,0 +1,65 @@
+label: Rediriger
+display:
+  default:
+    display_title: Principal
+    display_options:
+      exposed_form:
+        options:
+          submit_button: Filtrer
+          reset_button_label: Réinitialiser
+          exposed_sorts_label: 'Trier par'
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+      pager:
+        options:
+          tags:
+            previous: "‹\_précédent"
+            next: "suivant\_›"
+            first: "«\_premier"
+            last: "dernier\_»"
+          expose:
+            items_per_page_label: 'Éléments par page'
+            items_per_page_options_all_label: '- Tout -'
+            offset_label: Décalage
+      fields:
+        redirect_source__path:
+          label: 'A partir de'
+          separator: ', '
+        enabled:
+          label: Activé
+          separator: ', '
+        created:
+          label: Créé
+      filters:
+        redirect_source__path:
+          expose:
+            label: 'A partir de'
+        redirect_redirect__uri:
+          expose:
+            label: À
+        status_code:
+          expose:
+            label: 'Code du statut'
+          group_info:
+            label: 'Code du statut'
+            group_items:
+              1:
+                title: '300 Choix Multiples'
+              2:
+                title: '301 Redirection Permanente'
+              3:
+                title: '302 Trouvé'
+              4:
+                title: '303 Voir Ailleurs'
+              5:
+                title: '304 Non Modifié'
+              6:
+                title: '305 Utilise un Proxy'
+              7:
+                title: '307 Redirection Temporaire'
+        language:
+          expose:
+            label: 'Langue initiale'
+      title: Rediriger
+  page_1:
+    display_title: Page

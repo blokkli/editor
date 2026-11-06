@@ -260,4 +260,6 @@ const PUBLICATIONS = [
     meta: 'Vernehmlassung bis 30. November 2026',
   },
 ]
+
+await renderPageDependencies()
 </script>

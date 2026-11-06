@@ -162,7 +162,7 @@
 <script lang="ts" setup>
 // A dynamic component (:is) needs its import.
 import { SiteLink } from '#components'
-import type { LanguageSwitchLinkFragment } from '#graphql-operations'
+import type { LanguageLink } from '#nuxt-language-negotiation/config'
 
 type Link = { label: string; url: string }
 
@@ -181,7 +181,7 @@ const props = defineProps<{
   // isActive: the current page is in this section.
   links?: (Link & { isActive?: boolean })[]
   serviceLinks?: Link[]
-  languageLinks?: LanguageSwitchLinkFragment[] | null
+  languageLinks?: LanguageLink[] | null
 }>()
 
 const hasMenu = computed(

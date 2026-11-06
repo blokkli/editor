@@ -58,7 +58,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { LanguageSwitchLinkFragment } from '#graphql-operations'
+import { languages } from '#nuxt-language-negotiation/config'
+import type { LanguageLink } from '#nuxt-language-negotiation/config'
 
 // The site's shell around a mockup, with German copy as in the canvas.
 const props = defineProps<{
@@ -81,11 +82,14 @@ const links = computed(() =>
 )
 
 // The same mockup in every language: only the UI strings change.
-const languageLinks = computed<LanguageSwitchLinkFragment[]>(() =>
-  LANGUAGES.map((id) => ({
-    title: LANGUAGE_NAMES[id],
-    language: { id },
-    url: { path: route.path.replace(/^\/[a-z]+/, `/${id}`) },
-  })),
+const languageLinks = computed(() =>
+  languages.map(
+    (item): LanguageLink => ({
+      ...item,
+      active: item.code === language.value,
+      enabled: true,
+      to: route.path.replace(/^\/[a-z]+/, `/${item.code}`),
+    }),
+  ),
 )
 </script>

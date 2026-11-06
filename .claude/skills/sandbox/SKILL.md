@@ -182,7 +182,10 @@ Traefik sends every hostname to the web container's nginx on port 80.
   frontend's build writes (`schemaOptionsPath`). After changing a block's
   options: `ddev nuxt restart` regenerates it; commit it.
 - **The GraphQL server** `graphql` (`core_composable` schema, `/graphql`).
-  Custom fields come from the modules' schema extensions.
+  Custom fields come from the modules' schema extensions. vuepal's route queries
+  need the route's `metatags` (metatag, `graphql_metatag_schema`) and
+  `RedirectUrl.redirect` (the `redirect` module and entity type; its
+  `auto_redirect` is off, as in the starterkit).
 - **Roles and test users** (`content/users.yml`, no passwords:
   `ddev drush uli --name="Anna Keller"`; `ddev drush uli` is the admin, uid 1):
 
@@ -534,12 +537,23 @@ host, with ddev running: `bun run test:e2e-drupal` or
   Still imported: types, npm packages, `#blokkli/...`, and components used as
   values (`:is`).
 - **Routing:**
-  - `pages/[...slug].vue` runs the `route` query and renders `Node<Bundle>` by
-    `__typename`; `pages/index.vue` is the front page (`HomeHero` and the
-    editorial page).
+  - **Route queries**, as in the starterkit: the page, and only the page, loads
+    its route with `useRouteQuery('<name>')`, one of vuepal's `routeQueries`
+    (`nuxt.config.ts`; the node fragments select `__typename`). vuepal's
+    `useDrupalRoute()` sets the metatags and hands the breadcrumb
+    (`useBreadcrumb()`) and the language links (`useLanguageLinks()`, else the
+    page's `languageMapping`) to the layout. `useRouteQuery` is vuepal's
+    `useDrupalRouteQuery` except that an error keeps Drupal's status (403: the
+    private sandbox's page, not a 500). Every page ends with
+    `await renderPageDependencies()` (nuxt-page-dependencies; a build fails
+    without it): the layout's header renders after it.
+  - `pages/[...slug].vue` runs the `slug` route query and renders `Node<Bundle>`
+    by `__typename`; `pages/index.vue` is the front page (`HomeHero` and the
+    editorial page, `useEditorialRoute()`).
   - Overviews and search (`events`, `news`, `publications`, `search`) are
     frontend routes: `definePageMeta` with `languageMapping` and
-    `drupalFrontendRoute`. vuepal writes their paths into
+    `drupalFrontendRoute`; the page loads its node (`useEditorialRoute()`) and
+    `FrontendRoute` renders it. vuepal writes their paths into
     `config/sync/frontend_routing.settings.yml`; Drupal locks their nodes'
     aliases. Commit that file.
   - `welcome.vue` (`/en/welcome`, `/de/willkommen`, `/fr/bienvenue`) is
@@ -552,9 +566,14 @@ host, with ddev running: `bun run test:e2e-drupal` or
   - `layouts/drupal.vue`: the toolbar (vuepal), the local tasks and the
     "Sandbox" button (`SandboxInfo`, shown when the `sandbox` query isn't null),
     the header (`ConfigPageSite`) and footer (`ConfigPageFooter`), both editable
-    config pages, from the `layout` query. Its title template appends the site
-    name (the site config page's); the pages set their title (the entity's
-    label) and description (its lead), the front page only the description.
+    config pages, and the main menu, from `useInitData()`
+    (`plugins/initData.ts`: the `initData` query, once per language; empty for
+    anonymous users, who get a 403). The header is in `<NuxtPageDependency>`.
+    Its title template appends the site name (the site config page's); Drupal's
+    metatag gives the page's part: a node's title and lead (the bundle
+    defaults), a config page's label, the front page only its lead. metatag's
+    shipped defaults stay as shipped: locale translates their shipped values
+    into de and fr at every install.
   - `public/favicon.ico`: the coat of arms (`Logo`), 16 and 32 px drawn on whole
     pixels. The control app serves it too.
 - **Hosts** (`components/Node/*`): each wraps its fields in `BlokkliProvider`.

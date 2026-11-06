@@ -83,4 +83,6 @@ const RESULTS = [
     text: 'Was Bewilligungen, die Abfuhr und das Wasser kosten.',
   },
 ]
+
+await renderPageDependencies()
 </script>
