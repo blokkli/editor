@@ -47,7 +47,9 @@ language.
   isn't exported; change the YAML and bake.
 - **Anonymous access to the dev site is opt-in and local only:**
   `$settings['blokkli_playground_public'] = TRUE;` in the gitignored
-  `settings.local.php`. Never in `config/sync`.
+  `settings.local.php`. Never in `config/sync`. Sandboxes ignore it; an E2E
+  sandbox sets it for a request with the cookie `blokkli_e2e_public=1` (see "E2E
+  tests").
 
 ## Map
 
@@ -209,7 +211,8 @@ Traefik sends every hostname to the web container's nginx on port 80.
   ("This sandbox is private", `app/error.vue`). `blokkli_playground`'s
   `AnonymousViewerAccessPolicy` lets anonymous visitors in while their session
   has a valid preview grant ("Preview on smartphone"), or when the local
-  `blokkli_playground_public` flag is set (ignored in sandboxes).
+  `blokkli_playground_public` flag is set (ignored in sandboxes, but an E2E
+  sandbox sets it for a request with the cookie `blokkli_e2e_public=1`).
 - **Composer:** `paragraphs_blokkli` comes from the submodule through a path
   repository (symlinked to `web/modules/contrib/paragraphs_blokkli`). Patches
   are in `sandbox/drupal/patches/` and `composer.json`
@@ -442,6 +445,14 @@ host, with ddev running: `bun run test:e2e-drupal` or
   settings.php: it discovers test modules (`extension_discovery_scan_tests`) and
   never gets DeepL's key. The reset also writes `lifetime.json` with
   `"premium": true`, for the agent.
+- **Anonymous visitors:** for a request with the cookie `blokkli_e2e_public=1`,
+  settings.php sets `blokkli_playground_public` in an E2E sandbox (never on the
+  hosted site): the visitor sees the pages, rendered on the server. Without the
+  cookie, the sandbox stays private, so the other specs are unchanged.
+  `openAnonymousPage(sandbox, { public: true })` (`support/session.ts`) sets it,
+  for `features/hydration`. Nothing crosses Drupal's caches: the access policy
+  is cache-optional and varies by the cookie, and Nuxt's server only POSTs to
+  Drupal.
 - **No real requests:**
   - DeepL: the template has `paragraphs_blokkli_deepl_test` (in the submodule)
     enabled. Its client never reaches DeepL: a text comes back as `[FR] <text>`,
@@ -590,7 +601,13 @@ host, with ddev running: `bun run test:e2e-drupal` or
   `Title/Sidebar.vue`, `Link/InList.vue`). Fragments
   (`Paragraph/BlokkliFragment/*`) must be allowed by name on the field
   (`allowed-fragments`): `today` and `quick_links` on the front page,
-  `office_pages` on offices.
+  `office_pages` on offices. `Paragraph/BlokkliFragment/Hydration` has the E2E
+  tests' fragments, one per value of `hydrate` and one without it, only where
+  the Test Cases sidebar is (Nuxt's `ignore`).
+- **`hydrate`** (on pages rendered on the server, see "Requests"): `never` for
+  the static paragraphs (Title in both variants, Text, Table, Image, Video),
+  `visible` for Chart and Accordion. The paragraphs with a `SiteLink` and the
+  containers hydrate with the page.
 - **Pictures of the blocks** (the add list's `image.png` next to each
   paragraph's component, 600 × 400, shown at 300 × 200):
   `bun run sandbox:block-images [bundle…]` on the host takes them, in a sandbox
@@ -639,8 +656,8 @@ host, with ddev running: `bun run test:e2e-drupal` or
 - **The Test Cases sidebar** (`blokkli/features/test-cases/`): triggers for
   flows that are hard to reach otherwise, also `window.__BLOKKLI__.test` for the
   E2E specs (the `e2e-testing` skill). Only where the agent's mock is: the
-  hosted build ignores its folder (Nuxt's `ignore`; `devOnly` would leave it out
-  of the E2E build too).
+  hosted build ignores its folder, and the hydration tests' fragments (Nuxt's
+  `ignore`; `devOnly` would leave them out of the E2E build too).
 - **Server:** `/api/chart-data[/id]` (the charts' data sources, also used by the
   agent's tool); `server/graphqlMiddleware.serverOptions.ts` picks the endpoint
   by the client context's language. `app/graphqlMiddleware.clientOptions.ts` has
@@ -752,7 +769,8 @@ The same ddev project runs on a server, for internal use (the hosted instance).
 | Symptom                                                         | Cause                                                                                                       |
 | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | 502 with the Nuxt page                                          | daemon down, `node_modules` missing, or an invalid GraphQL document                                         |
-| "This sandbox is private"                                       | not logged in (`ddev drush uli`), or no preview grant                                                       |
+| "This sandbox is private"                                       | not logged in (`ddev drush uli`), or no preview grant; in an E2E spec, an anonymous page without `public`   |
+| A change in `src/build/` or `src/module.ts` doesn't show        | the daemon keeps the module's build code when it restarts for a config change: `ddev nuxt restart`          |
 | The "unknown sandbox" page                                      | no `sandboxes/<id>/db.sqlite`                                                                               |
 | drush: "There's no sandbox '…'"                                 | `--uri` names a sandbox that doesn't exist                                                                  |
 | A new option isn't validated or offered in Drupal               | the options schema wasn't regenerated: `ddev nuxt restart`, commit it                                       |

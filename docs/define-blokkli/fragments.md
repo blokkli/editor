@@ -71,6 +71,15 @@ language.
 
 The chunk group for code splitting, same as in `defineBlokkli()`.
 
+### hydrate
+
+**Type:** `'never' | 'visible' | 'idle'`
+
+When the fragment's component hydrates on a page that Nuxt renders on the
+server, same as in `defineBlokkli()`: see
+[Hydration](/define-blokkli/hydration). The `blokkli_fragment` block that
+renders it hydrates with the page.
+
 ### options
 
 **Type:** [type.BlockDefinitionOptionsInput]

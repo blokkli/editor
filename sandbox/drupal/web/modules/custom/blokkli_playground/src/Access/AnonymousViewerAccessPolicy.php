@@ -23,10 +23,13 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  *
  * $settings['blokkli_playground_public'] in settings.local.php lets every
  * anonymous visitor of the dev site view it, so that Nuxt renders its pages
- * on the server. Sandboxes ignore it (settings.php).
+ * on the server. Sandboxes ignore it, but an E2E sandbox sets it for a request
+ * with the cookie blokkli_e2e_public=1 (settings.php).
  *
- * The grant is the current request's, whatever anonymous account the
- * permissions are calculated for.
+ * The grant and the flag are the current request's, whatever anonymous
+ * account the permissions are calculated for. So the permissions vary by the
+ * session and the cookie, and the policy must stay cache-optional: they're
+ * calculated for each request.
  */
 final class AnonymousViewerAccessPolicy extends AccessPolicyBase implements CacheOptionalInterface {
 
@@ -56,6 +59,7 @@ final class AnonymousViewerAccessPolicy extends AccessPolicyBase implements Cach
       return $calculatedPermissions;
     }
 
+    $calculatedPermissions->addCacheContexts(['cookies:blokkli_e2e_public']);
     if (!$this->settings->get('blokkli_playground_public')) {
       $calculatedPermissions->addCacheContexts(['paragraphs_blokkli_session']);
       if (!$this->previewGrantChecker->hasValidGrant()) {

@@ -105,6 +105,9 @@ export type ModuleOptions = {
    *
    * If left empty, all components are bundled in a default chunk, which should
    * contain components that are used for most pages.
+   *
+   * A component with `hydrate` gets a chunk of its own, so it can't have a
+   * `chunkName`.
    */
   chunkNames?: string[]
 

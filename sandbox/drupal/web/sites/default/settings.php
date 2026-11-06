@@ -151,6 +151,13 @@ if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
 if ($sandbox !== NULL) {
   unset($settings['blokkli_playground_public']);
 }
+// Except an E2E sandbox for a request with the cookie, so that Nuxt renders
+// its pages on the server for the E2E tests' anonymous visitors
+// (test/e2e-drupal/features/hydration). Nuxt's server passes the browser's
+// cookies on. Never on the hosted site, where anyone could set the cookie.
+if ($e2e && getenv('IS_DDEV_HOSTED') !== 'true' && ($_COOKIE['blokkli_e2e_public'] ?? NULL) === '1') {
+  $settings['blokkli_playground_public'] = TRUE;
+}
 
 // With the public salt or login secret, anyone could forge login links.
 foreach (['DRUPAL_HASH_SALT', 'NUXT_SANDBOX_LOGIN_SECRET'] as $variable) {

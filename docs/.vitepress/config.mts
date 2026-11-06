@@ -316,6 +316,7 @@ export default defineConfig({
               text: 'Context based rendering',
               link: '/define-blokkli/render-for',
             },
+            { text: 'Hydration', link: '/define-blokkli/hydration' },
             { text: 'Block Context', link: '/define-blokkli/block-context' },
             { text: 'Editable / Droppable', link: '/define-blokkli/editable' },
             { text: 'Editor behaviour', link: '/define-blokkli/editor' },

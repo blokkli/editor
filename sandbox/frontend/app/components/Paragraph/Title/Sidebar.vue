@@ -18,6 +18,8 @@ defineProps<ParagraphTitleFragment>()
 defineBlokkli({
   bundle: 'title',
   renderFor: [{ fieldListType: 'sidebar' }],
+  // Static: nothing in it needs the browser.
+  hydrate: 'never',
   globalOptions: ['bkVisibleLanguages'],
   editor: {
     addBehaviour: 'editable:field_title',

@@ -108,11 +108,13 @@
       </div>
     </div>
 
+    <!-- A class, not v-show: on a page rendered on the server, the CSP blocks
+    the style attribute that v-show renders. -->
     <div
       v-if="hasMenu"
-      v-show="isMenuOpen"
       id="page-header-menu"
       class="border-b border-line bg-white lg:hidden"
+      :class="{ hidden: !isMenuOpen }"
     >
       <div class="container-wide pb-4">
         <nav

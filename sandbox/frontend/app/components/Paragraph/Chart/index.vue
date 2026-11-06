@@ -28,7 +28,8 @@ import type {
 // including its title and translations, is a block option.
 const block = defineBlokkli({
   bundle: 'chart',
-  chunkName: 'chart',
+  // The chart only renders in the browser: its code loads when it's seen.
+  hydrate: 'visible',
   globalOptions: ['bkVisibleLanguages'],
   options: {
     // The global width option without "Full", which is no wider than "Wide"

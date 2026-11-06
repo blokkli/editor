@@ -44,6 +44,8 @@ const thumbnail = computed(() => props.video?.thumbnail?.derivative)
 
 const block = defineBlokkli({
   bundle: 'video',
+  // Static: a link that opens the video in a new tab.
+  hydrate: 'never',
   globalOptions: ['width', 'bkVisibleLanguages'],
   editor: {
     icon: 'bk_mdi_smart_display',

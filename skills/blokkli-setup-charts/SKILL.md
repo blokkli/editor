@@ -67,9 +67,12 @@ import type { BlokkliChartData } from '#blokkli/charts/types'
 
 const { options } = defineBlokkli({
   bundle: 'chart',
-  // ECharts is large: only pages with a chart load it. Add the name to the
-  // module's `chunkNames`.
-  chunkName: 'chart',
+  // ECharts is large, and a chart only renders in the browser: on a page that
+  // Nuxt renders on the server, the chart's code loads when it's seen. Without
+  // server-side rendering (`ssr: false`), use `chunkName: 'chart'` instead
+  // (and add the name to the module's `chunkNames`): only pages with a chart
+  // load it.
+  hydrate: 'visible',
   options: {
     data: {
       type: 'json',

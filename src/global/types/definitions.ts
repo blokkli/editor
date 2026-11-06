@@ -1,3 +1,4 @@
+import type { BlockHydration } from '../constants'
 import type {
   BlockOptionDefinitionBase,
   DefinitionString,
@@ -257,6 +258,26 @@ export type BlockDefinitionInputBase<
   chunkName?: ChunkNames
 
   /**
+   * When the component hydrates on a page that Nuxt renders on the server:
+   *
+   * - `'never'`: never, the block stays as the server rendered it.
+   * - `'visible'`: when it enters the viewport.
+   * - `'idle'`: when the browser is idle, at the latest after 10 seconds.
+   *
+   * Until then, nothing in the component runs (event handlers, `onMounted`,
+   * `<ClientOnly>`), its code isn't loaded, and the blocks inside it wait for
+   * it. A `NuxtLink` in it loads the whole page.
+   *
+   * Without it, the component hydrates with the page. It has no effect in the
+   * editor, without server-side rendering, or with Nuxt's
+   * `experimental.lazyHydration` turned off. The component gets a chunk of its
+   * own, so it can't have a `chunkName`.
+   *
+   * See "Hydration" in the docs of `defineBlokkli()` for what to look out for.
+   */
+  hydrate?: BlockHydration
+
+  /**
    * Define options available for this block.
    */
   options?: Options
@@ -345,6 +366,27 @@ export type FragmentDefinitionInputBase<
    * See the `chunkNames` option on the module's configuration for more details.
    */
   chunkName?: ChunkNames
+
+  /**
+   * When the fragment's component hydrates on a page that Nuxt renders on the
+   * server:
+   *
+   * - `'never'`: never, the fragment stays as the server rendered it.
+   * - `'visible'`: when it enters the viewport.
+   * - `'idle'`: when the browser is idle, at the latest after 10 seconds.
+   *
+   * Until then, nothing in the component runs (event handlers, `onMounted`,
+   * `<ClientOnly>`), and its code isn't loaded. A `NuxtLink` in it loads the
+   * whole page.
+   *
+   * Without it, the component hydrates with the page. It has no effect in the
+   * editor, without server-side rendering, or with Nuxt's
+   * `experimental.lazyHydration` turned off. The component gets a chunk of its
+   * own, so it can't have a `chunkName`.
+   *
+   * See "Hydration" in the docs of `defineBlokkli()` for what to look out for.
+   */
+  hydrate?: BlockHydration
 
   /**
    * Define options available for this block.

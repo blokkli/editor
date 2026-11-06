@@ -106,6 +106,10 @@ Blocks used on most pages should stay in the default chunk. Only assign a chunk
 name to blocks that are used rarely — too many chunks can hurt performance since
 each page load requires multiple requests.
 
+A block with `hydrate` gets a chunk of its own and can't have a chunk name. On a
+page that Nuxt renders on the server, a large block with `hydrate: 'visible'`
+loads its code only when it's seen. See [Hydration](/define-blokkli/hydration).
+
 ## fieldListTypes
 
 **Type:** `string[]`

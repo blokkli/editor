@@ -25,9 +25,9 @@ import {
  * mutation's variables (name + host + position) and the block-count delta for
  * the outcome — never on translated copy.
  *
- * On the front page (content/nodes/home.yml): the sandbox defines three
- * fragments, but its field allows only `today` and `quick_links`, so the dialog
- * lists exactly those two.
+ * On the front page (content/nodes/home.yml): the sandbox defines more
+ * fragments (with those of the hydration tests), but its field allows only
+ * `today` and `quick_links`, so the dialog lists exactly those two.
  */
 
 const ALLOWED = ['quick_links', 'today']
