@@ -1,5 +1,5 @@
 <template>
-  <FrontendRoute>
+  <FrontendRoute v-if="node" v-bind="node">
     <NodeOverview source="publications" />
   </FrontendRoute>
 </template>
@@ -14,4 +14,9 @@ definePageMeta({
   drupalFrontendRoute: true,
   layout: 'drupal',
 })
+
+// The node assigned to the route, with its metatags.
+const node = await useEditorialRoute()
+
+await renderPageDependencies()
 </script>

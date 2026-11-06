@@ -55,10 +55,8 @@
 </template>
 
 <script lang="ts" setup>
-import type {
-  ConfigPageSiteFragment,
-  LanguageSwitchLinkFragment,
-} from '#graphql-operations'
+import type { ConfigPageSiteFragment } from '#graphql-operations'
+import type { LanguageLink } from '#nuxt-language-negotiation/config'
 
 // The site's header, with the notice's banners at the top. Editing happens on
 // the config page's own route, where Drupal's links (e.g. the language switch)
@@ -67,7 +65,7 @@ import type {
 // edited below the header.
 const props = defineProps<
   ConfigPageSiteFragment & {
-    languageLinks?: LanguageSwitchLinkFragment[] | null
+    languageLinks?: LanguageLink[] | null
     // The main menu's first level.
     links?: { label: string; url: string; isActive?: boolean }[]
   }

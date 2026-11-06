@@ -556,7 +556,8 @@
 
 <script lang="ts" setup>
 import { allSymbolNames } from '#nuxt-svg-icon-sprite/runtime'
-import type { LanguageSwitchLinkFragment } from '#graphql-operations'
+import { languages } from '#nuxt-language-negotiation/config'
+import type { LanguageLink } from '#nuxt-language-negotiation/config'
 import type { BlokkliChartData } from '#blokkli/charts/types'
 
 // The design system of the demo: the tokens from main.css and the shared
@@ -925,11 +926,16 @@ const SPACING = [
   },
 ]
 
-const languageLinks = computed<LanguageSwitchLinkFragment[]>(() =>
-  LANGUAGES.map((id) => ({
-    title: id.toUpperCase(),
-    language: { id },
-    url: { path: `/${id}/design-system` },
-  })),
+const languageLinks = computed(() =>
+  languages.map(
+    (item): LanguageLink => ({
+      ...item,
+      active: item.code === language.value,
+      enabled: true,
+      to: `/${item.code}/design-system`,
+    }),
+  ),
 )
+
+await renderPageDependencies()
 </script>

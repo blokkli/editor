@@ -14,19 +14,21 @@
         </div>
       </div>
     </ClientOnly>
-    <ConfigPageSite
-      v-if="layout?.siteConfig"
-      v-bind="layout.siteConfig"
-      :language-links
-      :links="menuLinks"
-    />
+    <NuxtPageDependency>
+      <ConfigPageSite
+        v-if="siteConfig"
+        v-bind="siteConfig"
+        :language-links
+        :links="menuLinks"
+      />
+    </NuxtPageDependency>
     <main id="main" class="grow overflow-x-clip">
       <slot />
     </main>
     <ConfigPageFooter
-      v-if="layout?.footerConfig"
-      v-bind="layout.footerConfig"
-      :site-name="layout.siteConfig?.siteName"
+      v-if="footerConfig"
+      v-bind="footerConfig"
+      :site-name="siteConfig?.siteName"
     />
   </div>
 </template>
@@ -36,20 +38,20 @@
 // (view, edit, translate…) with the sandbox's button above the page, from lg
 // (both are too wide below), then the header and the footer from their config
 // pages. It stays mounted between pages: the toolbar, the config pages and the
-// menu load once per language. A config page is edited on its own route, where
-// the header or the footer here turns into the editor.
+// menu load once per language (plugins/initData.ts). A config page is edited
+// on its own route, where the header or the footer here turns into the editor.
+//
+// The header's language switch and the menu's active trail come from the
+// page's route query (useRouteQuery()), so the header renders once the page
+// has called renderPageDependencies().
 const route = useRoute()
 const language = useLanguage()
 
-// The route query is the page's too, and brings the language links. Both
-// load at once.
-const [{ data: layout }, { data: routeData }] = await Promise.all([
-  useLayoutQuery(),
-  useRouteQuery(),
-])
+const { siteConfig, footerConfig, mainMenuLinks } = useInitData()
 
 // "<page title> – <site name>"; the front page sets no title: the site name.
-const siteName = computed(() => layout.value?.siteConfig?.siteName)
+// Drupal's metatags give the page's title.
+const siteName = computed(() => siteConfig.value?.siteName)
 useHead(() => {
   const name = siteName.value
   return {
@@ -79,21 +81,17 @@ const isToolbarVisible = computed(
 
 // Hidden while editing (the editor has its own switch) and previewing (the
 // links would leave the preview).
-const languageLinks = computed(() => {
-  const url = routeData.value?.data.route
-  return isEditingOrPreviewing.value || !url || !('languageSwitchLinks' in url)
-    ? null
-    : url.languageSwitchLinks
-})
+const routeLanguageLinks = useLanguageLinks()
+const languageLinks = computed(() =>
+  isEditingOrPreviewing.value ? null : routeLanguageLinks.value,
+)
 
 // The header shows the main menu's first level. A link is active when it's in
 // the breadcrumb or the current page.
+const breadcrumb = useBreadcrumb()
 const menuLinks = computed(() => {
-  const url = routeData.value?.data.route
-  const trail = (url && 'breadcrumb' in url ? url.breadcrumb : []).map(
-    (item) => item.url.path,
-  )
-  return (layout.value?.mainMenu?.links ?? []).flatMap(({ link }) => {
+  const trail = breadcrumb.value.map((item) => item.url.path)
+  return mainMenuLinks.value.flatMap(({ link }) => {
     const path = link.url?.path
     return path
       ? [

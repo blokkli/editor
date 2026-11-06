@@ -1,4 +1,5 @@
 fragment nodeEditorial on NodeEditorial {
+  __typename
   uuid
   title
   lead: fieldLead

@@ -1,0 +1,6 @@
+# A config page on its own route, where it's edited: the layout renders the
+# config page itself, the page only its label (pages/[...slug].vue).
+fragment configPageRoute on TranslatableConfigPages {
+  __typename
+  label
+}

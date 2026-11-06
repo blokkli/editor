@@ -1,4 +1,5 @@
 fragment nodePublication on NodePublication {
+  __typename
   uuid
   title
   lead: fieldLead

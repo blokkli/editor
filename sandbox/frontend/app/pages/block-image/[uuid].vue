@@ -40,4 +40,6 @@ const item = computed(() => {
   // Also when it's unpublished, like the site's notice once it's over.
   return { ...entity, isVisible: true }
 })
+
+await renderPageDependencies()
 </script>

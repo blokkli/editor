@@ -302,4 +302,6 @@ const RELATED = [
   },
   { title: 'Energie & Förderung', text: 'Beiträge für Sanierungen' },
 ]
+
+await renderPageDependencies()
 </script>

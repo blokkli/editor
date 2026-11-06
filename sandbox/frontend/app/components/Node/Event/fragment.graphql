@@ -1,4 +1,5 @@
 fragment nodeEvent on NodeEvent {
+  __typename
   uuid
   title
   lead: fieldLead

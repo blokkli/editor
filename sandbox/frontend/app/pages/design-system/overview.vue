@@ -98,4 +98,6 @@ const EVENTS = [
     meta: '29. November 2026, 17:00, Dorfplatz',
   },
 ]
+
+await renderPageDependencies()
 </script>

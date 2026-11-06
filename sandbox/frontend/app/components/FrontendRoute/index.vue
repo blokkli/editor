@@ -1,5 +1,5 @@
 <template>
-  <NodeEditorial v-if="entity" v-bind="entity" :breadcrumb :sub-pages>
+  <NodeEditorial v-bind="props" :breadcrumb :sub-pages>
     <template v-if="$slots.header" #header="header">
       <slot name="header" v-bind="header" />
     </template>
@@ -8,45 +8,21 @@
 </template>
 
 <script lang="ts" setup>
+import type { NodeEditorialFragment } from '#graphql-operations'
+
 // A hardcoded page on top of its Drupal node: the overviews and the search.
 // The page's definePageMeta (drupalFrontendRoute, languageMapping) gives it a
 // path per language; vuepal writes them into frontend_routing's config, which
-// locks the aliases of the node assigned to it. The node, an editorial page,
-// brings the header and blocks; the page's own part follows in the slot.
+// locks the aliases of the node assigned to it. The page loads that node
+// (useEditorialRoute()), an editorial page, which brings the header and
+// blocks; the page's own part follows in the slot.
+const props = defineProps<NodeEditorialFragment>()
+
 const route = useRoute()
 
-const { data, error } = await useRouteQuery()
+const breadcrumb = useBreadcrumb()
 
-if (error.value) {
-  // 403: anonymous users, who can't see anything.
-  throw createError({ statusCode: error.value.statusCode ?? 500, fatal: true })
-}
+const { mainMenuLinks } = useInitData()
 
-const entity = computed(() => {
-  const url = data.value?.data.route
-  return url && 'entity' in url && url.entity?.__typename === 'NodeEditorial'
-    ? url.entity
-    : null
-})
-
-useSeoMeta({
-  title: () => entity.value?.label,
-  description: () => entity.value?.lead,
-})
-
-const breadcrumb = computed(() => {
-  const url = data.value?.data.route
-  return url && 'breadcrumb' in url ? url.breadcrumb : []
-})
-
-const { data: layout } = await useLayoutQuery()
-
-const subPages = computed(() =>
-  findSubPages(layout.value?.mainMenu?.links ?? [], route.path),
-)
-
-// No node assigned to the route yet (frontend_routing's settings).
-if (!entity.value) {
-  throw createError({ statusCode: 404, fatal: true })
-}
+const subPages = computed(() => findSubPages(mainMenuLinks.value, route.path))
 </script>

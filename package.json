@@ -166,6 +166,7 @@
     "json5": "^2.2.3",
     "marked": "^18.0.5",
     "mitt": "^3.0.1",
+    "nuxt-page-dependencies": "^1.2.0",
     "papaparse": "^5.5.3",
     "pofile": "^1.1.4",
     "qrcode.vue": "^3.10.0",

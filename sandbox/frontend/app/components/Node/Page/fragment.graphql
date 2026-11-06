@@ -1,4 +1,5 @@
 fragment nodePage on NodePage {
+  __typename
   uuid
   title
   lead: fieldLead

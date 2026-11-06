@@ -1,6 +1,0 @@
-fragment breadcrumb on Breadcrumb {
-  title
-  url {
-    path
-  }
-}

@@ -14,4 +14,6 @@ useHead({
   title: () => $texts('fee_calculator.title', 'Fee calculator'),
   meta: [{ name: 'robots', content: 'noindex' }],
 })
+
+await renderPageDependencies()
 </script>

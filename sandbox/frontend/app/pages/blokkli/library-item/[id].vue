@@ -17,4 +17,6 @@ import BlokkliDrupalEditLibraryItem from '#blokkli/drupal/components/BlokkliDrup
 // A library item's canonical URL: /<lang>/blokkli/library-item/{id}. Drupal and
 // the editor both link here.
 const id = String(useRoute().params.id)
+
+await renderPageDependencies()
 </script>
