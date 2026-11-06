@@ -2,7 +2,10 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema, positionSchema } from '../schemas'
 import { resolvePosition, resolveHost } from '../helpers'
-import { requireBundlePermission } from '../../helpers/validation'
+import {
+  requireBundlePermission,
+  requireCanChangeField,
+} from '../../helpers/validation'
 import { fromLibraryBlockBundle } from '#blokkli-build/config'
 
 export const paramsSchema = z.object({
@@ -44,13 +47,9 @@ export default defineBlokkliAgentTool({
     )
     if (denied) return denied
 
-    // Check ancestor restrictions on the target parent
-    if (ctx.app.permissions.blockHasRestrictedAncestor(params.parent.uuid)) {
-      return {
-        error:
-          'Permission denied: target parent is inside a block with restricted editing permissions',
-      }
-    }
+    // The target field must be able to change.
+    const fieldDenied = requireCanChangeField(ctx.app, params.parent)
+    if (fieldDenied) return fieldDenied
 
     const { types, fields, $t } = ctx.app
 

@@ -1,3 +1,5 @@
+import { parseHtmlDocument } from '#blokkli/editor/helpers/html'
+
 /**
  * A chunk of text extracted from a field value.
  */
@@ -110,8 +112,7 @@ export function chunkHtml(
     return [{ text: trimmed }]
   }
 
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(trimmed, 'text/html')
+  const doc = parseHtmlDocument(trimmed)
   const results: TextChunk[] = []
 
   // The parsed body may contain top-level block elements or just inline text.

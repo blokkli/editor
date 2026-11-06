@@ -25,6 +25,7 @@ export async function buildPageContext(
           type: (f.type === 'frame' || f.type === 'markup'
             ? 'markup'
             : 'plain') as 'plain' | 'markup',
+          ...(f.readOnly ? { readOnly: true } : {}),
         })),
       ...types.droppableFieldConfig
         .forEntityTypeAndBundle(itemEntityType, bundle.id)
@@ -33,6 +34,7 @@ export async function buildPageContext(
           label: f.label,
           type: f.type as 'reference' | 'link',
           allowed: f.allowed,
+          ...(f.readOnly ? { readOnly: true } : {}),
         })),
     ]
 
@@ -43,6 +45,7 @@ export async function buildPageContext(
         label: f.label,
         allowedBundles: f.allowedBundles,
         cardinality: f.cardinality,
+        ...(f.readOnly ? { readOnly: true } : {}),
       }))
 
     bundles.push({
@@ -73,6 +76,7 @@ export async function buildPageContext(
         type: (f.type === 'frame' || f.type === 'markup'
           ? 'markup'
           : 'plain') as 'plain' | 'markup',
+        ...(f.readOnly ? { readOnly: true } : {}),
       })),
     ...types.droppableFieldConfig
       .forEntityTypeAndBundle(
@@ -84,6 +88,7 @@ export async function buildPageContext(
         label: f.label,
         type: f.type as 'reference' | 'link',
         allowed: f.allowed,
+        ...(f.readOnly ? { readOnly: true } : {}),
       })),
   ]
 

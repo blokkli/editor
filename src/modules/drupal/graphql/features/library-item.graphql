@@ -1,0 +1,16 @@
+query pbGetLibraryItemEntity($id: ID!) {
+  paragraphsBlokkliLibraryItemGet(id: $id) {
+    uuid
+    # As in the pbMutatedEntity fragment, which updates it while editing.
+    libraryItemLabel: label
+    paragraphs {
+      ...paragraphsFieldItem
+      props {
+        ...paragraph
+      }
+    }
+    blokkliProps {
+      ...blokkliProps
+    }
+  }
+}

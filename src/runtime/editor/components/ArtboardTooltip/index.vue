@@ -14,7 +14,7 @@
   >
     <div class="bk bk-artboard-tooltip-inner bk-caret-tooltip-inner">
       <div class="bk-artboard-tooltip-header">
-        <div class="mr-auto" v-html="title" />
+        <div class="mr-auto">{{ title }}</div>
         <slot name="header" />
         <button
           data-test="artboard-tooltip-close"

@@ -38,6 +38,50 @@ if (e2eBuild && process.env.IS_DDEV_HOSTED === 'true') {
 }
 const testSeams = process.env.NODE_ENV !== 'production' || e2eBuild
 
+// The dev server, as opposed to a build. `nuxi prepare` counts as a build
+// unless NODE_ENV says otherwise: `sandbox:prepare` sets it to development, so
+// that the .nuxt folder the typecheck reads has what the dev server has.
+const devServer = process.env.NODE_ENV !== 'production'
+
+// The Content-Security-Policy: the strictest that the site and the editor work
+// under, so that blökkli works on projects that have one.
+// nuxt-security gives Nuxt's own scripts, styles and links a nonce per
+// response. Uploads and pasted images are previewed from blob: URLs, a pasted
+// YouTube link with its thumbnail from YouTube's image host. On the dev
+// server, styles go without the nonce and may be inline, for Nuxt devtools and
+// the error overlay: what counts is the build, which GitHub runs the E2E tests
+// against. The E2E tests fail on any violation they don't know
+// (test/e2e-drupal/support/csp.ts).
+const contentSecurityPolicy = {
+  'default-src': ["'none'"],
+  'script-src': ["'nonce-{{nonce}}'", "'strict-dynamic'", "'report-sample'"],
+  'script-src-attr': ["'none'"],
+  'style-src': devServer
+    ? ["'self'", "'unsafe-inline'"]
+    : ["'self'", "'nonce-{{nonce}}'", "'report-sample'"],
+  'img-src': ["'self'", 'blob:', 'https://i.ytimg.com'],
+  'font-src': ["'self'"],
+  'connect-src': ["'self'"],
+  'frame-src': ["'self'"],
+  'media-src': ["'self'"],
+  'manifest-src': ["'self'"],
+  'worker-src': false as const,
+  'form-action': ["'self'"],
+  'frame-ancestors': ["'self'"],
+  'base-uri': ["'none'"],
+  'object-src': ["'none'"],
+  // Trusted Types: the editor's markup comes with its policy, `blokkli`, its
+  // dependencies' through the page's `default`
+  // (app/plugins/trustedTypes.client.ts). Vue's and DOMPurify's own policies
+  // are `vue` and `dompurify`. Not on the dev server, where Nuxt's error
+  // overlay and devtools pass strings.
+  'require-trusted-types-for': devServer ? (false as const) : "'script'",
+  'trusted-types': devServer
+    ? (false as const)
+    : ['vue', 'dompurify', 'blokkli', 'default'],
+  'upgrade-insecure-requests': true,
+}
+
 export default defineNuxtConfig({
   // nuxt-graphql-middleware must come before blökkli, vuepal before
   // nuxt-language-negotiation.
@@ -47,8 +91,31 @@ export default defineNuxtConfig({
     'vuepal',
     'nuxt-language-negotiation',
     'nuxt-svg-icon-sprite',
+    'nuxt-security',
     '../../src/module',
   ],
+
+  // The headers of nuxt-security's strict mode, with the policy above.
+  security: {
+    strict: true,
+    headers: {
+      contentSecurityPolicy,
+      // TLS is the proxy's: ddev's router locally, the server's when hosted.
+      strictTransportSecurity: false,
+    },
+    // Behind nginx every request comes from 127.0.0.1: one limit for all
+    // users, which the E2E tests' workers exceed in minutes.
+    rateLimiter: false,
+  },
+
+  routeRules: {
+    // The editor's requests carry markup: texts, comments and imports in its
+    // GraphQL operations, and the agent's prompts. nuxt-security's XSS
+    // validator answers 400 to any request whose markup its filter would
+    // change.
+    '/api/graphql_middleware/**': { security: { xssValidator: false } },
+    '/api/blokkli/agent/**': { security: { xssValidator: false } },
+  },
 
   // Self-hosted fonts: Source Serif 4 with its optical size axis.
   css: [
@@ -146,23 +213,6 @@ export default defineNuxtConfig({
           },
         },
       },
-      // blökkli's own definition, with labels in every language: the editor
-      // doesn't translate them.
-      bkVisibleLanguages: {
-        type: 'checkboxes',
-        label: {
-          en: 'Visible languages',
-          de: 'Sichtbare Sprachen',
-          fr: 'Langues visibles',
-        },
-        description: {
-          en: 'Only show on specific languages.',
-          de: 'Nur in bestimmten Sprachen anzeigen.',
-          fr: 'Afficher uniquement dans certaines langues.',
-        },
-        options: {},
-        default: [],
-      },
     },
     colorOptions: CHART_COLORS,
     // The strings of the demo's own analyzer (app/blokkli/analyzers) and of its
@@ -234,7 +284,7 @@ export default defineNuxtConfig({
     ],
     schemaOptionsPath: optionsSchemaPath,
     modules: [
-      drupal({ templateEditRouteName: 'blokkli-template' }),
+      drupal(),
       // The demo's own skills, tool and prompts are in ./blokkli.
       agent({
         provider: 'anthropic',
@@ -336,15 +386,24 @@ export default defineNuxtConfig({
     strict: true,
     tsConfig: {
       // The E2E tests against the sandboxes run against this app, and use the
-      // test-cases feature's `window.__BLOKKLI__.test`.
-      include: ['../blokkli/features/**/*', '../../../test/e2e-drupal/**/*'],
+      // test-cases feature's `window.__BLOKKLI__.test`. So does the script
+      // that takes the pictures of the blocks.
+      include: [
+        '../blokkli/features/**/*',
+        '../../../test/e2e-drupal/**/*',
+        '../../../scripts/block-images/**/*',
+      ],
     },
   },
 
   // The Test Cases sidebar (blokkli/features/test-cases), only where the
   // agent's mock is. blökkli finds its features through Nuxt, which skips what
-  // it ignores; `devOnly` would leave it out of the E2E build too.
-  ignore: testSeams ? [] : ['blokkli/features/test-cases'],
+  // it ignores; `devOnly` would leave it out of the E2E build too. The page
+  // that the pictures of the blocks are taken of, only on the dev server.
+  ignore: [
+    ...(testSeams ? [] : ['blokkli/features/test-cases']),
+    ...(devServer ? [] : ['app/pages/block-image']),
+  ],
 
   $production: {
     // A build empties its build directory first: its own, so that it can run

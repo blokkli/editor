@@ -196,6 +196,8 @@ The `ctx` parameter provides:
 | `ctx.app`            | `BlokkliApp`     | The full blökkli app instance (state, DOM, blocks, etc.) |
 | `ctx.adapter`        | `BlokkliAdapter` | The adapter with required methods guaranteed             |
 | `ctx.itemEntityType` | `string`         | The item entity type from module config                  |
+| `ctx.pageContext`    | `PageContext`    | The page context sent when the agent connected, or null  |
+| `ctx.reportUsage`    | `function`       | Counts the tokens of a model call the tool makes itself  |
 
 ## Required Adapter Methods
 
@@ -235,6 +237,10 @@ export default defineBlokkliAgentTool({
 The component receives `{ context, params }` props and must emit a `'done'`
 event with the final result matching `resultSchema`. The component is
 responsible for rendering the UI, applying changes, and emitting the result.
+
+A component that calls a model itself counts the tokens in the conversation's
+usage with `context.reportUsage(usage)`, as soon as the call reports them: the
+tokens were spent, whether the tool then applies, fails or is cancelled.
 
 ## Lazy Tools
 

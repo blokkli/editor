@@ -2,13 +2,17 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import {
   requireBundlePermission,
-  requireNoRestrictedAncestor,
+  requireCanChangeBlockField,
 } from '../../helpers/validation'
 import { onlyUnique } from '#blokkli/helpers'
 import { fieldDiffResultSchema } from '../schemas'
 import { optionalBooleanParam } from '../../../shared/toolParams'
 import { resolveHost } from '../helpers'
-import { skippedFieldsMessage, type SkippedField } from '../fieldDiffApproval'
+import {
+  SKIPPED_READ_ONLY,
+  skippedFieldsMessage,
+  type SkippedField,
+} from '../fieldDiffApproval'
 import Component from './Component.vue'
 import DetailsComponent from '../../components/FieldDiffDetails/index.vue'
 
@@ -112,6 +116,7 @@ export default defineBlokkliAgentTool({
         fieldName,
       )
       if (!field) return 'field not found'
+      if (field.readOnly) return SKIPPED_READ_ONLY
       return undefined
     }
 
@@ -157,7 +162,7 @@ export default defineBlokkliAgentTool({
     }
 
     // Check ancestor restrictions
-    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, blockUuids)
+    const ancestorDenied = requireCanChangeBlockField(ctx.app, blockUuids)
     if (ancestorDenied) return ancestorDenied
 
     return {

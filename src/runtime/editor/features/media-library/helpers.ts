@@ -2,6 +2,8 @@ import { itemEntityType } from '#blokkli-build/config'
 import { falsy } from '#blokkli/helpers'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import type { BlokkliItemHost } from '#blokkli/editor/types/field'
+import type { DropAreaDropOptions } from '#blokkli/editor/types/ui'
+import { hasOtherTranslations } from '#blokkli/editor/helpers/translations'
 
 /**
  * A droppable field whose media can be replaced.
@@ -14,15 +16,20 @@ export type ReplaceMediaTarget = {
   label: string
   element: HTMLElement
   /**
+   * Whether to ask if the media changes in every language: the field is
+   * translatable, and its block (or the page) has another translation.
+   */
+  askLanguages: boolean
+  /**
    * Replace the field's media with the given one.
    */
-  replace: (mediaId: string) => Promise<boolean>
+  replace: (mediaId: string, options?: DropAreaDropOptions) => Promise<boolean>
 }
 
 /**
  * The droppable fields whose media can be replaced with a media of the bundle:
- * those with a single value that allow the bundle, of the page's entity or of
- * a block the user may edit.
+ * those with a single value that allow the bundle and that the user may edit,
+ * of the page's entity or of a block the user may edit.
  */
 export function getReplaceMediaTargets(
   {
@@ -66,13 +73,9 @@ export function getReplaceMediaTargets(
 
       const isBlock = field.type === itemEntityType
 
-      // Skip blocks where the user lacks edit permission or is inside
-      // a restricted ancestor.
-      if (
-        isBlock &&
-        (!permissions.checkBlockBundlePermission(field.bundle, 'edit') ||
-          permissions.blockHasRestrictedAncestor(field.uuid))
-      ) {
+      // Skip read-only fields, and blocks where the user lacks edit
+      // permission or that are inside a restricted ancestor.
+      if (!permissions.canEditFieldValue(field, field.fieldName)) {
         return
       }
 
@@ -89,6 +92,16 @@ export function getReplaceMediaTargets(
         fieldName: field.fieldName,
       }
 
+      const askLanguages =
+        !!config.isTranslatable &&
+        hasOtherTranslations(
+          state.translation.value,
+          isBlock
+            ? (state.getFieldListItem(field.uuid)?.editContext?.translations ??
+                [])
+            : null,
+        )
+
       return {
         id: `${isBlock ? 'replace-media' : 'replace-entity-media'}:${field.uuid}:${field.fieldName}`,
         label: $t('replaceField', 'Replace @field').replace(
@@ -96,9 +109,15 @@ export function getReplaceMediaTargets(
           config.label,
         ),
         element: field.element,
-        replace: (mediaId) =>
+        askLanguages,
+        replace: (mediaId, options) =>
           state.mutateWithLoadingState(
-            () => replaceMedia({ host, mediaId }),
+            () =>
+              replaceMedia({
+                host,
+                mediaId,
+                allLanguages: options?.allLanguages,
+              }),
             errorMessage,
           ),
       }

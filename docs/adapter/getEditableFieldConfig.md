@@ -62,6 +62,10 @@ export default defineBlokkliEditAdapter((ctx) => {
 
           // The maximum number of characters allowed.
           maxLength: 255,
+
+          // Optional: the user may not change the field. The editor doesn't
+          // open it, and neither translations nor the agent write it.
+          readOnly: false,
         },
       ])
     },

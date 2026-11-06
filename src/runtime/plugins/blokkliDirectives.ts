@@ -2,7 +2,7 @@ import type { BlokkliApp } from '#blokkli/editor/types/app'
 import {
   INJECT_APP,
   INJECT_ENTITY_CONTEXT,
-  INJECT_IS_IN_REUSABLE,
+  INJECT_IS_OUTSIDE_STATE,
 } from '#blokkli/helpers/injections'
 import type { EntityContext } from '#blokkli/types'
 import type { BlokkliDirectiveType } from '#blokkli/types/directives'
@@ -52,8 +52,8 @@ function getEntityContext(
   return getInjection<EntityContext>(vnode, INJECT_ENTITY_CONTEXT, el)
 }
 
-function isInReusable(vnode: VNode): boolean {
-  return !!getInjection(vnode, INJECT_IS_IN_REUSABLE)
+function isOutsideState(vnode: VNode): boolean {
+  return !!getInjection(vnode, INJECT_IS_OUTSIDE_STATE)
 }
 
 function getFieldName(
@@ -84,7 +84,7 @@ function createDirective(
           return
         }
 
-        if (isInReusable(vnode)) {
+        if (isOutsideState(vnode)) {
           return
         }
 
@@ -100,7 +100,7 @@ function createDirective(
       if (!isEditing()) {
         return
       }
-      if (isInReusable(vnode)) {
+      if (isOutsideState(vnode)) {
         return
       }
 

@@ -2,7 +2,7 @@
   <slot v-if="!isGlobalProxyMode" :items="filteredList" />
   <Component
     :is="DraggableList"
-    v-if="DraggableList && isEditing && canEdit && !isInReusable && entity"
+    v-if="DraggableList && isEditing && canEdit && !isOutsideState && entity"
     :list="filteredList"
     :name
     :entity
@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useAttrs, inject, provide, ref } from '#imports'
+import { computed, useAttrs, inject, provide } from '#imports'
 import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 import { isVisibleByOptions } from '#blokkli/helpers/runtimeHelpers'
 import BlokkliItem from './BlokkliItem.vue'
@@ -69,7 +69,7 @@ import {
   INJECT_FIELD_LIST_TYPE,
   INJECT_FIELD_Z_INDEX,
   INJECT_IS_EDITING,
-  INJECT_IS_IN_REUSABLE,
+  INJECT_IS_OUTSIDE_STATE,
   INJECT_IS_NESTED,
   INJECT_IS_PREVIEW,
   INJECT_NESTING_LEVEL,
@@ -201,7 +201,7 @@ defineSlots<{
 
 const isEditing = inject(INJECT_IS_EDITING, false)
 const isGlobalProxyMode = inject(INJECT_GLOBAL_PROXY_MODE, null)
-const isInReusable = inject(INJECT_IS_IN_REUSABLE, false)
+const isOutsideState = inject(INJECT_IS_OUTSIDE_STATE, false)
 const isPreview = inject(INJECT_IS_PREVIEW, null)
 const isNested = inject(INJECT_IS_NESTED, false)
 const nestingLevel = inject(INJECT_NESTING_LEVEL, 0)
@@ -221,11 +221,14 @@ if (!providerEntity) {
   )
 }
 
-// @TODO: How to canEdit?
-const canEdit = ref(true)
+// A field that the editor can't edit shows what it holds, and so does
+// everything in it: it's outside the edit state, as a library item is.
+const canEdit =
+  !editContext ||
+  editContext.isFieldEditable(entity.type, entity.bundle, props.name)
 
 const fieldKey = computed<string>(() => {
-  if (canEdit.value) {
+  if (canEdit) {
     return entity.uuid + ':' + props.name
   }
   return ''
@@ -261,7 +264,7 @@ function filterVisible(
 const filteredList = computed<FieldListItemTyped[]>(() => {
   if (
     mutatedFields &&
-    !isInReusable &&
+    !isOutsideState &&
     editContext &&
     fieldKey.value &&
     (isPreview?.value || isEditing)
@@ -296,5 +299,9 @@ if (props.proxyMode) {
 
 if (!isNested) {
   provide(INJECT_PROVIDER_BLOCKS, filteredList)
+}
+
+if (!canEdit) {
+  provide(INJECT_IS_OUTSIDE_STATE, true)
 }
 </script>

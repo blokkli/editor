@@ -1,5 +1,6 @@
 import { ref, shallowRef, readonly, type Ref } from '#imports'
 import type {
+  McpToolContext,
   McpToolDefinition,
   MutationAction,
   ToolOutcome,
@@ -48,6 +49,8 @@ export type ToolsProvider = {
 
   init: () => Promise<{ toolNames: string[] }>
   setPageContext: (ctx: PageContext) => void
+  /** The context that tools and their components get. */
+  createToolContext: () => McpToolContext
   dispatch: (
     callId: string,
     tool: string,
@@ -90,12 +93,13 @@ export default function toolsProvider({
   let toolMap: Record<string, McpToolDefinition> = {}
   let pendingToolCallResolve: ((result: unknown) => void) | null = null
 
-  function createToolContext() {
+  function createToolContext(): McpToolContext {
     return {
       app,
       itemEntityType,
       adapter,
       pageContext: pageContext.value,
+      reportUsage: conversation.pushUsage,
     }
   }
 
@@ -125,12 +129,10 @@ export default function toolsProvider({
     })
   }
 
-  type ToolContext = ReturnType<typeof createToolContext>
-
   /** Component-rendering tool: prepare params, await the component, split meta. */
   async function executeComponentTool(
     toolDef: McpToolDefinition,
-    ctx: ToolContext,
+    ctx: McpToolContext,
     params: Record<string, unknown>,
     setLabel?: (label: string) => void,
   ): Promise<ToolOutcome> {
@@ -345,10 +347,6 @@ export default function toolsProvider({
         }
       }
 
-      if (outcome.meta.usage) {
-        conversation.pushUsage(outcome.meta.usage)
-      }
-
       // The server reads `_summary` from the wire payload during pruning.
       let resultForServer = outcome.result
       const resultObj = asRecord(resultForServer)
@@ -451,6 +449,7 @@ export default function toolsProvider({
 
     init,
     setPageContext,
+    createToolContext,
     dispatch,
     runForPrompt,
     approve,

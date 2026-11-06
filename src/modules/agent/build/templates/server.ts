@@ -134,12 +134,12 @@ ${toolDefinitionsExport}
       return `import type { AIProvider } from '${rel(providersPath)}/types'
 import type { SkillDefinition } from '${rel(skillsTypesPath)}'
 import type { SystemPromptDefinition } from '${rel(systemPromptTypesPath)}'
-import type { AgentModelDefinition, MockScript, ServerToolMetadata } from '${rel(sharedTypesPath)}'
+import type { AgentModelDefinition, MockScript, MockStreamEntry, ServerToolMetadata } from '${rel(sharedTypesPath)}'
 
 export const allowedFetchOrigins: string[]
 export const provider: AIProvider
 export const enableMock: boolean
-export const createMockProvider: ((script: MockScript) => AIProvider) | undefined
+export const createMockProvider: ((script: MockScript, usage?: MockStreamEntry['usage']) => AIProvider) | undefined
 export const models: AgentModelDefinition[]
 export const debugPrompt: boolean
 export const skills: SkillDefinition[]

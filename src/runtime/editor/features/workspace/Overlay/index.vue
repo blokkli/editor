@@ -18,7 +18,7 @@
       :key="item.uuid"
       v-bind="item"
       :focused="focusedIndex === i"
-      :bundle-label="workspaces.getBundleLabel(item.bundle)"
+      :bundle-label="workspaces.getBundleLabel(item.entityType, item.bundle)"
       :is-owner="!!(item.uid && item.uid === ownerId)"
       @mouseenter="onMouseEnter(i)"
     />

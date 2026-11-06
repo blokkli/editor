@@ -46,6 +46,7 @@ permissions:
   - 'access files overview'
   - 'access media overview'
   - 'access toolbar'
+  - 'administer node published status'
   - 'bypass paragraphs type content access'
   - 'create content translations'
   - 'create document media'

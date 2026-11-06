@@ -29,6 +29,28 @@
       </PanelSection>
 
       <PanelSection
+        v-if="languages.length"
+        :title="$t('publishLanguages', 'Languages')"
+        padded
+      >
+        <Languages
+          v-model="selectedLanguages"
+          :languages
+          :mode="publishMode"
+          :disabled="
+            isLoading || isAlreadyScheduled || statusScope === 'all-languages'
+          "
+        />
+        <InfoBox
+          v-if="notAllowedText"
+          :text="notAllowedText"
+          small
+          class="mt-10"
+          data-test="publish-not-allowed"
+        />
+      </PanelSection>
+
+      <PanelSection
         v-if="publishOptions?.hasRevisionLogMessage"
         :title="$t('settings', 'Settings')"
         padded
@@ -96,8 +118,23 @@
           }}
         </div>
       </PanelSection>
-      <PanelSection :title="$t('summary', 'Summary')" padded>
-        <FormItem>
+      <PanelSection
+        v-if="
+          statusScope === 'page' || summarySentence || scheduledBlocks.length
+        "
+        :title="$t('summary', 'Summary')"
+        padded
+      >
+        <FormItem v-if="summarySentence">
+          <InfoBox
+            :text="summarySentence"
+            data-test="publish-summary-sentence"
+          />
+        </FormItem>
+        <FormItem v-if="statusScope === 'page' && notAllowedText">
+          <InfoBox :text="notAllowedText" data-test="publish-not-allowed" />
+        </FormItem>
+        <FormItem v-if="statusScope === 'page'">
           <Summary
             :is-published="isCurrentlyPublished"
             :mode="publishMode"
@@ -108,12 +145,14 @@
         </FormItem>
         <FormItem v-if="publishMode !== 'save' && scheduledBlocks.length">
           <InfoBox data-test="publish-scheduled-blocks-notice">
+            <!-- eslint-disable vue/no-v-html -- a translated text with the date, escaped -->
             <p
               v-for="(text, index) in scheduledBlocks"
               :key="'infobox' + index"
               data-test="publish-scheduled-block"
               v-html="text"
             />
+            <!-- eslint-enable vue/no-v-html -->
           </InfoBox>
         </FormItem>
       </PanelSection>
@@ -204,14 +243,17 @@ import {
   InfoBox,
 } from '#blokkli/editor/components'
 import { emitMessage } from '#blokkli/editor/events'
+import { escapeHtml } from '#blokkli/editor/helpers/string'
 import Item from './Item.vue'
+import Languages from './Languages.vue'
 import PublishOption, { type PublishOptionProps } from './PublishOption.vue'
 import Summary from './Summary.vue'
 import Violations from './Violations.vue'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
-import type { MutationStatus } from './types'
+import type { MutationStatus, PublishLanguage } from './types'
 import type { GetEditStatesItem } from '../types'
 import type { Validation } from '#blokkli/editor/types/state'
+import { getStatusScope } from '#blokkli/editor/helpers/status'
 
 const showTable = false
 
@@ -306,7 +348,7 @@ const scheduledBlocks = computed(() => {
           )
     return message
       .replace('@count', count.toString())
-      .replace('@date', `<strong>${formattedDate}</strong>`)
+      .replace('@date', `<strong>${escapeHtml(formattedDate)}</strong>`)
   })
 })
 
@@ -332,6 +374,110 @@ const isAlreadyScheduled = computed(() => !!publishOn.value)
  */
 const isCurrentlyPublished = computed(() => !!state.entity.value?.status)
 
+const statusScope = computed(() => getStatusScope(state.translation.value))
+
+/**
+ * Whether the user may change the status of the source language's
+ * translation: the page's status, when it has one for every language.
+ */
+const canChangeSourceStatus = computed(() => {
+  const { sourceLanguage, translations } = state.translation.value
+  const source = translations?.find((v) => v.id === sourceLanguage)
+  return source?.canChangeStatus !== false
+})
+
+/**
+ * The rows of the section "Languages": each translation, or one row when every
+ * language shares one status.
+ */
+const languages = computed<PublishLanguage[]>(() => {
+  if (statusScope.value === 'all-languages') {
+    return [
+      {
+        id: 'all',
+        label: $t('publishAllLanguages', 'All languages'),
+        isCurrent: false,
+        isPublished: isCurrentlyPublished.value,
+        canChangeStatus: canChangeSourceStatus.value,
+      },
+    ]
+  } else if (statusScope.value !== 'language') {
+    return []
+  }
+
+  const translations = state.translation.value.translations ?? []
+  return (state.translation.value.availableLanguages ?? []).flatMap(
+    (language) => {
+      const translation = translations.find((v) => v.id === language.id)
+      if (!translation?.exists) {
+        return []
+      }
+      return [
+        {
+          id: language.id,
+          label: language.name,
+          isCurrent: language.id === context.value.language,
+          isPublished: translation.status,
+          canChangeStatus: translation.canChangeStatus !== false,
+        },
+      ]
+    },
+  )
+})
+
+/**
+ * Whether a language is published. Saving then puts the changes live in it:
+ * Drupal saves one revision for every translation.
+ */
+const isAnyPublished = computed(() =>
+  statusScope.value === 'language'
+    ? languages.value.some((v) => v.isPublished)
+    : isCurrentlyPublished.value,
+)
+
+const hasChanges = computed(() => state.mutations.value.length > 0)
+
+/**
+ * Whether the user may publish an unpublished language, or the page.
+ */
+const canPublishAny = computed(() =>
+  statusScope.value === 'language'
+    ? languages.value.some((v) => !v.isPublished && v.canChangeStatus)
+    : !isCurrentlyPublished.value && canChangeSourceStatus.value,
+)
+
+/**
+ * The note when the user may not publish what is unpublished.
+ */
+const notAllowedText = computed(() => {
+  if (statusScope.value === 'language') {
+    return languages.value.some((v) => !v.isPublished && !v.canChangeStatus)
+      ? $t(
+          'publishLanguagesNotAllowed',
+          "You may not publish the unpublished languages that can't be ticked.",
+        )
+      : ''
+  }
+  return !isCurrentlyPublished.value && !canChangeSourceStatus.value
+    ? $t(
+        'publishPageNotAllowed',
+        'You may not publish this page. Saving keeps it unpublished.',
+      )
+    : ''
+})
+
+/**
+ * The unpublished languages that are ticked: those of the schedule, or the
+ * current language.
+ */
+const selectedLanguages = ref<string[]>(
+  statusScope.value === 'all-languages'
+    ? ['all']
+    : publishOptions.value?.publishOn
+      ? [...publishOptions.value.publishLanguages]
+      : [context.value.language],
+)
+
 /**
  * Available publish mode options.
  */
@@ -346,7 +492,8 @@ const publishModeOptions = computed<PublishOptionProps[]>(() => {
         'publishModeSaveDescription',
         'Save changes without publishing',
       ),
-      disabled: isCurrentlyPublished.value || isAlreadyScheduled.value,
+      disabled:
+        isAnyPublished.value || isAlreadyScheduled.value || !hasChanges.value,
     },
     {
       id: 'immediate',
@@ -357,7 +504,9 @@ const publishModeOptions = computed<PublishOptionProps[]>(() => {
         'publishModeImmediateDescription',
         'Publish changes immediately',
       ),
-      disabled: isAlreadyScheduled.value,
+      disabled:
+        isAlreadyScheduled.value ||
+        (!isAnyPublished.value && !canPublishAny.value),
     },
   ]
 
@@ -371,7 +520,7 @@ const publishModeOptions = computed<PublishOptionProps[]>(() => {
         'publishModeScheduledDescription',
         'Schedule changes for publishing',
       ),
-      disabled: false,
+      disabled: !isAnyPublished.value && !canPublishAny.value,
     })
   }
 
@@ -389,7 +538,7 @@ if (publishOptions.value?.revisionLogMessage) {
 }
 
 // Initialize publishMode based on current state
-if (!isCurrentlyPublished.value) {
+if (!isAnyPublished.value && hasChanges.value) {
   publishMode.value = 'save'
 }
 
@@ -418,6 +567,45 @@ const enableScheduling = computed(() => publishMode.value === 'scheduled')
  * Whether to publish when saving.
  */
 const shouldPublish = computed(() => publishMode.value !== 'save')
+
+/**
+ * The languages whose translations to publish.
+ */
+const languagesToPublish = computed<string[]>(() => {
+  if (publishMode.value === 'save') {
+    return []
+  } else if (statusScope.value === 'language') {
+    return languages.value
+      .filter(
+        (v) =>
+          !v.isPublished &&
+          v.canChangeStatus &&
+          selectedLanguages.value.includes(v.id),
+      )
+      .map((v) => v.id)
+  } else if (isCurrentlyPublished.value || !canChangeSourceStatus.value) {
+    return []
+  }
+
+  // One status for every language: publishing the original publishes all.
+  const sourceLanguage = state.translation.value.sourceLanguage
+  return sourceLanguage ? [sourceLanguage] : []
+})
+
+const summarySentence = computed(() => {
+  if (statusScope.value === 'page' || !hasChanges.value) {
+    return ''
+  }
+  return publishMode.value === 'save'
+    ? $t(
+        'publishSaveAppliesAllLanguages',
+        'Saving applies all pending changes, in every language.',
+      )
+    : $t(
+        'publishAppliesAllLanguages',
+        'Publishing applies all pending changes, in every language.',
+      )
+})
 
 const { data: editStates } = await useAsyncData(
   () => {
@@ -527,6 +715,15 @@ const scheduleDateError = computed(() => {
 
 const canSubmit = computed(() => {
   if (!selectedToPublishItems.value.length) {
+    return false
+  }
+  // Without changes, there must be a language to publish. A published one
+  // gets the changes.
+  if (
+    !languagesToPublish.value.length &&
+    (!hasChanges.value ||
+      (publishMode.value !== 'save' && !isAnyPublished.value))
+  ) {
     return false
   }
   if (publishMode.value === 'scheduled' && !scheduleDate.value) {
@@ -659,6 +856,14 @@ async function removeScheduledDate() {
   isMutating.value = false
 }
 
+/**
+ * The languages to publish of an edit state. Only the current page's are known:
+ * the table of other edit states is off.
+ */
+function getLanguagesToPublish(id: string): string[] {
+  return id === currentId.value ? languagesToPublish.value : []
+}
+
 async function onSubmit() {
   // Update timestamp to ensure validation is correct
   currentTimestamp.value = Date.now()
@@ -701,6 +906,7 @@ async function onSubmit() {
           hostEntityUuid: item.hostEntityUuid,
           revisionLogMessage: revisionMessage.value,
           date: scheduleDate.value,
+          languages: getLanguagesToPublish(item.id),
         })
       } else {
         response = await adapter.publish!({
@@ -708,7 +914,7 @@ async function onSubmit() {
           hostEntityUuid: item.hostEntityUuid,
           closeAfterPublish: true,
           revisionLogMessage: revisionMessage.value,
-          publishIfUnpublished: shouldPublish.value,
+          languages: getLanguagesToPublish(item.id),
         })
       }
 

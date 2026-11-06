@@ -4,8 +4,10 @@ import { mutationResultSchema, parentSchema, positionSchema } from '../schemas'
 import { resolvePosition, resolveHost } from '../helpers'
 import {
   requireBundlePermission,
-  requireNoRestrictedAncestor,
+  requireCanChangeBlockField,
+  requireNotMovedIntoItself,
   validateFieldCardinality,
+  requireCanChangeField,
 } from '../../helpers/validation'
 import { getFieldKey } from '#blokkli/helpers'
 
@@ -65,14 +67,17 @@ export default defineBlokkliAgentTool({
     if (denied) return denied
 
     // Check ancestor restrictions on source blocks and target parent
-    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, params.uuids)
+    const ancestorDenied = requireCanChangeBlockField(ctx.app, params.uuids)
     if (ancestorDenied) return ancestorDenied
-    if (ctx.app.permissions.blockHasRestrictedAncestor(params.parent.uuid)) {
-      return {
-        error:
-          'Permission denied: target parent is inside a block with restricted editing permissions',
-      }
-    }
+    const fieldDenied = requireCanChangeField(ctx.app, params.parent)
+    if (fieldDenied) return fieldDenied
+
+    const intoItself = requireNotMovedIntoItself(
+      ctx.app,
+      params.uuids,
+      params.parent.uuid,
+    )
+    if (intoItself) return intoItself
 
     // Validate target field cardinality. Only blocks coming from another field
     // increase the target's count — same-field reorders leave it unchanged.

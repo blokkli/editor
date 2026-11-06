@@ -65,6 +65,7 @@
 
       <span
         v-show="isPermissionRestricted"
+        data-test="item-actions-restricted"
         class="size-25 text-yellow-normal p-5 bg-yellow-dark rounded-full"
       >
         <Icon name="bk_mdi_lock" class="size-full" />
@@ -117,7 +118,7 @@ import {
   Pill,
 } from '#blokkli/editor/components'
 import EditActionsItemDropdown from '../ItemDropdown/index.vue'
-import type { FragmentDefinition } from '#blokkli-build/definitions'
+import type { ResolvedFragmentDefinition } from '#blokkli/editor/providers/definition'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import { onBlokkliEvent } from '#blokkli/editor/composables'
 import {
@@ -203,7 +204,7 @@ const hasSelectedHost = computed(() => {
   return selection.items.value.length === 0
 })
 
-const fragment = computed<FragmentDefinition | null>(() => {
+const fragment = computed<ResolvedFragmentDefinition | null>(() => {
   if (itemBundle.value?.id !== fragmentBlockBundle) {
     return null
   }
@@ -275,15 +276,16 @@ const selectedTranslationIsOutdated = computed<boolean>(() => {
 })
 
 const permissionsForSelected = computed<BlockPermission[]>(() => {
-  const bundles = selection.bundles.value
-  if (!bundles.length) {
+  const uuids = selection.uuids.value
+  if (!uuids.length) {
     return []
   }
 
+  // A block in a field that can't change has no permissions.
   const allPermissions: BlockPermission[] = ['add', 'delete', 'edit']
   return allPermissions.filter((permission) =>
-    bundles.every((bundle) =>
-      permissions.checkBlockBundlePermission(bundle, permission),
+    uuids.every((uuid) =>
+      permissions.getBlockPermissions(uuid).includes(permission),
     ),
   )
 })

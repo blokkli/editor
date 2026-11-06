@@ -18,6 +18,12 @@ import {
 import { emitEvent } from '../../support/events'
 import { nextMutation } from '../../support/mutations'
 import {
+  CANARY_WORD,
+  canaryPayload,
+  installCanary,
+  settledCanaries,
+} from '../../support/xss'
+import {
   resetSandbox,
   sandboxHost,
   seedUuid,
@@ -33,8 +39,9 @@ const GALLERY = seedUuid('paragraph', 'faulty-gallery')
  * Drupal validates the edit state before it publishes. The page "Faulty"
  * (content/nodes/faulty.yml) has a gallery with a title and a text, which a
  * gallery doesn't allow: two violations. Drupal has no content that fails
- * with a plain error, so that test fakes the `pbPublish` response. Both flows
- * return `success: false` and the dialog renders the response inside the
+ * with a plain error, so that test fakes the `pbPublish` response. So does the
+ * one with a message whose values aren't escaped: Drupal escapes them. All
+ * flows return `success: false` and the dialog renders the response inside the
  * `publish-validation-errors` panel — no generic toast (hidden behind the
  * modal). Clicking a block-bound violation closes the dialog and the canvas's
  * existing `select` + `scrollIntoView` listeners do the rest.
@@ -136,6 +143,52 @@ describe('Publish dialog — failure rendering', async () => {
     const items = errorsPanel.locator('[data-test="publish-error-item"]')
     await expect.poll(() => items.count()).toBe(1)
     expect(await dialog(page, 'publish').isVisible()).toBe(true)
+  })
+
+  test("renders a message's markup sanitised", async () => {
+    await installCanary(page)
+    // Drupal's placeholder, and a value as another adapter might put it in.
+    const message = `${CANARY_WORD} <em class="placeholder">A title</em> ${canaryPayload('violation')}`
+    await page.route(
+      (url) => url.pathname === '/api/graphql_middleware/mutation/pbPublish',
+      (route) =>
+        route.fulfill({
+          json: {
+            data: {
+              state: {
+                action: {
+                  success: false,
+                  errors: [],
+                  state: null,
+                  violations: [
+                    {
+                      message,
+                      code: null,
+                      propertyPath: null,
+                      entityUuid: null,
+                      entityType: null,
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        }),
+    )
+
+    await openPublishDialog()
+    await submit()
+
+    const shown = page.locator('[data-test="publish-violation-message"]')
+    await expect
+      .poll(async () => (await shown.textContent()) ?? '')
+      .toContain(CANARY_WORD)
+    expect(
+      await shown.evaluate((el) => el.querySelector('em')?.textContent),
+    ).toBe('A title')
+    // Unsanitised, the page's policy blocks the payload: ../../setup.ts fails
+    // the test on the violation.
+    expect(await settledCanaries(page)).not.toContain('violation')
   })
 
   test('clicking a block-bound violation closes the dialog and selects the block', async () => {

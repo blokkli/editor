@@ -112,6 +112,7 @@ function getPublishOptions(ctx: {
     lastChanged: '2024-09-09T14:00:01.000Z',
     canSchedule: true,
     publishOn,
+    publishLanguages: [],
     revisionLogMessage,
   }
 }
@@ -2485,10 +2486,11 @@ export default defineBlokkliEditAdapter((ctx) => {
       return Promise.resolve({
         items,
         labelMap: {
-          label: 'Page',
           bundles: {
-            page: 'Page',
-            landing_page: 'Landing Page',
+            page: {
+              page: 'Page',
+              landing_page: 'Landing Page',
+            },
           },
         },
       })
@@ -3001,9 +3003,15 @@ export default defineBlokkliEditAdapter((ctx) => {
     if (!source) {
       throw new Error(`Unknown data source: ${id}`)
     }
+    // The mock data has one language, so its labels and names are also the
+    // keys.
     return {
-      categories: source.categories,
-      series: source.series.map((s) => ({ name: s.name, data: [...s.data] })),
+      categories: source.categories.map((label) => ({ key: label, label })),
+      series: source.series.map((s) => ({
+        key: s.name,
+        name: s.name,
+        data: [...s.data],
+      })),
     }
   }
 

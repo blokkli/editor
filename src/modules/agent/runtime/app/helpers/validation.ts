@@ -129,20 +129,72 @@ export function validateBundlesAllowed(
 }
 
 /**
- * Check that none of the given blocks are inside a restricted ancestor.
- * Returns a ToolError if any block has a restricted ancestor, or undefined if
- * all are unrestricted.
+ * Check that the field holding each block can change: that it isn't read-only
+ * and that no ancestor restricts editing. Returns a ToolError if any block is
+ * in such a field, or undefined if all are in fields that can change. A UUID
+ * that isn't a block, such as the page's, is in no field.
  */
-export function requireNoRestrictedAncestor(
+export function requireCanChangeBlockField(
   app: BlokkliApp,
   uuids: string[],
 ): ToolError | undefined {
   for (const uuid of uuids) {
-    if (app.permissions.blockHasRestrictedAncestor(uuid)) {
+    if (
+      app.blocks.getBlock(uuid) &&
+      !app.permissions.canChangeBlockField(uuid)
+    ) {
       return {
         error:
-          'Permission denied: block is inside a parent with restricted editing permissions',
+          'Permission denied: paragraph is in a field that is read-only, or inside a parent with restricted editing permissions',
       }
+    }
+  }
+  return undefined
+}
+
+/**
+ * Check that paragraphs can be added to a field of a parent: that the field
+ * isn't read-only and that the parent may be edited. Returns a ToolError if
+ * not, or undefined if they can. A parent that doesn't exist is left to the
+ * other checks.
+ */
+export function requireCanChangeField(
+  app: BlokkliApp,
+  parent: { type: string; uuid: string; field: string },
+): ToolError | undefined {
+  const { context } = app
+  const bundle =
+    parent.uuid === context.value.entityUuid
+      ? context.value.entityBundle
+      : app.blocks.getBlock(parent.uuid)?.bundle
+  if (!bundle) {
+    return undefined
+  }
+  const host = { type: parent.type, bundle, uuid: parent.uuid }
+  if (!app.permissions.canChangeField(host, parent.field)) {
+    return {
+      error: `Permission denied: field "${parent.field}" is read-only, or its parent may not be edited`,
+    }
+  }
+  return undefined
+}
+
+/**
+ * Check that blocks aren't moved into themselves: into one of their own fields,
+ * or into a block nested in them. Returns a ToolError if the target parent is
+ * one of the blocks or nested in one, or undefined otherwise.
+ */
+export function requireNotMovedIntoItself(
+  app: BlokkliApp,
+  uuids: string[],
+  parentUuid: string,
+): ToolError | undefined {
+  const into = uuids.find(
+    (uuid) => uuid === parentUuid || app.state.isChildOf(parentUuid, uuid),
+  )
+  if (into) {
+    return {
+      error: `Paragraph ${into} cannot be moved into itself or into a paragraph nested in it`,
     }
   }
   return undefined

@@ -24,6 +24,7 @@ import {
 import broadcastProvider from '#blokkli/editor/providers/broadcast'
 import { getFieldKey } from '#blokkli/helpers'
 import { intersects } from '#blokkli/editor/helpers/geometry'
+import { isMessageFrom } from '#blokkli/editor/helpers/message'
 import type { AdapterContext } from '../../editor/adapter'
 import {
   eventBus,
@@ -63,12 +64,12 @@ const context = computed<AdapterContext>(() => {
 })
 const interfaceLanguage = computed(() => context.value.language)
 const adapter = await getAdapter(context)
+const fieldConfig = await adapter.getFieldConfig()
 const router = useRouter()
 const broadcast = broadcastProvider()
 const definitions = definitionProvider(props.providerType, interfaceLanguage)
 
 let timeout: any = null
-let lastChanged: string | null = null
 const mutatedFieldsMap = reactive<Record<string, MutatedField | undefined>>({})
 const mutatedOptions = reactive<MutatedOptions>({})
 const mutatedEntityFromState = ref<T | null>(null)
@@ -80,6 +81,13 @@ const mutatedEntity = computed(
 const { data, refresh, error } = await useAsyncData(() =>
   adapter.loadState().then((v) => adapter.mapState(v)),
 )
+
+/**
+ * When the edit state was last changed, as far as the preview knows. It starts
+ * from the loaded state, so that a change made before the first poll is loaded
+ * as well.
+ */
+let lastChanged: string | null = data.value?.lastChanged ?? null
 
 function onUpdatePreviewState(e: UpdatePreviewStateEvent) {
   const existingKeys = Object.keys(mutatedFieldsMap)
@@ -140,12 +148,25 @@ provide(INJECT_EDIT_CONTEXT, {
   selectedUuids: computed<string[]>(() => {
     return []
   }),
+  isFieldEditable: (entityType, entityBundle, fieldName) =>
+    fieldConfig.find(
+      (field) =>
+        field.entityType === entityType &&
+        field.entityBundle === entityBundle &&
+        field.name === fieldName,
+    )?.canEdit !== false,
 })
 
 /**
  * Listen to window messages and emit the matching frameEventBus event.
+ *
+ * Only the editor's messages are accepted: they change what the preview
+ * renders. The editor is the parent window, on the same origin.
  */
 function onMessage(e: MessageEvent) {
+  if (!isMessageFrom(e, window.parent, window.location.origin)) {
+    return
+  }
   if (
     e.data &&
     typeof e.data === 'object' &&

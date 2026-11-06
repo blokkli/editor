@@ -20,6 +20,7 @@ type PublishOptions = {
   lastChanged: string | null
   canSchedule: boolean
   publishOn: string | null
+  publishLanguages: readonly string[]
   revisionLogMessage: string | null
 }
 ```
@@ -32,6 +33,11 @@ the appropriate publish UI and options.
 
 `lastChanged` and `publishOn` are ISO 8601 dates (e.g.
 `2026-05-28T14:32:18.000Z`).
+
+`publishLanguages` are the languages whose translations the scheduled
+publication publishes, as passed to
+[scheduleEditState()](/adapter/scheduleEditState#languages). Without a schedule,
+it's an empty array.
 
 ## Example
 
@@ -46,6 +52,7 @@ getPublishOptions: async () => {
     lastChanged: entity.changedTime,
     canSchedule: entity.type.hasScheduling,
     publishOn: entity.publishOn,
+    publishLanguages: entity.publishLanguages,
     revisionLogMessage: entity.revisionLog,
   }
 }

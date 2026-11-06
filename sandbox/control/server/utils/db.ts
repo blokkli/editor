@@ -54,10 +54,26 @@ export function getDatabase(): DatabaseSync {
   if (!database) {
     const { dataDirectory } = useRuntimeConfig()
     mkdirSync(dataDirectory, { recursive: true })
-    database = new DatabaseSync(`${dataDirectory}/control.sqlite`)
-    database.exec('PRAGMA journal_mode = WAL')
-    migrate(database)
+    database = openDatabase(databaseFile(dataDirectory))
   }
+  return database
+}
+
+/**
+ * The database's file in the app's data directory (runtimeConfig).
+ */
+export function databaseFile(dataDirectory: string): string {
+  return `${dataDirectory}/control.sqlite`
+}
+
+/**
+ * Opens the database, creating its tables. Also for `ddev deploy`, which runs
+ * while the app is stopped (scripts/deploy-sandboxes.ts).
+ */
+export function openDatabase(file: string): DatabaseSync {
+  const database = new DatabaseSync(file)
+  database.exec('PRAGMA journal_mode = WAL')
+  migrate(database)
   return database
 }
 

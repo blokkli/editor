@@ -3,7 +3,7 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
 import {
   requireBundlePermission,
-  requireNoRestrictedAncestor,
+  requireCanChangeBlockField,
 } from '../../helpers/validation'
 
 export const paramsSchema = z.object({
@@ -13,6 +13,12 @@ export const paramsSchema = z.object({
   field: z.string().describe('The content field name (reference type)'),
   mediaId: z.string().describe('The media item ID (from search_media results)'),
   mediaBundle: z.string().describe('The media bundle type (e.g., "image")'),
+  allLanguages: z
+    .boolean()
+    .optional()
+    .describe(
+      'Whether to replace it in every translation of the paragraph (or of the page, for a field of the page). Omit to change only the edited language. Only matters for a translatable field.',
+    ),
 })
 
 export const resultSchema = mutationResultSchema
@@ -48,7 +54,7 @@ export default defineBlokkliAgentTool({
       if (denied) return denied
 
       // Check ancestor restrictions
-      const ancestorDenied = requireNoRestrictedAncestor(ctx.app, [params.uuid])
+      const ancestorDenied = requireCanChangeBlockField(ctx.app, [params.uuid])
       if (ancestorDenied) return ancestorDenied
     }
 
@@ -65,6 +71,9 @@ export default defineBlokkliAgentTool({
       return {
         error: `Field "${params.field}" is not a reference content field on ${bundle}`,
       }
+    }
+    if (config.readOnly) {
+      return { error: `Field "${params.field}" is read-only` }
     }
     const allowedMedia = config.allowed.find((v) => v.type === 'media')
     if (!allowedMedia) {
@@ -96,6 +105,7 @@ export default defineBlokkliAgentTool({
               fieldName: params.field,
             },
             mediaId: params.mediaId,
+            allLanguages: params.allLanguages,
           })
         }
         return adapter.mediaLibraryReplaceMedia!({
@@ -105,6 +115,7 @@ export default defineBlokkliAgentTool({
             fieldName: params.field,
           },
           mediaId: params.mediaId,
+          allLanguages: params.allLanguages,
         })
       },
       affectedUuids: [params.uuid],

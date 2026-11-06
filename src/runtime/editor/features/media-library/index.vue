@@ -62,7 +62,8 @@ defineDropAreas((dragItems) => {
       label: target.label,
       element: target.element,
       icon: 'bk_mdi_swap_horiz',
-      onDrop: () => target.replace(item.mediaId),
+      askLanguages: target.askLanguages,
+      onDrop: (options) => target.replace(item.mediaId, options),
     }),
   )
 })

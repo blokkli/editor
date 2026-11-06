@@ -1,4 +1,4 @@
-// @vitest-environment happy-dom
+// @vitest-environment jsdom
 import { describe, it, expect, vi } from 'vitest'
 import { AnalyzerContext } from './Context'
 import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'

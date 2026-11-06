@@ -40,4 +40,7 @@ const entity = computed(() => {
 if (!entity.value) {
   throw createError({ statusCode: 404, fatal: true })
 }
+
+// No title: the layout's template makes it the site name.
+useSeoMeta({ description: () => entity.value?.lead })
 </script>

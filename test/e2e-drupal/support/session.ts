@@ -3,7 +3,8 @@ import type { JSHandle, Page } from 'playwright-core'
 import type { MockScript } from '#blokkli/agent/shared/types'
 import type { BlokkliApp } from '../../../src/runtime/editor/types/app'
 import type { EntityContext } from '../../../src/runtime/types'
-import { loginPath, seedUuid } from './sandbox'
+import { installCspCheck } from './csp'
+import { loginPath, ROOT, seedUuid } from './sandbox'
 
 /** The users of the fixtures (content/users.yml), one per role. */
 export type TestUser =
@@ -14,11 +15,14 @@ export type TestUser =
   | 'Jonas Weber'
   | 'Sara Gerber'
   | 'David Meier'
+  | 'Tim Fischer'
 
 /** The path of a seeded node in the editor: its alias, with edit mode on. */
 export function editorPath(path: string, nodeKey: string): string {
   return `${path}?blokkliEditing=${seedUuid('node', nodeKey)}`
 }
+
+const YOUTUBE_THUMBNAIL = `${ROOT}test/e2e-drupal/content/files/images/hills.jpg`
 
 /** The page "Blocks" (content/nodes/blocks.yml) in the editor. */
 export const BLOCKS_EDITOR_PATH = editorPath('/en/blocks', 'blocks')
@@ -45,6 +49,17 @@ export type OpenEditorOptions = {
 }
 
 /**
+ * Turns Nuxt DevTools off. The sandbox's frontend is a dev server, and the
+ * DevTools' panel can throw: Nuxt then lays its dev error layer over the page,
+ * which takes the clicks of the tests that follow.
+ */
+async function disableDevtools(page: Page): Promise<void> {
+  await page.addInitScript(() => {
+    Object.assign(window, { __NUXT_DEVTOOLS_DISABLE__: true })
+  })
+}
+
+/**
  * Logs the user into the sandbox, then opens the path in the editor.
  *
  * The agent always has a mock script, so no spec reaches the model. DeepL
@@ -60,6 +75,13 @@ export async function openEditor(
     ignoreHTTPSErrors: true,
     timezoneId: opts.timezoneId,
   })
+  await installCspCheck(page)
+  await disableDevtools(page)
+  // The clipboard's YouTube thumbnails (DropElement/Video.vue): an image of the
+  // fixtures, instead of a request to YouTube.
+  await page.route('https://i.ytimg.com/**', (route) =>
+    route.fulfill({ path: YOUTUBE_THUMBNAIL }),
+  )
   await page.addInitScript(
     ({ script, entries }) => {
       localStorage.setItem('blokkli:popup:agent:closed', 'true')
@@ -83,6 +105,8 @@ export async function openPage(
   path: string,
 ): Promise<Page> {
   const page = await createPage(undefined, { ignoreHTTPSErrors: true })
+  await installCspCheck(page)
+  await disableDevtools(page)
   await page.goto(url(loginPath(sandbox, user, path)))
   return page
 }

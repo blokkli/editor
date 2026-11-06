@@ -1,6 +1,11 @@
 <template>
   <div class="bk-clipboard-item-video">
-    <img v-if="imgUrl" :src="imgUrl" />
+    <img
+      v-if="imgUrl && imgUrl !== failedUrl"
+      :src="imgUrl"
+      data-test="clipboard-video-thumbnail"
+      @error="failedUrl = imgUrl"
+    />
     <div>
       <div>
         <Icon :name="icon" />
@@ -12,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from '#imports'
+import { computed, ref } from '#imports'
 import { Icon } from '#blokkli/editor/components'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 const props = defineProps<{
@@ -21,13 +26,17 @@ const props = defineProps<{
   videoId: string
 }>()
 
+// A Content-Security-Policy has to allow the host (`img-src`). Without it, the
+// item shows the provider's icon and the URL, as for the other providers.
 const imgUrl = computed(() => {
   if (props.videoService === 'youtube') {
-    return `http://i3.ytimg.com/vi/${props.videoId}/hqdefault.jpg`
+    return `https://i.ytimg.com/vi/${encodeURIComponent(props.videoId)}/hqdefault.jpg`
   }
 
   return null
 })
+
+const failedUrl = ref<string | null>(null)
 
 const icon = computed<BlokkliIcon>(() => {
   switch (props.videoService) {

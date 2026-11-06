@@ -15,7 +15,7 @@ compatibility: >-
   access to the Drupal backend (composer, drush) and the Nuxt project.
 metadata:
   author: blokkli
-  version: '1.0.11'
+  version: '1.0.12'
   targets: '@blokkli/editor 2.x, paragraphs_blokkli 2.x'
   docs: https://docs.blokk.li/modules/drupal/overview
 ---
@@ -280,7 +280,7 @@ export default defineNuxtConfig({
   },
 
   blokkli: {
-    modules: [drupal({ templateEditRouteName: 'blokkli-template' })],
+    modules: [drupal()],
   },
 })
 ```
@@ -399,9 +399,10 @@ const props = defineProps<NodePageFragment>()
 - The editor starts on the host's own page (with `?blokkliEditing=<uuid>`), so
   the page that renders the host must render its host component.
 - **Library items** (with `paragraphs_library`): a page at
-  `blokkli/library-item/[uuid]`, which must also load by id. See the
+  `blokkli/library-item/[id]`, their canonical URL. See the
   `blokkli-setup-library` skill.
-- **Templates:** see the `blokkli-setup-templates` skill.
+- **Templates:** a page at `blokkli/template/[id]`, their canonical URL. See the
+  `blokkli-setup-templates` skill.
 
 **The edit adapter:** the Drupal module brings its own. Add
 `app/blokkli.editAdapter.ts` only to extend it:

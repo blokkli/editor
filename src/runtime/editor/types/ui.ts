@@ -39,12 +39,29 @@ export type KeyboardShortcut = {
   label: string
 }
 
+/**
+ * What the editor asked before a drop onto a drop area.
+ */
+export type DropAreaDropOptions = {
+  /**
+   * The answer to `askLanguages`: true to change the field in every language,
+   * false for the source language only. Not set when the editor didn't ask.
+   */
+  allLanguages?: boolean
+}
+
 export type DropArea = {
   id: string
   label: string
   icon?: BlokkliIcon
   element: HTMLElement
-  onDrop: () => Promise<any> | any
+
+  /**
+   * Whether to ask after the drop if the field changes in every language or
+   * only in the source language. Closing the question cancels the drop.
+   */
+  askLanguages?: boolean
+  onDrop: (options: DropAreaDropOptions) => Promise<any> | any
 }
 
 export type InteractionMode = 'mouse' | 'touch'

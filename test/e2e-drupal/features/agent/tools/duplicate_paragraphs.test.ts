@@ -1,6 +1,7 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { Page } from 'playwright-core'
+import { fieldUuids } from '../../../support/blocks'
 import { openSidebar } from '../../../support/sidebar'
 import { runAgentTool } from '../../../support/agent'
 import type { MutationToolResult } from '#blokkli/agent/app/types'
@@ -14,6 +15,7 @@ import { editorPath, openEditor } from '../../../support/session'
 
 // The columns of the page "Nested" (content/nodes/nested.yml): a title on the
 // left, three texts on the right.
+const PAGE = seedUuid('node', 'nested')
 const COLUMNS = seedUuid('paragraph', 'columns')
 const COLUMNS_TITLE = seedUuid('paragraph', 'columns-title')
 
@@ -39,8 +41,11 @@ async function duplicateParagraphs(
  * cloned parent's `children` keyed by paragraph field. This spec pins that
  * behaviour by duplicating seeded columns and asserting the duplicate result
  * mirrors their shape.
+ *
+ * With a `parent`, the copies go into the field it names, not into the field
+ * of their sources.
  */
-describe('agent: duplicate_paragraphs result shape', async () => {
+describe('agent: duplicate_paragraphs', async () => {
   const sandbox = workerSandbox()
   await setup({ host: sandboxHost(sandbox) })
 
@@ -96,6 +101,27 @@ describe('agent: duplicate_paragraphs result shape', async () => {
       'text',
       'text',
       'text',
+    ])
+  })
+
+  test('duplicates into the field it names', async () => {
+    const result = await duplicateParagraphs(page, {
+      uuids: [COLUMNS_TITLE],
+      parent: { type: 'node', uuid: PAGE, field: 'field_paragraphs' },
+      position: 'start',
+    })
+    if (!('success' in result) || result.success !== true) {
+      throw new Error(
+        `Expected success, got: ${JSON.stringify(result, null, 2)}`,
+      )
+    }
+
+    const copy = result.newParagraphs![0]!.uuid
+    expect(copy).not.toBe(COLUMNS_TITLE)
+    expect((await fieldUuids(page))[0]).toBe(copy)
+    // The columns' field keeps only its title.
+    expect(await fieldUuids(page, 'field_left', COLUMNS)).toEqual([
+      COLUMNS_TITLE,
     ])
   })
 })

@@ -71,7 +71,7 @@ const { adapters } = defineBlokkliFeature({
 
 type TransformType = 'block' | 'host'
 
-const { types, selection, state, $t, ui } = useBlokkli()
+const { types, selection, state, $t, ui, permissions } = useBlokkli()
 
 const openPlugin = ref<{
   type: TransformType
@@ -257,14 +257,18 @@ async function onTransformHost(
   ui.setTransform()
 }
 
-const possibleTransforms = computed<TransformPlugin[]>(() =>
-  filterTransforms(
+const possibleTransforms = computed<TransformPlugin[]>(() => {
+  // A transform changes every selected block.
+  if (!selection.uuids.value.every((uuid) => permissions.canEditBlock(uuid))) {
+    return []
+  }
+  return filterTransforms(
     plugins.value || [],
     selection.uuids.value,
     selection.bundles.value,
     types.allowedTypesInList.value,
-  ),
-)
+  )
+})
 
 defineCommands(() =>
   possibleTransforms.value.map((transform) => ({

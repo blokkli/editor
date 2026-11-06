@@ -1,3 +1,5 @@
+import { parseHtmlDocument } from '#blokkli/editor/helpers/html'
+
 /**
  * Rendered comments are stored in the simple author form
  * `<li data-type="taskItem" data-checked="…"><p>…</p></li>`. For display we
@@ -18,7 +20,7 @@ export function enrichRichContent(html: string): string {
   if (!hasTaskItem && !hasLink) {
     return html
   }
-  const doc = new DOMParser().parseFromString(html, 'text/html')
+  const doc = parseHtmlDocument(html)
 
   if (hasTaskItem) {
     for (const li of doc.body.querySelectorAll('li[data-type="taskItem"]')) {

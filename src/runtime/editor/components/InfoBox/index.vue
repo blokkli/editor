@@ -11,7 +11,7 @@
   >
     <div>
       <slot>
-        <p class="text-pretty" v-html="text" />
+        <p class="text-pretty">{{ text }}</p>
       </slot>
     </div>
     <Icon

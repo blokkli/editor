@@ -1,4 +1,5 @@
 import diff from 'html-diff-ts'
+import { parseHtml } from '#blokkli/editor/helpers/html'
 
 /**
  * Matches a single diffmod del/ins pair.
@@ -205,13 +206,6 @@ type Block = {
 }
 
 /**
- * Parse HTML into top-level block elements.
- *
- * Returns null if the content contains non-block children (text nodes or
- * inline elements at the top level), signaling that a flat diff should be
- * used instead.
- */
-/**
  * Serialize an attribute value back into HTML.
  *
  * `attr.value` is the DECODED value, so emitting it raw closes the attribute
@@ -231,9 +225,15 @@ function serializeOpenTag(el: HTMLElement, tag: string): string {
   return openTag + '>'
 }
 
+/**
+ * Parse HTML into top-level block elements.
+ *
+ * Returns null if the content contains non-block children (text nodes or
+ * inline elements at the top level), signaling that a flat diff should be
+ * used instead.
+ */
 function parseBlocks(html: string): Block[] | null {
-  const container = document.createElement('div')
-  container.innerHTML = html
+  const container = parseHtml(html)
   const blocks: Block[] = []
 
   for (const child of container.childNodes) {
@@ -461,8 +461,7 @@ export type Segment = AtomicSegment | ListSegment
 
 /** Parse <ul>/<ol> innerHTML into <li> blocks. Returns null on anything else. */
 function parseListItems(html: string): Block[] | null {
-  const container = document.createElement('div')
-  container.innerHTML = html
+  const container = parseHtml(html)
   const items: Block[] = []
 
   for (const child of container.childNodes) {

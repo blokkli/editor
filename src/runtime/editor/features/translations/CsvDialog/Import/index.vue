@@ -92,32 +92,32 @@
               </td>
               <td>
                 {{ row.source }}
-                <!-- The backend doesn't say which language it refused. -->
-                <RowError
-                  v-if="isMultiLang && refused.has(row.key)"
-                  :message="refused.get(row.key)!"
-                  :reveal="row.key === firstRefusedKey"
-                />
               </td>
               <template v-if="!isMultiLang">
                 <td>
                   <DiffValue
                     :before="singleLangChange(row).current"
                     :after="singleLangChange(row).imported"
+                    :plain="singleLangChange(row).plain"
                     :after-only="
                       !singleLangChange(row).current ||
                       singleLangChange(row).current === row.source
                     "
                   />
                   <RowError
-                    v-if="refused.has(row.key)"
-                    :message="refused.get(row.key)!"
+                    v-if="refused.has(singleLangChange(row).id)"
+                    :message="refused.get(singleLangChange(row).id)!"
                     :reveal="row.key === firstRefusedKey"
                   />
                 </td>
               </template>
               <template v-else>
-                <td v-for="lang in languages" :key="lang">
+                <td
+                  v-for="lang in languages"
+                  :key="lang"
+                  data-test="translations-csv-import-cell"
+                  :data-test-langcode="lang"
+                >
                   <div v-if="row.changes[lang]" class="flex items-start gap-8">
                     <div class="bk-checkbox shrink-0">
                       <input
@@ -129,6 +129,7 @@
                     <DiffValue
                       :before="row.changes[lang]!.current"
                       :after="row.changes[lang]!.imported"
+                      :plain="row.changes[lang]!.plain"
                       :after-only="
                         !row.changes[lang]!.current ||
                         row.changes[lang]!.current === row.source
@@ -136,6 +137,13 @@
                     />
                   </div>
                   <span v-else class="bk-is-empty">&mdash;</span>
+                  <RowError
+                    v-if="
+                      row.changes[lang] && refused.has(row.changes[lang]!.id)
+                    "
+                    :message="refused.get(row.changes[lang]!.id)!"
+                    :reveal="row.key === firstRefusedKey"
+                  />
                 </td>
               </template>
             </tr>
@@ -188,8 +196,10 @@ import {
   Icon,
 } from '#blokkli/editor/components'
 import { emitMessage } from '#blokkli/editor/events'
+import type { TextFieldValue } from '#blokkli/editor/providers/fieldValue'
 import { parseCsv, type CsvRow } from '../csv'
 import { parsePo } from '../po'
+import { itemEntityType } from '#blokkli-build/config'
 import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 import SelectionTable from '../../SelectionTable/index.vue'
@@ -203,6 +213,8 @@ type ImportChange = {
   source: string
   current: string
   imported: string
+  /** The field is plain text: the file's value is shown as text. */
+  plain: boolean
 }
 
 const props = defineProps<{
@@ -213,7 +225,7 @@ const emit = defineEmits<{
   close: []
 }>()
 
-const { adapter, $t, state, context } = useBlokkli()
+const { adapter, $t, state, context, blocks, permissions } = useBlokkli()
 
 const files = ref<File[]>([])
 const changes = ref<ImportChange[] | null>(null)
@@ -222,7 +234,7 @@ const isMultiLang = computed(() => languages.value.length > 1)
 const selected = ref<Record<string, boolean>>({})
 const fileInputEl = useTemplateRef('fileInputEl')
 const markUpToDate = ref(false)
-/** What the backend said about the texts that it refused, per row. */
+/** What the backend said about the texts that it refused, per change. */
 const refused = ref<Map<string, string>>(new Map())
 
 type ImportRow = {
@@ -247,7 +259,10 @@ const rows = computed<ImportRow[]>(() => {
 
 /** The first refused row: it is brought into view. */
 const firstRefusedKey = computed(
-  () => rows.value.find((row) => refused.value.has(row.key))?.key,
+  () =>
+    rows.value.find((row) =>
+      Object.values(row.changes).some((change) => refused.value.has(change.id)),
+    )?.key,
 )
 
 const sourceLangName = computed(() => {
@@ -297,13 +312,41 @@ function toggleAll() {
 
 async function loadCurrentValues(
   langcode: string,
-): Promise<Map<string, string>> {
-  const map = new Map<string, string>()
+): Promise<Map<string, TextFieldValue>> {
+  const map = new Map<string, TextFieldValue>()
   const values = await adapter.loadTextFieldValuesForLanguage!(langcode)
   for (const v of values) {
-    map.set(`${v.uuid}:${v.fieldName}`, v.value)
+    map.set(`${v.uuid}:${v.fieldName}`, v)
   }
   return map
+}
+
+/**
+ * Whether the field of a row may be changed: its block, or the page, and the
+ * field itself. A row of a block that isn't there is left to the backend.
+ */
+function canImport(key: string): boolean {
+  const separator = key.indexOf(':')
+  const uuid = key.substring(0, separator)
+  const fieldName = key.substring(separator + 1)
+  if (uuid === context.value.entityUuid) {
+    return permissions.canEditFieldValue(
+      {
+        type: context.value.entityType,
+        bundle: context.value.entityBundle,
+        uuid,
+      },
+      fieldName,
+    )
+  }
+  const block = blocks.getBlock(uuid)
+  return (
+    !block ||
+    permissions.canEditFieldValue(
+      { type: itemEntityType, bundle: block.bundle, uuid },
+      fieldName,
+    )
+  )
 }
 
 async function addFiles(newFiles: File[]) {
@@ -370,15 +413,21 @@ async function processPoFiles(files: File[]) {
   for (const lang of langs) {
     const currentMap = await loadCurrentValues(lang)
     for (const row of rowsByLang.get(lang)!.values()) {
-      const current = currentMap.get(row.key) ?? ''
-      if (row.translation !== current && row.translation !== '') {
+      const current = currentMap.get(row.key)
+      const currentValue = current?.value ?? ''
+      if (
+        row.translation !== currentValue &&
+        row.translation !== '' &&
+        canImport(row.key)
+      ) {
         const change: ImportChange = {
           id: `${lang}:${row.key}`,
           key: row.key,
           langcode: lang,
           source: row.source,
-          current,
+          current: currentValue,
           imported: row.translation,
+          plain: current?.fieldType === 'plain',
         }
         newChanges.push(change)
         selected.value[change.id] = true
@@ -401,15 +450,21 @@ async function processCsvFile(file: File) {
 
     const newChanges: ImportChange[] = []
     for (const row of parsed.rows) {
-      const current = currentMap.get(row.key) ?? ''
-      if (row.translation !== current && row.translation !== '') {
+      const current = currentMap.get(row.key)
+      const currentValue = current?.value ?? ''
+      if (
+        row.translation !== currentValue &&
+        row.translation !== '' &&
+        canImport(row.key)
+      ) {
         const change: ImportChange = {
           id: `${lang}:${row.key}`,
           key: row.key,
           langcode: lang,
           source: row.source,
-          current,
+          current: currentValue,
           imported: row.translation,
+          plain: current?.fieldType === 'plain',
         }
         newChanges.push(change)
         selected.value[change.id] = true
@@ -420,7 +475,7 @@ async function processCsvFile(file: File) {
     changes.value = newChanges
   } else {
     // Multi-language CSV → one change per language per field.
-    const currentMaps = new Map<string, Map<string, string>>()
+    const currentMaps = new Map<string, Map<string, TextFieldValue>>()
     for (const lang of parsed.languages) {
       currentMaps.set(lang, await loadCurrentValues(lang))
     }
@@ -429,15 +484,21 @@ async function processCsvFile(file: File) {
     for (const row of parsed.rows) {
       for (const lang of parsed.languages) {
         const translation = row.translations[lang] ?? ''
-        const current = currentMaps.get(lang)?.get(row.key) ?? ''
-        if (translation !== current && translation !== '') {
+        const current = currentMaps.get(lang)?.get(row.key)
+        const currentValue = current?.value ?? ''
+        if (
+          translation !== currentValue &&
+          translation !== '' &&
+          canImport(row.key)
+        ) {
           const change: ImportChange = {
             id: `${lang}:${row.key}`,
             key: row.key,
             langcode: lang,
             source: row.source,
-            current,
+            current: currentValue,
             imported: translation,
+            plain: current?.fieldType === 'plain',
           }
           newChanges.push(change)
           selected.value[change.id] = true
@@ -505,9 +566,11 @@ async function applyImport() {
   // none.
   const { messages, unmatched } = matchViolationsToTexts(
     response?.violations ?? [],
-    selectedChanges.map((change) => change.key),
+    selectedChanges,
   )
-  refused.value = messages
+  refused.value = new Map(
+    [...messages].map(([change, message]) => [change.id, message]),
+  )
 
   const reasons = unmatched.length
     ? unmatched.map(getViolationText)

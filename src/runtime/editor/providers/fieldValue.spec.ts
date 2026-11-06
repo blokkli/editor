@@ -1,4 +1,4 @@
-// @vitest-environment happy-dom
+// @vitest-environment jsdom
 import { describe, it, expect } from 'vitest'
 import { itemEntityType } from '#blokkli-build/config'
 import fieldValueProvider, { type TextFieldValue } from './fieldValue'

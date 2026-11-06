@@ -21,12 +21,22 @@
 
     <hr />
 
+    <!-- A block type's description is text, written by an admin. -->
     <div
-      v-if="text"
+      v-if="bundleDefinition?.description"
       class="bk-add-list-help-description"
       data-test="add-list-help-description"
-      v-html="text"
+    >
+      {{ bundleDefinition.description }}
+    </div>
+    <!-- eslint-disable vue/no-v-html -- an add action's description: markup from the feature's code -->
+    <div
+      v-else-if="action?.description"
+      class="bk-add-list-help-description"
+      data-test="add-list-help-description"
+      v-html="action.description"
     />
+    <!-- eslint-enable vue/no-v-html -->
 
     <template v-for="section in sections" :key="section.title">
       <hr />
@@ -129,10 +139,6 @@ const action = computed(() => {
 
 const title = computed(() => {
   return bundleDefinition.value?.label ?? action.value?.title ?? ''
-})
-
-const text = computed(() => {
-  return bundleDefinition.value?.description ?? action.value?.description
 })
 
 const imageUrl = computed(() => {

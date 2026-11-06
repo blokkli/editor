@@ -5,6 +5,7 @@ query pbSearchTemplates(
 ) {
   results: paragraphsBlokkliTemplateSearch(page: $page, filters: $filters) {
     items {
+      id
       uuid
       label
       description
@@ -89,8 +90,8 @@ mutation pbTemplateDelete($uuid: String!, $langcode: String) {
   }
 }
 
-query pbGetTemplateEntity($uuid: String!) {
-  paragraphsBlokkliTemplateGet(uuid: $uuid) {
+query pbGetTemplateEntity($id: ID!) {
+  paragraphsBlokkliTemplateGet(id: $id) {
     uuid
     label
     description

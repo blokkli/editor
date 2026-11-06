@@ -46,6 +46,7 @@ import {
 import { onlyUnique } from '#blokkli/helpers'
 import { BlokkliTransition } from '#blokkli/editor/components'
 import { generateUUID } from '#blokkli/editor/helpers/uuid'
+import { parseHtml } from '#blokkli/editor/helpers/html'
 import type getVideoIdSync from 'get-video-id'
 import type { DropElementItem } from './DropElement/index.vue'
 import type { BlokkliIcon } from '#blokkli-build/icons'
@@ -75,15 +76,16 @@ import type {
 import {
   buildFileMapEvent,
   buildMapBundleEvents,
+  cleanPastedHtml,
   groupFileBundles,
   narrowFileGroups,
-  sanitizeHtml,
 } from './helpers'
 import type {
   BlokkliFieldElement,
   RenderedFieldListItem,
 } from '#blokkli/editor/types/field'
 import type { DraggableExistingBlock } from '#blokkli/editor/types/draggable'
+import type { DropAreaDropOptions } from '#blokkli/editor/types/ui'
 import { parseClipboardEnvelope } from '#blokkli/editor/types/clipboard'
 
 const DropElement = defineAsyncComponent(
@@ -400,6 +402,7 @@ async function replaceMediaWithFile(
   item: DraggableNativeDropItem,
   mediaBundle: string,
   target: ReplaceMediaTarget,
+  options: DropAreaDropOptions,
 ) {
   const file = getDroppedFiles(item)[0]
   if (!file) {
@@ -415,7 +418,7 @@ async function replaceMediaWithFile(
     submitLabel: $t('clipboardUploadReplace', 'Replace'),
   })
   if (media?.[0]) {
-    await target.replace(media[0].mediaId)
+    await target.replace(media[0].mediaId, options)
   }
 }
 
@@ -568,6 +571,10 @@ function onNativeDrop(e: DragEvent) {
 
   if (isDirectDrop.value && nativeDropItem && e.dataTransfer) {
     nativeDropItem.dataTransfer = e.dataTransfer
+    // Read the files now: a drop area may ask a question first, and the
+    // DataTransfer is empty once this event is handled. A test's
+    // DataTransfer stays readable, so E2E tests can't tell.
+    getDroppedFiles(nativeDropItem)
     // Emit mouse:up so the Renderer can check for a valid drop target and
     // potentially emit dragging:drop. mitt handlers run synchronously, so
     // by the time this returns dragging:drop has already been dispatched
@@ -859,10 +866,9 @@ const handlePastedText = async (text: string) => {
     return
   }
 
-  const div = document.createElement('div')
-  div.innerHTML = text.replace(/&nbsp;|<br>/g, '')
+  const div = parseHtml(text.replace(/&nbsp;|<br>/g, ''))
 
-  sanitizeHtml(div)
+  cleanPastedHtml(div)
   if (div.textContent) {
     const itemBundles = normalizeBundles(
       adapter.clipboardMapBundle({
@@ -928,9 +934,11 @@ defineDropAreas((dragItems) => {
     label: target.label,
     element: target.element,
     icon: 'bk_mdi_swap_horiz',
+    // Asked at the drop, before the upload dialog opens.
+    askLanguages: target.askLanguages,
     // The drag ends with the drop, before the dialog closes.
-    onDrop: () => {
-      replaceMediaWithFile(item, mediaBundle, target)
+    onDrop: (options: DropAreaDropOptions) => {
+      replaceMediaWithFile(item, mediaBundle, target, options)
     },
   }))
 })

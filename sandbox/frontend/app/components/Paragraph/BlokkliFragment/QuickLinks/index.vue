@@ -17,8 +17,16 @@
 // Before the await: the editor needs the definition during setup.
 defineBlokkliFragment({
   name: 'quick_links',
-  label: 'Frequently searched',
-  description: "The site config page's frequently searched links.",
+  label: {
+    en: 'Frequently searched',
+    de: 'Häufig gesucht',
+    fr: 'Recherches fréquentes',
+  },
+  description: {
+    en: "The site config page's frequently searched links.",
+    de: 'Die häufig gesuchten Links der Konfigurationsseite «Website».',
+    fr: 'Les liens fréquemment recherchés de la page de configuration « Site ».',
+  },
   editor: {
     icon: 'bk_mdi_manage_search',
     previewWidth: 1024,

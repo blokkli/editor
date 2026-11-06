@@ -96,6 +96,11 @@ announce it, and the accessibility analyzer reports frames without one. It sets
 queries from the height map, so the slot height responds to the **container**
 width, not the window.
 
+The editor's height editor frames the source only if it's an `http:` or `https:`
+URL. `BlokkliIframe` frames nothing itself, so your own `<iframe>` loads
+whatever the block's field holds: check the source there too (see
+[Security](/security#embeds)).
+
 | Prop      | Type              | Description                                              |
 | --------- | ----------------- | -------------------------------------------------------- |
 | `src`     | `string`          | The embed URL (registered with the editor for previews). |

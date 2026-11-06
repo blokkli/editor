@@ -17,6 +17,7 @@
         <template #post-title>
           <Pill :text="entry.version" />
         </template>
+        <!-- eslint-disable-next-line vue/no-v-html -- blökkli's own changelog -->
         <div class="bk-rich-content" v-html="entry.html" />
       </PanelSection>
     </div>

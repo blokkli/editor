@@ -1,0 +1,11 @@
+# A page whose German translation is unpublished, and that has no French one:
+# /en/swimming-pool, /de/schwimmbad.
+key: status-per-language
+type: page
+title: { en: Swimming pool, de: Schwimmbad }
+status: { en: true, de: false }
+field_paragraphs:
+  - type: text
+    field_text:
+      en: '<p>The swimming pool opens in May.</p>'
+      de: '<p>Das Schwimmbad öffnet im Mai.</p>'

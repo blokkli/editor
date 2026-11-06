@@ -14,7 +14,7 @@ import {
 import { resolveTemplate, type TemplateCall } from './templates'
 import { validateToken } from './helpers/security'
 import { getDefaultModel, createUsageTurn } from './helpers/models'
-import type { UsageTurn } from '../shared/types'
+import type { MockStreamEntry, UsageTurn } from '../shared/types'
 
 const config = useRuntimeConfig()
 const authSecret = config.blokkli?.agent?.authSecret || ''
@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
       fieldType: 'plain' | 'markup'
     }>
     pageContext?: Record<string, unknown>
-    mockStream?: string
+    mockStream?: Omit<MockStreamEntry, 'type'>
   }
 
   // Validate required fields.
@@ -76,8 +76,11 @@ export default defineEventHandler(async (event) => {
   // calling the configured LLM. So the E2E suites are safe to run alongside a
   // populated `.env`.
   const mockProvider =
-    enableMock && createMockProvider && typeof mockStream === 'string'
-      ? createMockProvider([{ type: 'agent', content: mockStream }])
+    enableMock && createMockProvider && typeof mockStream?.content === 'string'
+      ? createMockProvider(
+          [{ type: 'agent', content: mockStream.content }],
+          mockStream.usage,
+        )
       : null
 
   if (!mockProvider && !apiKey) {

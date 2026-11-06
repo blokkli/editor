@@ -12,6 +12,7 @@
           :key="opIndex"
           :before="op.search"
           :after="op.replace"
+          :plain="item.plain"
           mode="inline"
         />
       </template>
@@ -19,6 +20,7 @@
         v-else
         :before="item.before"
         :after="item.after"
+        :plain="item.plain"
         mode="inline"
       />
     </div>
@@ -40,6 +42,11 @@ export type FieldDiffDetailItem = {
   after: string
   mode?: 'full' | 'patch'
   operations?: Array<{ search: string; replace: string }>
+  /**
+   * The field is plain text: markup in the values is shown. Missing in
+   * conversations stored before it existed, whose values are sanitised as HTML.
+   */
+  plain?: boolean
 }
 
 const props = defineProps<{

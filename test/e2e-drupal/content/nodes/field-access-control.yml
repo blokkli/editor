@@ -1,0 +1,21 @@
+# The page "Field access control", at /en/field-access-control
+# (features/field-access): the content of the page "Field access", for an
+# editor who may edit all of it.
+key: field-access-control
+type: page
+title: Field access control
+field_aside:
+  - type: title
+    key: field-access-control-aside-title
+    field_title: A title in the aside
+field_paragraphs:
+  - type: columns
+    key: field-access-control-columns
+    field_left:
+      - type: text
+        key: field-access-control-left
+        field_text: '<p>A text on the left.</p>'
+    field_right:
+      - type: text
+        key: field-access-control-right
+        field_text: '<p>A text on the right.</p>'

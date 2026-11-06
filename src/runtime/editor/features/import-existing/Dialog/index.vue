@@ -59,7 +59,9 @@
               :key="item.uuid"
               v-model:selected-uuid="sourceEntityUuid"
               v-bind="item"
-              :bundle-label="workspaces.getBundleLabel(item.bundle)"
+              :bundle-label="
+                workspaces.getBundleLabel(item.entityType, item.bundle)
+              "
               :is-owner="!!(item.uid && item.uid === ownerId)"
             />
           </div>

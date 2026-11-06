@@ -1,5 +1,9 @@
 <template>
-  <li v-blokkli-droppable:field_link :class="{ hidden: !url && !isEditing }">
+  <li
+    v-blokkli-droppable:field_link
+    :class="{ hidden: !url && !isEditing }"
+    data-test="related-topic"
+  >
     <NodeTeaser v-if="url" :node :title :lead :url display="link" />
     <p v-else-if="isEditing" class="bg-surface p-4 text-muted">
       {{

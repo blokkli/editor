@@ -20,16 +20,22 @@
     </div>
     <div v-else class="flex flex-col gap-5">
       <div
-        v-for="(label, i) in categories"
-        :key="label"
+        v-for="(category, i) in categories"
+        :key="category.key"
         class="flex items-center gap-10 bg-white border border-mono-300 rounded px-5 py-3"
       >
-        <ColorDropdown
-          :color-id="colorFor(label, i)"
-          @select="setColor(label, $event)"
-        />
+        <span
+          :data-test="`chart-category-override-color-${category.key}`"
+          :data-test-color="colorFor(category.key, i)"
+          class="contents"
+        >
+          <ColorDropdown
+            :color-id="colorFor(category.key, i)"
+            @select="setColor(category.key, $event)"
+          />
+        </span>
         <span class="flex-1 truncate text-sm font-medium text-mono-800">
-          {{ label }}
+          {{ category.label }}
         </span>
       </div>
     </div>
@@ -40,9 +46,10 @@
 import { computed, useBlokkli } from '#imports'
 import { InfoBox } from '#blokkli/editor/components'
 import ColorDropdown from '../ColorDropdown/index.vue'
+import type { ChartDataSourceCategory } from '../../../../types'
 
 const props = defineProps<{
-  categories: string[]
+  categories: ChartDataSourceCategory[]
   overrides: Record<string, string>
 }>()
 
@@ -62,13 +69,13 @@ function fallbackColor(index: number): string {
   return opts[index % opts.length]?.id ?? opts[0]?.id ?? ''
 }
 
-function colorFor(label: string, index: number): string {
-  return props.overrides[label] ?? fallbackColor(index)
+function colorFor(categoryKey: string, index: number): string {
+  return props.overrides[categoryKey] ?? fallbackColor(index)
 }
 
-function setColor(label: string, colorId: string) {
+function setColor(categoryKey: string, colorId: string) {
   const next = { ...props.overrides }
-  next[label] = colorId
+  next[categoryKey] = colorId
   emit('update:overrides', next)
 }
 </script>

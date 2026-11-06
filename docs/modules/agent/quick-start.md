@@ -133,8 +133,9 @@ If a web server (nginx, Traefik, …) sits in front of Nuxt, it must pass
 `/api/blokkli/agent` and the paths below it to Nuxt with the WebSocket upgrade
 headers (`Upgrade`, `Connection: upgrade`, HTTP/1.1) and long read and send
 timeouts. A Content-Security-Policy needs the WebSocket in `connect-src`
-(`'self'` covers the same origin), and basic auth in front of the site must let
-these paths through.
+(`'self'` covers the same origin; see
+[Security](/security#content-security-policy)), and basic auth in front of the
+site must let these paths through.
 
 ## Step 6: Start Chatting
 

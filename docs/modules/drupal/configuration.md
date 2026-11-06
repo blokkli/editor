@@ -2,28 +2,17 @@
 
 ## Nuxt Module Options
 
-The Drupal module is imported and configured in your `nuxt.config.ts`:
+The Drupal module is added in your `nuxt.config.ts`. It has no options:
 
 ```typescript
 import drupal from '@blokkli/editor/drupal'
 
 export default defineNuxtConfig({
   blokkli: {
-    modules: [
-      drupal({
-        templateEditRouteName: 'blokkli-template',
-      }),
-    ],
+    modules: [drupal()],
   },
 })
 ```
-
-### templateEditRouteName
-
-**Type:** `string`
-
-The name of the Nuxt route used for editing template entities. The route must
-have a `uuid` param. Only needed if you use the templates feature.
 
 ### Automatic Defaults
 
@@ -93,7 +82,12 @@ Drupal configuration.
 Configure at `/admin/config/content/blokkli`:
 
 - **Enabled entity types** — Which content types/bundles are editable with
-  blökkli
+  blökkli. Not a bundle that content moderation moderates: blökkli is off for
+  it, and the form lists it under "Potential issues"
+- **Restrict paragraph fields** — Which paragraphs fields of an enabled bundle
+  blökkli manages; without the restriction, all of them. The others keep what is
+  stored: the editor shows what they hold, and takes no paragraphs into them.
+  The fields of paragraphs, library items and templates are always managed.
 - **Media bundle for images** — Which media type to use for pasted and dropped
   images (see [Uploads](#uploads))
 - **Media bundle for files** — Which media type to use for other pasted and
@@ -109,7 +103,10 @@ Configure at `/admin/config/content/blokkli`:
   the host entity, its paragraphs fields, and the paragraphs. "Paragraph"
   validates every paragraph, also the ones inside other paragraphs. A violation
   holds the publishing back for everyone without the permission
-  `publish paragraphs blokkli edit state with validation errors`.
+  `publish paragraphs blokkli edit state with validation errors`. One rule of
+  core's is left out: for a bundle that hides its shared fields on translation
+  forms, they may only change in a save that changes no other translation. An
+  edit state saves every language at once.
 
 ### Host Options Field
 
@@ -257,11 +254,11 @@ blokkli: {
 }
 ```
 
-Then set the `schema_file` setting in Drupal to the same file. Drupal uses the
-path as it is, so a relative path is relative to the web root (e.g.
-`../blokkli-options-schema.json`). If the file doesn't exist, Drupal silently
-shows no options. Nuxt writes the file whenever it starts or builds. Commit it,
-so that Drupal has it where Nuxt doesn't run.
+Then set the `schema_file` setting in Drupal to the same file: an absolute path,
+or one relative to the web root (e.g. `../blokkli-options-schema.json`). If the
+file is missing or isn't valid JSON, Drupal shows no options and logs a warning.
+Nuxt writes the file whenever it starts or builds. Commit it, so that Drupal has
+it where Nuxt doesn't run.
 
 ## Translations
 
@@ -280,8 +277,30 @@ stays translatable, as Paragraphs requires).
 - The flags are saved when the changes are published.
 - Changes to options, media and the host's own fields aren't tracked.
 
+**Publishing per language:** one edit state covers every language, and
+publishing saves its changes in all of them. Whether each translation has a
+status of its own follows the content translation settings of the host's bundle:
+
+- **Per language:** the language switcher shows each translation's status, and
+  the publish dialog lists the translations. The user ticks the ones to publish;
+  the published ones stay published. A scheduled publication stores its
+  languages, and publishes those at the date.
+- **Shared:** the publish dialog has one row, "All languages".
+
+A paragraph's schedule applies to every language, whatever the paragraph type
+shares: see [paragraphs_blokkli_scheduler](#paragraphs-blokkli-scheduler).
+
 For machine translation, see
 [paragraphs_blokkli_deepl](#paragraphs-blokkli-deepl).
+
+## Content-Security-Policy and Framing
+
+The editor frames the module's pages: its forms, the rich text editor and the
+page after saving. Under a `Cross-Origin-Embedder-Policy` on the frontend, these
+pages need one too, which the module sends (the container parameter
+`paragraphs_blokkli.frame_embedder_policy`). Drupal's own policy has to allow
+the frontend to frame them. See [Security](/security#framing) for both, and for
+a policy for Drupal's pages.
 
 ## Drupal Permissions Reference
 
@@ -355,6 +374,25 @@ the published status for users with `administer nodes`. What makes up an entity
 way. A refused change is reported to the editor, for example "Access denied:
 cannot edit field 'field_lead'."
 
+A paragraphs field that the user may not edit takes no paragraph and gives none
+away, and nothing in it changes, as in the form, which hides it. The options of
+the page are a field too.
+
+The editor knows which fields the user may not edit, of the page and of each
+paragraph type (checked on a new paragraph in the page), and offers no change to
+them:
+
+- a read-only text or reference field doesn't open
+- a paragraph in a read-only paragraphs field is shown as restricted, without
+  actions, and the field takes no paragraphs
+- the options of the page can't be changed
+- translations and the agent leave the fields out
+
+Adding a paragraph that fills one of its own fields is refused when that field
+is read-only for its type: a media from the library, a file, a pasted text or
+video, a search result or a fragment. The editor can't know beforehand which
+field it fills.
+
 Drupal also validates the field that is written, as the form would. A value that
 adds a violation is refused with Drupal's message, for example "Title: may not
 be longer than 255 characters.":
@@ -396,8 +434,10 @@ For the reusable paragraph library, which comes from Paragraphs'
 `paragraphs_library`. It adds the form that sets which paragraph types may
 become library items (`/admin/config/content/blokkli/library`), and moves the
 library item's canonical URL to `/blokkli/library-item/{id}`, a path the
-frontend serves. The editor's "From library" dialog also needs a search provider
-of the type "Paragraphs library items".
+frontend serves (see
+[Library Item and Template Pages](/modules/drupal/pages#library-item-and-template-pages)).
+The editor's "From library" dialog also needs a search provider of the type
+"Paragraphs library items".
 
 ### paragraphs_blokkli_comment
 
@@ -423,8 +463,11 @@ Batch transform plugins for applying operations to multiple paragraphs at once.
 
 ### paragraphs_blokkli_template
 
-Template system for creating and managing paragraph templates. The editor's
-template dialog needs a search provider of the type "Paragraph Templates".
+Template system for creating and managing paragraph templates. A template's
+canonical URL is `/blokkli/template/{id}`, a path the frontend serves (see
+[Library Item and Template Pages](/modules/drupal/pages#library-item-and-template-pages));
+its form in Drupal is the edit form. The editor's template dialog needs a search
+provider of the type "Paragraph Templates".
 
 ### paragraphs_blokkli_scheduler
 
@@ -432,13 +475,29 @@ Scheduling. Pending changes need nothing else; single paragraphs need the
 contrib `scheduler` module:
 
 - **Pending changes:** the "Schedule" mode of the publish dialog stores a
-  `publish_on` date on the edit state. Cron publishes the changes then.
+  `publish_on` date on the edit state, and the languages to publish then
+  (`publish_languages`). Cron publishes the changes then. A post-update gives
+  the schedules stored by an earlier version the host's original language, the
+  one they published until then.
 - **Single paragraphs:** "Manage schedule" sets scheduler's publish and
   unpublish dates on paragraphs. Without `scheduler`, no paragraph type can be
   scheduled. scheduler has no paragraph support of its own; it needs the patch
   from
   [scheduler#3312200](https://www.drupal.org/project/scheduler/issues/3312200),
   and scheduling enabled on each paragraph type.
+
+A paragraph's dates apply to every translation, also when the paragraph type
+keeps them per language:
+
+- A "Publish on" date in the future unpublishes every translation until then.
+- Removing it publishes the translations that had one. A translation that was
+  unpublished without a date stays unpublished.
+- An "Unpublish on" date goes to every translation and keeps their status.
+- Dates that differ per language are listed in the dialog. They stay until the
+  user changes them, which sets one date for all languages. A schedule per
+  language is set in Drupal's forms.
+- Pending changes stored by an earlier version apply to every translation too
+  when they're published.
 
 Both only happen when cron runs: `drush cron` runs scheduler's job and this
 module's.

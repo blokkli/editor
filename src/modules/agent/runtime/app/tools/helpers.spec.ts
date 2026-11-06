@@ -1,4 +1,4 @@
-// @vitest-environment happy-dom
+// @vitest-environment jsdom
 import { describe, it, expect } from 'vitest'
 import { applyOperations, applySelectorOperation } from './helpers'
 
@@ -53,6 +53,18 @@ describe('applySelectorOperation', () => {
     const stored = '<!-- TODO --><p>Alt</p>'
     const result = applySelectorOperation(stored, 'p', 'Neu')
     expect(result).toContain('<!-- TODO -->')
+  })
+
+  it('inserts a replacement with dollar signs verbatim', () => {
+    // String.replace() would read `$$`, `$&`, `` $` `` and `$'` as patterns.
+    const replacement = "Von $$ bis $$$, $& und $` oder $'"
+    expect(
+      applySelectorOperation(
+        '<p>Davor</p><p>Alt</p><p>Danach</p>',
+        'p:nth-child(2)',
+        replacement,
+      ),
+    ).toBe(`<p>Davor</p><p>${replacement}</p><p>Danach</p>`)
   })
 })
 

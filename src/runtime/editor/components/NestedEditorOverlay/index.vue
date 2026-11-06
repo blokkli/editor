@@ -75,6 +75,8 @@ import {
 } from '#imports'
 import { Icon, NotEditStateInfo, PopupHost } from '#blokkli/editor/components'
 import { onBroadcastEvent } from '#blokkli/editor/composables'
+import { getUrlOrigin } from '#blokkli/editor/helpers/url'
+import { isMessageFrom } from '#blokkli/editor/helpers/message'
 import type { BlokkliIcon } from '#blokkli-build/icons'
 import type { ThemeColorName } from '../../../../global/types/theme'
 
@@ -369,7 +371,14 @@ onBeforeUnmount(() => {
   ui.setNestedEditor(null)
 })
 
+// Only the frame's messages are accepted. Content in the slot has no frame,
+// so nothing is.
+const origin = computed(() => (props.url ? getUrlOrigin(props.url) : null))
+
 function onMessage(e: MessageEvent): void {
+  if (!isMessageFrom(e, iframe.value?.contentWindow, origin.value)) {
+    return
+  }
   if (!e.data || typeof e.data !== 'object') {
     return
   }

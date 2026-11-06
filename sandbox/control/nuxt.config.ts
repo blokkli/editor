@@ -14,6 +14,11 @@ export default defineNuxtConfig({
     '~/assets/css/main.css',
   ],
 
+  // The frontend's public files: its favicon.
+  dir: {
+    public: '../frontend/public',
+  },
+
   // Secrets and keys come from the environment (.ddev/.env.web), e.g.
   // NUXT_ADMIN_PASSWORD for adminPassword.
   runtimeConfig: {
@@ -46,6 +51,12 @@ export default defineNuxtConfig({
     },
     scheduledTasks: {
       '*/5 * * * *': ['sandbox:cleanup'],
+    },
+    typescript: {
+      // `ddev deploy` runs them with the server's utils.
+      tsConfig: {
+        include: ['../scripts/**/*'],
+      },
     },
   },
 

@@ -1338,25 +1338,34 @@ msgstr ""
 
 msgctxt "blockOption_bkHiddenGlobally_description"
 msgid "Always hides the block."
-msgstr ""
+msgstr "Masque toujours le bloc."
 
 msgctxt "blockOption_bkHiddenGlobally_label"
 msgid "Hide globally"
-msgstr ""
+msgstr "Masquer partout"
 
 msgctxt "blockOption_bkVisibleLanguages_description"
 msgid "Only show on specific languages."
-msgstr ""
+msgstr "Afficher uniquement dans certaines langues."
 
 msgctxt "blockOption_bkVisibleLanguages_label"
 msgid "Visible languages"
-msgstr ""
+msgstr "Langues visibles"
 
 msgctxt "blockSchedulerDialogLead"
 msgid ""
 "Schedule automatic publishing and unpublishing dates for the selected "
 "blocks."
 msgstr ""
+
+msgctxt "blockSchedulerDialogLeadLanguages"
+msgid ""
+"Schedule automatic publishing and unpublishing dates for the selected "
+"blocks. A date set here applies to all languages."
+msgstr ""
+"Planifiez des dates de publication et de dépublication automatiques pour "
+"les blocs sélectionnés. Une date définie ici s'applique à toutes les "
+"langues."
 
 msgctxt "blockSchedulerDialogPublishOn"
 msgid "Publish on"
@@ -1383,6 +1392,10 @@ msgid ""
 "page."
 msgstr ""
 
+msgctxt "blockSchedulerDiffersPerLanguage"
+msgid "Differs per language"
+msgstr "Diffère selon la langue"
+
 msgctxt "blockSchedulerMixedDates"
 msgid "Selected blocks have different dates: @dates"
 msgstr ""
@@ -1391,9 +1404,21 @@ msgctxt "blockSchedulerOverride"
 msgid "Set date for all"
 msgstr ""
 
+msgctxt "blockSchedulerOverrideLanguages"
+msgid "Set date for all languages"
+msgstr "Définir la date pour toutes les langues"
+
+msgctxt "blockSchedulerPublished"
+msgid "Published"
+msgstr "Publié"
+
 msgctxt "blockSchedulerSuccessMessage"
 msgid "Successfully updated schedule dates."
 msgstr ""
+
+msgctxt "blockSchedulerUnpublished"
+msgid "Unpublished"
+msgstr "Non publié"
 
 msgctxt "blockTransferClipboardError"
 msgid "Failed to write to the clipboard. Please check your browser permissions."
@@ -1409,8 +1434,8 @@ msgstr ""
 
 msgctxt "blockTransferDroppedFieldsHelp"
 msgid ""
-"These fields were dropped because they no longer exist on the target block "
-"type."
+"These fields were dropped because they don't exist on the target block type "
+"or their value isn't valid there."
 msgstr ""
 
 msgctxt "blockTransferEntityType"
@@ -2102,6 +2127,38 @@ msgctxt "close"
 msgid "Close"
 msgstr "Fermer"
 
+msgctxt "colorOption_amber_label"
+msgid "Amber"
+msgstr "Ambre"
+
+msgctxt "colorOption_blue_label"
+msgid "Blue"
+msgstr "Bleu"
+
+msgctxt "colorOption_green_label"
+msgid "Green"
+msgstr "Vert"
+
+msgctxt "colorOption_orange_label"
+msgid "Orange"
+msgstr "Orange"
+
+msgctxt "colorOption_pink_label"
+msgid "Pink"
+msgstr "Rose"
+
+msgctxt "colorOption_purple_label"
+msgid "Purple"
+msgstr "Violet"
+
+msgctxt "colorOption_red_label"
+msgid "Red"
+msgstr "Rouge"
+
+msgctxt "colorOption_teal_label"
+msgid "Teal"
+msgstr "Turquoise"
+
 msgctxt "commandGroup.add"
 msgid "Add new"
 msgstr ""
@@ -2331,6 +2388,18 @@ msgctxt "dragToMove"
 msgid "Drag to move"
 msgstr ""
 
+msgctxt "draggingOverlayAllLanguages"
+msgid "All languages"
+msgstr "Toutes les langues"
+
+msgctxt "draggingOverlayLanguagesDescription"
+msgid "This field can differ per language."
+msgstr "Ce champ peut varier selon la langue."
+
+msgctxt "draggingOverlayOnlyLanguage"
+msgid "Only @language"
+msgstr "@language uniquement"
+
 msgctxt "draggingOverlaySelectBundle"
 msgid "Select block type to create"
 msgstr ""
@@ -2461,9 +2530,33 @@ msgctxt "editingDisabled"
 msgid "Editing is disabled for this block type."
 msgstr ""
 
+msgctxt "entityTitleLanguageNotPublished"
+msgid "@language: not published"
+msgstr "@language : non publiée"
+
+msgctxt "entityTitleLanguagePublished"
+msgid "@language: published"
+msgstr "@language : publiée"
+
+msgctxt "entityTitleLanguagePublishedWithPendingChanges"
+msgid "@language: published (changes pending)"
+msgstr "@language : publiée (modifications en attente)"
+
 msgctxt "entityTitleLastChanged"
 msgid "Last changed"
 msgstr "Dernière modification"
+
+msgctxt "entityTitleNotPublishedInAnyLanguage"
+msgid "Page is not published in any language"
+msgstr "La page n’est publiée dans aucune langue"
+
+msgctxt "entityTitlePublishedInAllLanguages"
+msgid "Page is published in all languages"
+msgstr "La page est publiée dans toutes les langues"
+
+msgctxt "entityTitlePublishedInAllLanguagesWithPendingChanges"
+msgid "Page is published in all languages (changes pending)"
+msgstr "La page est publiée dans toutes les langues (modifications en attente)"
 
 msgctxt "entityTitleTourText"
 msgid ""
@@ -2726,6 +2819,10 @@ msgctxt "iframesEditorPresets"
 msgid "Presets"
 msgstr "Préréglages"
 
+msgctxt "iframesEditorUnsafeSource"
+msgid "Only addresses that start with http or https can be shown here."
+msgstr "Seules les adresses commençant par http ou https peuvent être affichées ici."
+
 msgctxt "image"
 msgid "Image"
 msgstr ""
@@ -2785,6 +2882,14 @@ msgstr ""
 msgctxt "keyboardSpace"
 msgid "Space"
 msgstr ""
+
+msgctxt "languageSwitcherNotPublished"
+msgid "Not published"
+msgstr "Non publiée"
+
+msgctxt "languageSwitcherPublished"
+msgid "Published"
+msgstr "Publiée"
 
 msgctxt "libraryAddDescription"
 msgid ""
@@ -3098,6 +3203,10 @@ msgctxt "publish"
 msgid "Publish"
 msgstr ""
 
+msgctxt "publishAllLanguages"
+msgid "All languages"
+msgstr "Toutes les langues"
+
 msgctxt "publishAlreadyScheduledDescription"
 msgid "This page is already scheduled for publishing"
 msgstr ""
@@ -3109,6 +3218,16 @@ msgstr ""
 msgctxt "publishAndCloseLabelUnpublished"
 msgid "Save & Close"
 msgstr ""
+
+msgctxt "publishAppliesAllLanguages"
+msgid "Publishing applies all pending changes, in every language."
+msgstr ""
+"La publication applique toutes les modifications en attente, dans toutes "
+"les langues."
+
+msgctxt "publishCurrentLanguage"
+msgid "Current language"
+msgstr "Langue actuelle"
 
 msgctxt "publishCurrentPage"
 msgid "Current page"
@@ -3122,6 +3241,10 @@ msgctxt "publishDescription"
 msgid "Publish all changes."
 msgstr "Rendre toutes les modifications publiques"
 
+msgctxt "publishDescriptionPage"
+msgid "Publish the page"
+msgstr "Publier la page"
+
 msgctxt "publishDescriptionScheduled"
 msgid "View or change the scheduled publication"
 msgstr ""
@@ -3129,6 +3252,10 @@ msgstr ""
 msgctxt "publishDescriptionUnpublished"
 msgid "Save all changes while keeping page unpublished"
 msgstr ""
+
+msgctxt "publishDescriptionUnpublishedLanguages"
+msgid "Publish the languages that are not published yet"
+msgstr "Publier les langues qui ne sont pas encore publiées"
 
 msgctxt "publishDialogTitle"
 msgid "Publish changes"
@@ -3141,6 +3268,16 @@ msgstr "Les modifications n’ont pas pu être publiées."
 msgctxt "publishErrorsTitle"
 msgid "Cannot publish"
 msgstr ""
+
+msgctxt "publishLanguages"
+msgid "Languages"
+msgstr "Langues"
+
+msgctxt "publishLanguagesNotAllowed"
+msgid "You may not publish the unpublished languages that can't be ticked."
+msgstr ""
+"Vous ne pouvez pas publier les langues non publiées qui ne peuvent pas être "
+"cochées."
 
 msgctxt "publishMode"
 msgid "Publish mode"
@@ -3161,6 +3298,12 @@ msgstr ""
 msgctxt "publishModeScheduledTitle"
 msgid "Schedule"
 msgstr ""
+
+msgctxt "publishPageNotAllowed"
+msgid "You may not publish this page. Saving keeps it unpublished."
+msgstr ""
+"Vous ne pouvez pas publier cette page. Elle reste non publiée à "
+"l'enregistrement."
 
 msgctxt "publishPublicationScheduled"
 msgid "Publication scheduled"
@@ -3213,6 +3356,12 @@ msgstr "Description des modifications"
 msgctxt "publishRevisionLogMessageDescription"
 msgid "Briefly describe the changes made"
 msgstr ""
+
+msgctxt "publishSaveAppliesAllLanguages"
+msgid "Saving applies all pending changes, in every language."
+msgstr ""
+"L'enregistrement applique toutes les modifications en attente, dans toutes "
+"les langues."
 
 msgctxt "publishSaveContent"
 msgid "Save content"

@@ -21,9 +21,15 @@ const EDITOR_PATH = editorPath('/en/broken', 'broken')
 const GALLERY = seedUuid('paragraph', 'gallery')
 const MISPLACED_TITLE = seedUuid('paragraph', 'misplaced-title')
 
+// The page "Misplaced" (content/nodes/misplaced.yml): a call to action, which
+// a page doesn't allow.
+const MISPLACED_PATH = editorPath('/en/misplaced', 'misplaced')
+const MISPLACED_PAGE = seedUuid('node', 'misplaced')
+
 function violations(page: Page) {
   return withApp(page, (app) =>
     app.state.violations.value.map((violation) => ({
+      entityType: violation.entityType,
       entityUuid: violation.entityUuid,
       propertyPath: violation.propertyPath,
     })),
@@ -43,28 +49,67 @@ describe("Content the site doesn't allow", async () => {
   await setup({ host: sandboxHost(sandbox) })
 
   let page: Page
+  let misplacedPage: Page
 
   beforeAll(async () => {
     resetSandbox(sandbox)
-    page = await openEditor(sandbox, 'Anna Keller', EDITOR_PATH)
+    ;[page, misplacedPage] = await Promise.all([
+      openEditor(sandbox, 'Anna Keller', EDITOR_PATH),
+      openEditor(sandbox, 'Anna Keller', MISPLACED_PATH),
+    ])
   })
 
   afterAll(async () => {
-    await page.close()
+    await Promise.all([page.close(), misplacedPage.close()])
   })
 
   afterEach(async () => {
-    if (await dialog(page, 'publish').isVisible()) {
-      await emitEvent(page, 'overlay:close')
-      await dialog(page, 'publish').waitFor({ state: 'hidden' })
+    for (const p of [page, misplacedPage]) {
+      if (await dialog(p, 'publish').isVisible()) {
+        await emitEvent(p, 'overlay:close')
+        await dialog(p, 'publish').waitFor({ state: 'hidden' })
+      }
     }
   })
 
   it('loads, with a violation on the gallery', async () => {
     expect(await blockExists(page, MISPLACED_TITLE)).toBe(true)
     expect(await violations(page)).toEqual([
-      { entityUuid: GALLERY, propertyPath: 'field_paragraphs.0.target_id' },
+      {
+        entityType: 'paragraph',
+        entityUuid: GALLERY,
+        propertyPath: 'field_paragraphs.0.target_id',
+      },
     ])
+  })
+
+  // E2E sandboxes validate the paragraphs fields of a page too.
+  it('names the page and its field in a violation of the field', async () => {
+    expect(await violations(misplacedPage)).toEqual([
+      {
+        entityType: 'node',
+        entityUuid: MISPLACED_PAGE,
+        propertyPath: 'field_paragraphs.0.target_id',
+      },
+    ])
+  })
+
+  it("lists the field's violation with its label", async () => {
+    await openPublishDialog(misplacedPage)
+    await dialogSubmit(misplacedPage).click()
+    const items = misplacedPage.locator('[data-test="publish-violation-item"]')
+    await items.first().waitFor({ state: 'visible' })
+    expect(await items.count()).toBe(1)
+
+    const label = await withApp(
+      misplacedPage,
+      (app) =>
+        app.types.getFieldConfig('node', 'page', 'field_paragraphs')?.label,
+    )
+    expect(label).toBeTruthy()
+    const field = items.first().locator('[data-test="publish-violation-field"]')
+    expect(await field.count()).toBe(1)
+    expect((await field.textContent())?.trim()).toBe(label)
   })
 
   it("isn't published for an editor", async () => {

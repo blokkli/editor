@@ -1,0 +1,6 @@
+# News in English only, at /en/news/hero, with the lake as its hero image
+# (features/droppable-field-edit/page-field).
+key: hero
+type: news
+title: Hero
+field_hero_image: { media: lake }

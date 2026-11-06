@@ -15,14 +15,42 @@ const SOURCES = [
   'sandbox/drupal/web/modules/custom/blokkli_playground/src/Seed',
   // The template command (blokkli-playground:template).
   'sandbox/drupal/web/modules/custom/blokkli_playground/src/Drush',
-  // The container is baked too, with the test modules' service changes.
+  // The container is baked too, with the test modules' service changes, the
+  // module's services and parameters, and the site's parameters.
   'sandbox/drupal/paragraphs_blokkli/modules/paragraphs_blokkli_deepl/tests/modules',
+  'sandbox/drupal/paragraphs_blokkli/paragraphs_blokkli.services.yml',
+  'sandbox/drupal/services.yml',
   'sandbox/drupal/web/modules/custom/blokkli_playground/tests/modules',
   'test/e2e-drupal/content',
   '.ddev/commands/web/bake-e2e',
   // The template caches the GraphQL schema; a change to it is dumped here.
   'build/drupal-schema.graphql',
 ]
+
+// The template caches the plugin definitions: a change to a plugin's
+// attribute (a mutation's version, which new mutations are stored with) needs
+// a bake. These are the plugins of the module, its submodules and the custom
+// modules.
+const PLUGIN_MODULES = ['sandbox/drupal/paragraphs_blokkli']
+const PLUGIN_MODULE_DIRECTORIES = [
+  'sandbox/drupal/paragraphs_blokkli/modules',
+  'sandbox/drupal/web/modules/custom',
+]
+
+/** The `src/Plugin` directories of the modules that have plugins. */
+function pluginDirectories(): string[] {
+  const modules = [
+    ...PLUGIN_MODULES,
+    ...PLUGIN_MODULE_DIRECTORIES.flatMap((directory) =>
+      readdirSync(`${ROOT}${directory}`, { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => `${directory}/${entry.name}`),
+    ),
+  ]
+  return modules
+    .map((module) => `${module}/src/Plugin`)
+    .filter((path) => existsSync(`${ROOT}${path}`))
+}
 
 function files(path: string): string[] {
   if (statSync(path).isFile()) {
@@ -35,7 +63,7 @@ function files(path: string): string[] {
 
 function fingerprint(): string {
   const hash = createHash('sha256')
-  for (const source of SOURCES) {
+  for (const source of [...SOURCES, ...pluginDirectories()]) {
     for (const file of files(`${ROOT}${source}`).sort()) {
       hash.update(file.slice(ROOT.length)).update(readFileSync(file))
     }

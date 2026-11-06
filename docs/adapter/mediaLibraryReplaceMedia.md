@@ -8,6 +8,7 @@ Replace media on a block with a new media item.
 mediaLibraryReplaceMedia?: (e: {
   host: BlokkliItemHost
   mediaId: string
+  allLanguages?: boolean
 }) => Promise<MutationResponseLike<T>> | undefined
 ```
 
@@ -28,6 +29,14 @@ type BlokkliItemHost = {
 ### mediaId
 
 The ID of the media item from the media library.
+
+### allLanguages
+
+Whether to replace the media in every translation of the block. Only set when
+the field is translatable (`isTranslatable` in
+[getDroppableFieldConfig](./getDroppableFieldConfig.md)) and the block has
+another translation: the editor then asks. Otherwise the media changes in the
+current language.
 
 ## Returns
 

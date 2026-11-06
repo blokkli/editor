@@ -126,7 +126,7 @@ export type ConversationStateSnapshot = {
  * Content field metadata for a block bundle.
  * Unifies editable text fields and droppable reference/link fields.
  */
-export type BlockBundleContentField =
+export type BlockBundleContentField = (
   | { name: string; label: string; type: 'plain' | 'markup' }
   | {
       name: string
@@ -134,6 +134,10 @@ export type BlockBundleContentField =
       type: 'reference' | 'link'
       allowed: { type: string; bundles: string[] }[]
     }
+) & {
+  /** The user may not change the field. */
+  readOnly?: boolean
+}
 
 /**
  * Block field (nested blocks) metadata for a block bundle.
@@ -143,6 +147,8 @@ export type BlockBundleBlockField = {
   label: string
   allowedBundles: string[]
   cardinality: number
+  /** The user may not change what the field holds. */
+  readOnly?: boolean
 }
 
 /**
@@ -371,6 +377,7 @@ const blockBundleContentFieldSchema = z.union([
     name: z.string(),
     label: z.string(),
     type: z.enum(['plain', 'markup']),
+    readOnly: z.boolean().optional(),
   }),
   z.object({
     name: z.string(),
@@ -382,6 +389,7 @@ const blockBundleContentFieldSchema = z.union([
         bundles: z.array(z.string()),
       }),
     ),
+    readOnly: z.boolean().optional(),
   }),
 ])
 
@@ -390,6 +398,7 @@ const blockBundleBlockFieldSchema = z.object({
   label: z.string(),
   allowedBundles: z.array(z.string()),
   cardinality: z.number(),
+  readOnly: z.boolean().optional(),
 })
 
 const blockBundleSchema = z.object({
@@ -565,10 +574,15 @@ export type MockRoutingEntry = z.infer<typeof mockRoutingEntrySchema>
  * `enableMock` is on, the server replays `content` instead of calling the
  * configured LLM. It's the stream's raw output (`[[[FIELD:0]]]`, see
  * `FieldStreamParser`), and every stream of the conversation replays it.
+ * `usage` is the tokens each stream reports when it ends; without it, it
+ * reports none, as the mocked conversation does.
  */
 const mockStreamEntrySchema = z.object({
   type: z.literal('stream'),
   content: z.string(),
+  usage: z
+    .object({ inputTokens: z.number(), outputTokens: z.number() })
+    .optional(),
 })
 
 export type MockStreamEntry = z.infer<typeof mockStreamEntrySchema>

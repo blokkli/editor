@@ -292,8 +292,6 @@ export default defineNuxtConfig({
     defaultLanguage: IS_DEV && FORCE_GERMAN ? 'de' : 'en',
     forceDefaultLanguage: IS_DEV && FORCE_GERMAN,
 
-    schemaOptionsPath: '~/options-schema.json',
-
     settingsOverride: {
       'feature:artboard:scrollSpeed': {
         default: 0.9,

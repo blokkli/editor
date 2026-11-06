@@ -29,7 +29,7 @@ type ItemDropdownItem = {
   description?: string
 }
 
-const { types, selection, state, $t } = useBlokkli()
+const { types, selection, state, $t, permissions } = useBlokkli()
 
 const {
   data: conversions,
@@ -66,12 +66,24 @@ const possibleConversions = computed<ItemDropdownItem[]>(() => {
     return []
   }
   const sourceType = selection.bundles.value[0]
+  // A conversion replaces each block in its field: it deletes the block and
+  // adds one of the target type.
+  if (
+    !sourceType ||
+    !permissions.checkBlockBundlePermission(sourceType, 'delete') ||
+    !selection.items.value.every((item) =>
+      permissions.canChangeBlockField(item.uuid),
+    )
+  ) {
+    return []
+  }
   const titleBase = $t('conversionsConvertTo', 'Convert to: @bundle')
   return conversions.value
     .filter(
       (v) =>
         v.sourceBundle === sourceType &&
-        types.allowedTypesInList.value.includes(v.targetBundle),
+        types.allowedTypesInList.value.includes(v.targetBundle) &&
+        permissions.checkBlockBundlePermission(v.targetBundle, 'add'),
     )
     .map((v) => types.getBlockBundleDefinition(v.targetBundle))
     .filter(falsy)

@@ -12,6 +12,7 @@
     <div
       ref="listEl"
       class="w-[680px] max-h-300 overflow-y-auto p-10 bg-mono-200"
+      data-test="droppable-field-edit-list"
       @pointerup="onListPointerUp"
     >
       <GrowOnly class="bg-white shadow-md">
@@ -19,6 +20,8 @@
           v-for="(item, i) in localItems"
           :key="item.key"
           class="grid grid-cols-[minmax(0,1fr)_auto] items-center relative border-b border-b-mono-200 last:border-b-0 bg-white"
+          data-test="droppable-field-edit-item"
+          :data-test-id="item.id"
         >
           <div
             v-if="i === 0"

@@ -15,18 +15,28 @@ mutation pbDuplicateParagraph(
   }
 }
 
+# Without a target host, the copies stay in the field of their sources.
 mutation pbDuplicateMultipleParagraphs(
   $entityType: EntityType!
   $entityUuid: String!
   $langcode: String
   $uuids: [String]!
   $afterUuid: String
+  $hostType: String
+  $hostUuid: String
+  $hostFieldName: String
 ) {
   state: paragraphsEditMutationState(
     entityType: $entityType
     entityUuid: $entityUuid
   ) {
-    action: duplicate_multiple(uuids: $uuids, afterUuid: $afterUuid) {
+    action: duplicate_multiple(
+      uuids: $uuids
+      afterUuid: $afterUuid
+      hostType: $hostType
+      hostUuid: $hostUuid
+      hostFieldName: $hostFieldName
+    ) {
       ...paragraphsBlokkliMutationResult
     }
   }

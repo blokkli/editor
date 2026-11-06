@@ -1,3 +1,5 @@
+import type { DropArea } from '#blokkli/editor/types/ui'
+
 /**
  * Move the in-progress drag onto a specific drop target and center that target
  * in the viewport.
@@ -24,8 +26,26 @@ export type MoveToDropTargetEvent =
       fieldName: string
     }
 
+/**
+ * A part of a drop target's label: the host, a block or a field on the way to
+ * the target. A drop area's label is one part without a type. The text comes
+ * from content (the host's label, a block's title), so it's rendered as text.
+ */
+export type DropTargetLabelPart = {
+  type?: 'host' | 'block' | 'field'
+  text: string
+}
+
 declare module '#blokkli/editor/events' {
   interface EventbusEvents {
     'dragging:moveToDropTarget': MoveToDropTargetEvent
+
+    /**
+     * Something was dropped onto a drop area. The dragging overlay asks what
+     * the area wants to know, then calls its `onDrop` and ends the drag.
+     *
+     * Also a seam for E2E tests, which drop onto an area without the canvas.
+     */
+    'dragging:dropArea': DropArea
   }
 }

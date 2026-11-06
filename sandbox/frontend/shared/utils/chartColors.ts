@@ -10,7 +10,7 @@
  */
 export const CHART_COLORS = {
   lake: {
-    label: 'Lake',
+    label: { en: 'Lake', de: 'See', fr: 'Lac' },
     mainShade: '600',
     shades: {
       100: '#e2f0ff',
@@ -24,7 +24,7 @@ export const CHART_COLORS = {
     },
   },
   ochre: {
-    label: 'Ochre',
+    label: { en: 'Ochre', de: 'Ocker', fr: 'Ocre' },
     mainShade: '500',
     shades: {
       100: '#fdebd5',
@@ -38,7 +38,7 @@ export const CHART_COLORS = {
     },
   },
   forest: {
-    label: 'Forest',
+    label: { en: 'Forest', de: 'Wald', fr: 'Forêt' },
     mainShade: '600',
     shades: {
       100: '#e1f5e4',
@@ -52,7 +52,7 @@ export const CHART_COLORS = {
     },
   },
   plum: {
-    label: 'Plum',
+    label: { en: 'Plum', de: 'Pflaume', fr: 'Prune' },
     mainShade: '500',
     shades: {
       100: '#ffe7f0',
@@ -66,7 +66,7 @@ export const CHART_COLORS = {
     },
   },
   red: {
-    label: 'Red',
+    label: { en: 'Red', de: 'Rot', fr: 'Rouge' },
     mainShade: '600',
     shades: {
       100: '#ffe9e7',
@@ -80,7 +80,7 @@ export const CHART_COLORS = {
     },
   },
   stone: {
-    label: 'Stone',
+    label: { en: 'Stone', de: 'Stein', fr: 'Pierre' },
     mainShade: '500',
     shades: {
       100: '#f0eeec',

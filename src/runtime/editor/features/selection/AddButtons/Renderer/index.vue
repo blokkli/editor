@@ -45,6 +45,7 @@ const {
   $t,
   blocks,
   fields,
+  permissions,
 } = useBlokkli()
 
 // Store field tooltips for empty field buttons
@@ -278,14 +279,16 @@ function getBlockState(uuid: string): BlockStateCache {
       if (field) {
         const fieldChildren = [...field.element.children] as HTMLElement[]
         const currentCount = state.getFieldBlockCount(field.key)
-        canShowBeforeAfter = determineCanAddChildren(
-          field,
-          fieldChildren,
-          [], // Not moving any blocks, adding a new one
-          currentCount,
-          1, // Adding 1 new block
-          [], // Don't know which bundle will be added
-        )
+        canShowBeforeAfter =
+          permissions.canChangeBlockField(uuid) &&
+          determineCanAddChildren(
+            field,
+            fieldChildren,
+            [], // Not moving any blocks, adding a new one
+            currentCount,
+            1, // Adding 1 new block
+            [], // Don't know which bundle will be added
+          )
 
         // Check if there's a single allowed bundle
         const allowedBundles = field.allowedBundles.filter(
@@ -315,10 +318,11 @@ function getBlockState(uuid: string): BlockStateCache {
         block.bundle,
       )
 
+      const host = { type: itemEntityType, bundle: block.bundle, uuid }
       for (const fieldConfig of fieldConfigs) {
         const key = getFieldKey(uuid, fieldConfig.name)
         const count = state.getFieldBlockCount(key)
-        if (count === 0) {
+        if (count === 0 && permissions.canChangeField(host, fieldConfig.name)) {
           emptyFieldKeys.push(key)
 
           // Build tooltip for this field

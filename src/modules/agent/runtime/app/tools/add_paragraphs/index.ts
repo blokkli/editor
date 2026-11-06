@@ -13,7 +13,10 @@ import {
   getResolvedOptions,
   resolveHost,
 } from '../helpers'
-import { validateFieldCardinality } from '../../helpers/validation'
+import {
+  validateFieldCardinality,
+  requireCanChangeField,
+} from '../../helpers/validation'
 import { getFieldKey } from '#blokkli/helpers'
 import type { McpToolContext } from '#blokkli/agent/app/types'
 import type { AddNewBlocksEventBlock } from '#blokkli/editor/events'
@@ -200,6 +203,10 @@ function validateContentFields(
       )
     }
 
+    if (editableConfig?.readOnly || droppableConfig?.readOnly) {
+      return `${path}: Field "${fieldName}" is read-only.`
+    }
+
     if (editableConfig && typeof fieldValue !== 'string') {
       return `${path}: Field "${fieldName}" is a text field and expects a string value, got ${typeof fieldValue}.`
     }
@@ -324,6 +331,10 @@ function validateBlockTree(
         }
 
         if (!childBlocks.length) continue
+
+        if (childFieldConfig.readOnly) {
+          return `${path}: Paragraph field "${childFieldName}" is read-only.`
+        }
 
         // The parent block is freshly created, so this field starts empty —
         // validate the requested children against the field's cardinality
@@ -503,15 +514,9 @@ export default defineBlokkliAgentTool({
       return { error: cardinality.error }
     }
 
-    // Check ancestor restrictions on the target parent
-    if (!isRootEntity) {
-      if (ctx.app.permissions.blockHasRestrictedAncestor(params.parent.uuid)) {
-        return {
-          error:
-            'Permission denied: target parent is inside a block with restricted editing permissions',
-        }
-      }
-    }
+    // The target field must be able to change.
+    const fieldDenied = requireCanChangeField(ctx.app, params.parent)
+    if (fieldDenied) return fieldDenied
 
     // Recursively validate the entire block tree
     const topLevelParentBundle = isRootEntity

@@ -1,4 +1,5 @@
 import type { Validation } from '#blokkli/editor/types/state'
+import { parseHtmlDocument } from '#blokkli/editor/helpers/html'
 
 /**
  * What a violation says, as plain text.
@@ -8,10 +9,7 @@ import type { Validation } from '#blokkli/editor/types/state'
  */
 export function getViolationText(violation: Validation): string {
   // A parsed document is inert: nothing in the message is loaded or run.
-  const body = new DOMParser().parseFromString(
-    violation.message,
-    'text/html',
-  ).body
+  const body = parseHtmlDocument(violation.message).body
   return (body.textContent ?? '').trim()
 }
 
@@ -42,33 +40,55 @@ function findTextKey(
   return candidates.find((key) => key !== undefined && keys.has(key))
 }
 
+/** A text that a mutation sent. */
+export type SentText = {
+  /** `<uuid>:<fieldName>`, see {@link matchViolationsToTexts}. */
+  key: string
+  /** The language that the text was written in. */
+  langcode?: string
+}
+
 /**
  * Find the texts that the violations of a refused mutation are about.
  *
  * The translation flows key a text as `<uuid>:<fieldName>`: the UUID of its
  * block (or of the host entity), and the name of its field or of one property
  * of it (`field_link.title`). A violation names the entity and a property
- * path (`field_title.0.value`, `field_link.0.title`).
+ * path (`field_title.0.value`, `field_link.0.title`), and the language of the
+ * value.
+ *
+ * Of the texts with the same key, a violation is about the one in its
+ * language. A violation in another language (that of a block whose type isn't
+ * translatable) is about the first of them.
  *
  * @param violations - The violations of the refused mutation.
- * @param keys - The keys of the texts that were sent.
+ * @param texts - The texts that were sent.
  * @returns What the backend said per text (the first of its violations, as
  *   plain text), and the violations that are about none of the texts.
  */
-export function matchViolationsToTexts(
+export function matchViolationsToTexts<T extends SentText>(
   violations: Validation[],
-  keys: Iterable<string>,
-): { messages: Map<string, string>; unmatched: Validation[] } {
-  const known = new Set(keys)
-  const messages = new Map<string, string>()
+  texts: Iterable<T>,
+): { messages: Map<T, string>; unmatched: Validation[] } {
+  const byKey = new Map<string, T[]>()
+  for (const text of texts) {
+    byKey.set(text.key, [...(byKey.get(text.key) ?? []), text])
+  }
+  const keys = new Set(byKey.keys())
+  const messages = new Map<T, string>()
   const unmatched: Validation[] = []
 
   for (const violation of violations) {
-    const key = findTextKey(violation, known)
-    if (!key) {
+    const key = findTextKey(violation, keys)
+    const candidates = key ? byKey.get(key)! : []
+    const text =
+      candidates.find(
+        (candidate) => candidate.langcode === violation.langcode,
+      ) ?? candidates[0]
+    if (!text) {
       unmatched.push(violation)
-    } else if (!messages.has(key)) {
-      messages.set(key, getViolationText(violation))
+    } else if (!messages.has(text)) {
+      messages.set(text, getViolationText(violation))
     }
   }
 

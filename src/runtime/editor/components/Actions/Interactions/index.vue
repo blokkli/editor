@@ -9,6 +9,7 @@
     />
     <InteractionButton
       :disabled="!canMove"
+      data-test="interaction-move"
       icon="bk_mdi_drag_pan"
       :label="moveButtonLabel"
       class="cursor-grab"
@@ -22,10 +23,16 @@ import { computed, useBlokkli } from '#imports'
 import { toDraggableExisting } from '#blokkli/editor/helpers/draggable'
 import InteractionButton from './Button.vue'
 
-const { selection, $t, state, eventBus, ui, types } = useBlokkli()
+const { selection, $t, state, eventBus, ui, types, permissions } = useBlokkli()
 
+// A block in a field that can't change can't leave it.
 const canMove = computed<boolean>(() => {
-  return !!selection.items.value.length
+  return (
+    !!selection.items.value.length &&
+    selection.items.value.every((item) =>
+      permissions.canChangeBlockField(item.uuid),
+    )
+  )
 })
 
 const canSelectParent = computed(() => {
@@ -100,6 +107,9 @@ function onClickSelectParent() {
 }
 
 function onMovePointerDown(e: PointerEvent) {
+  if (!canMove.value) {
+    return
+  }
   eventBus.emit('dragging:start', {
     items: toDraggableExisting(selection.items.value),
     coords: {

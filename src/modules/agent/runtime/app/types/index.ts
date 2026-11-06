@@ -84,13 +84,12 @@ export type ToolError = {
  * Side-channel data that interactive tool components can attach to their
  * emitted result alongside the LLM-facing payload. The provider strips
  * these underscore-prefixed properties at the boundary so they never reach
- * the server: `details` feeds `buildDetails()`, `usage` is folded into the
- * conversation usage display, and `skipLlmResponse` ends the agent loop
- * without an LLM reply when the user fully accepted the changes.
+ * the server: `details` feeds `buildDetails()`, and `skipLlmResponse` ends
+ * the agent loop without an LLM reply when the user fully accepted the
+ * changes.
  */
 export type ToolMeta = {
   details?: unknown
-  usage?: UsageTurn
   skipLlmResponse?: boolean
 }
 
@@ -101,7 +100,6 @@ export type ToolMeta = {
  */
 export type ComponentToolResult<T = Record<string, unknown>> = T & {
   _details?: ToolMeta['details']
-  _usage?: ToolMeta['usage']
   _skipLlmResponse?: ToolMeta['skipLlmResponse']
 }
 
@@ -181,6 +179,13 @@ export type McpToolContext<
 
   /** The page context built during connection, available for tools that need it */
   pageContext: import('#blokkli/agent/shared/types').PageContext | null
+
+  /**
+   * Count the tokens of a model call that the tool makes itself, in the
+   * conversation's usage. Call it as soon as the call reports them: however
+   * the tool ends afterwards, they were spent.
+   */
+  reportUsage: (usage: UsageTurn) => void
 }
 
 /**

@@ -10,11 +10,18 @@
       )
     "
   >
-    <Dropdown v-if="isDropdown" :items :active-language @select="onClick" />
+    <Dropdown
+      v-if="isDropdown"
+      :items
+      :active-language
+      :show-status
+      @select="onClick"
+    />
     <InlineButtons
       v-else
       :items
       :active-langcode="activeLanguage.id"
+      :show-status
       @select="onClick"
     />
   </PluginTourItem>
@@ -25,6 +32,7 @@ import { computed, useBlokkli } from '#imports'
 import { PluginTourItem } from '#blokkli/editor/plugins'
 import type { Language } from '#blokkli/editor/types/state'
 import { falsy } from '#blokkli/helpers'
+import { getStatusScope } from '#blokkli/editor/helpers/status'
 import type { TranslationStateItem } from './types'
 import InlineButtons from './InlineButtons/index.vue'
 import Dropdown from './Dropdown/index.vue'
@@ -53,6 +61,11 @@ const items = computed<TranslationStateItem[]>(() => {
     })
     .filter(falsy)
 })
+
+// Each translation's status, unless every language shares one.
+const showStatus = computed(
+  () => getStatusScope(state.translation.value) === 'language',
+)
 
 const isDropdown = computed(() => {
   // Always a dropdown on mobile.

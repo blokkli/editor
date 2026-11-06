@@ -1,0 +1,48 @@
+_core:
+  default_config_hash: 68A3PDsSIoX2q7iFOa2lMdnYkgKgem4uh1_RBxcRVWU
+report-only:
+  enable: false
+  directives:
+    object-src:
+      base: none
+  reporting:
+    plugin: none
+enforce:
+  enable: true
+  directives:
+    default-src:
+      base: none
+    script-src:
+      base: self
+      flags:
+        - report-sample
+    style-src:
+      base: self
+      flags:
+        - report-sample
+    img-src:
+      base: self
+      sources:
+        - 'data:'
+    font-src:
+      base: self
+    connect-src:
+      base: self
+    frame-src:
+      base: self
+    media-src:
+      base: self
+    manifest-src:
+      base: self
+    worker-src:
+      base: self
+    object-src:
+      base: none
+    base-uri:
+      base: none
+    form-action:
+      base: self
+    frame-ancestors:
+      base: self
+  reporting:
+    plugin: none

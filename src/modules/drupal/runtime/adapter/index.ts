@@ -6,8 +6,8 @@ import {
   type MutationResponseLike,
 } from '#blokkli/editor/adapter'
 import { falsy } from '#blokkli/helpers'
+import { parseHtmlDocument } from '#blokkli/editor/helpers/html'
 import { availableFeaturesAtBuild } from '#blokkli-build/features'
-import { templateEditRouteName } from '#blokkli-build/drupal-config'
 import { operationSources } from '#nuxt-graphql-middleware/sources'
 import {
   useGraphqlQuery,
@@ -18,7 +18,6 @@ import {
 } from '#imports'
 import type {
   ParagraphsBlokkliBulkUpdateFieldValuesInput,
-  ParagraphsBlokkliAddMultipleItemInput,
   ParagraphsBlokkliCommentFragment,
   ParagraphsBlokkliConfigInputFragment,
   ParagraphsBlokkliEditStateFragment,
@@ -55,6 +54,7 @@ import { toValidNotificationType } from '#blokkli/editor/features/notifications/
 import type { BlokkliUser } from '#blokkli/editor/types/user'
 import type { BlockTransferImportSummary } from '#blokkli/editor/features/block-transfer/types'
 import { isFileAccepted } from '../helpers/clipboard'
+import { mapBlockToGraphQL } from '../helpers/addNewBlocks'
 
 type DrupalAdapter = FullBlokkliAdapter<ParagraphsBlokkliEditStateFragment>
 
@@ -90,6 +90,7 @@ function mapPublishOptions(
     lastChanged: publishOptions.lastChanged ?? null,
     canSchedule: !!publishOptions.canSchedule,
     publishOn: publishOptions.publishOn ?? null,
+    publishLanguages: publishOptions.publishLanguages ?? [],
     revisionLogMessage: publishOptions.revisionLogMessage ?? null,
   }
 }
@@ -259,8 +260,7 @@ function mapPluginConfigInputs(
  * inert document, so nothing in the markup runs or loads.
  */
 function plainTextLength(html: string): number {
-  const text = new DOMParser().parseFromString(html, 'text/html').body
-    .textContent
+  const text = parseHtmlDocument(html).body.textContent
   return [...text.replace(/[ \t\n\f\r]+/g, ' ').trim()].length
 }
 
@@ -342,8 +342,27 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     }).then((v) => {
       return {
         linkPath: v.data.config?.linkPath ?? '',
+        readOnlyFields: v.data.config?.readOnlyFields ?? [],
+        canEditHostOptions: v.data.config?.canEditHostOptions ?? true,
       }
     })
+
+    // The fields that the user may not edit, of the page and of each paragraph
+    // type. A link's title is a property of its field.
+    const readOnlyFieldKeys = new Set(
+      entityConfig.readOnlyFields.map(
+        (v) => `${v.entityType}:${v.entityBundle}:${v.name}`,
+      ),
+    )
+    function withReadOnly<
+      T extends { entityType: string; entityBundle: string; name: string },
+    >(field: T): T & { readOnly?: boolean } {
+      const key = `${field.entityType}:${field.entityBundle}:${field.name.split('.')[0]}`
+      return readOnlyFieldKeys.has(key) ? { ...field, readOnly: true } : field
+    }
+    config.fieldConfig = config.fieldConfig.map(withReadOnly)
+    config.editableFieldConfig = config.editableFieldConfig.map(withReadOnly)
+    config.droppableFieldConfig = config.droppableFieldConfig.map(withReadOnly)
 
     const loadState: DrupalAdapter['loadState'] = async () => {
       const response = await useGraphqlQuery('pbEditState', {
@@ -377,6 +396,10 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       return Promise.resolve(config.fieldConfig)
     }
 
+    // The module refuses deeper paragraphs (MAX_NESTING_LEVEL of
+    // ParagraphsBlokkliHelper).
+    const getMaxNestingLevel: DrupalAdapter['getMaxNestingLevel'] = () => 7
+
     const mapState: DrupalAdapter['mapState'] = (state) => {
       const currentIndex =
         state?.currentIndex === null || state?.currentIndex === undefined
@@ -409,6 +432,8 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
 
       const translationState: TranslationState = {
         isTranslatable: !!state.translationState?.isTranslatable,
+        isStatusTranslatable:
+          state.translationState?.isStatusTranslatable ?? null,
         sourceLanguage: state.translationState?.sourceLanguage || '',
         availableLanguages: (
           state.translationState?.availableLanguages || []
@@ -427,6 +452,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
                 editUrl: v.editUrl,
                 exists: !!v.exists,
                 status: !!v.status,
+                canChangeStatus: v.canChangeStatus,
               }
             }
             return null
@@ -715,6 +741,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       getDroppableFieldConfig,
       getEditableFieldConfig,
       getFieldConfig,
+      getMaxNestingLevel,
       getLastChanged,
       loadState,
       loadStateAtIndex,
@@ -775,7 +802,8 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         useGraphqlMutation('pbTakeOwnership', ctx.value).then(mapMutation)
     }
 
-    if (hasMutation('pbUpdateHostOptions')) {
+    // Without it, the editor offers no change to the page's options.
+    if (hasMutation('pbUpdateHostOptions') && entityConfig.canEditHostOptions) {
       adapter.updateHostOptions = (items) =>
         useGraphqlMutation('pbUpdateHostOptions', {
           ...ctx.value,
@@ -806,7 +834,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           entityType: options.hostEntityType.toUpperCase() as any,
           entityUuid: options.hostEntityUuid,
           createNewState: !options.closeAfterPublish,
-          publishIfUnpublished: options.publishIfUnpublished,
+          languages: options.languages,
           revisionLogMessage: options.revisionLogMessage,
         }).then(mapMutation)
     }
@@ -854,6 +882,9 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           ...ctx.value,
           uuids: e.uuids,
           afterUuid: e.preceedingUuid,
+          hostType: e.host.type,
+          hostUuid: e.host.uuid,
+          hostFieldName: e.host.fieldName,
         }).then(mapMutation)
       }
     }
@@ -1139,7 +1170,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       adapter.markAllNotificationsAsRead = () =>
         useGraphqlMutation('pbMarkNotificationsAsRead', {
           uuids: undefined,
-        }).then((v) => v.data.count)
+        }).then((v) => v.data.count ?? 0)
     }
 
     if (hasQuery('pbReferencedEntities')) {
@@ -1270,24 +1301,40 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
         }).then(mapMutation)
     }
 
-    const buildFormUrl = (parts: string | string[], langcode: string) => {
+    const getUrlPrefix = (langcode: string) => {
       const prefix = config.urlPrefixes[langcode]
       if (prefix === null || prefix === undefined) {
         throw new Error('Failed to get URL prefix for langcode: ' + langcode)
       }
-      const url = typeof parts === 'string' ? parts : '/' + parts.join('/')
-      return { url: prefix + url + `?paragraphsBlokkli=true` }
+      return prefix
     }
 
-    if (availableFeatureIds.has('library')) {
-      adapter.getLibraryItemEditUrl = (uuid) => {
-        const url = buildFormUrl(
-          ['blokkli', 'library-item', uuid],
-          ctx.value.langcode,
-        ).url
+    const buildFormUrl = (parts: string | string[], langcode: string) => {
+      const url = typeof parts === 'string' ? parts : '/' + parts.join('/')
+      return { url: getUrlPrefix(langcode) + url + `?paragraphsBlokkli=true` }
+    }
 
-        // Directly build the URL to start blökkli for the paragraphs_library_item.
-        return `${url}&blokkliEditing=${uuid}&language=${ctx.value.langcode}`
+    // The canonical URL of a library item or a template: a page of the
+    // frontend, by the entity's ID. Drupal links there too.
+    const buildPageUrl = (
+      type: 'library-item' | 'template',
+      id: string,
+      uuid: string,
+      langcode: string,
+    ) =>
+      `${getUrlPrefix(langcode)}/blokkli/${type}/${id}?blokkliEditing=${uuid}`
+
+    if (availableFeatureIds.has('library')) {
+      adapter.getLibraryItemEditUrl = (e) => {
+        if (!e.libraryItemId) {
+          return null
+        }
+        return buildPageUrl(
+          'library-item',
+          e.libraryItemId,
+          e.libraryItemUuid,
+          ctx.value.langcode,
+        )
       }
     }
 
@@ -1323,6 +1370,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           uuid: e.host.uuid,
           fieldName: e.host.fieldName,
           mediaId: e.mediaId,
+          allLanguages: e.allLanguages,
         }).then(mapMutation)
     }
 
@@ -1332,6 +1380,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           ...ctx.value,
           fieldName: e.host.fieldName,
           mediaId: e.mediaId,
+          allLanguages: e.allLanguages,
         }).then(mapMutation)
     }
 
@@ -1862,9 +1911,10 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             )
           }
 
-          const bundles: Record<string, string> = {}
+          const bundles: Record<string, Record<string, string>> = {}
           for (const bundle of result?.bundleLabels ?? []) {
-            bundles[bundle.id] = bundle.label
+            const forType = (bundles[bundle.entityType] ??= {})
+            forType[bundle.id] = bundle.label
           }
 
           return {
@@ -1883,7 +1933,6 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
               }
             }),
             labelMap: {
-              label: result?.entityTypeLabels?.[0]?.label ?? '',
               bundles,
             },
           }
@@ -1894,7 +1943,13 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
     if (hasQuery('pbSearchTemplates')) {
       adapter.templatesSearch = (e) => {
         return useGraphqlQuery('pbSearchTemplates', {
-          filters: configObjectToUserConfigInput(e.filters),
+          filters: configObjectToUserConfigInput({
+            ...e.filters,
+            // By the field's definition: the host may not be saved yet.
+            ...(e.host && {
+              host: `${e.host.type}:${e.host.bundle}:${e.host.fieldName}`,
+            }),
+          }),
           page: e.page,
           includeItems: e.includeItems,
         }).then((data) => {
@@ -1912,6 +1967,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
                 }
                 return {
                   uuid: v.uuid,
+                  id: v.id ?? undefined,
                   label: v.label ?? '',
                   description: v.description,
                   isDefault: !!v.isDefault,
@@ -1973,25 +2029,16 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
       }
     }
 
-    if (hasQuery('pbGetTemplateEntity') && templateEditRouteName) {
-      try {
-        const href = router.resolve({
-          name: templateEditRouteName,
-          params: {
-            uuid: 'UUID_PLACEHOLDER',
-          },
-        }).path
-
-        adapter.templatesGetEditUrl = (e) => {
-          return (
-            href.replace('UUID_PLACEHOLDER', e.templateUuid) +
-            '?blokkliEditing=' +
-            e.templateUuid
-          )
+    if (hasQuery('pbGetTemplateEntity')) {
+      adapter.templatesGetEditUrl = (e) => {
+        if (!e.templateId) {
+          return null
         }
-      } catch {
-        console.error(
-          `The provided templateEditRouteName "${templateEditRouteName}" is not valid. Editing templates will not be possible.`,
+        return buildPageUrl(
+          'template',
+          e.templateId,
+          e.templateUuid,
+          ctx.value.langcode,
         )
       }
     }
@@ -2011,6 +2058,7 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           entityUuid: options.hostEntityUuid,
           date: options.date,
           revisionLogMessage: options.revisionLogMessage,
+          languages: options.languages,
         }).then(mapMutation)
     }
 
@@ -2045,61 +2093,13 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           targetBundle: data.item.entityBundle,
           targetId: data.item.id,
           uuid: data.host.uuid,
+          fieldName: data.host.fieldName,
+          allLanguages: data.allLanguages,
         }).then(mapMutation)
     }
 
     if (hasMutation('pbAddMultipleParagraphs')) {
-      type AddNewBlocksData = Parameters<
-        NonNullable<typeof adapter.addNewBlocks>
-      >[0]
-      type EventBlock = AddNewBlocksData['blocks'][number]
-
-      const mapBlockToGraphQL = (
-        block: EventBlock,
-      ): ParagraphsBlokkliAddMultipleItemInput => {
-        const values: Record<string, unknown> = {}
-        for (const entry of block.values ?? []) {
-          const droppableConfig = config.droppableFieldConfig.find(
-            (f) =>
-              f.entityBundle === block.bundle && f.name === entry.fieldName,
-          )
-          if (droppableConfig) {
-            if (droppableConfig.type === 'reference') {
-              if (typeof entry.fieldValue !== 'string') {
-                values[entry.fieldName] = {
-                  target_id: entry.fieldValue.entityId,
-                }
-              }
-            } else if (droppableConfig.type === 'link') {
-              if (typeof entry.fieldValue === 'string') {
-                values[entry.fieldName] = entry.fieldValue
-              } else {
-                values[entry.fieldName] =
-                  `entity:${entry.fieldValue.entityType}/${entry.fieldValue.entityId}`
-              }
-            }
-          } else if (typeof entry.fieldValue === 'string') {
-            values[entry.fieldName] = entry.fieldValue
-          }
-        }
-
-        return {
-          bundle: block.bundle,
-          uuid: block.blockUuid,
-          values,
-          options: block.options,
-          children: block.children
-            ? Object.entries(block.children).map(
-                ([fieldName, childBlocks]) => ({
-                  fieldName,
-                  items: childBlocks.map(mapBlockToGraphQL),
-                }),
-              )
-            : undefined,
-        }
-      }
-
-      adapter.addNewBlocks = (data: AddNewBlocksData) =>
+      adapter.addNewBlocks = (data) =>
         useGraphqlMutation('pbAddMultipleParagraphs', {
           entityType: ctx.value.entityType,
           entityUuid: ctx.value.entityUuid,
@@ -2108,7 +2108,9 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
           hostUuid: data.host.uuid,
           hostFieldName: data.host.fieldName,
           afterUuid: data.afterUuid,
-          items: data.blocks.map(mapBlockToGraphQL),
+          items: data.blocks.map((block) =>
+            mapBlockToGraphQL(block, config.droppableFieldConfig),
+          ),
         }).then(mapMutation)
     }
 

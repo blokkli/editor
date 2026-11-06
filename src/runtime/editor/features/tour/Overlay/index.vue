@@ -14,11 +14,13 @@
               height: tooltipHeight + 'px',
             }"
           >
+            <!-- eslint-disable vue/no-v-html -- the features' own tour texts, which hold markup -->
             <div
               ref="contentEl"
               class="bk-tour-content-text"
               v-html="activeItem.text"
             />
+            <!-- eslint-enable vue/no-v-html -->
           </div>
         </div>
       </div>

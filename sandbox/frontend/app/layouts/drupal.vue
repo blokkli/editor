@@ -43,6 +43,16 @@ const language = useLanguage()
 
 const { data: layout } = await useLayoutQuery()
 
+// "<page title> – <site name>"; the front page sets no title: the site name.
+const siteName = computed(() => layout.value?.siteConfig?.siteName)
+useHead(() => {
+  const name = siteName.value
+  return {
+    titleTemplate: (title?: string) =>
+      title && name ? `${title} – ${name}` : title || name || null,
+  }
+})
+
 // The page's route query (pages/[...slug].vue, pages/index.vue and the
 // frontend routes): the same path, so the same request. It brings the
 // language links and the breadcrumb.

@@ -3,6 +3,7 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema, parentSchema, positionSchema } from '../schemas'
 import { resolvePosition } from '../helpers'
 import { countNewParagraphs } from '#blokkli/agent/app/helpers/mutationResult'
+import { requireCanChangeField } from '../../helpers/validation'
 
 export const paramsSchema = z.object({
   templateUuid: z
@@ -39,13 +40,9 @@ export default defineBlokkliAgentTool({
     // Note: template contents (bundles) are only known server-side, so
     // per-bundle add permission checks happen during the adapter call.
 
-    // Check ancestor restrictions on the target parent
-    if (ctx.app.permissions.blockHasRestrictedAncestor(params.parent.uuid)) {
-      return {
-        error:
-          'Permission denied: target parent is inside a block with restricted editing permissions',
-      }
-    }
+    // The target field must be able to change.
+    const fieldDenied = requireCanChangeField(ctx.app, params.parent)
+    if (fieldDenied) return fieldDenied
 
     // Check if the field exists
     const field = fields.find(params.parent.uuid, params.parent.field)

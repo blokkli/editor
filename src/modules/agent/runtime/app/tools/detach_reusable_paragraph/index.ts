@@ -3,7 +3,7 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
 import {
   requireBundlePermission,
-  requireNoRestrictedAncestor,
+  requireCanChangeBlockField,
 } from '../../helpers/validation'
 import { fromLibraryBlockBundle } from '#blokkli-build/config'
 
@@ -48,7 +48,7 @@ export default defineBlokkliAgentTool({
     if (denied) return denied
 
     // Check ancestor restrictions
-    const ancestorDenied = requireNoRestrictedAncestor(ctx.app, params.uuids)
+    const ancestorDenied = requireCanChangeBlockField(ctx.app, params.uuids)
     if (ancestorDenied) return ancestorDenied
 
     // Validate all blocks exist and are library blocks

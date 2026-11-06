@@ -355,8 +355,7 @@ adapter methods, and configuration.
 the Drupal adapter (`sandbox/frontend/`). They run in ddev at
 https://blokkli.ddev.site. The control app (`sandbox/control/`, another Nuxt
 app) hands out sandboxes at https://blokkli-control.ddev.site. How it all works:
-the `sandbox` skill. Setup and the full workflow: `CONTRIBUTING.md`. What's
-still open: `plans/drupal-setup/`.
+the `sandbox` skill. Setup and the full workflow: `CONTRIBUTING.md`.
 
 - **Commands for this stack run in the web container:**
   `ddev exec -d /var/www/html bun run …` and `ddev drush …`. `bun run verify`
@@ -373,8 +372,7 @@ still open: `plans/drupal-setup/`.
   2. `bun run drupal:schema` (in the container) dumps the schema into
      `build/drupal-schema.graphql`, and the daemon restarts. Never edit that
      file by hand.
-  3. `bun run dev:prepare` regenerates the root types. Revert the change it
-     makes to `playground/app/options-schema.json`.
+  3. `bun run dev:prepare` regenerates the root types.
 - **Config:** export with `ddev drush cex -y` and commit
   `sandbox/drupal/config/sync`. Secrets only go in `.ddev/.env.web`
   (`ddev dotenv set`), never in config.

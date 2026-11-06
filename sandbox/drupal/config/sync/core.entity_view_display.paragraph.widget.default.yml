@@ -5,6 +5,8 @@ dependencies:
   config:
     - field.field.paragraph.widget.field_lead
     - field.field.paragraph.widget.field_link
+    - field.field.paragraph.widget.field_link_items
+    - field.field.paragraph.widget.field_media_items
     - field.field.paragraph.widget.field_title
     - paragraphs.paragraphs_type.widget
   module:
@@ -32,6 +34,26 @@ content:
       target: ''
     third_party_settings: {  }
     weight: 2
+    region: content
+  field_link_items:
+    type: link
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 4
+    region: content
+  field_media_items:
+    type: entity_reference_label
+    label: hidden
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 3
     region: content
   field_title:
     type: string

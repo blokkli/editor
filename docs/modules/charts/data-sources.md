@@ -55,10 +55,15 @@ type ChartDataSourceCapabilities = {
 }
 
 type ChartDataSourcePayload = {
-  categories: string[]
-  series: { name: string; data: number[] }[]
+  categories: { key: string; label: string }[]
+  series: { key: string; name: string; data: number[] }[]
 }
 ```
+
+Labels and names are in the requested language. Keys identify a category or
+series in every language and over time: the editor keys its overrides by them
+(see below). Take them from your data, such as the ids of your statistics, not
+from a label.
 
 `getChartDataSourceCapabilities` is the switch: implementing it enables the
 "Dynamic data" option in the editor. `getChartDataSourceData` powers the
@@ -76,9 +81,9 @@ type ChartDataSourceRef = {
   id: string
   /** Cached label, shown if the live source is later removed. */
   label: string
-  /** Per-series presentation overrides, keyed by fetched series name. */
+  /** Per-series presentation overrides, keyed by the series' key. */
   seriesOverrides?: Record<string, ChartSeriesOverride>
-  /** Per-category color overrides (pie/donut), keyed by fetched category. */
+  /** Per-category color overrides (pie/donut), keyed by the category's key. */
   categoryColorOverrides?: Record<string, string>
 }
 
@@ -90,6 +95,9 @@ type ChartSeriesOverride = {
 
 `ChartRenderer` applies these overrides on top of the fetched payload —
 assigning colors (falling back to the palette), and dropping hidden series.
+Since they are keyed by the payload's keys, an override set while editing one
+language applies in all of them. When a key is no longer in the data, the editor
+lists its override and offers to remove it.
 
 ## Fetching at render time
 
@@ -177,8 +185,5 @@ Notes:
 [Translations](/modules/charts/chart-types#translations) use positional array
 alignment against the inline source data, so they are **not applied** to dynamic
 data — the fetched series/categories may differ in order or count. Localize
-dynamic data on the backend instead.
-
-Series and category overrides (`seriesOverrides`, `categoryColorOverrides`) are
-keyed by the fetched names. With localized names, an override set while editing
-one language doesn't apply to the others.
+dynamic data on the backend instead: the labels and names of the payload, in the
+language that the editor or the page requests.

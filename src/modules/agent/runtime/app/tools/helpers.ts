@@ -4,6 +4,7 @@ import {
   getAvailableOptions,
 } from '#blokkli/editor/helpers/options'
 import { getRuntimeOptionValue } from '#blokkli/runtime-helpers'
+import { parseHtmlDocument, setInertHtml } from '#blokkli/editor/helpers/html'
 import type { BlokkliApp } from '#blokkli/editor/types/app'
 import { itemEntityType } from '#blokkli-build/config'
 import type { BlockOptionsMap } from './schemas'
@@ -296,8 +297,7 @@ export function applySelectorOperation(
   replacement: string,
 ): string {
   try {
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(`<body>${html}</body>`, 'text/html')
+    const doc = parseHtmlDocument(`<body>${html}</body>`)
     const el = doc.querySelector(selector)
     if (!el) {
       return html
@@ -312,17 +312,21 @@ export function applySelectorOperation(
     //
     // So prefer a string-level splice: when the target's current content
     // appears exactly once in the source, it is an unambiguous anchor and every
-    // other byte of the field can be left exactly as it was.
+    // other byte of the field can be left exactly as it was. Spliced by index:
+    // String.replace() would read `$&` and the like in the replacement.
     const current = el.innerHTML
     if (current && html.split(current).length === 2) {
-      return html.replace(current, replacement)
+      const index = html.indexOf(current)
+      return (
+        html.slice(0, index) + replacement + html.slice(index + current.length)
+      )
     }
 
     // No unique anchor. Fall back to re-serializing, but only when that
     // reproduces the input exactly — otherwise the field would be rewritten
     // around the edit.
     if (doc.body.innerHTML === html) {
-      el.innerHTML = replacement
+      setInertHtml(el, replacement)
       return doc.body.innerHTML
     }
   } catch {

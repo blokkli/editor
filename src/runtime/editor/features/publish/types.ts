@@ -8,6 +8,10 @@ export type PublishOptions = {
   lastChanged: string | null
   canSchedule: boolean
   publishOn: string | null
+  /**
+   * The languages whose translations the schedule publishes.
+   */
+  publishLanguages: readonly string[]
   revisionLogMessage: string | null
 }
 
@@ -33,9 +37,10 @@ export type BlokkliAdapterPublishOptions = {
   closeAfterPublish?: boolean
 
   /**
-   * If the host entity is currently unpublished, publish it.
+   * The languages whose translations to publish. The others keep their
+   * status.
    */
-  publishIfUnpublished?: boolean
+  languages?: string[]
 
   /**
    * The revision log message.
@@ -63,6 +68,11 @@ export type BlokkliAdapterScheduleOptions = {
    * The date and time when the edit state should be published.
    */
   date: string
+
+  /**
+   * The languages whose translations to publish at the date.
+   */
+  languages?: string[]
 }
 
 export type BlokkliAdapterUnscheduleOptions = {

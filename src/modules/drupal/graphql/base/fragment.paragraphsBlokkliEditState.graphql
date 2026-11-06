@@ -57,6 +57,7 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
 
   translationState {
     isTranslatable
+    isStatusTranslatable
     sourceLanguage
     availableLanguages {
       id
@@ -68,6 +69,7 @@ fragment paragraphsBlokkliEditState on ParagraphsBlokkliEditState {
       editUrl
       exists
       status
+      canChangeStatus
     }
   }
 }

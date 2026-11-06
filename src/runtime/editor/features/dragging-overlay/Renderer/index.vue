@@ -24,8 +24,10 @@ import fs from './fragment.glsl?raw'
 import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
 import {
   determineCanAddChildren,
+  fitsNestingLimit,
   getDraggingBlockCount,
   getDraggingBundleGroups,
+  getDraggingDepth,
   getChildrenOrientation,
   getGapSize,
   MIN_GAP,
@@ -43,6 +45,7 @@ import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
 import type { DraggableItem } from '#blokkli/editor/types/draggable'
 import type { DropArea } from '#blokkli/editor/types/ui'
 import type { BlokkliFieldElement } from '#blokkli/editor/types/field'
+import type { DropTargetLabelPart } from '../types'
 
 const props = defineProps<{
   items: DraggableItem[]
@@ -66,6 +69,7 @@ const {
   context,
   permissions,
   selection,
+  adapter,
 } = useBlokkli()
 
 const FIELD_MIN_DRAW_SIZE = 6
@@ -87,13 +91,13 @@ enum RectRenderType {
 
 type FieldRectChild = Rectangle & {
   id: string
-  label: string
+  label: DropTargetLabelPart[]
 }
 
 type FieldRect = Rectangle & {
   key: string
   field: BlokkliFieldElement
-  label: string
+  label: DropTargetLabelPart[]
   canAddChildren: boolean
   emptyChild?: FieldRectChild
   orientation: Orientation
@@ -104,7 +108,7 @@ type FieldRect = Rectangle & {
 type DrawnRect = Rectangle & {
   id: string
   type: 'field' | 'drop-area' | 'active-area'
-  label: string
+  label: DropTargetLabelPart[]
   color: string
   colorAlpha: string
   field?: FieldRect
@@ -188,7 +192,7 @@ onBlokkliEvent('mouse:up', (e) => {
   emitDrop()
 })
 
-const emitDrop = async () => {
+const emitDrop = () => {
   const timeDelta = Date.now() - dragStart
   // Prevent accidental drops. At least 200ms should have passed between the
   // time the drag was initiated and when the drop was made.
@@ -221,7 +225,10 @@ const emitDrop = async () => {
       if (!area) {
         return
       }
-      await area.onDrop()
+      // A mouse drop ends the drag right away, which unmounts this component:
+      // the overlay asks and drops.
+      eventBus.emit('dragging:dropArea', area)
+      return
     }
   }
 
@@ -383,6 +390,22 @@ const selectionUuids = computed<string[]>(() =>
     })
     .filter(falsy),
 )
+
+/**
+ * Whether a dragged existing block is in a field that can't change.
+ */
+const hasLockedSource = computed<boolean>(() =>
+  selectionUuids.value.some((uuid) => !permissions.canChangeBlockField(uuid)),
+)
+
+/**
+ * How many levels the dragged blocks take, with the blocks nested in them.
+ */
+const draggingDepth = computed<number>(() =>
+  getDraggingDepth(selectionUuids.value, state),
+)
+
+const maxNestingLevel = adapter.getMaxNestingLevel?.()
 
 const fieldChildCache: Record<string, FieldRectChild[]> = {}
 
@@ -555,11 +578,11 @@ const buildChildren = (
 
 const fieldCache: Record<string, FieldRect> = {}
 
-// Cache for field trail HTML strings.
-const fieldTrailCache: Record<string, string> = {}
+// Cache for field trails.
+const fieldTrailCache: Record<string, DropTargetLabelPart[]> = {}
 
-// Cache for parent block chains (array of HTML span strings).
-const parentChainCache: Record<string, string[]> = {}
+// Cache for parent block chains.
+const parentChainCache: Record<string, DropTargetLabelPart[]> = {}
 
 function getBlockLabel(bundle: string, props?: Record<string, any>): string {
   // Fragment: Use fragment definition label.
@@ -590,13 +613,13 @@ function getFieldLabel(
   )
 }
 
-function buildParentChain(uuid: string, bundle: string): string[] {
+function buildParentChain(uuid: string, bundle: string): DropTargetLabelPart[] {
   const cached = parentChainCache[uuid]
   if (cached) {
     return cached
   }
 
-  const parts: string[] = []
+  const parts: DropTargetLabelPart[] = []
 
   // Get the field this block is in.
   const fieldInfo = state.getFieldListForBlock(uuid)
@@ -623,29 +646,29 @@ function buildParentChain(uuid: string, bundle: string): string[] {
     entityBundle,
     fieldInfo.name,
   )
-  parts.push(`<span class="bk-is-field">${fieldLabel}</span>`)
+  parts.push({ type: 'field', text: fieldLabel })
 
   // Add this block.
   const item = state.getFieldListItem(uuid)
   const blockLabel = getBlockLabel(bundle, item?.props)
-  parts.push(`<span class="bk-is-block">${blockLabel}</span>`)
+  parts.push({ type: 'block', text: blockLabel })
 
   parentChainCache[uuid] = parts
   return parts
 }
 
-function getInsertText(field: BlokkliFieldElement): string {
+function getFieldTrail(field: BlokkliFieldElement): DropTargetLabelPart[] {
   const cached = fieldTrailCache[field.key]
   if (cached) {
     return cached
   }
 
-  const parts: string[] = []
+  const parts: DropTargetLabelPart[] = []
 
   // Start with the host entity.
   const hostLabel =
     state.entity.value.bundleLabel || state.entity.value.label || 'Host'
-  parts.push(`<span class="bk-is-host">${hostLabel}</span>`)
+  parts.push({ type: 'host', text: hostLabel })
 
   // If this field is on a block (not the root entity), build the parent chain.
   if (field.hostEntityType === itemEntityType) {
@@ -665,11 +688,10 @@ function getInsertText(field: BlokkliFieldElement): string {
     field.hostEntityBundle,
     field.name,
   )
-  parts.push(`<span class="bk-is-field">${fieldLabel}</span>`)
+  parts.push({ type: 'field', text: fieldLabel })
 
-  const result = parts.join(' » ')
-  fieldTrailCache[field.key] = result
-  return result
+  fieldTrailCache[field.key] = parts
+  return parts
 }
 
 const buildEmptyChild = (
@@ -688,7 +710,7 @@ const buildEmptyChild = (
         y: 0,
         width: fieldWidth,
         height: fieldHeight,
-        label: getInsertText(field),
+        label: getFieldTrail(field),
       }
     } else {
       return {
@@ -697,7 +719,7 @@ const buildEmptyChild = (
         y: 0,
         width: fieldWidth,
         height: Math.max(fieldHeight, MIN_GAP),
-        label: getInsertText(field),
+        label: getFieldTrail(field),
       }
     }
   }
@@ -717,11 +739,19 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
     return
   }
 
-  // Skip fields inside a restricted block.
+  // Skip fields that can't change: read-only ones, and the ones inside a
+  // restricted block. Blocks from such a field can't leave it, not even as
+  // copies, which Drupal duplicates from where they are.
   if (
-    field.hostEntityType === itemEntityType &&
-    (!permissions.checkBlockBundlePermission(field.hostEntityBundle, 'edit') ||
-      permissions.blockHasRestrictedAncestor(field.hostEntityUuid))
+    hasLockedSource.value ||
+    !permissions.canChangeField(
+      {
+        type: field.hostEntityType,
+        bundle: field.hostEntityBundle,
+        uuid: field.hostEntityUuid,
+      },
+      field.name,
+    )
   ) {
     return
   }
@@ -729,19 +759,25 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
   const childElements = [...field.element.children] as HTMLElement[]
 
   const currentCount = state.getFieldBlockCount(field.key)
-  const canAddChildren = determineCanAddChildren(
-    field,
-    childElements,
-    selectionUuids.value,
-    currentCount,
-    draggingBlockCount.value,
-    draggingBundles.value,
-    draggingFragments.value,
-    isDraggingExisting.value
-      ? undefined
-      : (bundle) => permissions.checkBlockBundlePermission(bundle, 'add'),
-    draggingBundleGroups.value,
-  )
+  const canAddChildren =
+    fitsNestingLimit(
+      field.nestingLevel,
+      draggingDepth.value,
+      maxNestingLevel,
+    ) &&
+    determineCanAddChildren(
+      field,
+      childElements,
+      selectionUuids.value,
+      currentCount,
+      draggingBlockCount.value,
+      draggingBundles.value,
+      draggingFragments.value,
+      isDraggingExisting.value
+        ? undefined
+        : (bundle) => permissions.checkBlockBundlePermission(bundle, 'add'),
+      draggingBundleGroups.value,
+    )
   const orientation =
     field.dropAlignment || getChildrenOrientation(field.element)
 
@@ -771,7 +807,7 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
     height,
     x,
     y,
-    label: getInsertText(field),
+    label: getFieldTrail(field),
     canAddChildren,
     emptyChild,
     orientation,
@@ -892,7 +928,7 @@ class DropTargetRectangleBufferCollector extends RectangleBufferCollector<DrawnR
         {
           id: area.id,
           type: 'drop-area',
-          label: area.label,
+          label: [{ text: area.label }],
           color: colorTeal,
           colorAlpha: colorTealAlpha,
           x: areaRect.x,
@@ -1227,7 +1263,7 @@ const { collector } = await defineRenderer('drop-targets', {
       {
         id: 'active-hover-rect',
         type: 'active-area',
-        label: 'Field Area',
+        label: [{ text: 'Field Area' }],
         color: 'red',
         colorAlpha: 'red',
         x: 0,

@@ -46,6 +46,7 @@ import { AddListItem, Sortli } from '#blokkli/editor/components'
 import { isInternalBundle } from '#blokkli/editor/helpers/bundles'
 import { PluginTourItem } from '#blokkli/editor/plugins'
 import { getFieldKey } from '#blokkli/helpers'
+import { fitsNestingLimit } from '#blokkli/editor/helpers/dropTargets'
 import { itemEntityType } from '#blokkli-build/config'
 import { defineCommands } from '#blokkli/editor/composables'
 import type { Command } from '../../command-palette/types'
@@ -110,7 +111,10 @@ const {
   definitions,
   blocks,
   permissions,
+  adapter,
 } = useBlokkli()
+
+const maxNestingLevel = adapter.getMaxNestingLevel?.()
 
 function buildItem(element: HTMLElement): DraggableNewItem | undefined {
   const itemBundle = element.dataset.sortliId
@@ -191,7 +195,7 @@ const getBundlesForAppendCommands = () => {
     item.host.fieldName,
   )
 
-  if (field) {
+  if (field && permissions.canChangeBlockField(item.uuid)) {
     if (field.cardinality !== -1) {
       const key = getFieldKey(item.host.uuid, item.host.fieldName)
       const count = state.getFieldBlockCount(key)
@@ -217,6 +221,18 @@ const getAppendEndCommands = (): Command[] => {
       context.value.entityBundle,
     )
     .flatMap((field: FieldConfig) => {
+      if (
+        !permissions.canChangeField(
+          {
+            type: context.value.entityType,
+            bundle: context.value.entityBundle,
+            uuid: context.value.entityUuid,
+          },
+          field.name,
+        )
+      ) {
+        return []
+      }
       if (field.cardinality !== -1) {
         const key = getFieldKey(context.value.entityUuid, field.name)
         const count = state.getFieldBlockCount(key)
@@ -300,15 +316,25 @@ const getInsertCommands = (
     return []
   }
 
-  // Find nested fields of the block.
-  const nestedFields = types.fieldConfig
-    .forEntityTypeAndBundle(itemEntityType, block.bundle)
-    .map((field) => {
-      return {
-        ...field,
-        uuid: block.uuid,
-      }
-    })
+  // Find nested fields of the block, unless a block in them would be nested
+  // too deep.
+  const fieldLevel = state.getNestingLevel(block.uuid) + 1
+  const nestedFields = fitsNestingLimit(fieldLevel, 1, maxNestingLevel)
+    ? types.fieldConfig
+        .forEntityTypeAndBundle(itemEntityType, block.bundle)
+        .filter((field) =>
+          permissions.canChangeField(
+            { type: itemEntityType, bundle: block.bundle, uuid: block.uuid },
+            field.name,
+          ),
+        )
+        .map((field) => {
+          return {
+            ...field,
+            uuid: block.uuid,
+          }
+        })
+    : []
 
   const commands: Command[] = nestedFields.flatMap(
     (field: FieldConfig & { uuid: string }) => {

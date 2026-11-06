@@ -1,0 +1,12 @@
+# An embed, at /en/embeds: a page of this site (the fee calculator), with a
+# height for each viewport preset of the iframes module.
+key: embeds
+type: page
+title: Embeds
+field_paragraphs:
+  - type: embed
+    key: embeds-calculator
+    options:
+      heights: { 375: 600, 768: 500, 1440: 400 }
+    field_link: /embed/fee-calculator
+    field_title: Fee calculator

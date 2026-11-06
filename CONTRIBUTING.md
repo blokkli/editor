@@ -45,8 +45,7 @@ bun run dev          # http://localhost:3000
    source, which needs the root `.nuxt/` (without it: "Failed to load tsconfig
    '.nuxt/tsconfig.app.json'") and the compiled editor CSS
    `src/runtime/editor/css/output.css` (without it: "ENOENT … output.css"). Both
-   are gitignored. Revert the change `dev:prepare` makes to
-   `playground/app/options-schema.json`.
+   are gitignored.
 5. `ddev bake` installs the site from `sandbox/drupal/config/sync`, with the
    German and French interface translations from drupal.org, and seeds the
    content of `sandbox/drupal/content`. It takes about 20 seconds. The first
@@ -90,6 +89,7 @@ its own subdomain. The site without a subdomain is the dev site.
 ddev drush blokkli-sandbox:create a1             # https://a1.blokkli.ddev.site
 ddev drush blokkli-sandbox:create b2 --source=de # from the German template
 ddev drush blokkli-sandbox:list
+ddev drush blokkli-sandbox:update a1             # drush deploy on its site
 ddev drush blokkli-sandbox:delete a1
 ```
 
@@ -178,10 +178,17 @@ web_environment:
   refuses to run without the first two. Give the agent's API key a spend limit,
   and don't set the Rokka keys.
 - **`ddev deploy`** updates the code, builds both Nuxt apps for production,
-  bakes the templates, deletes all sandboxes and restarts. The running apps keep
-  serving until the new builds are swapped in, so a failed build or bake leaves
-  them running. Run it again every week or so: the seeded dates are relative to
-  the bake. It refuses to run locally.
+  bakes the templates and restarts. The premium sandboxes that the control app's
+  cleanup keeps stay, with their content and files:
+  `drush blokkli-sandbox:update` runs `drush deploy` on each (database updates
+  and config import) and imports the modules' changed translation files. Every
+  other sandbox is deleted (`sandbox/control/scripts/deploy-sandboxes.ts`). A
+  sandbox that fails to update or to be deleted stays as it is: the others go
+  on, and the deploy fails after restarting. The running apps keep serving until
+  the new builds are swapped in, so a failed build or bake leaves them running.
+  Run it again every week or so: the seeded dates are relative to the bake. A
+  premium sandbox keeps the content it was created with. It refuses to run
+  locally.
 - **GitHub deploys `dev`** (`.github/workflows/ci.yml`): every push and pull
   request runs the gates (`bun run verify -- ci`), the production build, a bake
   and the E2E tests. They run against an E2E build of the frontend, a production
@@ -193,8 +200,6 @@ web_environment:
 - Hosted, the Nuxt apps run their production builds (never the dev servers,
   which serve any file of the repository), nginx doesn't serve the dev site, and
   only Nuxt's server reaches Drupal's GraphQL endpoint.
-- What the server needs besides that (the VM, the firewall, certificates, the
-  outgoing allowlist, monitoring): `plans/drupal-setup/12-hosted-deploy.md`.
 
 ### The agent
 
@@ -226,7 +231,6 @@ Their DE and FR strings are in `translations` in `nuxt.config.ts`.
 | `sandbox/control/`                   | The control app: the claim page, invitations, the cleanup.      |
 | `build/drupal-schema.graphql`        | The site's GraphQL schema. Generated, never edited by hand.     |
 | `.ddev/`                             | nginx routing, the Nuxt daemons, `ddev nuxt`, `bake`, `reset`.  |
-| `plans/drupal-setup/`                | What's still open: the hosted deploy, upstream findings.        |
 
 ### A feature across both repositories
 
@@ -236,8 +240,6 @@ Their DE and FR strings are in `translations` in `nuxt.config.ts`.
    the schema into `build/drupal-schema.graphql`. The Nuxt daemon restarts and
    detects the available features again.
 3. `bun run dev:prepare` regenerates the types for the Drupal module in `src/`.
-   It also rewrites `playground/app/options-schema.json` with English labels;
-   don't commit that.
 4. Change the adapter and the UI in `src/`. The sandbox's Nuxt app hot-reloads.
 5. Export config changes with `ddev drush cex -y` and commit
    `sandbox/drupal/config/sync`.

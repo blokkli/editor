@@ -12,7 +12,7 @@
 <script lang="ts" setup>
 import { computed, provide, defineBlokkli } from '#imports'
 import {
-  INJECT_IS_IN_REUSABLE,
+  INJECT_IS_OUTSIDE_STATE,
   INJECT_REUSABLE_OPTIONS,
   INJECT_REUSABLE_UUID,
 } from '#blokkli/helpers/injections'
@@ -36,7 +36,7 @@ const isEditing = import.meta.blokkliEditing
 // Reusable items inherit the options from this wrapper paragraph.
 // They are injected in the defineBlokkli() composable.
 provide(INJECT_REUSABLE_OPTIONS, options)
-provide(INJECT_IS_IN_REUSABLE, true)
+provide(INJECT_IS_OUTSIDE_STATE, true)
 provide(INJECT_REUSABLE_UUID, uuid)
 
 const item = computed(() => {

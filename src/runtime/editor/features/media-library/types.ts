@@ -47,6 +47,13 @@ export type MediaLibraryReplaceMediaEvent = {
    * The ID of the media that was dropped.
    */
   mediaId: string
+
+  /**
+   * Whether to replace the media in every translation of the block, or of
+   * the page entity. Only set when the editor asked, for a translatable
+   * field. Otherwise the media changes in the source language.
+   */
+  allLanguages?: boolean
 }
 
 export type FilterTypes = 'checkbox' | 'checkboxes' | 'text' | 'select'
@@ -88,7 +95,8 @@ declare module '#blokkli/editor/adapter' {
      * Replace an existing media from a block with a new one.
      *
      * This method is called when the user drag and drops an item from the media
-     * library onto an v-blokkli-droppable element.
+     * library onto an v-blokkli-droppable element. For a translatable field,
+     * the editor asks first whether to replace it in every language.
      */
     mediaLibraryReplaceMedia?: (
       e: MediaLibraryReplaceMediaEvent,
@@ -98,7 +106,9 @@ declare module '#blokkli/editor/adapter' {
      * Replace an existing media on a field of the page entity.
      *
      * This method is called when the user drag and drops an item from the media
-     * library onto an v-blokkli-droppable element where the host is the page entity..
+     * library onto an v-blokkli-droppable element where the host is the page
+     * entity. For a translatable field, the editor asks first whether to
+     * replace it in every language.
      */
     mediaLibraryReplaceEntityMedia?: (
       e: MediaLibraryReplaceMediaEvent,

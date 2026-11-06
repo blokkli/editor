@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable vue/no-v-html -- the SVG icons that the build bundles -->
   <div
     v-if="markup"
     class="bk-icon"
@@ -6,6 +7,7 @@
     :data-test="'icon-' + name"
     v-html="markup"
   />
+  <!-- eslint-enable vue/no-v-html -->
   <div
     v-else
     class="bk-icon"

@@ -1,0 +1,172 @@
+# Every block type once, with short content: the editor's add list shows a
+# picture of each, taken from these blocks (`bun run sandbox:block-images`,
+# which names them by their keys). The banner is the site's notice
+# (config_pages.yml), the only field that allows one. Not in a menu.
+key: blocks
+type: editorial
+title: { en: Blocks, de: Blöcke, fr: Blocs }
+field_lead:
+  en: 'Every block that the pages of this site are built from, once each.'
+  de: 'Alle Blöcke, aus denen die Seiten dieser Website gebaut sind, je einmal.'
+  fr: 'Tous les blocs dont sont faites les pages de ce site, une fois chacun.'
+field_host_options:
+  - { key: header, value: plain }
+field_paragraphs:
+  - type: title
+    key: blocks-title
+    field_title: { en: Opening hours, de: Öffnungszeiten, fr: Horaires }
+  - type: text
+    key: blocks-text
+    field_text:
+      en: '<p>The municipal administration is here for around 15,000 residents, in German and in French. The municipal chancery at the town hall answers general questions. It can also tell you which office deals with your request.</p>'
+      de: '<p>Die Gemeindeverwaltung ist für rund 15 000 Einwohnerinnen und Einwohner da, auf Deutsch und auf Französisch. Allgemeine Fragen beantwortet die Gemeindekanzlei im Rathaus. Sie weiss auch, welches Amt für Ihr Anliegen zuständig ist.</p>'
+      fr: '<p>L''administration communale est au service de quelque 15 000 habitantes et habitants, en allemand et en français. La Chancellerie communale, à l''hôtel de ville, répond aux questions générales. Elle sait aussi quel service est compétent pour votre demande.</p>'
+  - type: image
+    key: blocks-image
+    field_media: { media: town-from-lake }
+    field_caption: { en: Blockingen seen from the lake, de: Blockingen vom See aus, fr: Bloquens vu depuis le lac }
+  - type: gallery
+    key: blocks-gallery
+    field_paragraphs:
+      - type: image
+        field_media: { media: market }
+        field_caption: { en: The market in the old town, de: Der Markt in der Altstadt, fr: Le marché dans la vieille ville }
+      - type: image
+        field_media: { media: regatta }
+        field_caption: { en: The regatta on the lake, de: Die Regatta auf dem See, fr: La régate sur le lac }
+      - type: image
+        field_media: { media: open-air-cinema }
+        field_caption: { en: The open-air cinema, de: Das Openair-Kino, fr: Le cinéma en plein air }
+      - type: image
+        field_media: { media: band-concert }
+        field_caption: { en: 'The town band''s concert', de: Das Konzert der Musikgesellschaft, fr: Le concert de la fanfare }
+  - type: link
+    key: blocks-link
+    field_link: { node: assembly }
+    field_title: { en: The municipal assembly, de: Die Gemeindeversammlung, fr: 'L''Assemblée communale' }
+  - type: link_list
+    key: blocks-link-list
+    field_paragraphs:
+      - type: link
+        field_link: https://www.example.com/assembly-message
+        field_title:
+          en: "The council's report for the municipal assembly (PDF)"
+          de: Botschaft zur Gemeindeversammlung (PDF)
+          fr: "Message relatif à l'Assemblée communale (PDF)"
+      - type: link
+        field_link: { media: permit-form }
+        field_title: { en: Building permit application (PDF), de: Baugesuch (PDF), fr: Demande de permis de construire (PDF) }
+      - type: link
+        field_link: { node: assembly }
+        field_title: { en: The municipal assembly, de: Die Gemeindeversammlung, fr: 'L''Assemblée communale' }
+  - type: table
+    key: blocks-table
+    options: { striped: true }
+    field_table:
+      en: '<table><thead><tr><th>In CHF million</th><th>Accounts last year</th><th>Budget this year</th><th>Budget next year</th></tr></thead><tbody><tr><td>Expenses</td><td>66.8</td><td>68.0</td><td>69.4</td></tr><tr><td>Revenue</td><td>67.9</td><td>67.6</td><td>68.9</td></tr><tr><td>Result</td><td>+1.1</td><td>−0.4</td><td>−0.5</td></tr></tbody></table>'
+      de: '<table><thead><tr><th>In Mio. Franken</th><th>Rechnung letztes Jahr</th><th>Budget laufendes Jahr</th><th>Budget nächstes Jahr</th></tr></thead><tbody><tr><td>Aufwand</td><td>66,8</td><td>68,0</td><td>69,4</td></tr><tr><td>Ertrag</td><td>67,9</td><td>67,6</td><td>68,9</td></tr><tr><td>Ergebnis</td><td>+1,1</td><td>−0,4</td><td>−0,5</td></tr></tbody></table>'
+      fr: '<table><thead><tr><th>En millions de francs</th><th>Comptes de l''année dernière</th><th>Budget de l''année en cours</th><th>Budget de l''année prochaine</th></tr></thead><tbody><tr><td>Charges</td><td>66,8</td><td>68,0</td><td>69,4</td></tr><tr><td>Revenus</td><td>67,9</td><td>67,6</td><td>68,9</td></tr><tr><td>Résultat</td><td>+1,1</td><td>−0,4</td><td>−0,5</td></tr></tbody></table>'
+  - type: chart
+    key: blocks-chart
+    options:
+      data:
+        type: pie
+        categories: []
+        series: []
+        categoryColors: []
+        numberFormat: { locale: de-CH }
+        dataSource: { id: budget, label: 'Budget 2026: Aufwand nach Aufgabenbereich' }
+        translations:
+          en: { title: Expenses by area, footnotes: ["Current year's budget."] }
+          de: { title: Aufwand nach Aufgabenbereich, footnotes: [Budget des laufenden Jahres.] }
+          fr: { title: Charges par domaine, footnotes: ["Budget de l'année en cours."] }
+  - type: embed
+    key: blocks-embed
+    options: { heights: { '375': 1420, '768': 1320, '1440': 800 } }
+    field_link: /embed/fee-calculator
+    field_title: { en: Fee calculator, de: Gebührenrechner, fr: Calculateur de taxes }
+  - type: contact
+    key: blocks-contact
+    field_office: { node: finance-taxes }
+  - type: teaser
+    key: blocks-teaser
+    field_link: { node: assembly-meeting }
+  - type: teaser_list
+    key: blocks-teaser-list
+    options: { source: events }
+  - type: accordion
+    key: blocks-accordion
+    field_title:
+      en: Which language is spoken?
+      de: In welcher Sprache wird gesprochen?
+      fr: Dans quelle langue les débats ont-ils lieu ?
+    field_paragraphs:
+      - type: text
+        field_text:
+          en: '<p>Both. The documents are available in German and French, and you speak in your own language. The mayor summarises each contribution in the other language.</p>'
+          de: '<p>In beiden. Die Unterlagen gibt es auf Deutsch und auf Französisch, und Sie sprechen in Ihrer Sprache. Die Gemeindepräsidentin fasst jede Wortmeldung in der anderen Sprache zusammen.</p>'
+          fr: '<p>Dans les deux. Les documents existent en allemand et en français, et vous vous exprimez dans votre langue. La maire résume chaque intervention dans l''autre langue.</p>'
+  - type: steps
+    key: blocks-steps
+    field_paragraphs:
+      - type: step
+        key: blocks-step
+        field_title: { en: Invitation, de: Einladung, fr: Convocation }
+        field_text:
+          en: "<p>Four weeks before, you receive the invitation with the council's report by post, together with your voting card.</p>"
+          de: '<p>Vier Wochen vorher erhalten Sie die Einladung mit der Botschaft des Gemeinderats per Post, zusammen mit Ihrem Stimmrechtsausweis.</p>'
+          fr: '<p>Quatre semaines avant, vous recevez par la poste la convocation avec le message du Conseil communal, accompagnée de votre carte de légitimation.</p>'
+      - type: step
+        field_title: { en: Arrival, de: Eingang, fr: Accueil }
+        field_text:
+          en: '<p>At the entrance, you hand in your voting card and receive a ballot card. The hall opens at 19:00.</p>'
+          de: '<p>Am Eingang geben Sie den Stimmrechtsausweis ab und erhalten eine Stimmkarte. Der Saal ist ab 19.00 Uhr offen.</p>'
+          fr: '<p>À l''entrée, vous remettez votre carte de légitimation et recevez un carton de vote. La salle est ouverte dès 19 h.</p>'
+      - type: step
+        field_title: { en: Vote, de: Abstimmen, fr: Vote }
+        field_text:
+          en: '<p>You vote openly by raising your ballot card. If a quarter of those present ask for it, the vote is held by secret ballot.</p>'
+          de: '<p>Sie stimmen mit der Stimmkarte, offen. Verlangt es ein Viertel der Anwesenden, wird geheim abgestimmt.</p>'
+          fr: '<p>Vous votez ouvertement, en levant votre carton de vote. Si un quart des personnes présentes le demande, le vote a lieu à bulletin secret.</p>'
+  - type: call_to_action
+    key: blocks-call-to-action
+    options: { date: '+35 days 19:30' }
+    field_tagline: { en: Politics, de: Politik, fr: Politique }
+    field_title: { en: The next municipal assembly, de: Die nächste Gemeindeversammlung, fr: La prochaine Assemblée communale }
+    field_lead:
+      en: 'Voters decide on the budget and the tax rate, CHF 4.6 million for the renovation of the old town gym, and the new water fees.'
+      de: 'Die Stimmberechtigten entscheiden über das Budget und den Steuerfuss, einen Kredit von 4,6 Millionen Franken für die Sanierung der Turnhalle Altstadt und die neuen Wassergebühren.'
+      fr: 'Les électrices et électeurs se prononcent sur le budget et la quotité d''impôt, un crédit de 4,6 millions de francs pour la rénovation de la halle de gymnastique de la vieille ville et les nouvelles taxes pour l''eau.'
+    field_links:
+      - type: link
+        field_link: { node: assembly }
+        field_title: { en: Agenda and documents, de: Traktanden und Unterlagen, fr: Ordre du jour et documents }
+  - type: columns
+    key: blocks-columns
+    options: { ratio: 50-50 }
+    field_left:
+      - type: title
+        field_title: { en: Weekly market, de: Wochenmarkt, fr: Marché hebdomadaire }
+      - type: text
+        field_text:
+          en: '<p>Every Saturday from 8:00 to 12:00, farmers from the region sell vegetables, fruit, bread and flowers in the old town.</p>'
+          de: '<p>Jeden Samstag von 8.00 bis 12.00 Uhr verkaufen Bäuerinnen und Bauern aus der Region in der Altstadt Gemüse, Obst, Brot und Blumen.</p>'
+          fr: '<p>Chaque samedi de 8 h à 12 h, des agricultrices et agriculteurs de la région vendent des légumes, des fruits, du pain et des fleurs dans la vieille ville.</p>'
+    field_right:
+      - type: image
+        field_media: { media: market }
+  - type: section
+    key: blocks-section
+    options: { background: lake, columns: 2 }
+    field_title: { en: Opening hours and admission, de: Öffnungszeiten und Eintritt, fr: Horaires et tarifs }
+    field_paragraphs:
+      - type: table
+        field_table:
+          en: '<table><thead><tr><th>Season</th><th>Daily</th></tr></thead><tbody><tr><td>Mid-May to mid-June</td><td>10:00–19:00</td></tr><tr><td>Mid-June to mid-August</td><td>9:00–20:00</td></tr><tr><td>Mid-August to mid-September</td><td>10:00–19:00</td></tr></tbody></table>'
+          de: '<table><thead><tr><th>Saison</th><th>Täglich</th></tr></thead><tbody><tr><td>Mitte Mai bis Mitte Juni</td><td>10.00–19.00 Uhr</td></tr><tr><td>Mitte Juni bis Mitte August</td><td>9.00–20.00 Uhr</td></tr><tr><td>Mitte August bis Mitte September</td><td>10.00–19.00 Uhr</td></tr></tbody></table>'
+          fr: '<table><thead><tr><th>Saison</th><th>Tous les jours</th></tr></thead><tbody><tr><td>De mi-mai à mi-juin</td><td>10 h–19 h</td></tr><tr><td>De mi-juin à mi-août</td><td>9 h–20 h</td></tr><tr><td>De mi-août à mi-septembre</td><td>10 h–19 h</td></tr></tbody></table>'
+      - type: table
+        field_table:
+          en: '<table><tbody><tr><td>Admission</td><td>Single entry</td><td>Season ticket</td></tr><tr><td>Adults</td><td>CHF 7</td><td>CHF 90</td></tr><tr><td>Children aged 6 to 15</td><td>CHF 3.50</td><td>CHF 40</td></tr><tr><td>Families</td><td>–</td><td>CHF 190</td></tr></tbody></table>'
+          de: '<table><tbody><tr><td>Eintritt</td><td>Einzeln</td><td>Saison</td></tr><tr><td>Erwachsene</td><td>Fr. 7.–</td><td>Fr. 90.–</td></tr><tr><td>Kinder von 6 bis 15</td><td>Fr. 3.50</td><td>Fr. 40.–</td></tr><tr><td>Familien</td><td>–</td><td>Fr. 190.–</td></tr></tbody></table>'
+          fr: '<table><tbody><tr><td>Tarifs</td><td>Entrée simple</td><td>Abonnement de saison</td></tr><tr><td>Adultes</td><td>Fr. 7.–</td><td>Fr. 90.–</td></tr><tr><td>Enfants de 6 à 15 ans</td><td>Fr. 3.50</td><td>Fr. 40.–</td></tr><tr><td>Familles</td><td>–</td><td>Fr. 190.–</td></tr></tbody></table>'

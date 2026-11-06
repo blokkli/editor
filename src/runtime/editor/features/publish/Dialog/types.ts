@@ -6,3 +6,21 @@ export type MutationStatus = {
   errors?: string[]
   violations?: Validation[]
 }
+
+/**
+ * A row of the section "Languages".
+ */
+export type PublishLanguage = {
+  /**
+   * The langcode, or "all" when every language shares one status.
+   */
+  id: string
+  label: string
+  isCurrent: boolean
+  isPublished: boolean
+  /**
+   * Whether the user may change its published status: publish it, when it's
+   * unpublished.
+   */
+  canChangeStatus: boolean
+}
