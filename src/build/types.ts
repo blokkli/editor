@@ -96,15 +96,9 @@ export type ModuleOptions = {
   /**
    * Define available chunk groups.
    *
-   * The idea of this feature is to split rarely used components into separate
-   * chunks, so that they are not imported on each page.
-   *
-   * This value should only be set if the component is actually used rarely.
-   * Having too many chunks has the opposite effect, as rendering a page
-   * requires multiple requests.
-   *
-   * If left empty, all components are bundled in a default chunk, which should
-   * contain components that are used for most pages.
+   * Components without a chunk name are in the default 'global' chunk, where
+   * each component is loaded on its own, only on pages that render it. The
+   * components of any other chunk name are bundled and load together.
    */
   chunkNames?: string[]
 

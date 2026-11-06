@@ -93,8 +93,7 @@ See [Grouping](/define-blokkli/options#grouping).
 **Default:** `['global']`
 
 Define available chunk groups for code splitting. Blocks can reference a chunk
-name via the `chunkName` property in `defineBlokkli()`. Blocks without a chunk
-name are bundled in the default chunk.
+name via the `chunkName` property in `defineBlokkli()`.
 
 ```typescript
 blokkli: {
@@ -102,9 +101,11 @@ blokkli: {
 }
 ```
 
-Blocks used on most pages should stay in the default chunk. Only assign a chunk
-name to blocks that are used rarely — too many chunks can hurt performance since
-each page load requires multiple requests.
+Blocks without a chunk name are in the default `global` chunk. In production,
+each of them is its own chunk: a page only downloads the blocks it renders, and
+server-rendered pages preload them. The blocks of any other chunk name are
+bundled together and loaded the first time one of them renders. Group blocks
+that are always used together, such as a slider and its slides.
 
 ## fieldListTypes
 

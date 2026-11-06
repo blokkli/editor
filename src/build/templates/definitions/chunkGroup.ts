@@ -26,7 +26,10 @@ export default withHelper((helper) => {
             continue
           }
 
-          if (helper.isDev) {
+          // The global chunk is imported by the app itself: static imports
+          // would make every visitor download every block. A named chunk is
+          // already loaded on demand and keeps its blocks together.
+          if (helper.isDev || chunkName === 'global') {
             imports.push(
               `const ${file.identifier} = () => import('${file.filePath}').then(v => v.default)`,
             )
