@@ -52,6 +52,12 @@ export default defineNuxtConfig({
     scheduledTasks: {
       '*/5 * * * *': ['sandbox:cleanup'],
     },
+    typescript: {
+      // `ddev deploy` runs them with the server's utils.
+      tsConfig: {
+        include: ['../scripts/**/*'],
+      },
+    },
   },
 
   vite: {

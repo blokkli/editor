@@ -1,0 +1,4 @@
+name: 'blökkli sandbox update test'
+type: module
+description: 'A pending update with a schema change, for the E2E test of blokkli-sandbox:update.'
+package: Testing
