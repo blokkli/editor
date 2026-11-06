@@ -116,6 +116,20 @@ describe('migrate', () => {
     migrate(database)
     expect(invitationAccessToken(database, 'used')).toBe('kept')
   })
+
+  // The next start only checks for the column: added without its values, it
+  // would stay without them.
+  test('adds the column only with its values', () => {
+    accessLink('claimed', 'p1', 200)
+    database.exec(`
+      CREATE TRIGGER fail BEFORE UPDATE ON invitations
+      BEGIN SELECT RAISE(ABORT, 'the values failed'); END;
+    `)
+    expect(() => migrate(database)).toThrow('the values failed')
+    database.exec('DROP TRIGGER fail')
+    migrate(database)
+    expect(invitationAccessToken(database, 'used')).toBe('claimed')
+  })
 })
 
 describe('claimPageLanguage', () => {

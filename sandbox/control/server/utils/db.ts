@@ -113,17 +113,25 @@ export function migrate(database: DatabaseSync): void {
   `)
   const columns = database.prepare('PRAGMA table_info(invitations)').all()
   if (!columns.some((column) => column.name === 'access_link')) {
-    // Claims before the column made their sandbox's first access link.
-    database.exec(`
-      ALTER TABLE invitations ADD COLUMN access_link TEXT;
-      UPDATE invitations SET access_link = (
-        SELECT token FROM access_links
-        WHERE access_links.sandbox = invitations.sandbox
-        ORDER BY created, rowid
-        LIMIT 1
-      )
-      WHERE used IS NOT NULL;
-    `)
+    // Claims before the column made their sandbox's first access link. Both
+    // or neither: the next start only checks for the column.
+    database.exec('BEGIN')
+    try {
+      database.exec(`
+        ALTER TABLE invitations ADD COLUMN access_link TEXT;
+        UPDATE invitations SET access_link = (
+          SELECT token FROM access_links
+          WHERE access_links.sandbox = invitations.sandbox
+          ORDER BY created, rowid
+          LIMIT 1
+        )
+        WHERE used IS NOT NULL;
+      `)
+      database.exec('COMMIT')
+    } catch (error) {
+      database.exec('ROLLBACK')
+      throw error
+    }
   }
 }
 

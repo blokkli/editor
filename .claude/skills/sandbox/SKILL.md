@@ -511,8 +511,9 @@ host, with ddev running: `bun run test:e2e-drupal` or
   claim made (`invitations.access_link`), as `/access/<token>` would, but with
   the invitation's language. That link answers for a gone sandbox, revoking it
   ends the invitation's logins, and the admin page marks it. nginx doesn't log
-  the control app's requests with `invitation=` in the query. `/api/claim` still
-  answers 410 for a used invitation.
+  the control app's requests with `invitation=` in the query, and the app's
+  `Referrer-Policy: strict-origin` keeps the claim page's requests from sending
+  it as their Referer. `/api/claim` still answers 410 for a used invitation.
 - **The task `sandbox:cleanup`** runs every 5 minutes: it deletes sandboxes past
   `min(created + 24 h, last use + 2 h)` (premium: created + 21 days) and marks
   rows of sandboxes that are gone. Rows are never removed.
