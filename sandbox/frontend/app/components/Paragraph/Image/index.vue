@@ -30,6 +30,8 @@ defineProps<ParagraphImageFragment>()
 
 const block = defineBlokkli({
   bundle: 'image',
+  // Static: the browser lazy-loads the image by itself.
+  hydrate: 'never',
   globalOptions: ['width', 'bkVisibleLanguages'],
   editor: {
     icon: 'bk_mdi_image',

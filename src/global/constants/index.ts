@@ -43,5 +43,11 @@ export const VIEWPORT = ['mobile', 'desktop'] as const
 
 export const TRANSLATION_LANGUAGES = ['de', 'fr', 'it', 'gsw_CH'] as const
 
+/**
+ * The values of `hydrate` in `defineBlokkli()` and `defineBlokkliFragment()`.
+ */
+export const BLOCK_HYDRATION = ['never', 'visible', 'idle'] as const
+
 export type SettingsGroup = (typeof SETTINGS_GROUP)[number]
 export type Viewport = (typeof VIEWPORT)[number]
+export type BlockHydration = (typeof BLOCK_HYDRATION)[number]

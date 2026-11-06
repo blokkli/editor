@@ -63,7 +63,8 @@ bun run dev          # http://localhost:3000
    page. Only for them does Nuxt render on the server: to see real pages
    rendered that way, put `$settings['blokkli_playground_public'] = TRUE;` in
    `sandbox/drupal/web/sites/default/settings.local.php` (gitignored). Sandboxes
-   ignore it.
+   ignore it; only the E2E tests' sandboxes let in a visitor whose request has
+   the cookie `blokkli_e2e_public=1`.
 
 ### Content
 

@@ -21,6 +21,7 @@ import {
   validateOptions,
   type OptionValidationError,
 } from '../validation/validateOptions'
+import { BLOCK_HYDRATION, type BlockHydration } from '../../global/constants'
 
 export type ExtractedDefinition =
   | BlockDefinitionInputBase
@@ -103,6 +104,29 @@ export function getIdentifier(definition: ExtractedDefinition) {
   )
 }
 
+function isBlockHydration(value: unknown): value is BlockHydration {
+  return BLOCK_HYDRATION.includes(value as BlockHydration)
+}
+
+/**
+ * The definition's `hydrate`, if it applies: a valid value, on a block or a
+ * fragment without a `chunkName`. Validation only fails a build, so in dev the
+ * templates also get definitions with errors.
+ */
+function getHydrate(
+  definition: ExtractedDefinition | null,
+): BlockHydration | null {
+  if (!definition || !(isBlock(definition) || isFragment(definition))) {
+    return null
+  }
+
+  if (definition.chunkName || !isBlockHydration(definition.hydrate)) {
+    return null
+  }
+
+  return definition.hydrate
+}
+
 export type BlockValidationError = ValidationError & OptionValidationError
 
 /**
@@ -121,6 +145,25 @@ export function validateBlockDefinition(
       icons,
     )
     errors.push(...optionErrors)
+  }
+
+  // Providers aren't in the chunk templates: they ignore `hydrate`, and their
+  // type doesn't allow it.
+  if (
+    (isBlock(definition) || isFragment(definition)) &&
+    definition.hydrate !== undefined
+  ) {
+    if (!isBlockHydration(definition.hydrate)) {
+      errors.push({
+        message: `Invalid "hydrate" value ${JSON.stringify(definition.hydrate)}. Use one of ${BLOCK_HYDRATION.map((value) => `"${value}"`).join(', ')}.`,
+        severity: 'error',
+      })
+    } else if (definition.chunkName) {
+      errors.push({
+        message: `"hydrate" and "chunkName" can't be used together: "hydrate" already gives the component a chunk of its own. Remove chunkName: ${JSON.stringify(definition.chunkName)}.`,
+        severity: 'error',
+      })
+    }
   }
 
   // Check for deprecated fieldList in renderFor (blocks only)
@@ -157,6 +200,7 @@ export class CollectedBlockFile extends CollectedFile {
 
   identifier = ''
   chunkName = 'global'
+  hydrate: BlockHydration | null = null
   variations: string[] = []
 
   private objectLiteralString = ''
@@ -237,6 +281,7 @@ export class CollectedBlockFile extends CollectedFile {
       this.fileContents.includes(':is="BlokkliField"')
 
     this.chunkName = this.definition?.chunkName || 'global'
+    this.hydrate = getHydrate(this.definition)
     this.identifier = this.definition ? getIdentifier(this.definition) : ''
 
     if (!this.definition) {
@@ -754,6 +799,23 @@ export class BlockCollector extends Collector<CollectedBlockFile> {
         `blökkli bundles with renderFor components but no main component:\n${lines.join('\n')}`,
       )
       hasCollectorErrors = true
+    }
+
+    // Without Nuxt's lazy hydration, the templates ignore `hydrate`. Without
+    // server-side rendering, nothing hydrates anyway.
+    const { ssr, experimental } = this.helper.nuxt.options
+    const filesWithHydrate = files.filter((file) => file.hydrate)
+    if (
+      ssr &&
+      experimental.lazyHydration === false &&
+      filesWithHydrate.length
+    ) {
+      const lines = filesWithHydrate.map(
+        (file) => `  - ${file.filePath} (${file.hydrate})`,
+      )
+      this.helper.logger.warn(
+        `blökkli: "hydrate" has no effect, because Nuxt's lazy hydration is turned off (experimental.lazyHydration: false). These components hydrate with the page:\n${lines.join('\n')}`,
+      )
     }
 
     return hasFileErrors || hasCollectorErrors

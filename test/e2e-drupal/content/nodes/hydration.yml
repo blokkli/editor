@@ -1,0 +1,45 @@
+# Blocks with `hydrate`, at /en/hydration (features/hydration). In the first
+# viewport: the test fragments without `hydrate`, with `never` and with `idle`
+# (sandbox/frontend/app/components/Paragraph/BlokkliFragment/Hydration), a text
+# (`never`) and an accordion (`visible`). Below the fold, after the long texts:
+# the fragment with `visible`. Only editorial and office nodes allow fragments.
+key: hydration
+type: editorial
+title: Hydration
+field_paragraphs:
+  - type: blokkli_fragment
+    key: hydration-default
+    field_blokkli_fragment_name: hydrate_default
+  - type: blokkli_fragment
+    key: hydration-never
+    field_blokkli_fragment_name: hydrate_never
+  - type: blokkli_fragment
+    key: hydration-idle
+    field_blokkli_fragment_name: hydrate_idle
+  - type: text
+    key: hydration-text
+    field_text: '<p>A text that never hydrates.</p>'
+  - type: accordion
+    key: hydration-accordion
+    field_title: An accordion
+    field_paragraphs:
+      - type: text
+        field_text: '<p>The text in the accordion.</p>'
+  - &filler
+    type: text
+    field_text:
+      '<p>A text that makes the page longer. It has a few sentences, so that it
+      takes a few lines. The fragment that hydrates when it is visible comes
+      after ten of these texts, far below the fold.</p>'
+  - *filler
+  - *filler
+  - *filler
+  - *filler
+  - *filler
+  - *filler
+  - *filler
+  - *filler
+  - *filler
+  - type: blokkli_fragment
+    key: hydration-visible
+    field_blokkli_fragment_name: hydrate_visible

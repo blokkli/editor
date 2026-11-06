@@ -1,12 +1,18 @@
-import { test, describe, expect } from 'vitest'
+import { test, describe, expect, vi } from 'vitest'
 import {
   validateBlockDefinition,
   validateMissingMainComponent,
   validateBundleOptionCompatibility,
   validateRenderForConflicts,
+  BlockCollector,
   CollectedBlockFile,
 } from './Blocks'
-import type { BlockDefinitionInputBase } from '../../global/types/definitions'
+import type {
+  BlockDefinitionInputBase,
+  FragmentDefinitionInputBase,
+} from '../../global/types/definitions'
+import type { BlockHydration } from '../../global/constants'
+import type { ModuleHelper } from '../ModuleHelper'
 import type { IconCollector } from './Icons'
 
 const mockIcons = {} as IconCollector
@@ -532,6 +538,75 @@ describe('validateBlockDefinition', () => {
       expect(actualErrors).toHaveLength(1)
     })
   })
+
+  describe('hydrate', () => {
+    test.each<BlockHydration>(['never', 'visible', 'idle'])(
+      'returns no errors for "%s"',
+      (hydrate) => {
+        expect(
+          validateBlockDefinition({ bundle: 'test', hydrate }, mockIcons),
+        ).toEqual([])
+        expect(
+          validateBlockDefinition(
+            { name: 'test', label: 'Test', hydrate },
+            mockIcons,
+          ),
+        ).toEqual([])
+      },
+    )
+
+    test.each<unknown>(['interaction', 'lazy', true, {}])(
+      'returns an error for %j',
+      (hydrate) => {
+        const errors = validateBlockDefinition(
+          { bundle: 'test', hydrate: hydrate as BlockHydration },
+          mockIcons,
+        )
+        expect(errors).toHaveLength(1)
+        expect(errors[0]!.severity).toBe('error')
+        expect(errors[0]!.message).toContain('Invalid "hydrate" value')
+      },
+    )
+
+    test('refuses an unknown value in its type', () => {
+      const definition: BlockDefinitionInputBase = {
+        bundle: 'test',
+        // @ts-expect-error Not one of the values.
+        hydrate: 'interaction',
+      }
+      expect(validateBlockDefinition(definition, mockIcons)).toHaveLength(1)
+    })
+
+    test('returns an error together with chunkName', () => {
+      const block: BlockDefinitionInputBase = {
+        bundle: 'test',
+        hydrate: 'never',
+        chunkName: 'rare',
+      }
+      const fragment: FragmentDefinitionInputBase = {
+        name: 'test',
+        label: 'Test',
+        hydrate: 'visible',
+        chunkName: 'rare',
+      }
+
+      for (const definition of [block, fragment]) {
+        const errors = validateBlockDefinition(definition, mockIcons)
+        expect(errors).toHaveLength(1)
+        expect(errors[0]!.severity).toBe('error')
+        expect(errors[0]!.message).toContain('Remove chunkName: "rare"')
+      }
+    })
+
+    test('ignores it on a provider', () => {
+      const provider = {
+        entityType: 'node',
+        bundle: 'page',
+        hydrate: 'lazy',
+      } as unknown as BlockDefinitionInputBase
+      expect(validateBlockDefinition(provider, mockIcons)).toEqual([])
+    })
+  })
 })
 
 // ============================================================================
@@ -704,6 +779,138 @@ const {
       )
       expect(warnings).toHaveLength(1)
     })
+  })
+})
+
+// ============================================================================
+// CollectedBlockFile.hydrate
+// ============================================================================
+
+describe('CollectedBlockFile.hydrate', () => {
+  const helper = {
+    fileCache: {
+      fileExists: () => false,
+      read: () => Promise.resolve(''),
+    },
+    getMappedBlockBundle: (bundle: string) => bundle,
+  } as unknown as ModuleHelper
+
+  async function collect(script: string): Promise<CollectedBlockFile> {
+    const file = new CollectedBlockFile(
+      '/path/to/Block.vue',
+      `<template><div /></template>\n<script lang="ts" setup>\n${script}\n</script>`,
+    )
+    await file.handleChange(helper)
+    return file
+  }
+
+  test('is the value of a block', async () => {
+    const file = await collect(
+      `defineBlokkli({ bundle: 'text', hydrate: 'never' })`,
+    )
+    expect(file.hydrate).toBe('never')
+    expect(file.chunkName).toBe('global')
+  })
+
+  test('is the value of a fragment', async () => {
+    const file = await collect(
+      `defineBlokkliFragment({ name: 'test', label: 'Test', hydrate: 'idle' })`,
+    )
+    expect(file.hydrate).toBe('idle')
+  })
+
+  test('is null without it', async () => {
+    const file = await collect(`defineBlokkli({ bundle: 'text' })`)
+    expect(file.hydrate).toBeNull()
+  })
+
+  test('is null for an unknown value', async () => {
+    const file = await collect(
+      `defineBlokkli({ bundle: 'text', hydrate: 'interaction' })`,
+    )
+    expect(file.hydrate).toBeNull()
+  })
+
+  test('is null with a chunkName, which keeps its group', async () => {
+    const file = await collect(
+      `defineBlokkli({ bundle: 'text', hydrate: 'never', chunkName: 'rare' })`,
+    )
+    expect(file.hydrate).toBeNull()
+    expect(file.chunkName).toBe('rare')
+  })
+
+  test('is null for a provider', async () => {
+    const file = await collect(
+      `defineBlokkliProvider({ entityType: 'node', bundle: 'page', hydrate: 'never' })`,
+    )
+    expect(file.hydrate).toBeNull()
+  })
+
+  test('follows a changed definition', async () => {
+    const file = await collect(
+      `defineBlokkli({ bundle: 'text', hydrate: 'never' })`,
+    )
+    file.fileContents = file.fileContents.replace("'never'", "'visible'")
+    await file.handleChange(helper)
+    expect(file.hydrate).toBe('visible')
+  })
+})
+
+// ============================================================================
+// BlockCollector.validate
+// ============================================================================
+
+describe('BlockCollector.validate', () => {
+  function validate(
+    nuxtOptions: { ssr: boolean; lazyHydration: boolean },
+    hydrate: BlockHydration | null,
+  ) {
+    const warn = vi.fn()
+    const helper = {
+      options: { pattern: [] },
+      nuxt: {
+        options: {
+          ssr: nuxtOptions.ssr,
+          experimental: { lazyHydration: nuxtOptions.lazyHydration },
+        },
+      },
+      logger: { warn, error: vi.fn() },
+    } as unknown as ModuleHelper
+    const collector = new BlockCollector(helper, mockIcons)
+    const file = createMockBlockFileWithPath('/path/to/Text.vue', {
+      bundle: 'text',
+      editor: { icon: 'text' },
+    })
+    file.hydrate = hydrate
+    collector.files.set(file.filePath, file)
+
+    return { hasErrors: collector.validate(mockIcons), warn }
+  }
+
+  test('warns once when lazy hydration is off', () => {
+    const { hasErrors, warn } = validate(
+      { ssr: true, lazyHydration: false },
+      'never',
+    )
+    expect(hasErrors).toBe(false)
+    expect(warn).toHaveBeenCalledTimes(1)
+    expect(warn.mock.calls[0]![0]).toContain('experimental.lazyHydration')
+    expect(warn.mock.calls[0]![0]).toContain('/path/to/Text.vue (never)')
+  })
+
+  test('does not warn with lazy hydration on', () => {
+    const { warn } = validate({ ssr: true, lazyHydration: true }, 'never')
+    expect(warn).not.toHaveBeenCalled()
+  })
+
+  test('does not warn without server-side rendering', () => {
+    const { warn } = validate({ ssr: false, lazyHydration: false }, 'never')
+    expect(warn).not.toHaveBeenCalled()
+  })
+
+  test('does not warn without blocks that have hydrate', () => {
+    const { warn } = validate({ ssr: true, lazyHydration: false }, null)
+    expect(warn).not.toHaveBeenCalled()
   })
 })
 

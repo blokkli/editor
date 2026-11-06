@@ -300,8 +300,9 @@ export default defineNuxtConfig({
           'Tous les textes sont en @language.',
       },
     },
-    // The chart block and ECharts load only on pages with a chart.
-    chunkNames: ['global', 'rare', 'chart'],
+    // The blocks of the rare group load only on pages that have one. The chart
+    // has `hydrate` instead, which gives it a chunk of its own.
+    chunkNames: ['global', 'rare'],
     // The fields outside the main content: the page's sidebar, the footer, the
     // site-wide notice, the header's service links, the home page's
     // frequently searched links and the detail page's related topics.
@@ -427,12 +428,18 @@ export default defineNuxtConfig({
     },
   },
 
-  // The Test Cases sidebar (blokkli/features/test-cases), only where the
-  // agent's mock is. blökkli finds its features through Nuxt, which skips what
-  // it ignores; `devOnly` would leave it out of the E2E build too. The page
-  // that the pictures of the blocks are taken of, only on the dev server.
+  // The Test Cases sidebar (blokkli/features/test-cases) and the fragments of
+  // the hydration tests, only where the agent's mock is. blökkli finds its
+  // features and blocks through Nuxt, which skips what it ignores; `devOnly`
+  // would leave them out of the E2E build too. The page that the pictures of
+  // the blocks are taken of, only on the dev server.
   ignore: [
-    ...(testSeams ? [] : ['blokkli/features/test-cases']),
+    ...(testSeams
+      ? []
+      : [
+          'blokkli/features/test-cases',
+          'app/components/Paragraph/BlokkliFragment/Hydration',
+        ]),
     ...(devServer ? [] : ['app/pages/block-image']),
   ],
 

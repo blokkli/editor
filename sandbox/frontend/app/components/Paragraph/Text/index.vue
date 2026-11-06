@@ -1,5 +1,8 @@
 <template>
-  <div :class="[spacing, { 'container-content': hasContainer }]">
+  <div
+    :class="[spacing, { 'container-content': hasContainer }]"
+    data-test="text-paragraph"
+  >
     <Callout v-if="box" :type="box">
       <div v-blokkli-editable:field_text class="rich-text" v-html="text" />
     </Callout>
@@ -15,6 +18,8 @@ defineProps<ParagraphTextFragment>()
 
 const block = defineBlokkli({
   bundle: 'text',
+  // Static: nothing in it needs the browser, its links are plain links.
+  hydrate: 'never',
   globalOptions: ['bkVisibleLanguages'],
   options: {
     // The swatches are the -mid colours of the boxes' light ones (main.css).

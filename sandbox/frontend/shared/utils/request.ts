@@ -1,5 +1,6 @@
 /**
- * The request headers to pass on to Drupal: the session cookie, and the
+ * The request headers to pass on to Drupal: the browser's cookies (the
+ * session's, and the E2E tests' blokkli_e2e_public, see settings.php), and the
  * headers nginx uses to pick the site (Host) and Drupal uses for the session
  * cookie's name (https) and the client IP.
  */

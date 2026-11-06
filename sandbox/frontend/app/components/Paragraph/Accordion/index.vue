@@ -23,6 +23,7 @@
           type="button"
           class="flex w-full items-center justify-between gap-4 py-4 text-left hover:text-primary"
           :aria-expanded="isOpen"
+          data-test="accordion-toggle"
           @click="isOpen = !isOpen"
         >
           {{ title }}
@@ -32,7 +33,9 @@
           />
         </button>
       </h3>
-      <div v-show="isOpen || isEditing" class="pb-6">
+      <!-- A class, not v-show: on a page rendered on the server, the CSP blocks
+      the style attribute that v-show renders. -->
+      <div class="pb-6" :class="{ hidden: !isOpen && !isEditing }">
         <BlokkliField
           name="field_paragraphs"
           :list="paragraphs"
@@ -54,6 +57,9 @@ const isOpen = ref(false)
 // them, and only the first one has the ink rule on top.
 const block = defineBlokkli({
   bundle: 'accordion',
+  // The toggle needs the browser, from when the accordion is seen. The blocks
+  // inside hydrate with it.
+  hydrate: 'visible',
   globalOptions: ['bkVisibleLanguages'],
   propsFieldMapping: {
     title: { type: 'editable', name: 'field_title' },

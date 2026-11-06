@@ -19,6 +19,8 @@ defineProps<ParagraphTitleFragment>()
 
 const block = defineBlokkli({
   bundle: 'title',
+  // Static: nothing in it needs the browser.
+  hydrate: 'never',
   globalOptions: ['bkVisibleLanguages'],
   options: {
     anchor: {

@@ -40,7 +40,28 @@ for larger sites that have a lot of block components. Some might be used rarely
 and can be split into a separate chunk.
 
 If left empty for all blocks, then all blocks will be part of the same (default)
-import bundle.
+import bundle. A block with `hydrate` can't have a chunk name: it gets a chunk
+of its own.
+
+## hydrate
+
+**Type:** `'never' | 'visible' | 'idle' | undefined`
+
+When the block hydrates on a page that Nuxt renders on the server: never, when
+it enters the viewport, or when the browser is idle. Until then, the browser
+keeps the HTML from the server, and neither downloads nor runs the block's code.
+Without it, the block hydrates with the page.
+
+```vue
+<script lang="ts" setup>
+defineBlokkli({
+  bundle: 'text',
+  hydrate: 'never',
+})
+</script>
+```
+
+[Learn more about hydration](/define-blokkli/hydration)
 
 ## options
 

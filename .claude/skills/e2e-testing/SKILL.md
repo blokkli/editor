@@ -45,7 +45,9 @@ test, then lock the recipe into a spec.
 
 **One editor page per file.** Opening the editor costs a login and a full
 hydration (`__BLOKKLI__.app` mount + `[data-test="init-overlay"]` detach). 6
-tests × open = seconds wasted vs one `beforeAll`.
+tests × open = seconds wasted vs one `beforeAll`. The exception: a test of the
+hydration needs a page of its own, since a page hydrates once
+(`features/hydration`); an anonymous page rendered on the server is cheap.
 
 ```ts
 describe('Something', async () => {
@@ -167,8 +169,10 @@ install it; a page made with `createPage` needs `installCspCheck(page)`.
 
 - `KNOWN` lists violations that stay until their fix, each with its fix. What
   violates the policy: a `<style>` element or a `style` attribute in markup
-  (`v-html`, the SVG icons; Vue's `:style` is fine), `new Function`, an image
-  from another host.
+  (`v-html`, the SVG icons), `new Function`, an image from another host. Vue's
+  `:style` and `v-show` are fine in the browser, but a page that Nuxt renders on
+  the server (an anonymous visitor's) has them as attributes in its markup: use
+  a class there (`hidden`).
 - The build enforces Trusted Types. The editor's code passes markup through
   `helpers/html` (`parseHtmlDocument()`, `setSanitizedHtml()`, …), which has its
   policy. A string given to `innerHTML` or `DOMParser` goes to the page's
@@ -219,6 +223,11 @@ matches either; assert exact: `getAttribute === 'true'`.
   layer then takes the clicks.
 - `openPage(sandbox, user, path)` — logs the user in and opens the path outside
   the editor, e.g. to check what visitors see.
+- `openAnonymousPage(sandbox, { public?, viewport? })` — a page without a
+  session: Nuxt renders it on the server. `public` sends the cookie with which
+  an E2E sandbox lets anonymous visitors in (the `sandbox` skill, "E2E tests");
+  without it, the visitor gets the private page (403). It doesn't navigate, so
+  that listeners come first; its `goto` waits with `{ waitUntil: 'hydration' }`.
 - `editorPath('/en/blocks', 'blocks')` — a seeded node's path in the editor;
   `BLOCKS_EDITOR_PATH` is that one. `support/sandbox.ts` has the reset, the
   login path and `seedUuid()`.
@@ -334,6 +343,15 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
   documents in the links, so a dropped document can also become a widget). Only
   E2E sandboxes allow it, on pages. Seeded ones are on `nodes/widgets.yml`;
   `setupWidget(page)` adds one. A new option type goes here first.
+- **The hydration page** (`nodes/hydration.yml`, `/en/hydration`): the test
+  fragments `hydrate_default` (no `hydrate`), `hydrate_never`, `hydrate_idle`
+  and, below the fold, `hydrate_visible`
+  (`sandbox/frontend/app/components/Paragraph/BlokkliFragment/Hydration`), with
+  a text (`never`) and an accordion (`visible`). Each fragment has
+  `data-test="hydration-<value>"` with `data-test-mounted` (set in `onMounted`)
+  and a button that counts its clicks (`data-test-count`). A fragment's
+  `data-test` value is in its code only, so a downloaded script that has it is
+  that fragment's.
 
 ## Gotchas
 
@@ -386,8 +404,9 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
 
 `sandbox/frontend/blokkli/features/test-cases/` backs `.test`. The dev server
 and the E2E build that GitHub runs the tests against have it, the hosted build
-doesn't (`ignore` in `nuxt.config.ts`). Its scenarios name the sandbox's fields
-(`field_lead`, `title.field_title`, `text.field_text`).
+doesn't (`ignore` in `nuxt.config.ts`, as for the hydration tests' fragments).
+Its scenarios name the sandbox's fields (`field_lead`, `title.field_title`,
+`text.field_text`).
 
 `index.vue` registers the feature + `PluginSidebar` + the
 `window.__BLOKKLI__.test` lifecycle (assign on mount, delete on unmount). One

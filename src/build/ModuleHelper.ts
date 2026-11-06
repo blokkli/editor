@@ -252,6 +252,18 @@ export class ModuleHelper implements ValidationInterface {
     return this.options.chunkNames || ['global']
   }
 
+  /**
+   * Whether `hydrate` in a definition applies: Nuxt renders the pages on the
+   * server, and its lazy hydration is on. Without it, Nuxt neither transforms
+   * nor auto-imports `defineLazyHydrationComponent()`.
+   */
+  public canLazyHydrate(): boolean {
+    return (
+      this.nuxt.options.ssr &&
+      this.nuxt.options.experimental.lazyHydration !== false
+    )
+  }
+
   public addComponent(name: string) {
     addComponent({
       filePath: this.resolvers.module.resolve('./runtime/components/' + name),

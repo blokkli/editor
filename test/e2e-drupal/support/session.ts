@@ -1,10 +1,10 @@
-import { createPage, url } from '@nuxt/test-utils/e2e'
+import { createPage, url, type NuxtPage } from '@nuxt/test-utils/e2e'
 import type { JSHandle, Page } from 'playwright-core'
 import type { MockScript } from '#blokkli/agent/shared/types'
 import type { BlokkliApp } from '../../../src/runtime/editor/types/app'
 import type { EntityContext } from '../../../src/runtime/types'
 import { installCspCheck } from './csp'
-import { loginPath, ROOT, seedUuid } from './sandbox'
+import { loginPath, ROOT, sandboxHost, seedUuid } from './sandbox'
 
 /** The users of the fixtures (content/users.yml), one per role. */
 export type TestUser =
@@ -95,6 +95,43 @@ export async function openEditor(
   )
   await page.goto(url(loginPath(sandbox, user, path)))
   await waitForEditorReady(page)
+  return page
+}
+
+export type OpenAnonymousPageOptions = {
+  /**
+   * Sends the cookie with which an E2E sandbox lets anonymous visitors in, for
+   * each request (settings.php). Without it, the sandbox is private.
+   */
+  public?: boolean
+
+  viewport?: { width: number; height: number }
+}
+
+/**
+ * A page without a session, in a browser context of its own: an anonymous
+ * visitor, who gets the pages that Nuxt renders on the server
+ * (sandbox/frontend/server/middleware/spa.ts). It doesn't navigate, so that a
+ * test can listen to the page first. Its `goto` can wait for the hydration
+ * (`{ waitUntil: 'hydration' }`).
+ */
+export async function openAnonymousPage(
+  sandbox: string,
+  opts: OpenAnonymousPageOptions = {},
+): Promise<NuxtPage> {
+  const page = await createPage(undefined, {
+    ignoreHTTPSErrors: true,
+    viewport: opts.viewport,
+  })
+  await installCspCheck(page)
+  await disableDevtools(page)
+  if (opts.public) {
+    await page
+      .context()
+      .addCookies([
+        { name: 'blokkli_e2e_public', value: '1', url: sandboxHost(sandbox) },
+      ])
+  }
   return page
 }
 
