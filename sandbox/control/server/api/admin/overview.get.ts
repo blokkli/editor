@@ -16,33 +16,36 @@ export default defineEventHandler(() => {
     .prepare('SELECT * FROM access_links ORDER BY created')
     .all() as AccessLinkRow[]
   return {
-    sandboxes: sandboxes.map((sandbox) => ({
-      id: sandbox.id,
-      url: sandboxUrl(sandbox.id),
-      source: sandbox.source,
-      premium: sandbox.premium === 1,
-      created: sandbox.created,
-      lastUse: sandbox.deleted ? null : lastUse(sandbox),
-      expires: expires(sandbox),
-      deleted: sandbox.deleted,
-      // The note of the invitation that created it.
-      invitationNote: sandbox.invitation
-        ? (invitations.find(
-            (invitation) => invitation.token === sandbox.invitation,
-          )?.note ?? '')
-        : null,
-      accessLinks: accessLinks
-        .filter((link) => link.sandbox === sandbox.id)
-        .map((link) => ({
-          token: link.token,
-          user: link.user,
-          note: link.note,
-          created: link.created,
-          revoked: link.revoked,
-          lastUse: link.last_used,
-          uses: link.uses,
-        })),
-    })),
+    sandboxes: sandboxes.map((sandbox) => {
+      const invitation = invitations.find(
+        ({ token }) => token === sandbox.invitation,
+      )
+      return {
+        id: sandbox.id,
+        url: sandboxUrl(sandbox.id),
+        source: sandbox.source,
+        premium: sandbox.premium === 1,
+        created: sandbox.created,
+        lastUse: sandbox.deleted ? null : lastUse(sandbox),
+        expires: expires(sandbox),
+        deleted: sandbox.deleted,
+        // The note of the invitation that created it.
+        invitationNote: sandbox.invitation ? (invitation?.note ?? '') : null,
+        accessLinks: accessLinks
+          .filter((link) => link.sandbox === sandbox.id)
+          .map((link) => ({
+            token: link.token,
+            user: link.user,
+            note: link.note,
+            created: link.created,
+            revoked: link.revoked,
+            lastUse: link.last_used,
+            uses: link.uses,
+            // The invitation logs in through it too.
+            invitation: link.token === invitation?.access_link,
+          })),
+      }
+    }),
     invitations,
     users: TEST_USERS,
   }

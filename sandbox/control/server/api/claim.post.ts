@@ -103,12 +103,19 @@ export default defineEventHandler(async (event) => {
   }
 
   // Every premium sandbox gets an access link: the admin page hands it out, to
-  // come back and for colleagues.
+  // come back and for colleagues, and the invitation logs in through it again.
   if (invitation) {
     const row = database
       .prepare('SELECT note FROM invitations WHERE token = ?')
       .get(invitation)
-    insertAccessLink(id, SANDBOX_USER, String(row?.note ?? ''))
+    const accessLink = insertAccessLink(
+      id,
+      SANDBOX_USER,
+      String(row?.note ?? ''),
+    )
+    database
+      .prepare('UPDATE invitations SET access_link = ? WHERE token = ?')
+      .run(accessLink, invitation)
   }
 
   return {

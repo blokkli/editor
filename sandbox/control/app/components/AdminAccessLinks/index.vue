@@ -20,6 +20,9 @@
         >
           <td :class="td">
             <code class="break-all">{{ accessLink(link.token) }}</code>
+            <span v-if="link.invitation" class="block text-muted">
+              The invitation link opens it too: its uses count here.
+            </span>
           </td>
           <td :class="td">{{ link.user }}</td>
           <td :class="td">{{ link.note }}</td>
@@ -89,6 +92,7 @@ const props = defineProps<{
     revoked: number | null
     lastUse: number | null
     uses: number
+    invitation: boolean
   }[]
   users: readonly { name: string; label: string }[]
 }>()

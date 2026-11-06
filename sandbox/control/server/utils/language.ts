@@ -2,6 +2,7 @@ import {
   isLanguage,
   type Language,
 } from '../../../frontend/shared/utils/languages'
+import { DEFAULT_LANGUAGE } from '../../shared/utils/claim'
 
 /**
  * The first of the browser's languages (Accept-Language) that the claim page

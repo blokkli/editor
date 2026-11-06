@@ -21,6 +21,9 @@ export type InvitationRow = {
   created: number
   used: number | null
   sandbox: string | null
+  // The access link its claim made: opening the invitation again logs in
+  // through it (server/middleware/invitation.ts).
+  access_link: string | null
 }
 
 // A link that logs into a premium sandbox again, as often as needed
@@ -69,8 +72,16 @@ export function databaseFile(dataDirectory: string): string {
  */
 export function openDatabase(file: string): DatabaseSync {
   const database = new DatabaseSync(file)
+  database.exec('PRAGMA journal_mode = WAL')
+  migrate(database)
+  return database
+}
+
+/**
+ * Creates the tables, and adds what older databases lack.
+ */
+export function migrate(database: DatabaseSync): void {
   database.exec(`
-    PRAGMA journal_mode = WAL;
     CREATE TABLE IF NOT EXISTS sandboxes (
       id TEXT PRIMARY KEY,
       source TEXT NOT NULL,
@@ -85,7 +96,8 @@ export function openDatabase(file: string): DatabaseSync {
       note TEXT NOT NULL,
       created INTEGER NOT NULL,
       used INTEGER,
-      sandbox TEXT
+      sandbox TEXT,
+      access_link TEXT
     );
     CREATE TABLE IF NOT EXISTS access_links (
       token TEXT PRIMARY KEY,
@@ -99,7 +111,28 @@ export function openDatabase(file: string): DatabaseSync {
     );
     CREATE INDEX IF NOT EXISTS access_links_sandbox ON access_links (sandbox);
   `)
-  return database
+  const columns = database.prepare('PRAGMA table_info(invitations)').all()
+  if (!columns.some((column) => column.name === 'access_link')) {
+    // Claims before the column made their sandbox's first access link. Both
+    // or neither: the next start only checks for the column.
+    database.exec('BEGIN')
+    try {
+      database.exec(`
+        ALTER TABLE invitations ADD COLUMN access_link TEXT;
+        UPDATE invitations SET access_link = (
+          SELECT token FROM access_links
+          WHERE access_links.sandbox = invitations.sandbox
+          ORDER BY created, rowid
+          LIMIT 1
+        )
+        WHERE used IS NOT NULL;
+      `)
+      database.exec('COMMIT')
+    } catch (error) {
+      database.exec('ROLLBACK')
+      throw error
+    }
+  }
 }
 
 /**
