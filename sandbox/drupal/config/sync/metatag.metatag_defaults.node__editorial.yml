@@ -1,0 +1,9 @@
+uuid: 3c1fa6f2-1af5-4964-a4c8-aea30f16fa7b
+langcode: en
+status: true
+dependencies: {  }
+id: node__editorial
+label: 'Content: Editorial page'
+tags:
+  title: '[node:title]'
+  description: '[node:field_lead]'

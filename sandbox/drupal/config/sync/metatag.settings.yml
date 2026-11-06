@@ -1,0 +1,10 @@
+_core:
+  default_config_hash: xF-yd0bqa4S5zWER0Kasv-BK0-xGEegxnFERohs2QTs
+entity_type_groups: {  }
+separator: ''
+tag_trim_method: beforeValue
+use_maxlength: true
+tag_trim_maxlength: {  }
+tag_scroll_max_height: ''
+tag_trim_end: '|.,-:;/+&([{"'''
+trim_suffix: ''

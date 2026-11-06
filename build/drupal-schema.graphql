@@ -86,6 +86,9 @@ enum EntityType {
   "Paragraphs library item"
   PARAGRAPHS_LIBRARY_ITEM
 
+  "Redirect"
+  REDIRECT
+
   "Taxonomy term"
   TAXONOMY_TERM
 
@@ -2714,6 +2717,78 @@ type ParagraphsLibraryItem implements Entity & EntityLinkable & EntityRevisionab
 
   "Checks if this entity is the latest revision."
   isLatestRevision: Boolean
+}
+
+"Redirect"
+interface Redirect implements Entity & EntityLinkable {
+  "{field: status_code} The redirect status code."
+  statusCodeRawField: FieldItemListInteger
+
+  "{value} {field: status_code} The redirect status code."
+  statusCode: Int
+
+  ""
+  id: String
+
+  "The unique UUID."
+  uuid: String!
+
+  "The label of this entity."
+  label: String
+
+  "The langcode of this entity."
+  langcode: String
+
+  "The bundle ID of the entity."
+  entityBundle: String!
+
+  "The entity type ID."
+  entityTypeId: String!
+
+  "Determines whether the entity is new."
+  isNew: Boolean!
+
+  "Check entity access for the given operation, defaults to view."
+  accessCheck(operation: String): Boolean!
+
+  "Get the URL, defaults to canonical."
+  url(rel: String, options: UrlOptions): Url
+}
+
+"Redirect {entity_type: redirect, bundle: redirect}"
+type RedirectRedirect implements Redirect & Entity & EntityLinkable {
+  "{field: status_code} The redirect status code."
+  statusCodeRawField: FieldItemListInteger
+
+  "{value} {field: status_code} The redirect status code."
+  statusCode: Int
+
+  ""
+  id: String
+
+  "The unique UUID."
+  uuid: String!
+
+  "The label of this entity."
+  label: String
+
+  "The langcode of this entity."
+  langcode: String
+
+  "The bundle ID of the entity."
+  entityBundle: String!
+
+  "The entity type ID."
+  entityTypeId: String!
+
+  "Determines whether the entity is new."
+  isNew: Boolean!
+
+  "Check entity access for the given operation, defaults to view."
+  accessCheck(operation: String): Boolean!
+
+  "Get the URL, defaults to canonical."
+  url(rel: String, options: UrlOptions): Url
 }
 
 "Menu"
@@ -6213,6 +6288,27 @@ type MenuLink {
   attribute(name: String!): String
 }
 
+""
+type Metatag {
+  ""
+  id: String!
+
+  ""
+  tag: String!
+
+  ""
+  attributes: [MetatagAttribute!]!
+}
+
+""
+type MetatagAttribute {
+  ""
+  key: String!
+
+  ""
+  value: String!
+}
+
 "A persisted agent conversation belonging to a user and host entity."
 type ParagraphsBlokkliAgentConversation {
   "The UUID of the conversation entity."
@@ -8386,6 +8482,7 @@ interface InternalUrl {
   breadcrumb: [Breadcrumb!]!
   languageSwitchLinks: [LanguageSwitchLink!]!
   localTasks: [LocalTask!]!
+  metatags: [Metatag!]!
 }
 
 ""
@@ -8402,6 +8499,7 @@ interface EntityUrl {
   breadcrumb: [Breadcrumb!]!
   languageSwitchLinks: [LanguageSwitchLink!]!
   localTasks: [LocalTask!]!
+  metatags: [Metatag!]!
 }
 
 ""
@@ -8418,6 +8516,7 @@ type DefaultInternalUrl implements Url & InternalUrl {
   breadcrumb: [Breadcrumb!]!
   languageSwitchLinks: [LanguageSwitchLink!]!
   localTasks: [LocalTask!]!
+  metatags: [Metatag!]!
 }
 
 ""
@@ -8437,6 +8536,7 @@ type DefaultEntityUrl implements Url & InternalUrl & EntityUrl {
   breadcrumb: [Breadcrumb!]!
   languageSwitchLinks: [LanguageSwitchLink!]!
   localTasks: [LocalTask!]!
+  metatags: [Metatag!]!
 }
 
 ""
@@ -8456,12 +8556,15 @@ type EntityCanonicalUrl implements Url & InternalUrl & EntityUrl {
   breadcrumb: [Breadcrumb!]!
   languageSwitchLinks: [LanguageSwitchLink!]!
   localTasks: [LocalTask!]!
+  metatags: [Metatag!]!
 }
 
 ""
 type RedirectUrl implements Url {
   ""
   path: String!
+
+  redirect: Redirect!
 }
 
 ""

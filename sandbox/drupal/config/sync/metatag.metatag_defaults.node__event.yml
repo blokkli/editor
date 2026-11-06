@@ -1,0 +1,9 @@
+uuid: 8b6af943-bb02-4ed5-9e55-8916e667a660
+langcode: en
+status: true
+dependencies: {  }
+id: node__event
+label: 'Content: Event'
+tags:
+  title: '[node:title]'
+  description: '[node:field_lead]'

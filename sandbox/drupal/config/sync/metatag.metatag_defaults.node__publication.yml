@@ -1,0 +1,9 @@
+uuid: 0c76bffc-7d83-4d28-b2aa-4a4c531afa05
+langcode: en
+status: true
+dependencies: {  }
+id: node__publication
+label: 'Content: Official publication'
+tags:
+  title: '[node:title]'
+  description: '[node:field_lead]'
