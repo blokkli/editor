@@ -68,6 +68,43 @@ export function getChildrenOrientation(element: HTMLElement): Orientation {
 }
 
 /**
+ * How the children of a field are laid out.
+ */
+export type ChildrenFlow = {
+  orientation: Orientation
+
+  /** The field's text direction is right to left. */
+  rtl: boolean
+
+  /** The children run in reverse: flex row-reverse or column-reverse. */
+  reversed: boolean
+}
+
+/**
+ * Determine how the children of a field are laid out.
+ *
+ * @param element - The field's element.
+ * @param forced - An orientation set on the field (its drop alignment).
+ */
+export function getChildrenFlow(
+  element: HTMLElement,
+  forced?: Orientation | null,
+): ChildrenFlow {
+  const style = window.getComputedStyle(element)
+  const orientation = forced || getChildrenOrientation(element)
+  const reversed =
+    style.display.includes('flex') &&
+    style.flexDirection ===
+      (orientation === 'horizontal' ? 'row-reverse' : 'column-reverse')
+
+  return {
+    orientation,
+    rtl: style.direction === 'rtl',
+    reversed,
+  }
+}
+
+/**
  * The number of blocks the dragged items add: an item can add several, such as
  * dropped files.
  */

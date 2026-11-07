@@ -165,6 +165,24 @@ export type DomProvider = {
   isBlockVisible(uuid: string): boolean
 
   /**
+   * Check if a field is currently visible in the viewport.
+   *
+   * @param key - The field key (uuid:fieldName)
+   * @returns True if the field is visible
+   */
+  isFieldVisible(key: string): boolean
+
+  /**
+   * Measure a field's rectangle again.
+   *
+   * Field rects are not observed for size changes, so a feature that needs an
+   * exact rect (e.g. after its block resized) refreshes it.
+   *
+   * @param key - The field key (uuid:fieldName)
+   */
+  refreshFieldRect(key: string): void
+
+  /**
    * Get rectangles for all registered blocks.
    *
    * @returns Record mapping UUIDs to their measured rectangles with timestamps
@@ -781,6 +799,10 @@ export default function (
     return visibleBlocks.has(uuid)
   }
 
+  function isFieldVisible(key: string): boolean {
+    return visibleFields.has(key)
+  }
+
   function refreshAllBlockRects() {
     const uuids = Object.keys(blockRects)
     if (uuids.length < 200) {
@@ -1010,7 +1032,9 @@ export default function (
     getBlockRect,
     getFieldRect,
     refreshBlockRect,
+    refreshFieldRect,
     isBlockVisible,
+    isFieldVisible,
     isReady: computed(
       () =>
         mutationsReady.value && intersectionReady.value && !isInitalizing.value,

@@ -38,7 +38,11 @@
     v-else
     ref="root"
     class="bk-vars"
-    :class="['bk-draggable-list-container', attrs.class]"
+    :class="[
+      'bk-draggable-list-container',
+      attrs.class,
+      { 'bk-is-empty': !list.length },
+    ]"
   >
     <BlokkliItem
       v-for="(item, i) in list"
@@ -212,6 +216,21 @@ if (import.meta.hot) {
   .bk-list-item-icon {
     width: 2rem;
     height: 2rem;
+  }
+}
+
+/*
+ * An empty field gets room and a faint outline in the editor, even when the
+ * site gives it no height, so there is always a place to add a block. Through
+ * a pseudo element instead of min-height: the editor's CSS isn't in a cascade
+ * layer, so a min-height here would override a larger one of the site.
+ */
+.bk-vars.bk-draggable-list-container.bk-is-empty {
+  @apply outline-dashed outline-1 outline-accent-400/40 -outline-offset-1;
+
+  &::before {
+    content: '';
+    @apply block h-[48px] pointer-events-none;
   }
 }
 

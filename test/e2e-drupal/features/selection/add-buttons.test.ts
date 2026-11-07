@@ -144,13 +144,12 @@ describe('The selection add buttons', async () => {
   })
 
   test("the columns' empty left field offers its paragraph types and both actions", async () => {
-    // Selecting the columns surfaces the add button of their empty field
-    // (`field_right` has a text, so `field_left` is the only empty one →
-    // index 0); triggering it opens the selector scoped to `field_left`.
+    // Selecting the columns surfaces the add button of each of their fields;
+    // triggering the one of `field_left` opens the selector scoped to it.
     await selectBlock(page, COLUMNS)
     await emitEvent(page, 'selection:add-button:trigger', {
       position: 'field',
-      index: 0,
+      fieldName: 'field_left',
     })
 
     await bundleSelector(page).waitFor({ state: 'visible' })
