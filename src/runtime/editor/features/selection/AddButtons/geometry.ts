@@ -24,8 +24,14 @@ export const TAB_LENGTH = TAB_WIDTH + TAB_FLARE * 2
 /** How far a before/after tab reaches out from the edge. */
 export const TAB_DEPTH = 18
 
-/** The gap between a tab and the insertion line beyond it. */
-export const LINE_GAP = 6
+/**
+ * The depth of the band behind a hovered tab: about 75% of the tab's, so that
+ * the band stays within the tab's reach.
+ */
+export const BAND_DEPTH = Math.round(TAB_DEPTH * 0.75)
+
+/** The opacity of the band behind a hovered tab. */
+export const BAND_OPACITY = 0.3
 
 /** The diameter of a knob. */
 export const KNOB_SIZE = 22
@@ -39,19 +45,13 @@ export const BAR_THICKNESS = 4
 /** The deepest an end bar's hit band reaches into the field. */
 export const BAR_BAND = 10
 
-/** The thickness of the insertion line. */
-export const LINE_THICKNESS = 3
-
-/** The radius of the dots at both ends of the insertion line. */
-export const LINE_DOT_RADIUS = 4
-
 /** The most shapes drawn at once: the size of the shader's uniform arrays. */
 export const MAX_SHAPES = 48
 
 /** How far outside the viewport shapes are still drawn. */
 const CULL_MARGIN = 20
 
-export type ShapeType = 'tab' | 'line' | 'knob' | 'bar' | 'outline' | 'area'
+export type ShapeType = 'tab' | 'band' | 'knob' | 'bar' | 'outline' | 'area'
 
 export type Shape = {
   type: ShapeType
@@ -60,7 +60,7 @@ export type Shape = {
   rect: Rectangle
 
   /**
-   * For a tab, the side it points to. For a line or a bar, the edge it runs
+   * For a tab, the side it points to. For a band or a bar, the edge it runs
    * along (top/bottom: horizontal).
    */
   side: Side
@@ -87,15 +87,6 @@ export type TooltipRequest = {
   targetId: AddTargetId
   anchor: Coord
   side: Side
-}
-
-/** Where to show the name of the field under the pointer. */
-export type TagRequest = {
-  targetId: AddTargetId
-  anchor: Coord
-
-  /** The tag ends at the anchor instead of starting there (right to left). */
-  alignEnd: boolean
 }
 
 export type SiblingInput = {
@@ -165,8 +156,6 @@ export type Frame = {
   anchors: Map<AddTargetId, Coord>
 
   tooltip: TooltipRequest | null
-
-  tag: TagRequest | null
 }
 
 const OPPOSITE: Record<Side, Side> = {
@@ -463,44 +452,46 @@ function snap(point: Coord): Coord {
 }
 
 /**
- * The distance from the block's edge to the middle of the insertion line:
- * always the same, past the tab, so that the line touches neither the tab nor
- * the selection outline.
+ * The band shown behind a hovered tab, along the whole edge the block is added
+ * at. Like the tab, it starts on the selection outline (on the same whole
+ * pixel); it isn't as deep, so it never reaches beyond the tab, e.g. into the
+ * toolbar above the block.
  */
-export function getInsertionLineDistance(scale: number): number {
-  return getTabOffset(scale) + TAB_DEPTH + LINE_GAP + LINE_THICKNESS / 2
-}
-
-/**
- * The insertion line shown while a tab is hovered, along the edge the block
- * is added at. The rectangle includes the dots at both ends.
- */
-export function getInsertionLineRect(
+export function getBandRect(
   block: Rectangle,
   side: Side,
   scale: number,
 ): Rectangle {
-  const radius = LINE_DOT_RADIUS
-  const distance = getInsertionLineDistance(scale)
-
-  if (isHorizontalEdge(side)) {
-    const y =
-      side === 'top' ? block.y - distance : block.y + block.height + distance
-    return {
-      x: block.x - radius,
-      y: y - radius,
-      width: block.width + radius * 2,
-      height: radius * 2,
-    }
-  }
-
-  const x =
-    side === 'left' ? block.x - distance : block.x + block.width + distance
-  return {
-    x: x - radius,
-    y: block.y - radius,
-    width: radius * 2,
-    height: block.height + radius * 2,
+  const offset = getTabOffset(scale)
+  switch (side) {
+    case 'top':
+      return {
+        x: block.x,
+        y: Math.round(block.y - offset) - BAND_DEPTH,
+        width: block.width,
+        height: BAND_DEPTH,
+      }
+    case 'bottom':
+      return {
+        x: block.x,
+        y: Math.round(block.y + block.height + offset),
+        width: block.width,
+        height: BAND_DEPTH,
+      }
+    case 'left':
+      return {
+        x: Math.round(block.x - offset) - BAND_DEPTH,
+        y: block.y,
+        width: BAND_DEPTH,
+        height: block.height,
+      }
+    case 'right':
+      return {
+        x: Math.round(block.x + block.width + offset),
+        y: block.y,
+        width: BAND_DEPTH,
+        height: block.height,
+      }
   }
 }
 
@@ -770,7 +761,6 @@ export function buildFrame(input: FrameInput): Frame {
     pointerId: null,
     anchors: new Map(),
     tooltip: null,
-    tag: null,
   }
 
   const fade = getFade(input.scale)
@@ -784,7 +774,7 @@ export function buildFrame(input: FrameInput): Frame {
   const bars: Shape[] = []
   const outlines: Shape[] = []
   const areas: Shape[] = []
-  const lines = new Map<AddTargetId, Shape>()
+  const bands = new Map<AddTargetId, Shape>()
   const tooltips = new Map<AddTargetId, TooltipRequest>()
 
   if (input.siblings) {
@@ -803,10 +793,10 @@ export function buildFrame(input: FrameInput): Frame {
       })
       frame.zones.push({ targetId: id, kind: 'tab', rect })
       frame.anchors.set(id, getCenter(rect))
-      lines.set(id, {
-        type: 'line',
+      bands.set(id, {
+        type: 'band',
         targetId: id,
-        rect: getInsertionLineRect(block, side, input.scale),
+        rect: getBandRect(block, side, input.scale),
         side,
         hovered: true,
         alpha: k,
@@ -920,16 +910,6 @@ export function buildFrame(input: FrameInput): Frame {
         hovered: false,
         alpha: k,
       })
-      frame.tag = {
-        targetId: field.id,
-        anchor: {
-          x: field.flow.rtl
-            ? field.rect.x + field.rect.width - 4
-            : field.rect.x + 4,
-          y: field.rect.y + 4,
-        },
-        alignEnd: field.flow.rtl,
-      }
     }
   }
 
@@ -956,15 +936,16 @@ export function buildFrame(input: FrameInput): Frame {
     frame.tooltip = tooltips.get(pointerHit) ?? null
   }
 
-  const line =
+  // Behind the hovered tab: where the block goes.
+  const band =
     frame.hoveredId === 'before' || frame.hoveredId === 'after'
-      ? lines.get(frame.hoveredId)
+      ? bands.get(frame.hoveredId)
       : undefined
 
   const visible = expand(input.viewport, CULL_MARGIN)
   frame.shapes = [
     ...hoveredFirst(tabs),
-    ...(line ? [line] : []),
+    ...(band ? [band] : []),
     ...hoveredFirst(knobs),
     ...bars,
     ...outlines,

@@ -7,7 +7,7 @@ flat in vec4 v_style;
 in vec2 v_position;
 
 uniform float u_dpi;
-// Tabs, the border and plus of knobs, the insertion line.
+// Tabs, the band behind a hovered tab, the border and plus of knobs.
 uniform vec3 u_color_accent;
 // Hovered tabs.
 uniform vec3 u_color_accent_hover;
@@ -24,6 +24,7 @@ const vec3 WHITE = vec3(1.0);
 const float TAB_DEPTH = __TAB_DEPTH__;
 const float TAB_RADIUS = __TAB_RADIUS__;
 const float TAB_FLARE = __TAB_FLARE__;
+const float BAND_OPACITY = __BAND_OPACITY__;
 
 // Sides: 0 top, 1 right, 2 bottom, 3 left.
 
@@ -141,20 +142,11 @@ vec4 drawKnob(vec2 p, vec2 halfSize, bool hovered) {
   return vec4(color, coverage(d));
 }
 
-// The insertion line: a line with a dot at both ends and a white halo.
-vec4 drawLine(vec2 p, vec2 halfSize, int side) {
-  bool isHorizontal = side == 0 || side == 2;
-  vec2 q = isHorizontal ? p : p.yx;
-  vec2 h = isHorizontal ? halfSize : halfSize.yx;
-  float dotRadius = h.y - 1.0;
-  float end = h.x - h.y;
-
-  float lineDistance = sdBox(q, vec2(end, 1.5));
-  float dotDistance =
-    min(length(q - vec2(-end, 0.0)), length(q - vec2(end, 0.0))) - dotRadius;
-  float d = min(lineDistance, dotDistance);
-
-  return vec4(mix(WHITE, u_color_accent, coverage(d)), coverage(d - 1.0));
+// The band behind a hovered tab: where the new block goes.
+vec4 drawBand(vec2 p, vec2 halfSize) {
+  float radius = min(2.0, min(halfSize.x, halfSize.y));
+  float d = sdRoundBox(p, halfSize, vec4(radius));
+  return vec4(u_color_accent, coverage(d) * BAND_OPACITY);
 }
 
 // An end bar with a white halo.
@@ -208,7 +200,7 @@ void main() {
   } else if (type < 2.5) {
     color = drawKnob(p, halfSize, hovered);
   } else if (type < 3.5) {
-    color = drawLine(p, halfSize, side);
+    color = drawBand(p, halfSize);
   } else if (type < 4.5) {
     color = drawBar(p, halfSize, hovered);
   } else if (type < 5.5) {

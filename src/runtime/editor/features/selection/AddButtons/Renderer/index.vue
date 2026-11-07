@@ -2,17 +2,12 @@
   <Teleport to="#bk-canvas-overlay">
     <!--
       Updated directly from the render loop, not through Vue: the text has to
-      be there when the label is measured, in the same frame.
+      be there when the tooltip is measured, in the same frame.
     -->
     <div
       ref="tooltipEl"
       class="bk bk-add-button-tooltip"
       data-test="add-buttons-tooltip"
-    />
-    <div
-      ref="tagEl"
-      class="bk bk-add-buttons-field-tag"
-      data-test="add-buttons-field-tag"
     />
   </Teleport>
 </template>
@@ -32,10 +27,9 @@ import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
 import { rgbaToString, toShaderColor } from '#blokkli/editor/helpers/color'
 import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
 import type { RenderContext } from '#blokkli/editor/providers/animation'
-import type { Coord, Rectangle, Size } from '#blokkli/editor/types/geometry'
+import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
 import {
-  LINE_DOT_RADIUS,
-  LINE_THICKNESS,
+  BAND_OPACITY,
   MAX_SHAPES,
   TAB_DEPTH,
   TAB_FLARE,
@@ -70,6 +64,7 @@ function injectConstants(source: string): string {
     .replace(/__TAB_DEPTH__/g, TAB_DEPTH.toFixed(1))
     .replace(/__TAB_RADIUS__/g, TAB_RADIUS.toFixed(1))
     .replace(/__TAB_FLARE__/g, TAB_FLARE.toFixed(1))
+    .replace(/__BAND_OPACITY__/g, BAND_OPACITY.toFixed(2))
 }
 const vs = injectConstants(vertexSource)
 const fs = injectConstants(fragmentSource)
@@ -77,7 +72,7 @@ const fs = injectConstants(fragmentSource)
 const SHAPE_TYPES: Record<ShapeType, number> = {
   tab: 1,
   knob: 2,
-  line: 3,
+  band: 3,
   bar: 4,
   outline: 5,
   area: 6,
@@ -133,11 +128,9 @@ onBeforeUnmount(() => {
 })
 
 const tooltipEl = useTemplateRef<HTMLDivElement>('tooltipEl')
-const tagEl = useTemplateRef<HTMLDivElement>('tagEl')
 
 let tooltipTransform = ''
-let tagTransform = ''
-let hasLabels = false
+let isTooltipShown = false
 
 let lastFrame: Frame | null = null
 let lastRenderTime = -1
@@ -316,82 +309,46 @@ function moveElement(
 }
 
 /**
- * Show a label with its text: set right away, so that it can be measured in
- * the same frame.
- *
- * @returns The size of the label.
+ * Show and place the tooltip of the button under the pointer. Its text is set
+ * right away, so that it can be measured in the same frame.
  */
-function showLabel(el: HTMLElement, text: string): Size {
-  if (el.textContent !== text) {
-    el.textContent = text
+function updateTooltip(frame: Frame | null) {
+  const el = tooltipEl.value
+  const request = frame?.tooltip
+  const target = request
+    ? props.targets?.list.find((v) => v.id === request.targetId)
+    : undefined
+
+  if (!el || !request || !target) {
+    el?.classList.remove('bk-is-visible')
+    isTooltipShown = false
+    return
   }
+
+  if (el.textContent !== target.label) {
+    el.textContent = target.label
+  }
+  el.classList.toggle('bk-is-field', target.kind === 'field')
   el.classList.add('bk-is-visible')
-  return { width: el.offsetWidth, height: el.offsetHeight }
-}
-
-function hideLabel(el: HTMLElement | null) {
-  el?.classList.remove('bk-is-visible')
-}
-
-/**
- * Show and place the tooltip of the button under the pointer and the name of
- * the field under the pointer.
- */
-function updateLabels(frame: Frame | null) {
-  const list = props.targets?.list ?? []
-  const bounds = ui.visibleViewportPadded.value
-  const tooltip = tooltipEl.value
-  const tag = tagEl.value
-
-  const tooltipRequest = frame?.tooltip
-  const tooltipTarget = tooltipRequest
-    ? list.find((target) => target.id === tooltipRequest.targetId)
-    : undefined
-  if (!tooltip || !tooltipRequest || !tooltipTarget) {
-    hideLabel(tooltip)
-  } else {
-    tooltip.classList.toggle('bk-is-field', tooltipTarget.kind === 'field')
-    tooltip.dataset.testTarget = tooltipTarget.id
-    const size = showLabel(tooltip, tooltipTarget.label)
-    tooltipTransform = moveElement(
-      tooltip,
-      placeLabel(tooltipRequest.anchor, size, tooltipRequest.side, 8, bounds),
-      tooltipTransform,
-    )
-  }
-
-  const tagRequest = frame?.tag
-  const tagTarget = tagRequest
-    ? list.find((target) => target.id === tagRequest.targetId)
-    : undefined
-  if (!tag || !tagRequest || !tagTarget) {
-    hideLabel(tag)
-  } else {
-    tag.dataset.testField = tagTarget.field.name
-    const { width, height } = showLabel(tag, tagTarget.field.label)
-    const x = tagRequest.alignEnd
-      ? tagRequest.anchor.x - width
-      : tagRequest.anchor.x
-    tagTransform = moveElement(
-      tag,
-      {
-        x: Math.max(bounds.x, Math.min(x, bounds.x + bounds.width - width)),
-        y: Math.max(
-          bounds.y,
-          Math.min(tagRequest.anchor.y, bounds.y + bounds.height - height),
-        ),
-      },
-      tagTransform,
-    )
-  }
-
-  hasLabels = !!(frame?.tooltip || frame?.tag)
+  el.dataset.testTarget = target.id
+  tooltipTransform = moveElement(
+    el,
+    placeLabel(
+      request.anchor,
+      { width: el.offsetWidth, height: el.offsetHeight },
+      request.side,
+      8,
+      ui.visibleViewportPadded.value,
+    ),
+    tooltipTransform,
+  )
+  isTooltipShown = true
 }
 
 function startFrame(ctx: RenderContext): Frame | null {
   lastRenderTime = ctx.time
   lastFrame = getFrame(ctx)
-  updateLabels(lastFrame)
+  updateTooltip(lastFrame)
   return lastFrame
 }
 
@@ -518,34 +475,12 @@ function drawShape2d(
       break
     }
 
-    case 'line': {
-      const dot = LINE_DOT_RADIUS * dpi
-      const horizontal = isHorizontalEdge(shape.side)
-      const start = horizontal
-        ? { x: x + dot, y: center.y }
-        : { x: center.x, y: y + dot }
-      const end = horizontal
-        ? { x: x + width - dot, y: center.y }
-        : { x: center.x, y: y + height - dot }
-      const draw = (color: string, lineWidth: number, radius: number) => {
-        ctx2d.strokeStyle = color
-        ctx2d.fillStyle = color
-        ctx2d.lineWidth = lineWidth
-        ctx2d.lineCap = 'round'
-        ctx2d.beginPath()
-        ctx2d.moveTo(start.x, start.y)
-        ctx2d.lineTo(end.x, end.y)
-        ctx2d.stroke()
-        for (const point of [start, end]) {
-          ctx2d.beginPath()
-          ctx2d.arc(point.x, point.y, radius, 0, Math.PI * 2)
-          ctx2d.fill()
-        }
-      }
-      draw('white', (LINE_THICKNESS + 2) * dpi, dot)
-      draw(rgbaToString(colors.value.accent), LINE_THICKNESS * dpi, dot - dpi)
+    case 'band':
+      ctx2d.fillStyle = rgbaToString(colors.value.accent, BAND_OPACITY)
+      ctx2d.beginPath()
+      ctx2d.roundRect(x, y, width, height, 2 * dpi)
+      ctx2d.fill()
       break
-    }
 
     case 'bar': {
       if (!shape.hovered) {
@@ -588,11 +523,11 @@ function drawShape2d(
   ctx2d.restore()
 }
 
-// The renderer isn't called while it's disabled: hide the labels then.
+// The renderer isn't called while it's disabled: hide the tooltip then.
 onBlokkliEvent('canvas:draw', (e) => {
-  if (e.time !== lastRenderTime && (lastFrame || hasLabels)) {
+  if (e.time !== lastRenderTime && (lastFrame || isTooltipShown)) {
     lastFrame = null
-    updateLabels(null)
+    updateTooltip(null)
   }
 })
 
@@ -676,17 +611,6 @@ export default {
   &.bk-is-field {
     @apply bg-white text-accent-700 border-accent-500;
   }
-
-  &.bk-is-visible {
-    @apply visible;
-  }
-}
-
-.bk.bk-add-buttons-field-tag {
-  @apply fixed left-0 top-0 whitespace-nowrap pointer-events-none invisible;
-  @apply bg-white text-accent-700 font-semibold text-xs leading-none;
-  @apply px-5 py-3 rounded border border-accent-500;
-  @apply will-change-transform z-add-buttons-label;
 
   &.bk-is-visible {
     @apply visible;

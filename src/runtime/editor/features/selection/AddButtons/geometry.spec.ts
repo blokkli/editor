@@ -2,18 +2,18 @@ import { describe, expect, test } from 'vitest'
 import type { ChildrenFlow } from '#blokkli/editor/helpers/dropTargets'
 import type { Rectangle } from '#blokkli/editor/types/geometry'
 import {
+  BAND_DEPTH,
   BAR_BAND,
   MAX_SHAPES,
   TAB_DEPTH,
   TAB_LENGTH,
   buildFrame,
+  getBandRect,
   getBeforeAfterSides,
   getEndBar,
   getFade,
   getFieldEndSide,
   getFlowSides,
-  getInsertionLineDistance,
-  getInsertionLineRect,
   getNeighbourSide,
   getRevealedFields,
   getTabOffset,
@@ -283,33 +283,37 @@ describe('getTabRect', () => {
   })
 })
 
-describe('getInsertionLineRect', () => {
+describe('getBandRect', () => {
   const block = rect(0, 100, 200, 50)
 
-  test('sits past the tab, at the same distance on every side', () => {
-    const distance = getInsertionLineDistance(1)
+  test('runs along the whole edge, behind the tab and within its reach', () => {
     const tab = getTabRect(block, 'bottom', 1, 1, viewport)
-    const bottom = getInsertionLineRect(block, 'bottom', 1)
-    expect(bottom.y + bottom.height / 2).toBe(150 + distance)
-    // It touches neither the tab nor the selection outline.
-    expect(bottom.y + bottom.height / 2).toBeGreaterThan(tab.y + tab.height)
-    const top = getInsertionLineRect(block, 'top', 1)
-    expect(top.y + top.height / 2).toBe(100 - distance)
-  })
+    const bottom = getBandRect(block, 'bottom', 1)
+    expect(bottom).toEqual(rect(0, tab.y, 200, BAND_DEPTH))
+    expect(BAND_DEPTH).toBeLessThan(TAB_DEPTH)
 
-  test('spans the edge, with the dots at its ends', () => {
-    const line = getInsertionLineRect(block, 'bottom', 1)
-    expect(line.x).toBeLessThan(block.x)
-    expect(line.width).toBeGreaterThan(block.width)
+    const top = getBandRect(block, 'top', 1)
+    const topTab = getTabRect(block, 'top', 1, 1, viewport)
+    expect(top.y + top.height).toBe(topTab.y + topTab.height)
+    expect(top.height).toBe(BAND_DEPTH)
   })
 
   test('runs vertically for left and right', () => {
     const side = rect(300, 0, 200, 100)
-    const left = getInsertionLineRect(side, 'left', 1)
-    expect(left.x + left.width / 2).toBe(300 - getInsertionLineDistance(1))
-    expect(left.height).toBeGreaterThan(side.height)
-    const right = getInsertionLineRect(side, 'right', 1)
-    expect(right.x + right.width / 2).toBe(500 + getInsertionLineDistance(1))
+    const left = getBandRect(side, 'left', 1)
+    const leftTab = getTabRect(side, 'left', 1, 1, viewport)
+    expect(left).toEqual(
+      rect(leftTab.x + leftTab.width - BAND_DEPTH, 0, BAND_DEPTH, 100),
+    )
+    const right = getBandRect(side, 'right', 1)
+    const rightTab = getTabRect(side, 'right', 1, 1, viewport)
+    expect(right).toEqual(rect(rightTab.x, 0, BAND_DEPTH, 100))
+  })
+
+  test('shares the whole pixel of the tab', () => {
+    const odd = rect(10.4, 100.6, 200, 50.3)
+    const tab = getTabRect(odd, 'bottom', 0.8, 1, viewport)
+    expect(getBandRect(odd, 'bottom', 0.8).y).toBe(tab.y)
   })
 })
 
@@ -512,19 +516,19 @@ describe('buildFrame', () => {
     ])
   })
 
-  test('reveals all filled fields on touch, without tooltip or tag', () => {
+  test('reveals all filled fields on touch, without tooltip or outline', () => {
     const frame = buildFrame({
       ...base,
       isTouch: true,
       pointer: { x: 550, y: 250 },
     })
     expect(frame.shapes.filter((s) => s.type === 'bar')).toHaveLength(1)
+    expect(frame.shapes.some((s) => s.type === 'outline')).toBe(false)
     expect(frame.tooltip).toBeNull()
-    expect(frame.tag).toBeNull()
     expect(frame.hoveredId).toBeNull()
   })
 
-  test('orders tabs, insertion line, knobs, bars, outline and areas', () => {
+  test('orders tabs, the band behind them, knobs, bars, outline and areas', () => {
     const frame = buildFrame({
       ...base,
       activeId: 'after',
@@ -533,7 +537,7 @@ describe('buildFrame', () => {
     expect(frame.shapes.map((s) => s.type)).toEqual([
       'tab',
       'tab',
-      'line',
+      'band',
       'knob',
       'knob',
       'bar',
@@ -564,7 +568,7 @@ describe('buildFrame', () => {
     expect(frame.hoveredId).toBe('after')
     expect(frame.pointerId).toBe('after')
     expect(frame.tooltip).toMatchObject({ targetId: 'after', side: 'top' })
-    expect(frame.shapes.some((s) => s.type === 'line')).toBe(true)
+    expect(frame.shapes.some((s) => s.type === 'band')).toBe(true)
   })
 
   test('draws nothing when zoomed out to 0.4 or during the scale-in start', () => {
@@ -594,21 +598,15 @@ describe('buildFrame', () => {
     ).toEqual([])
   })
 
-  test('tags the field under the pointer at its start corner', () => {
-    expect(buildFrame({ ...base, pointer: { x: 550, y: 250 } }).tag).toEqual({
+  test('outlines the field under the pointer', () => {
+    const frame = buildFrame({ ...base, pointer: { x: 550, y: 250 } })
+    expect(frame.shapes.find((s) => s.type === 'outline')).toMatchObject({
       targetId: 'field:filled',
-      anchor: { x: 404, y: 104 },
-      alignEnd: false,
+      rect: filledField.rect,
     })
-    const rtl = buildFrame({
-      ...base,
-      pointer: { x: 550, y: 250 },
-      fields: [{ ...filledField, flow: flow({ rtl: true }) }],
-    })
-    expect(rtl.tag).toEqual({
-      targetId: 'field:filled',
-      anchor: { x: 696, y: 104 },
-      alignEnd: true,
-    })
+    // The field of an open selector shows its bar, but isn't outlined.
+    expect(
+      types({ ...base, activeId: 'field:filled' }).includes('outline'),
+    ).toBe(false)
   })
 })
