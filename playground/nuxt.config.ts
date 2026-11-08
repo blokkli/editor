@@ -92,7 +92,6 @@ export default defineNuxtConfig({
     shim: true,
     strict: true,
     tsConfig: {
-      include: ['../blokkli/features/**/*'],
       compilerOptions: {
         noUncheckedIndexedAccess: true,
       },
