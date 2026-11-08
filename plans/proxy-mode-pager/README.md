@@ -74,7 +74,8 @@ project's `proxy.vue` renders.
   - **Dots, never scrolling:** when the pages don't fit even at 72 × 48, the
     band shows dots instead, one per block. The band never scrolls sideways:
     with 30 blocks, scrolling through thumbnails is no better (the user,
-    2026-11-08). How the dots work is open, below.
+    2026-11-08). How the dots work is open, below. Until then, pages that don't
+    fit are cut off, with no marker (step 1; the user, 2026-11-08).
   - **State:** each page has its index as a pill at the top left: accent on the
     shown page, which is also the only one not dimmed. The selected page gets a
     white outline.
@@ -226,10 +227,11 @@ project's `proxy.vue` renders.
 2. ~~Where the band sits~~: decided, above (a wrapper).
 3. ~~What the editor registers for blocks that aren't shown~~: decided, above
    (the pages, like today's proxies).
-4. **Showing a block on navigation** (deferred by the user, 2026-11-08). The
-   event bus is synchronous: `scrollIntoView` runs inside the `emit` right after
-   `select` (`src/runtime/editor/events/index.ts:368`), before anything
-   re-renders, and does nothing for a block without a rectangle
+4. ~~Showing a block on navigation~~: decided in step 1's plan, A (the user,
+   2026-11-08; `step-1.md`, "Navigation"). Deferred at first. The event bus is
+   synchronous: `scrollIntoView` runs inside the `emit` right after `select`
+   (`src/runtime/editor/events/index.ts:368`), before anything re-renders, and
+   does nothing for a block without a rectangle
    (`src/runtime/editor/features/artboard/Renderer.vue:405-428`). With decision
    3, a hidden child's page is registered, so navigating to it already reaches
    the band. What's missing is anything inside a hidden slide: it has no
