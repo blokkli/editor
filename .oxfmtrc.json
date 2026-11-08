@@ -3,6 +3,7 @@
   "proseWrap": "always",
   "semi": false,
   "singleQuote": true,
+  "quoteProps": "preserve",
   "arrowParens": "always",
   "printWidth": 80,
   "trailingComma": "all",
