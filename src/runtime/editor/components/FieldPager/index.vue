@@ -1,70 +1,78 @@
 <template>
   <div
-    class="bk flex items-center gap-10 px-10 bg-mono-900 border-b border-b-mono-700 text-mono-400 font-sans select-none"
+    class="bk bk-skip-analyze flex items-center gap-10 px-10 bg-mono-900 border-b border-b-mono-700 text-mono-400 font-sans select-none"
+    aria-hidden="true"
     data-test="field-pager"
   >
     <!-- The label of the field, cut off when it's long, and the shown block. -->
     <div class="flex flex-col gap-3 shrink-0 max-w-100">
-      <span
-        class="text-xs font-medium uppercase tracking-wide truncate"
-        :title="label"
-      >
+      <span class="text-xs font-medium uppercase tracking-wide truncate">
         {{ label }}
       </span>
       <span
-        v-if="items.length"
+        v-if="items.length && shownIndex !== null"
         class="text-sm tabular-nums whitespace-nowrap"
         data-test="field-pager-count"
       >
-        <span class="font-semibold text-white">{{ shown + 1 }}</span>
+        <span class="font-semibold text-white">{{ shownIndex + 1 }}</span>
         / {{ items.length }}
       </span>
     </div>
 
-    <!-- Padding, so that the outline of the selected page isn't clipped. -->
-    <div
-      v-if="items.length"
-      ref="list"
-      class="relative flex items-center gap-10 min-w-0 overflow-x-auto py-10 px-5 [scrollbar-width:none]"
-      data-test="field-pager-pages"
-    >
-      <Page
-        v-for="(item, i) in items"
-        :key="item.uuid"
-        v-bind="item"
-        :index="i"
-        :is-shown="i === shown"
-        :is-selected="i === selectedIndex"
-        @select="onSelect(i)"
-      />
-    </div>
-
     <!--
-      As high as the pages: stretched, minus their padding. Without pages, as
-      high as a page.
+      The room next to the label. The list hugs its pages, so that the field's
+      rectangle ends after the last one; without pages, it fills the room and is
+      as high as a page. Padding, so that the outline of the selected page isn't
+      clipped.
     -->
-    <button
-      v-if="addLabel"
-      type="button"
-      class="flex items-center justify-center shrink-0 self-stretch w-40 my-10 border border-dashed border-mono-500 rounded-sm text-mono-300 cursor-pointer hover:border-mono-300 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-mono-400 focus-visible:outline-offset-2"
-      :class="items.length ? '' : 'h-80'"
-      :title="addLabel"
-      :aria-label="addLabel"
-      data-test="field-pager-add"
-      @click="emit('add')"
-    >
-      <Icon name="bk_mdi_add" class="size-24" />
-    </button>
+    <div ref="room" class="flex flex-1 min-w-0">
+      <div
+        ref="list"
+        class="flex items-center gap-10 min-w-0 py-10 px-5"
+        :class="items.length ? '' : 'flex-1 h-100'"
+        data-test="field-pager-pages"
+      >
+        <template v-for="(item, i) in visibleItems" :key="item.uuid">
+          <slot
+            name="page"
+            v-bind="{
+              ...item,
+              index: i,
+              isShown: i === shownIndex,
+              isSelected: i === selectedIndex,
+            }"
+          >
+            <Page
+              v-bind="item"
+              :index="i"
+              :is-shown="i === shownIndex"
+              :is-selected="i === selectedIndex"
+            />
+          </slot>
+        </template>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, useTemplateRef, watch } from '#imports'
-import { Icon } from '#blokkli/editor/components'
+import { computed, ref, useTemplateRef } from '#imports'
+import { onElementResize } from '#blokkli/editor/composables'
 import Page from './Page/index.vue'
-import type { FieldPagerItem } from './types'
+import type { FieldPagerItem, FieldPagerPageProps } from './types'
 
-withDefaults(
+/**
+ * The smallest width of a page, and the gap between pages.
+ */
+const PAGE_MIN_WIDTH = 72
+const PAGE_GAP = 10
+
+/**
+ * The list's padding, left and right.
+ */
+const LIST_PADDING = 10
+
+const props = withDefaults(
   defineProps<{
     /**
      * The label of the field, e.g. "Slides".
@@ -77,63 +85,53 @@ withDefaults(
     items: FieldPagerItem[]
 
     /**
-     * The index of the block that is selected or contains the selection.
+     * The index of the block that the field shows.
      */
-    selectedIndex?: number | null
+    shownIndex?: number | null
 
     /**
-     * The label of the button that adds a block at the end. Without it, there
-     * is no such button.
+     * The index of the block that is selected or holds the selection.
      */
-    addLabel?: string
+    selectedIndex?: number | null
   }>(),
   {
+    shownIndex: null,
     selectedIndex: null,
-    addLabel: '',
   },
 )
 
-/**
- * The index of the block that the field shows.
- */
-const shown = defineModel<number>({ default: 0 })
-
-const emit = defineEmits<{
-  add: []
-  select: [index: number]
+defineSlots<{
+  /**
+   * A page. Without the slot, a plain one.
+   */
+  page?(props: FieldPagerPageProps): unknown
 }>()
 
+const room = useTemplateRef('room')
 const list = useTemplateRef('list')
 
-function onSelect(index: number) {
-  shown.value = index
-  emit('select', index)
-}
+/**
+ * How many pages fit next to the label at their smallest, once measured.
+ */
+const capacity = ref<number | null>(null)
+
+onElementResize(room, ({ width }) => {
+  capacity.value = Math.max(
+    1,
+    Math.floor((width - LIST_PADDING + PAGE_GAP) / (PAGE_MIN_WIDTH + PAGE_GAP)),
+  )
+})
 
 /**
- * Scrolls the pages, when they overflow, so that the shown one is in view,
- * with the padding of the list around it for the outline.
+ * The pages that fit. The others are cut off: they aren't rendered, so that
+ * no block's element lies outside the band, where the editor would still find
+ * it under the pointer.
  */
-function revealShown(behavior: ScrollBehavior) {
-  const el = list.value
-  const page = el?.children[shown.value]
-  if (!el || !(page instanceof HTMLElement)) {
-    return
-  }
+const visibleItems = computed<FieldPagerItem[]>(() =>
+  capacity.value === null ? [] : props.items.slice(0, capacity.value),
+)
 
-  const padding = parseFloat(getComputedStyle(el).paddingLeft) || 0
-  const left = page.offsetLeft - padding
-  const right = page.offsetLeft + page.offsetWidth + padding - el.clientWidth
-
-  if (el.scrollLeft > left) {
-    el.scrollTo({ left, behavior })
-  } else if (el.scrollLeft < right) {
-    el.scrollTo({ left: right, behavior })
-  }
-}
-
-onMounted(() => revealShown('auto'))
-
-// The parent changes the shown block too, e.g. to one it just added.
-watch(shown, () => revealShown('smooth'), { flush: 'post' })
+// The list is the element of the field, which the editor registers. Like the
+// `blokkliDraggable` that blocks expose for their own registration.
+defineExpose({ list })
 </script>

@@ -32,7 +32,6 @@ import { itemEntityType } from '#blokkli-build/config'
 import {
   defineItemDropdownAction,
   onBlokkliEvent,
-  useStateBasedCache,
 } from '#blokkli/editor/composables'
 import type { Rectangle } from '#blokkli/editor/types/geometry'
 import type { RenderedFieldListItem } from '#blokkli/editor/types/field'
@@ -60,7 +59,6 @@ const {
   types,
   state,
   blocks,
-  element,
   permissions,
 } = useBlokkli()
 
@@ -68,14 +66,21 @@ const originatesFromTextInput = (e: Event): boolean =>
   e.target instanceof HTMLInputElement ||
   e.target instanceof HTMLTextAreaElement
 
-const getSelectionOrder = useStateBasedCache(() =>
-  element.queryAll(
-    ui.providerElement,
-    '.bk-field-list-item',
-    'getSelectionOrder',
-    (el) => el.dataset.bkUuid,
-  ),
-)
+// The order of the blocks for Tab. It changes with the state, and when blocks
+// render or go, e.g. when a field in proxy mode shows another block.
+let selectionOrder: { settleKey: number; uuids: string[] } | null = null
+
+onBlokkliEvent('state:reloaded', () => {
+  selectionOrder = null
+})
+
+function getSelectionOrder(): string[] {
+  const settleKey = dom.settleKey.value
+  if (!selectionOrder || selectionOrder.settleKey !== settleKey) {
+    selectionOrder = { settleKey, uuids: dom.getBlockOrder() }
+  }
+  return selectionOrder.uuids
+}
 
 const selectedBundle = computed<string | null>(() => {
   if (selection.bundles.value.length === 1) {
@@ -200,7 +205,12 @@ const getSelectAllUuids = (
  * Determine which blocks to select when the user is clicking on a block with the shift key.
  */
 const visuallySelectBlocks = (toggleUuid: string): string[] | undefined => {
-  const rects = dom.getBlockRects()
+  // Where each block is among its siblings: the block that a field in proxy
+  // mode shows is where its page is in the band.
+  const rects: Record<string, Rectangle | undefined> = {}
+  for (const uuid of Object.keys(dom.getBlockRects())) {
+    rects[uuid] = dom.getRectInField(uuid)
+  }
   const allUuids = Object.keys(rects)
   const selected = selection.uuids.value
   // Nothing selected yet, so we select the new block.

@@ -32,6 +32,26 @@ Angaben hochgeladen. Jetzt öffnet sich dafür der Dialog «Dateien hinzufügen�
   nicht hochgeladen werden konnte, entfernen Sie aus dem Dialog und fügen die
   übrigen trotzdem hinzu.
 
+#### Slider
+
+Blöcke, die jeweils einen Block zeigen, z. B. ein Slider, bearbeiten Sie jetzt
+direkt auf der Seite:
+
+- Eine dunkle Leiste über dem Slider zeigt seine Blöcke als kleine Seiten, mit
+  ihrer Nummer und ihrem Typ. Links steht, welcher gezeigt wird, z. B. «2 / 6».
+- Unter der Leiste zeigt der Slider einen seiner Blöcke, den Sie wie jeden
+  anderen Block bearbeiten: seine Texte, seine Optionen und die Blöcke darin.
+- Klicken Sie auf eine Seite, um ihren Block zu zeigen. Auch ein Block, den Sie
+  anderswo auswählen, z. B. in «Struktur», in der Suche oder in einem Kommentar,
+  wird gezeigt.
+- Blöcke fügen Sie mit den Buttons auf beiden Seiten des gezeigten Blocks hinzu
+  oder, solange der Slider ausgewählt ist, am Ende der Seiten. Ziehen Sie
+  Seiten, um ihre Reihenfolge zu ändern, oder ziehen Sie Blöcke auf die Leiste.
+- Haben nicht alle Seiten Platz, werden die letzten abgeschnitten.
+
+Dies ersetzt die Liste, die bisher über solchen Blöcken erschien, solange etwas
+ausgewählt war.
+
 ### Verbesserungen
 
 - Lehnt die Website eine Änderung ab, nennt der Editor den Grund, z. B. dass ein

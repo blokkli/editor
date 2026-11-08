@@ -127,16 +127,9 @@ export const INJECT_FIELD_LIST_BLOCKS = Symbol(
 ) as InjectionKey<ComputedRef<FieldListItemTyped[]>>
 
 /**
- * Whether the parent field is rendering in proxy mode.
- */
-export const INJECT_FIELD_PROXY_MODE = Symbol(
-  'blokkli_field_proxy_mode',
-) as InjectionKey<boolean>
-
-/**
- * Whether the parent field is rendering in proxy mode.
- *
- * @todo: This is probably the ssame as INJECT_FIELD_PROXY_MODE.
+ * Whether the block renders in the slot of a field in proxy mode: on the site,
+ * in the preview, or in a field the editor can't edit. The block isn't
+ * registered in the editor.
  */
 export const INJECT_FIELD_USES_PROXY = Symbol(
   'blokkli_field_uses_proxy',

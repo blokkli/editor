@@ -420,20 +420,32 @@ field.
 ## 8. Proxy mode
 
 For a container whose rendering hides its children, such as a slider that shows
-one image at a time. The editor then shows the children in a list of their own
-while the container is selected, where they can be dragged and edited.
+one image at a time. While editing, the field renders as a pager: a band of
+pages, one per child, and below it the child the field shows, as a real block
+that editors edit like any other. Clicking a page shows its child.
 
-- `<BlokkliField proxy-mode v-slot="{ items }">` inside an element with
+- `<BlokkliField proxy-mode v-slot="{ items }">`. It needs no wrapper with
   `position: relative`.
-- Each child type can have a `proxy.vue` next to its `index.vue`, rendered in
-  that list:
+- **The slot only renders on the site and in the preview.** Render the children
+  there however the design needs: directly from `items`, or with
+  `<BlokkliItem>`. Pass it `parent-type` if a child adapts to its parent. While
+  editing, the editor renders the shown child itself.
+- **Classes:**
+  - `class` goes on the element that holds the band and the shown child: the
+    field's place in its parent, such as a grid cell.
+  - `tag`, `list-class` and `edit-class` go on the list that holds the shown
+    child.
+  - The shown child gets its `parentType`, so it can adapt with `renderFor` or
+    `edit-class`.
+- **`proxy.vue`:** a child type can have one next to its `index.vue`. It only
+  renders in the editor's Structure view; the pager's pages show the type's icon
+  and name.
   - It gets the same props.
   - It doesn't call `defineBlokkli`.
   - It may use `v-blokkli-droppable` and `v-blokkli-editable`.
-- **Render the visible content directly from `items`,** not with
-  `<BlokkliItem>`. `items` is the live list while editing. Items rendered with
-  `<BlokkliItem>` lose their parent type, and their directives clash with those
-  in `proxy.vue`.
+- **A scene loses its composition while editing.** A design that composes the
+  children (their titles as tabs, the current child's text beside them) shows
+  one child at a time below the band.
 - To switch between proxy mode and a normal list with an option, use two
   `BlokkliField`s with `v-if`/`v-else`: `proxy-mode` is read once.
 - Proxy mode only exists for paragraphs fields. A single paragraph with a

@@ -1,0 +1,93 @@
+# Two galleries as sliders, at /en/pager. While editing, a field in proxy mode
+# renders as a pager (features/pager): a band of pages and the image it shows.
+# The second gallery has more images than fit in its band.
+key: pager
+type: page
+title: Pager
+field_paragraphs:
+  - type: text
+    key: pager-intro
+    field_text: '<p>Before the galleries.</p>'
+  - type: gallery
+    key: pager-gallery
+    options: { display: slider }
+    field_paragraphs:
+      - type: image
+        key: pager-image-1
+        field_media: { media: lake }
+      - type: image
+        key: pager-image-2
+        field_media: { media: hills }
+      - type: image
+        key: pager-image-3
+        field_media: { media: lake }
+  - type: text
+    key: pager-between
+    field_text: '<p>Between the galleries.</p>'
+  - type: gallery
+    key: pager-long-gallery
+    options: { display: slider }
+    field_paragraphs:
+      - type: image
+        key: pager-long-1
+        field_media: { media: lake }
+      - type: image
+        key: pager-long-2
+        field_media: { media: hills }
+      - type: image
+        key: pager-long-3
+        field_media: { media: lake }
+      - type: image
+        key: pager-long-4
+        field_media: { media: hills }
+      - type: image
+        key: pager-long-5
+        field_media: { media: lake }
+      - type: image
+        key: pager-long-6
+        field_media: { media: hills }
+      - type: image
+        key: pager-long-7
+        field_media: { media: lake }
+      - type: image
+        key: pager-long-8
+        field_media: { media: hills }
+      - type: image
+        key: pager-long-9
+        field_media: { media: lake }
+      - type: image
+        key: pager-long-10
+        field_media: { media: hills }
+      - type: image
+        key: pager-long-11
+        field_media: { media: lake }
+      - type: image
+        key: pager-long-12
+        field_media: { media: hills }
+      - type: image
+        key: pager-long-13
+        field_media: { media: lake }
+      - type: image
+        key: pager-long-14
+        field_media: { media: hills }
+      - type: image
+        key: pager-long-15
+        field_media: { media: lake }
+      - type: image
+        key: pager-long-16
+        field_media: { media: hills }
+      - type: image
+        key: pager-long-17
+        field_media: { media: lake }
+      - type: image
+        key: pager-long-18
+        field_media: { media: hills }
+      - type: image
+        key: pager-long-19
+        field_media: { media: lake }
+      - type: image
+        key: pager-long-20
+        field_media: { media: hills }
+  - type: text
+    key: pager-outro
+    field_text: '<p>After the galleries.</p>'

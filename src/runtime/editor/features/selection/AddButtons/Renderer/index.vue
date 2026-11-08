@@ -252,11 +252,18 @@ function getFrame(ctx: RenderContext): Frame | null {
     }
     const sibling = targets.list.find((target) => target.kind === 'before')
     if (sibling) {
+      // The pages above the block that a field in proxy mode shows aren't its
+      // neighbours: the sides come from the band's flow, left and right.
+      const isPager = sibling.field.isPager
       const index = targets.siblingUuids.indexOf(targets.uuid)
       siblings = {
         block: toScreen(block, scale, offset),
-        prev: screen(findRenderedSibling(targets.siblingUuids, index, -1)),
-        next: screen(findRenderedSibling(targets.siblingUuids, index, 1)),
+        prev: isPager
+          ? null
+          : screen(findRenderedSibling(targets.siblingUuids, index, -1)),
+        next: isPager
+          ? null
+          : screen(findRenderedSibling(targets.siblingUuids, index, 1)),
         flow: sibling.flow,
       }
     }
@@ -271,9 +278,12 @@ function getFrame(ctx: RenderContext): Frame | null {
     if (!rect) {
       continue
     }
-    const [last, secondLast] = target.isEmpty
-      ? [null, null]
-      : findLastRendered(target.childUuids)
+    // A field in proxy mode ends after its last page, as the band's flow does:
+    // its last blocks may be the one it shows, below the band.
+    const [last, secondLast] =
+      target.isEmpty || target.field.isPager
+        ? [null, null]
+        : findLastRendered(target.childUuids)
     fields.push({
       id: target.id,
       rect: toScreen(rect, scale, offset),

@@ -427,7 +427,9 @@ onMounted(() => {
   const elRects = props.items
     .map((item, index) => {
       const element =
-        item.itemType === 'existing' ? dom.getDragElement(item) : item.element()
+        item.itemType === 'existing'
+          ? dom.getDragImageElement(item)
+          : item.element()
       if (!element) {
         return
       }
@@ -490,7 +492,7 @@ onMounted(() => {
       const rect = item.rect
       const element =
         item.item.itemType === 'existing'
-          ? dom.getDragElement(item.item)
+          ? dom.getDragImageElement(item.item)
           : item.item.element()
       if (!element) {
         return

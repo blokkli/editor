@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="bk-styleguide-slide"
-    :class="['bk-is-' + bundle, { 'bk-is-thumbnail': isThumbnail }]"
-  >
+  <div class="bk-styleguide-slide" :class="'bk-is-' + bundle">
     <template v-if="bundle === 'title'">
       <span class="bk-styleguide-slide-kicker">{{ text }}</span>
       <h2>{{ title }}</h2>
@@ -17,7 +14,7 @@
         class="bk-styleguide-slide-picture"
         :class="`bk-is-tone-${(tone ?? 0) % 4}`"
       />
-      <figcaption v-if="!isThumbnail">{{ title }}</figcaption>
+      <figcaption>{{ title }}</figcaption>
     </figure>
   </div>
 </template>
@@ -25,15 +22,7 @@
 <script setup lang="ts">
 import type { DemoSlide } from '../types'
 
-defineProps<
-  DemoSlide & {
-    /**
-     * Rendered as the thumbnail of a page: filling its frame, without the
-     * caption.
-     */
-    isThumbnail?: boolean
-  }
->()
+defineProps<DemoSlide>()
 </script>
 
 <style lang="postcss">
@@ -77,18 +66,8 @@ defineProps<
     background: var(--color-surface, #f5f2ee);
   }
 
-  /* A thumbnail fills its frame, at the aspect ratio of a page. */
-  &.bk-is-thumbnail {
-    height: 100%;
-  }
-
   &.bk-is-image {
     min-height: 0;
-
-    &.bk-is-thumbnail figure,
-    &.bk-is-thumbnail .bk-styleguide-slide-picture {
-      height: 100%;
-    }
 
     figure {
       margin: 0;

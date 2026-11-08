@@ -150,8 +150,9 @@ project's `proxy.vue` renders.
     - For blocks that aren't shown, search and the agent read the page's text
       (the type's name, later the real component's), and comment markers and
       highlights sit on the page.
-    - Nothing claims a click on the shown page: it selects the block holding the
-      field (decision 7).
+    - The shown page has no element of its own block. Step 1 registers it as a
+      stand-in that the hit tests count as the block (`step-1.md`, "The shown
+      page"): at first it selected and dragged the block holding the field.
 - **`proxy-mode` becomes the pager** (decision 6). It's the same prop: while
   editing, it renders the band and the shown block instead of the slot and the
   floating strip. It's a breaking change, but for the better (the user,
@@ -295,10 +296,9 @@ project's `proxy.vue` renders.
       after which its editable opens
       (`src/runtime/editor/features/dragging-overlay/index.vue:256-322`). To
       verify while building it.
-  - **Known limit: clicking the shown page selects the block holding the
-    field.** The page isn't registered (the real block below is), and without a
-    band renderer nothing claims the click. The follow-up's renderer would fix
-    it.
+  - **Clicking the shown page** selected the block holding the field at first:
+    the page isn't the block's element. Solved in step 1 with a stand-in, not a
+    band renderer (`step-1.md`, "The shown page").
 - **The responsive preview:** showing the selected block there too would need
   the shown index on the site.
 - **The dots** (deferred by the user, 2026-11-08; to try in the styleguide):

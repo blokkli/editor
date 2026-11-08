@@ -131,6 +131,26 @@ available within the editor. In the build, this first compiles to
 Note that this only works for components that call `defineBlokkli` or
 `defineBlokkliFragment`! In any other code this will ALWAYS resolve to `false`!
 
+## Fields in proxy mode
+
+A `<BlokkliField proxy-mode>` now renders as a pager while editing: a band of
+pages, one per child, and below it the child the field shows, as a real block.
+Its slot only renders on the site and in the preview.
+
+- Remove the wrapper with `position: relative` that the old proxy list needed.
+  It does no harm.
+- Code in the slot's components that only ran while editing (such as disabling a
+  slider's buttons) no longer runs: remove it.
+- `<BlokkliItem>` in the slot is fine now. Its directives no longer clash with
+  the editor's list.
+- A `proxy.vue` only renders in the editor's Structure view now. Keep it there.
+- `class` goes on the element that holds the band and the shown child. `tag`,
+  `list-class` and `edit-class` go on the list that holds the shown child. In
+  proxy mode, they did nothing before.
+- A slot that composes the children into a scene (titles as tabs, the current
+  child's text beside them) loses that composition while editing. Tell the
+  project: the editor shows one child at a time.
+
 ## Done when
 
 - Every component in the progress file is checked off

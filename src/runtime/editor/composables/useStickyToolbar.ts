@@ -54,6 +54,28 @@ export function useStickyToolbar(
   const actualPlacementX = ref<'left' | 'center' | 'right'>('center')
   const caretXPosition = ref<number>(0)
 
+  /**
+   * The rectangle of a selected block that the toolbar keeps clear of: the
+   * block and its place in its field. The block that a field in proxy mode
+   * shows renders below the band, and its page in the band would be covered.
+   */
+  function getSelectedBlockRect(uuid: string): Rectangle | undefined {
+    const rect = dom.getBlockRect(uuid)
+    const inField = dom.getRectInField(uuid)
+    if (!rect || !inField || inField === rect) {
+      return rect ?? inField
+    }
+
+    const x = Math.min(rect.x, inField.x)
+    const y = Math.min(rect.y, inField.y)
+    return {
+      x,
+      y,
+      width: Math.max(rect.x + rect.width, inField.x + inField.width) - x,
+      height: Math.max(rect.y + rect.height, inField.y + inField.height) - y,
+    }
+  }
+
   function getMargin(): number {
     if (options && options.getMargin) {
       return options.getMargin()
@@ -128,7 +150,7 @@ export function useStickyToolbar(
     } else {
       // Use selected blocks.
       const rects = selection.uuids.value
-        .map((uuid) => dom.getBlockRect(uuid))
+        .map(getSelectedBlockRect)
         .filter(falsy)
         .filter((rect) => rect.height || rect.width)
 

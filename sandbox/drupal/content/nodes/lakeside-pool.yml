@@ -1,6 +1,8 @@
 # The landing page: visitors start here in the editor. Mistakes on purpose, for
-# the analyzers: the admission table has no header row, the gallery's last
-# image has no alt text, and the kiosk's text is English in French.
+# the analyzers: the admission table has no header row, the gallery's first
+# image has no alt text, and the kiosk's text is English in French. The image
+# stays first: while editing, the slider shows one image, the first at the
+# start, and Analyze only finds what is rendered.
 key: lakeside-pool
 type: editorial
 title: { en: Lakeside pool, de: Strandbad, fr: Plage }
@@ -41,6 +43,12 @@ field_paragraphs:
     options: { display: slider, width: wide }
     field_paragraphs:
       - type: image
+        field_media: { media: jetty-view }
+        field_caption:
+          en: The old town seen from the jetty
+          de: Blick vom Steg auf die Altstadt
+          fr: La vieille ville vue depuis le ponton
+      - type: image
         field_media: { media: lakeside-pool }
         field_caption:
           en: The swimming pool and the jetty into the lake
@@ -52,12 +60,6 @@ field_paragraphs:
           en: The new children's area with its water playground
           de: Der neue Kinderbereich mit Wasserspielplatz
           fr: Le nouvel espace pour les enfants et son aire de jeux d'eau
-      - type: image
-        field_media: { media: jetty-view }
-        field_caption:
-          en: The old town seen from the jetty
-          de: Blick vom Steg auf die Altstadt
-          fr: La vieille ville vue depuis le ponton
   - type: section
     options: { columns: 3 }
     field_title: { en: What to expect, de: Was Sie erwartet, fr: Ce qui vous attend }

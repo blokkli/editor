@@ -9,20 +9,21 @@
     </p>
     <div>
       <FieldPager
-        v-model="shown"
         :label
         :items
+        :shown-index="current ? shown : null"
         :selected-index="selected"
-        :add-label
-        @select="selected = $event"
-        @add="add"
-      />
+      >
+        <template #page="page">
+          <Page
+            v-bind="page"
+            class="cursor-pointer"
+            @click="show(page.index)"
+          />
+        </template>
+      </FieldPager>
       <div class="relative" @click="selected = current ? shown : null">
         <Slide v-if="current" :key="current.uuid" v-bind="current" />
-        <div
-          v-else
-          class="h-[48px] outline-dashed outline-1 outline-accent-400/40 -outline-offset-1"
-        />
         <div
           v-if="current && selected === shown"
           class="absolute inset-0 border-2 border-accent-600 pointer-events-none"
@@ -38,6 +39,7 @@
 <script setup lang="ts">
 import { computed, ref } from '#imports'
 import FieldPager from '#blokkli/editor/components/FieldPager/index.vue'
+import Page from '#blokkli/editor/components/FieldPager/Page/index.vue'
 import type { FieldPagerItem } from '#blokkli/editor/components/FieldPager/types'
 import Slide from '../Slide/index.vue'
 import type { DemoSlide } from '../types'
@@ -56,65 +58,35 @@ const props = withDefaults(
      * Whether the container can be resized, at its bottom right corner.
      */
     resizable?: boolean
-    addLabel?: string
-    /**
-     * Which types have a thumbnail.vue: all, none, or only teasers and images.
-     */
-    thumbnails?: 'all' | 'none' | 'some'
   }>(),
   {
     initial: 0,
     selected: false,
     width: undefined,
     resizable: false,
-    addLabel: 'Add a slide',
-    thumbnails: 'all',
   },
 )
 
-const slides = ref<DemoSlide[]>([...props.slides])
 const shown = ref(props.initial)
 
 /**
- * The index of the selected block. Clicking a block in the band shows and
- * selects it, clicking the slide selects the shown block, clicking the text
- * around clears the selection.
+ * The index of the selected block. Clicking a page shows and selects its block
+ * (in the editor, the canvas does that), clicking the slide selects the shown
+ * block, clicking the text around clears the selection.
  */
 const selected = ref<number | null>(
   props.selected && props.slides.length ? props.initial : null,
 )
 
-const current = computed(() => slides.value[shown.value])
+const current = computed(() => props.slides[shown.value])
 
-function hasThumbnail(slide: DemoSlide): boolean {
-  return (
-    props.thumbnails === 'all' ||
-    (props.thumbnails === 'some' && slide.bundle !== 'title')
-  )
-}
-
-// The thumbnail of a type is what the site renders for it, here the mock.
 const items = computed<FieldPagerItem[]>(() =>
-  slides.value.map((slide) => ({
-    uuid: slide.uuid,
-    bundle: slide.bundle,
-    thumbnail: hasThumbnail(slide) ? Slide : undefined,
-    thumbnailProps: { ...slide, isThumbnail: true },
-  })),
+  props.slides.map((slide) => ({ uuid: slide.uuid, bundle: slide.bundle })),
 )
 
-let added = 0
-
-function add() {
-  added++
-  slides.value.push({
-    uuid: `added-${added}`,
-    bundle: 'teaser',
-    title: `New teaser ${added}`,
-    text: 'A teaser that was just added at the end.',
-  })
-  shown.value = slides.value.length - 1
-  selected.value = shown.value
+function show(index: number) {
+  shown.value = index
+  selected.value = index
 }
 </script>
 

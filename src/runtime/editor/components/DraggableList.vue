@@ -1,14 +1,12 @@
 <template>
+  <!-- The Structure view: every block as a proxy. -->
   <div
-    v-if="proxyMode || globalProxyMode"
+    v-if="globalProxyMode"
     class="bk bk-field-list-proxy"
-    :class="[
-      {
-        'bk-is-visible': proxyVisible,
-      },
+    :class="
       'bk-is-' +
-        (dropAlignment || (nestingLevel === 0 ? 'vertical' : 'horizontal')),
-    ]"
+      (dropAlignment || (nestingLevel === 0 ? 'vertical' : 'horizontal'))
+    "
   >
     <div
       ref="root"
@@ -33,6 +31,18 @@
       />
     </div>
   </div>
+  <PagerList
+    v-else-if="proxyMode"
+    :class="attrs.class"
+    :name
+    :field-key
+    :list
+    :entity
+    :tag
+    :field-data="data"
+    :list-class
+    :is-muted
+  />
   <Component
     :is="tag"
     v-else
@@ -76,18 +86,17 @@ import type { FieldListItem, EntityContext } from '#blokkli/types'
 import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 import BlokkliItem from './../../components/BlokkliItem.vue?blokkliEditing=true'
 import { isVisibleByOptions } from '#blokkli/helpers/runtimeHelpers'
-import {
-  INJECT_FIELD_PROXY_MODE,
-  INJECT_IS_EDITING,
-} from '#blokkli/helpers/injections'
+import { INJECT_IS_EDITING } from '#blokkli/helpers/injections'
 import type {
   FieldListItemTyped,
   ValidFieldListTypes,
 } from '#blokkli-build/generated-types'
 import type { FieldDropAlignment } from '#blokkli/types/field'
+import type { VueClassProp } from '#blokkli/types/vue'
 import type { RegisterFieldData } from '../types/field'
+import PagerList from './PagerList/index.vue'
 
-const { dom, selection } = useBlokkli()
+const { dom } = useBlokkli()
 
 const root = useTemplateRef('root')
 
@@ -107,6 +116,7 @@ const props = withDefaults(
     proxyMode?: boolean
     globalProxyMode?: boolean
     nestingLevel: number
+    listClass?: VueClassProp
     shouldRenderItem?: (item: FieldListItem | FieldListItemTyped) => boolean
   }>(),
   {
@@ -118,22 +128,13 @@ const props = withDefaults(
     dropAlignment: undefined,
     language: undefined,
     shouldRenderItem: undefined,
+    listClass: '',
   },
 )
 
 const attrs = useAttrs()
 
-provide(INJECT_FIELD_PROXY_MODE, props.proxyMode)
 provide(INJECT_IS_EDITING, true)
-
-const proxyVisible = computed(
-  () =>
-    props.proxyMode &&
-    (selection.uuids.value.length ||
-      selection.isDragging.value ||
-      selection.isMultiSelecting.value ||
-      selection.hasHostSelected.value),
-)
 
 // @TODO: This should be handled differently to prevent constant updates in the
 // component when the options change.
@@ -168,6 +169,7 @@ const data = computed<RegisterFieldData>(() => {
     nestingLevel: props.nestingLevel,
     dropAlignment: props.dropAlignment ?? null,
     zIndex: Number.isNaN(zIndex) ? 0 : zIndex,
+    isPager: false,
   }
 })
 
@@ -235,24 +237,10 @@ if (import.meta.hot) {
 }
 
 .bk.bk-field-list-proxy {
-  @apply z-dialog w-full min-h-40 p-20 absolute;
-  @apply w-full left-0 top-0;
+  @apply min-h-40 p-20 mx-10 max-w-full min-w-0 pointer-events-auto;
 
-  @apply transition-opacity duration-100;
-
-  @apply opacity-0 pointer-events-none;
-
-  html.bk-is-proxy-mode & {
-    @apply opacity-100 pointer-events-auto static;
-    @apply mx-10 max-w-full min-w-0 w-auto;
-
-    .bk-block-proxy {
-      @apply min-w-[200px];
-    }
-  }
-
-  &.bk-is-visible {
-    @apply opacity-100 pointer-events-auto;
+  .bk-block-proxy {
+    @apply min-w-[200px];
   }
 
   &.bk-is-horizontal {

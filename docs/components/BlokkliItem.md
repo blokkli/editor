@@ -101,9 +101,10 @@ item.
 
 ### Rendering a Field Manually
 
-When a field is in proxy mode, you are responsible for rendering its nested
-blocks yourself. The `items` slot prop provides the (filtered) block items,
-which you can pass straight to `BlokkliItem` using `v-bind`:
+When a field is in proxy mode, its slot renders the nested blocks on the site
+and in the preview, and you are responsible for rendering them yourself. The
+`items` slot prop provides the (filtered) block items, which you can pass
+straight to `BlokkliItem` using `v-bind`:
 
 ```vue
 <template>

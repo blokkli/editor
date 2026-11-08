@@ -70,67 +70,35 @@ export default defineEditorSnippet({
   label: 'Field pager',
   category: 'Proxy mode',
   description:
-    "A field in proxy mode shows one block at a time, like a slider or a story. The editor picks which one: a dark band above the field shows its blocks as light pages, each with its index, and clicking a page shows the block and selects it. On the left, the label of the field and which block it shows. A page renders the thumbnail of the block's type, a `thumbnail.vue` next to its component that would replace `proxy.vue`: rendered at 1200 × 800 and scaled down to the page. Without one, the page shows the type. A page is 120 × 80, which is 3:2 like the pictures in the help of the add list. When the pages don't fit, they get smaller, down to 72 × 48, and from there they scroll sideways. The band is editor-only and sits in the page flow, so it never covers the content. Below it, a mock of what the site renders.",
+    "A field in proxy mode shows one block at a time, like a slider or a story. While editing, a dark band above the field shows its blocks as light pages, each with its index and the icon and name of its type, and the block it shows renders below as a real block. In the editor, clicking a page selects its block, which shows it; here, the click stands in for that. On the left, the label of the field and which block it shows. A page is 120 × 80, which is 3:2 like the pictures in the help of the add list. When the pages don't fit, they get smaller, down to 72 × 48; the ones that still don't fit are cut off until there are dots. The band never scrolls and has no add button: the field's end bar and the shown block's tabs add. Below it, a mock of the shown block.",
   variants: [
     {
-      label: 'Thumbnails',
+      label: 'Pages',
       description:
-        'Every type has a thumbnail, here what the site renders. The selected page gets a white outline, the shown one an accent index. Click the text above or below to clear the selection, or the slide to select it. Six pages are a bit too wide for this container, so they are smaller.',
+        'The selected page gets a white outline, the shown one an accent index. Click the text above or below to clear the selection, or the slide to select it. Six pages are a bit too wide for this container, so they are smaller.',
       render: () =>
         h(Demo, { label: 'Slides', slides: story, initial: 1, selected: true }),
     },
     {
-      label: 'Without thumbnails',
-      description: 'The fallback: the page shows the type of the block.',
-      render: () =>
-        h(Demo, {
-          label: 'Slides',
-          slides: story,
-          initial: 1,
-          selected: true,
-          thumbnails: 'none',
-        }),
-    },
-    {
-      label: 'Some thumbnails',
-      description: 'Teasers have a thumbnail, titles fall back to their type.',
-      render: () =>
-        h(Demo, {
-          label: 'Slides',
-          slides: story,
-          initial: 1,
-          selected: true,
-          thumbnails: 'some',
-        }),
-    },
-    {
       label: 'Long field label',
-      description:
-        'The label takes at most 100px and is cut off after that. Hover it to read all of it.',
+      description: 'The label takes at most 100px and is cut off after that.',
       render: () =>
         h(Demo, { label: 'Scrollytelling slides', slides: story, initial: 1 }),
     },
     {
       label: 'Gallery: images only',
-      render: () =>
-        h(Demo, { label: 'Images', slides: gallery, addLabel: 'Add an image' }),
+      render: () => h(Demo, { label: 'Images', slides: gallery }),
     },
     {
       label: 'Many slides',
       description:
-        "The pages get smaller when they don't fit, down to 72 × 48. From there, they scroll sideways.",
-      render: () =>
-        h(Demo, {
-          label: 'Slides',
-          slides: many,
-          initial: 8,
-          thumbnails: 'some',
-        }),
+        "The pages get smaller when they don't fit, down to 72 × 48. The ones that still don't fit are cut off, with no marker. The shown block can be one of them: then no page is marked, and the count says which one it is.",
+      render: () => h(Demo, { label: 'Slides', slides: many, initial: 12 }),
     },
     {
       label: 'Narrow container',
       description:
-        'A slider in a column or a sidebar, 340px wide. Drag its bottom right corner to resize it: the pages grow back to their full size, or shrink until they scroll.',
+        'A slider in a column or a sidebar, 340px wide. Drag its bottom right corner to resize it: the pages grow back to their full size, or shrink until the last ones are cut off.',
       render: () =>
         h(Demo, {
           label: 'Slides',
@@ -142,7 +110,7 @@ export default defineEditorSnippet({
     {
       label: 'Empty field',
       description:
-        "Only the label, without a count, and the add button. Below, the editor's room for an empty field.",
+        'Only the label, without a count. The empty list fills the band, as high as a page: in the editor, the add buttons draw the dashed area there to add the first block.',
       render: () => h(Demo, { label: 'Slides', slides: [] }),
     },
   ],

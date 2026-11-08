@@ -134,15 +134,15 @@ floating header field overlapping a content field).
 - **Required:** No
 - **Default:** `false`
 
-Enables proxy mode. In this mode, actual block components are not rendered
-during editing. Instead, proxy blocks are rendered in an absolutely positioned
-overlay.
+Renders the field as a pager while editing, for a block that shows one nested
+block at a time, such as a slider. On the site and in the preview, the default
+slot renders the blocks. While editing, the editor renders a band of pages, one
+per block, and below it the block the field shows, as a real block. See
+[Proxy Mode](/define-blokkli/proxy-mode).
 
-This is useful for complex layouts where blocks need to maintain their visual
-position but editing should happen in a separate layer.
-
-**Important:** When using proxy mode, you need a wrapper with
-`position: relative` somewhere in your layout.
+While editing, `class` goes on the element that holds the band and the block;
+`tag`, `listClass`, `editClass` and `nonEmptyClass` go on the list that holds
+the block.
 
 ### shouldRenderItem
 

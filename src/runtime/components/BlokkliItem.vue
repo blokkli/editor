@@ -1,7 +1,7 @@
 <template>
   <Component
     :is="component"
-    v-if="isProxyMode || isGlobalProxyMode"
+    v-if="isGlobalProxyMode"
     :key="'component'"
     :bundle="bundle"
     :uuid="uuid"
@@ -32,7 +32,6 @@ import {
   INJECT_BLOCK_ITEM,
   INJECT_ENTITY_CONTEXT,
   INJECT_FIELD_LIST_TYPE,
-  INJECT_FIELD_PROXY_MODE,
   INJECT_FIELD_USES_PROXY,
   INJECT_GLOBAL_PROXY_MODE,
   INJECT_ITEM_PROPS_OVERRIDE,
@@ -72,7 +71,6 @@ const componentProps = withDefaults(
 
 const isEditingComponent = import.meta.blokkliEditing
 
-const isProxyMode = inject(INJECT_FIELD_PROXY_MODE, false)
 const mutatedItemProps = inject(INJECT_ITEM_PROPS_OVERRIDE, null)
 const allComponentsChunk = inject(INJECT_ALL_COMPONENTS_CHUNK, null)
 const fieldUsesProxy = inject(INJECT_FIELD_USES_PROXY, false)
@@ -95,9 +93,7 @@ const itemProps = computed<Record<string, string>>(() => {
 })
 
 const component =
-  (isProxyMode || isGlobalProxyMode?.value) &&
-  isEditingComponent &&
-  import.meta.client
+  isGlobalProxyMode?.value && isEditingComponent && import.meta.client
     ? defineAsyncComponent(
         () => import('./../editor/components/BlockProxy/index.vue'),
       )

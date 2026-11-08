@@ -135,6 +135,7 @@ import dragdropProvider from '#blokkli/editor/providers/dragdrop'
 import cacheProvider from '#blokkli/editor/providers/cache'
 import workspacesProvider from '#blokkli/editor/providers/workspaces'
 import configProvider from '#blokkli/editor/providers/config'
+import pagerProvider from '#blokkli/editor/providers/pager'
 import { eventBus } from '#blokkli/editor/events'
 import '#blokkli-build/styles.css'
 import getAdapter from '#blokkli-build/edit-adapter'
@@ -258,6 +259,7 @@ const blocks = blocksProvider(state, dom, context)
 const permissionsInstance = await permissionsProvider(adapter, blocks)
 const user = await userProvider(adapter)
 const selection = selectionProvider(blocks, permissionsInstance)
+const pager = pagerProvider(state, selection)
 const keyboard = keyboardProvider(eventBus)
 const animation = animationProvider(
   eventBus,
@@ -433,6 +435,7 @@ const app: BlokkliApp = {
   cache,
   workspaces,
   config,
+  pager,
 }
 
 provide(INJECT_APP, app)

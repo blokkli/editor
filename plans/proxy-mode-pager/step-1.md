@@ -55,8 +55,9 @@ rendering the slot. Planned on 2026-11-08; its decisions are at the end.
     shown block). Its attributes are the same as in `DraggableList`'s normal
     branch (:47-60): `bk-field-list-item`, `data-bk-uuid`, `is-editing`, its
     index in the field, `parent-type`, `data-bk-is-muted`.
-  - It provides `INJECT_IS_EDITING` and `INJECT_FIELD_USES_PROXY: false`, so
-    that the shown block registers (`defineBlokkli.ts:192-197`).
+  - `DraggableList` above it provides `INJECT_IS_EDITING`. `BlokkliField` no
+    longer provides `INJECT_FIELD_USES_PROXY` for a pager, so the shown block
+    registers (`defineBlokkli.ts:192-197`).
   - With an empty field, it renders only the band.
 - **`FieldPager`** (`src/runtime/editor/components/FieldPager/`) becomes the
   band without state. It takes the label, the items, the shown index and the
@@ -237,6 +238,55 @@ the field element) and the real block below the band.
 - **No other change:** a selected page shows its block (it's selected alone),
   and with several selected there are no buttons.
 
+## Where a block is (decided: B, the user, 2026-11-08)
+
+The block that a field in proxy mode shows is in two places: its page in the
+band, and the real block below. Every feature that uses block positions has to
+pick one. Found while testing (the user): pressing the shown page selected and
+dragged the gallery, Shift+Click selected every page, a selection rectangle
+ignored the shown page.
+
+- **The DOM provider answers by question**, and the features ask it instead of
+  knowing about pagers:
+  - **`getPointerAreas()`**: where the pointer finds blocks. Every visible
+    block's element, plus the shown page standing in for its block
+    (`dom.registerStandIn`, `PagerList/ShownPage`). Used by the canvas's hit
+    test (clicks, Ctrl/Shift+Click, drags, the context menu), the hover outline
+    and the selection rectangle.
+  - **`getRectInField(uuid)`**: where a block is among its siblings. The page
+    for the shown block, else its own rectangle. Used by the drop slots,
+    Shift+Click's range and the actions bar (which keeps clear of the block and
+    its place in the field).
+  - **`getDragImageElement()`**: what a dragged block shows. Its page, also when
+    it's grabbed below the band: its drop slots are in the band.
+  - **`getBlockOrder()`**: the order for Tab and the CSV export.
+- **Audit:** all 24 places that use a block's position or element were checked.
+  The ones above compare blocks with each other; the rest ask about one block's
+  own element (outline, highlights, analyze, search, option popups, the agent's
+  text), where the real block is right. No keyboard navigation picks blocks by
+  position.
+- **Still knows about pagers:** the add buttons (the pages above the shown block
+  aren't its neighbours, a property of the field's layout), and the `pager`
+  provider.
+- **No swap mid-drag:** starting a drag selects the dragged blocks, and the
+  pager would show the dragged block below the band while dragging. The `pager`
+  provider doesn't follow the selection while dragging; once the drag ends, the
+  selected block is shown.
+- **Rejected alternatives:**
+  - keeping the per-feature fixes, with only tests;
+  - the page as every block's element (the editing side would get the special
+    cases);
+  - the band as a canvas renderer (it would re-implement selection, dragging and
+    drop slots).
+
+## The actions bar
+
+Found while testing (the user, 2026-11-08): the selected block's actions bar
+sits above the block, which for the shown block is where the band is, so it
+covered the pages. The toolbar's anchor (`useStickyToolbar`) is now the shown
+block together with its band (the field's rectangle), so the bar goes above the
+band.
+
 ## Navigation (decision 1)
 
 - **Facts:** every place that navigates selects first and then emits
@@ -336,11 +386,12 @@ the field element) and the real block below the band.
      is registered again.
   3. Tab goes from the first image to the second (shown), on to the third, and
      from the third to the next block.
-  4. Moving the third page before the first with the pointer sends
-     `pbMoveParagraph` with the right preceding uuid. This tests the drop slots'
-     positions.
-  5. Adding after the shown image (the add buttons' trigger; the gallery only
-     takes images, so it adds directly) shows the new image.
+  4. Dragging the third page before the first with the pointer moves it to the
+     start. This tests the drop slots' positions. The band is centred first:
+     dragging near an edge scrolls the page.
+  5. A copy of the shown image ("Duplicate") is shown, as a block is once it's
+     selected after adding. An image needs a media, so the add button opens
+     Drupal's form, and adding one without a media is refused.
   6. Deleting the shown image shows the one that took its place.
   7. Selecting a hidden image of the first gallery from the structure sidebar
      shows it.
@@ -406,7 +457,6 @@ the field element) and the real block below the band.
 
 ## Known limits
 
-- Clicking the shown page selects the block holding the field (meta plan).
 - Blocks that aren't shown: no analysis; search and the agent find only their
   type's name; their anchors aren't listed.
 - The responsive preview shows what the site shows, not the shown block (meta

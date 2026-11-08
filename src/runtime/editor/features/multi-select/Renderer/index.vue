@@ -34,6 +34,9 @@ type MultiSelectRectangle = Rectangle & {
   index: number
   isNested: boolean
   radius: [number, number, number, number]
+
+  /** The block of the rectangle: a block can have two areas. */
+  uuid?: string
 }
 
 class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<MultiSelectRectangle> {
@@ -47,17 +50,12 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
       return { info: this.bufferInfo, hasChanged: false }
     }
 
-    const visibleBlocks = dom.getVisibleBlocks()
-
     const lengthBefore = this.positions.length
 
-    for (let i = 0; i < visibleBlocks.length; i++) {
-      const uuid = visibleBlocks[i]
-      if (!uuid) {
-        continue
-      }
-
-      if (this.added.has(uuid)) {
+    // A block can have two areas: the page of the block that a field in proxy
+    // mode shows stands in for it, so a box over the page selects the block.
+    for (const { id, uuid, element } of dom.getPointerAreas()) {
+      if (this.added.has(id)) {
         continue
       }
       const block = blocks.getBlock(uuid)
@@ -67,15 +65,12 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
       if (permissions.blockHasRestrictedAncestor(uuid)) {
         continue
       }
-      const el = dom.getDragElement(block)
-      if (!el) {
-        continue
-      }
-      const rect = el.getBoundingClientRect()
-      const style = theme.getDraggableStyle(el)
+      const rect = element.getBoundingClientRect()
+      const style = theme.getDraggableStyle(element)
       this.addRectangle(
         {
-          id: uuid,
+          id,
+          uuid,
           x: rect.x / scale - offset.x / scale,
           y: rect.y / scale - offset.y / scale,
           width: rect.width / scale,
@@ -98,8 +93,8 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
   }
 
   getSelectedUuids(box: Rectangle): { nested: string[]; notNested: string[] } {
-    const nested: string[] = []
-    const notNested: string[] = []
+    const nested = new Set<string>()
+    const notNested = new Set<string>()
     const rects = Object.values(this.rects)
 
     for (let i = 0; i < rects.length; i++) {
@@ -110,16 +105,12 @@ class MultiSelectRectangleBufferCollector extends RectangleBufferCollector<Multi
         continue
       }
 
-      if (intersects(box, rect)) {
-        if (rect.isNested) {
-          nested.push(rect.id)
-        } else {
-          notNested.push(rect.id)
-        }
+      if (rect.uuid && intersects(box, rect)) {
+        ;(rect.isNested ? nested : notNested).add(rect.uuid)
       }
     }
 
-    return { nested, notNested }
+    return { nested: [...nested], notNested: [...notNested] }
   }
 
   isSelectingNested(box: Rectangle): boolean {

@@ -119,20 +119,12 @@ function getInteractedElement(
   // Find the winning block first (deepest nesting level, then highest z-index).
   // Some blocks might not render anything and thus have a height of 0.
   // All registered block rects enforce a minimum height.
-  const visibleUuids = dom.getVisibleBlocks()
-
   let deepestUuid = ''
   let deepestLevel = -1
 
-  for (let i = 0; i < visibleUuids.length; i++) {
-    const uuid = visibleUuids[i]
-    if (!uuid) {
-      continue
-    }
-    const rect = dom.getBlockRect(uuid)
-    if (!rect) {
-      continue
-    }
+  // A block can have two areas: the page of the block that a field in proxy
+  // mode shows stands in for it, so pressing the page means that block.
+  for (const { uuid, rect } of dom.getPointerAreas()) {
     const level = state.getNestingLevel(uuid)
     if (level < deepestLevel) {
       continue

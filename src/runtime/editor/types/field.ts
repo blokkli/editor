@@ -27,6 +27,12 @@ export type BlokkliFieldElement = {
   cardinality: number
   element: HTMLElement
   dropAlignment: FieldDropAlignment | null
+
+  /**
+   * The field is in proxy mode: its element is the band's list of pages, and
+   * the block it shows renders below the band.
+   */
+  isPager: boolean
 }
 
 export type RegisteredField = {
@@ -39,6 +45,12 @@ export type RegisteredField = {
   nestingLevel: number
   dropAlignment: FieldDropAlignment | null
   zIndex: number
+
+  /**
+   * The field is in proxy mode: its element is the band's list of pages, and
+   * the block it shows renders below the band.
+   */
+  isPager: boolean
 }
 
 export type RegisterFieldData = Pick<
@@ -49,6 +61,7 @@ export type RegisterFieldData = Pick<
   | 'nestingLevel'
   | 'dropAlignment'
   | 'zIndex'
+  | 'isPager'
 >
 
 export type RenderedFieldListItem = {

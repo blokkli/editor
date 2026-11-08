@@ -8,17 +8,16 @@
       class="grid grid-cols-2 gap-3 md:grid-cols-3"
       edit-class="min-h-24"
     />
-    <div v-else class="relative">
-      <BlokkliField
-        v-slot="{ items }"
-        name="field_paragraphs"
-        :list="paragraphs"
-        drop-alignment="horizontal"
-        proxy-mode
-      >
-        <ParagraphGallerySlider :items :is-editing />
-      </BlokkliField>
-    </div>
+    <BlokkliField
+      v-else
+      v-slot="{ items }"
+      name="field_paragraphs"
+      :list="paragraphs"
+      drop-alignment="horizontal"
+      proxy-mode
+    >
+      <ParagraphGallerySlider :items />
+    </BlokkliField>
   </div>
 </template>
 
@@ -67,6 +66,4 @@ const block = defineBlokkli({
 const { options } = block
 const spacing = useBlockSpacing(block)
 const width = useBlockWidth(block)
-
-const isEditing = import.meta.blokkliEditing
 </script>

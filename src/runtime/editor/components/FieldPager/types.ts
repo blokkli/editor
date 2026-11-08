@@ -1,17 +1,34 @@
-import type { Component } from 'vue'
-
 export type FieldPagerItem = {
+  /**
+   * The uuid of the block.
+   */
   uuid: string
+
+  /**
+   * The type whose icon and name the page shows: for a library item, the type
+   * of its block.
+   */
   bundle: string
 
   /**
-   * The thumbnail of the block's type (the project's `thumbnail.vue`), which
-   * gets the block's props. Without one, the page shows the block's type.
+   * The block is unpublished or hidden by its options.
    */
-  thumbnail?: Component
+  isMuted?: boolean
+}
+
+export type FieldPagerPageProps = FieldPagerItem & {
+  /**
+   * The index of the block in its field.
+   */
+  index: number
 
   /**
-   * The props of the block, for its thumbnail.
+   * Whether the field shows the block.
    */
-  thumbnailProps?: Record<string, unknown>
+  isShown: boolean
+
+  /**
+   * Whether the block is selected or holds the selection.
+   */
+  isSelected: boolean
 }

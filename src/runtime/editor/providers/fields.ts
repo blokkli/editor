@@ -91,6 +91,7 @@ export default function (
       cardinality: definition.cardinality,
       element: registeredField.element,
       dropAlignment: registeredField.dropAlignment,
+      isPager: registeredField.isPager,
     }
 
     fieldCache.set(key, fieldElement)

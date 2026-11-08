@@ -75,7 +75,7 @@ export function useApprovalOverrides(options: {
   /** See DiffApproval's prop of the same name. */
   insertionsOnly: () => boolean
 }): ApprovalOverrides {
-  const { blocks, context } = useBlokkli()
+  const { blocks, context, dom } = useBlokkli()
 
   /**
    * Strict host resolution: an unknown block yields no host at all, rather than
@@ -116,9 +116,13 @@ export function useApprovalOverrides(options: {
     }
 
     if (host.type === itemEntityType) {
-      const blockElement = document.querySelector<HTMLElement>(
-        `[data-bk-uuid="${CSS.escape(host.uuid)}"]`,
-      )
+      // The block's own element first: the block that a field in proxy mode
+      // shows also has a page in the band, earlier in the document.
+      const blockElement =
+        dom.registeredBlocks.value[host.uuid] ??
+        document.querySelector<HTMLElement>(
+          `[data-bk-uuid="${CSS.escape(host.uuid)}"]`,
+        )
       if (blockElement) {
         return {
           anchorElement: blockElement,

@@ -99,8 +99,7 @@ import PanelSection from '#blokkli/editor/components/Panel/Section/index.vue'
 import PanelAction from '#blokkli/editor/components/Panel/Action/index.vue'
 import SelectionTable from '../../SelectionTable/index.vue'
 
-const { adapter, $t, state, blocks, context, element, ui, directive } =
-  useBlokkli()
+const { adapter, $t, state, blocks, context, dom, directive } = useBlokkli()
 
 const isLoading = ref(false)
 const onlyOutdated = ref(false)
@@ -269,12 +268,7 @@ async function loadExportData() {
 
     // Sort block fields by DOM order: first by block position in the DOM,
     // then within each block by editable element position.
-    const uuidOrder = element.queryAll(
-      ui.providerElement,
-      '.bk-field-list-item',
-      'getExportOrder',
-      (el) => el.dataset.bkUuid,
-    )
+    const uuidOrder = dom.getBlockOrder()
     const uuidIndexMap = new Map<string, number>()
     for (let i = 0; i < uuidOrder.length; i++) {
       const uuid = uuidOrder[i]

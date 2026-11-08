@@ -30,6 +30,25 @@ further details. Now the "Add files" dialog opens for them:
   paste them, with a message that names the file. A file that couldn't be
   uploaded can be removed from the dialog, and the others still be added.
 
+#### Sliders
+
+Blocks that show one block at a time, such as a slider, can now be edited right
+on the page:
+
+- A dark bar above the slider shows its blocks as small pages, with their number
+  and type. On the left, which one is shown, like "2 / 6".
+- Below the bar, the slider shows one of its blocks, which you edit like any
+  other block: its texts, its options and the blocks inside it.
+- Click a page to show its block. A block that you select elsewhere, for example
+  in "Structure", the search or a comment, is shown too.
+- Add blocks with the buttons on both sides of the shown block, or at the end of
+  the pages while the slider is selected. Drag pages to change their order, or
+  drag blocks onto the bar.
+- If there are more pages than fit, the last ones are cut off.
+
+This replaces the list that appeared over such blocks while something was
+selected.
+
 ### Improvements
 
 - When the website refuses a change, the editor gives the reason, for example

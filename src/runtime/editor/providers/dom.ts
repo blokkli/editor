@@ -3,6 +3,7 @@ import type { EntityContext } from '#blokkli/types'
 import { falsy, onlyUnique } from '#blokkli/helpers'
 import type { UiProvider } from './ui'
 import { cloneWithInlineStyles } from '../helpers/dom'
+import { orderBlockElements } from '../helpers/blockOrder'
 import {
   onBlokkliEvent,
   useDelayedIntersectionObserver,
@@ -26,6 +27,23 @@ type RegisteredFieldType = {
 }
 
 type MeasuredBlockRect = Rectangle & { time: number }
+
+/**
+ * An area where the pointer finds a block.
+ */
+export type BlockPointerArea = {
+  /** Unique per area: a block can have two, its element and a stand-in. */
+  id: string
+
+  /** The block's UUID. */
+  uuid: string
+
+  /** The area's rectangle, in artboard coordinates. */
+  rect: Rectangle
+
+  /** The element of the area. */
+  element: HTMLElement
+}
 
 export type DomProvider = {
   /**
@@ -173,6 +191,54 @@ export type DomProvider = {
   isFieldVisible(key: string): boolean
 
   /**
+   * Register an element that stands in for a block somewhere else: the page of
+   * the block that a field in proxy mode shows, whose element is the block
+   * below the band. Pointer interactions count it as the block.
+   *
+   * @param uuid - The block's UUID
+   * @param el - The element that stands in for it
+   */
+  registerStandIn(uuid: string, el: HTMLElement): void
+
+  /**
+   * Unregister the element that stands in for a block.
+   *
+   * @param uuid - The block's UUID
+   * @param el - The element that stood in for it
+   */
+  unregisterStandIn(uuid: string, el: HTMLElement): void
+
+  /**
+   * Where the pointer finds blocks: the element of every visible block, and
+   * the elements that stand in for blocks, such as the page of the block that a
+   * field in proxy mode shows. A block can have two areas.
+   *
+   * For everything that asks which block is at a point or inside a rectangle:
+   * clicks, dragging, hovering, selecting with a rectangle.
+   */
+  getPointerAreas(): BlockPointerArea[]
+
+  /**
+   * Where a block is in its field, among its siblings. The block that a field
+   * in proxy mode shows is where its page is in the band; any other block is
+   * where its element is.
+   *
+   * For everything that compares a block with its siblings: drop slots,
+   * selecting a range.
+   *
+   * @param uuid - The block's UUID
+   */
+  getRectInField(uuid: string): Rectangle | undefined
+
+  /**
+   * The uuids of the rendered blocks in their order on the page, as for Tab.
+   *
+   * The block that a field in proxy mode shows comes where its page is in the
+   * band, followed by the blocks inside it.
+   */
+  getBlockOrder(): string[]
+
+  /**
    * Measure a field's rectangle again.
    *
    * Field rects are not observed for size changes, so a feature that needs an
@@ -262,6 +328,15 @@ export type DomProvider = {
   ) => HTMLElement | undefined
 
   /**
+   * The element that a dragged block shows. The block that a field in proxy
+   * mode shows is dragged as its page, the one standing in for it in the band,
+   * where its drop slots are. Any other block as its element.
+   */
+  getDragImageElement: (
+    block: DraggableExistingBlock | RenderedFieldListItem,
+  ) => HTMLElement | undefined
+
+  /**
    * The fragments that are generally available to be added anywhere on the page.
    */
   generallyAvailableFragments: ComputedRef<BlokkliFragmentName[]>
@@ -339,6 +414,9 @@ export default function (
   const blockRects: Record<string, MeasuredBlockRect | undefined> = {}
   const fieldRects: Record<string, Rectangle> = {}
   const blockUuidCurrentKey: Record<string, string | undefined> = {}
+  // Elements that stand in for blocks: the page of the block that a field in
+  // proxy mode shows.
+  const standIns = new Map<string, HTMLElement>()
   let initTimeout: null | number = null
   const isInitalizing = ref(true)
 
@@ -522,6 +600,16 @@ export default function (
     data: RegisterFieldData,
   ) => {
     const key = `${entity.uuid}:${fieldName}`
+
+    // Another element of the field is still observed, e.g. the Structure view's
+    // list after it was turned off: its callbacks would overwrite this one's
+    // rect and visibility.
+    const existingElement = registeredFields[key]?.element
+    if (existingElement && existingElement !== element) {
+      intersectionObserver.unobserve(existingElement)
+      fieldElementToFieldKey.delete(existingElement)
+    }
+
     registeredFields[key] = {
       element,
       entity,
@@ -601,12 +689,12 @@ export default function (
     const getElement = () => {
       if ('itemType' in item) {
         if (item.itemType === 'existing') {
-          return getDragElement(item)
+          return getDragImageElement(item)
         }
         return item.element()
       }
 
-      return getDragElement(item)
+      return getDragImageElement(item)
     }
     const el = getElement()
     if (!el) {
@@ -795,12 +883,78 @@ export default function (
     return registeredBlocks[item.uuid]
   }
 
+  function getDragImageElement(
+    block: DraggableExistingBlock | RenderedFieldListItem,
+  ) {
+    const item = 'itemType' in block ? block.block : block
+    if (!item) {
+      return
+    }
+    const standIn = standIns.get(item.uuid)
+    return standIn?.isConnected ? standIn : registeredBlocks[item.uuid]
+  }
+
   function isBlockVisible(uuid: string): boolean {
     return visibleBlocks.has(uuid)
   }
 
   function isFieldVisible(key: string): boolean {
     return visibleFields.has(key)
+  }
+
+  function registerStandIn(uuid: string, el: HTMLElement) {
+    standIns.set(uuid, el)
+  }
+
+  function unregisterStandIn(uuid: string, el: HTMLElement) {
+    if (standIns.get(uuid) === el) {
+      standIns.delete(uuid)
+    }
+  }
+
+  /**
+   * The rectangle of a block's stand-in, measured now: there are few, and they
+   * aren't observed.
+   */
+  function getStandInRect(uuid: string): Rectangle | undefined {
+    const element = standIns.get(uuid)
+    return element?.isConnected
+      ? ui.getAbsoluteElementRect(element.getBoundingClientRect())
+      : undefined
+  }
+
+  function getPointerAreas(): BlockPointerArea[] {
+    const areas: BlockPointerArea[] = []
+    for (const uuid of visibleBlocks) {
+      const rect = blockRects[uuid]
+      const element = registeredBlocks[uuid]
+      if (rect && element) {
+        areas.push({ id: uuid, uuid, rect, element })
+      }
+    }
+    for (const [uuid, element] of standIns) {
+      const rect = getStandInRect(uuid)
+      if (rect) {
+        areas.push({ id: 'stand-in:' + uuid, uuid, rect, element })
+      }
+    }
+    return areas
+  }
+
+  function getRectInField(uuid: string): Rectangle | undefined {
+    return getStandInRect(uuid) ?? blockRects[uuid]
+  }
+
+  function getBlockOrder(): string[] {
+    return orderBlockElements(
+      element.queryAll(
+        ui.providerElement,
+        '.bk-field-list-item',
+        'getBlockOrder',
+      ),
+      (el) => el.dataset.bkUuid,
+      (el, other) => el.contains(other),
+    )
   }
 
   function refreshAllBlockRects() {
@@ -862,6 +1016,9 @@ export default function (
         uuid,
       )
       unregisterBlock(key, uuid)
+      // Unregistering clears the key, which would let the previous location
+      // unregister this block when it unmounts after this.
+      blockUuidCurrentKey[uuid] = key
     }
 
     const item = state.getFieldListItem(uuid)
@@ -1035,6 +1192,11 @@ export default function (
     refreshFieldRect,
     isBlockVisible,
     isFieldVisible,
+    registerStandIn,
+    unregisterStandIn,
+    getPointerAreas,
+    getRectInField,
+    getBlockOrder,
     isReady: computed(
       () =>
         mutationsReady.value && intersectionReady.value && !isInitalizing.value,
@@ -1042,6 +1204,7 @@ export default function (
     settleKey: computed(() => settleKey.value),
     init,
     getDragElement,
+    getDragImageElement,
     updateVisibleRects,
     registeredFieldTypes,
     registerBlock,

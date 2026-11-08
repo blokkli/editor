@@ -418,6 +418,17 @@ const buildChildId = (
   return `${field.key}:${preceedingUuid || ''}:${type || ''}:${uuid || ''}`
 }
 
+/**
+ * Where a child of a field is among its siblings: the block that a field in
+ * proxy mode shows is where its page is, not below the band.
+ */
+function getChildRect(uuid: string, el: HTMLElement): Rectangle {
+  return (
+    dom.getRectInField(uuid) ||
+    ui.getAbsoluteElementRect(dom.getBoundingClientRect(el))
+  )
+}
+
 const buildChildren = (
   field: FieldRect,
   visible: string[],
@@ -454,9 +465,7 @@ const buildChildren = (
 
     if (!visible.includes(uuid)) {
       // Track position even for invisible blocks so we can calculate gaps correctly
-      const elRect =
-        dom.getBlockRect(uuid) ||
-        ui.getAbsoluteElementRect(dom.getBoundingClientRect(el))
+      const elRect = getChildRect(uuid, el)
       prevElOffsetTop = elRect.y - field.y
       prevElHeight = el.scrollHeight
       prevUuid = uuid
@@ -466,9 +475,7 @@ const buildChildren = (
     const cached = fieldChildCache[uuid]
     if (cached) {
       // Track position even when using cached drop targets
-      const elRect =
-        dom.getBlockRect(uuid) ||
-        ui.getAbsoluteElementRect(dom.getBoundingClientRect(el))
+      const elRect = getChildRect(uuid, el)
       prevElOffsetTop = elRect.y - field.y
       prevElHeight = el.scrollHeight
       children.push(...cached)
@@ -484,9 +491,7 @@ const buildChildren = (
     }
 
     // Get the rect of the block. Use a cached one if possible.
-    const elRect =
-      dom.getBlockRect(uuid) ||
-      ui.getAbsoluteElementRect(dom.getBoundingClientRect(el))
+    const elRect = getChildRect(uuid, el)
 
     // Calculate the offset to the parent. We can not use el.offsetTop/el.offsetLeft here because the value could be 0.
     const elOffsetTop = elRect.y - field.y
