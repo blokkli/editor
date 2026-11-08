@@ -4,6 +4,7 @@ import { falsy, onlyUnique } from '#blokkli/helpers'
 import type { UiProvider } from './ui'
 import { cloneWithInlineStyles } from '../helpers/dom'
 import { orderBlockElements } from '../helpers/blockOrder'
+import { MIN_RECT_SIZE } from '../helpers/geometry'
 import {
   onBlokkliEvent,
   useDelayedIntersectionObserver,
@@ -459,18 +460,20 @@ export default function (
       .filter(falsy)
   })
 
+  // Keeps the sizes of measured blocks up to date. Where a block is comes from
+  // measuring it (getBlockRect(), the IntersectionObserver).
   const resizeObserver = new ResizeObserver(function (
     entries: ResizeObserverEntry[],
   ) {
     for (const entry of entries) {
       if (!(entry.target instanceof HTMLElement)) {
-        return
+        continue
       }
 
       const uuid = blockElementToUuid.get(entry.target)
 
       if (!uuid) {
-        return
+        continue
       }
 
       // Skip if block is no longer registered (prevents race condition with unregisterBlock)
@@ -478,30 +481,29 @@ export default function (
         continue
       }
 
+      // A block that was just registered isn't measured yet. The entry only
+      // has its size, not where it is.
       const currentRect = blockRects[uuid]
+      if (!currentRect) {
+        continue
+      }
 
       const now = performance.now()
 
-      if (!currentRect) {
-        blockRects[uuid] = rectWithTime(
-          {
-            x: entry.contentRect.x,
-            y: entry.contentRect.y,
-            width: entry.borderBoxSize[0]!.inlineSize,
-            height: entry.borderBoxSize[0]!.blockSize,
-          },
-          now,
-        )
-        return
-      }
-
       if (currentRect.time > now) {
-        return
+        continue
       }
 
-      blockRects[uuid]!.width = entry.borderBoxSize[0]!.inlineSize
-      blockRects[uuid]!.height = entry.borderBoxSize[0]!.blockSize
-      blockRects[uuid]!.time = now
+      // At least the size that measuring gives.
+      currentRect.width = Math.max(
+        entry.borderBoxSize[0]!.inlineSize,
+        MIN_RECT_SIZE,
+      )
+      currentRect.height = Math.max(
+        entry.borderBoxSize[0]!.blockSize,
+        MIN_RECT_SIZE,
+      )
+      currentRect.time = now
     }
   })
 

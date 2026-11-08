@@ -20,6 +20,7 @@ import type { Viewport } from '../../../global/constants'
 import { falsy } from '../../helpers'
 import { truncate } from '../helpers/string'
 import { isValidDate } from '../helpers/date'
+import { MIN_RECT_SIZE } from '../helpers/geometry'
 import {
   addElementClasses,
   defineElementStyle,
@@ -380,7 +381,8 @@ export type UiProvider = {
    * Get absolute rectangle for an element or rectangle.
    *
    * Converts viewport-relative coordinates to artboard-absolute coordinates
-   * by accounting for artboard scale and offset. Ensures minimum size of 24x24.
+   * by accounting for artboard scale and offset. Ensures a minimum size of
+   * MIN_RECT_SIZE.
    *
    * @param v - HTML element or rectangle
    * @param scale - Override artboard scale (uses current scale if not provided)
@@ -917,9 +919,8 @@ export default function (
     return {
       x: rect.x / scale - offset.x / scale,
       y: rect.y / scale - offset.y / scale,
-      // Force at least a size of 24.
-      width: Math.max(rect.width / scale, 24),
-      height: Math.max(rect.height / scale, 24),
+      width: Math.max(rect.width / scale, MIN_RECT_SIZE),
+      height: Math.max(rect.height / scale, MIN_RECT_SIZE),
     }
   }
 

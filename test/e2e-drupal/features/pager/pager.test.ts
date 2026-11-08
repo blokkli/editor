@@ -1,7 +1,10 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import type { Coord } from '../../../../src/runtime/editor/types/geometry'
+import type {
+  Coord,
+  Rectangle,
+} from '../../../../src/runtime/editor/types/geometry'
 import {
   blockViewportRect,
   fieldUuids,
@@ -175,6 +178,59 @@ function recordActionsBar(
   }, frames)
 }
 
+/** A block's rectangle as the editor gives it, and as it really is, rounded. */
+type RectPair = { got: string; real: string }
+
+/**
+ * Show a block of a gallery without selecting it, and ask for the rectangles
+ * of blocks right after the editor's ResizeObserver reported the swap: an
+ * observer made after it runs right after it, in the same frame.
+ */
+function rectsAfterSwap(
+  page: Page,
+  shown: string,
+  uuids: string[],
+): Promise<RectPair[]> {
+  return page.evaluate(
+    async ({ shown, uuids }) => {
+      const app = window.__BLOKKLI__!.app!
+      const round = (rect: Rectangle | undefined) =>
+        rect
+          ? [rect.x, rect.y, rect.width, rect.height].map(Math.round).join(',')
+          : '-'
+      const isPage = (uuid: string) =>
+        app.dom.registeredBlocks.value[uuid]?.dataset.test ===
+        'field-pager-page'
+
+      app.pager.show(shown)
+      // The swap renders in a microtask, before the next frame.
+      for (let i = 0; i < 10 && isPage(shown); i++) {
+        await Promise.resolve()
+      }
+
+      return new Promise<RectPair[]>((resolve) => {
+        const observer = new ResizeObserver(() => {
+          observer.disconnect()
+          resolve(
+            uuids.map((uuid) => ({
+              got: round(app.dom.getBlockRect(uuid)),
+              real: round(
+                app.ui.getAbsoluteElementRect(
+                  app.dom.registeredBlocks.value[uuid]!,
+                ),
+              ),
+            })),
+          )
+        })
+        for (const uuid of uuids) {
+          observer.observe(app.dom.registeredBlocks.value[uuid]!)
+        }
+      })
+    },
+    { shown, uuids },
+  )
+}
+
 /**
  * Page lifecycle: one editor page. Every test shows the blocks it needs first:
  * the pagers keep showing what they showed last, also across a revert.
@@ -259,6 +315,23 @@ describe('A field in proxy mode', async () => {
     const places = visible.filter((t, i) => t !== visible[i - 1])
     // Where it was, then where it is: nowhere in between.
     expect(places).toEqual([...new Set([visible[0], visible.at(-1)])])
+  })
+
+  test('right after a swap, the blocks it registered anew are where they are', async () => {
+    await show(page, IMAGES[0]!)
+    await emitEvent(page, 'select:unselect')
+    await centerBand(page, GALLERY)
+
+    // The swap registers both images anew: the first with its page, the third
+    // with its block. The IntersectionObserver reports them a frame or more
+    // later; until then, they're measured when asked for.
+    const rects = await rectsAfterSwap(page, IMAGES[2]!, [
+      IMAGES[0]!,
+      IMAGES[2]!,
+    ])
+    expect(rects.map((rect) => rect.got)).toEqual(
+      rects.map((rect) => rect.real),
+    )
   })
 
   test('Tab goes from page to page, and on to the block after the field', async () => {
