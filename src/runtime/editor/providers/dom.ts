@@ -256,7 +256,9 @@ export type DomProvider = {
   getBlockRects: () => Record<string, MeasuredBlockRect | undefined>
 
   /**
-   * Get the rectangle for a specific block.
+   * Get the rectangle for a specific block. A block that was just registered
+   * is measured when it's asked for: the observers report it a frame or more
+   * later.
    *
    * @param uuid - The block's UUID
    * @param refresh - Whether to refresh the rect before returning
@@ -745,7 +747,11 @@ export default function (
     uuid: string,
     refresh?: boolean,
   ): MeasuredBlockRect | undefined {
-    if (refresh) {
+    // Until the observers report a block that was just registered, it has no
+    // rect. Measure it now, or a feature would miss it in between: the block
+    // that a field in proxy mode shows is registered anew when it's shown,
+    // while its page is measured on every frame.
+    if (refresh || (!blockRects[uuid] && registeredBlocks[uuid])) {
       refreshBlockRect(uuid)
     }
     return blockRects[uuid]
@@ -942,7 +948,7 @@ export default function (
   }
 
   function getRectInField(uuid: string): Rectangle | undefined {
-    return getStandInRect(uuid) ?? blockRects[uuid]
+    return getStandInRect(uuid) ?? getBlockRect(uuid)
   }
 
   function getBlockOrder(): string[] {

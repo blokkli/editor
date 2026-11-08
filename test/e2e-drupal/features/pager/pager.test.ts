@@ -136,6 +136,45 @@ async function selectedSorted(page: Page): Promise<string[]> {
   return (await selectedUuids(page)).sort()
 }
 
+type ActionsBarFrame = {
+  /** The bar's transform, which places it. */
+  transform: string
+  visible: boolean
+  selected: string[]
+}
+
+/**
+ * The actions bar on each of the next frames: where it is, whether it's
+ * visible, and what's selected.
+ */
+function recordActionsBar(
+  page: Page,
+  frames: number,
+): Promise<ActionsBarFrame[]> {
+  return page.evaluate((frames) => {
+    const app = window.__BLOKKLI__!.app!
+    const recorded: ActionsBarFrame[] = []
+    return new Promise<ActionsBarFrame[]>((resolve) => {
+      function record() {
+        const bar = document.querySelector<HTMLElement>(
+          '[data-test="actions-toolbar"]',
+        )
+        recorded.push({
+          transform: bar?.style.transform ?? '',
+          visible: !!bar && bar.style.visibility !== 'hidden',
+          selected: [...app.selection.uuids.value],
+        })
+        if (recorded.length < frames) {
+          requestAnimationFrame(record)
+        } else {
+          resolve(recorded)
+        }
+      }
+      requestAnimationFrame(record)
+    })
+  }, frames)
+}
+
 /**
  * Page lifecycle: one editor page. Every test shows the blocks it needs first:
  * the pagers keep showing what they showed last, also across a revert.
@@ -201,6 +240,25 @@ describe('A field in proxy mode', async () => {
     expect(await pageOf(page, IMAGES[1]!).getAttribute('data-test-shown')).toBe(
       'true',
     )
+  })
+
+  test('the actions bar goes straight from one page to the page clicked next', async () => {
+    await show(page, IMAGES[0]!)
+    await centerBand(page, GALLERY)
+    await nextFrames(page)
+
+    const recording = recordActionsBar(page, 60)
+    await nextFrames(page)
+    await clickPage(page, IMAGES[2]!)
+    const frames = await recording
+
+    // The image shown next is registered anew. Until it was measured, the bar
+    // was placed at its page alone for a frame or more.
+    expect(frames.at(-1)!.selected).toEqual([IMAGES[2]])
+    const visible = frames.filter((f) => f.visible).map((f) => f.transform)
+    const places = visible.filter((t, i) => t !== visible[i - 1])
+    // Where it was, then where it is: nowhere in between.
+    expect(places).toEqual([...new Set([visible[0], visible.at(-1)])])
   })
 
   test('Tab goes from page to page, and on to the block after the field', async () => {
