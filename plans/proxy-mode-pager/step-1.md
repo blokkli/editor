@@ -478,7 +478,9 @@ band.
   `continue`, so a batch stops at the first block it measures for the first
   time. That first measurement takes `x` and `y` from `contentRect`, about 0. A
   plain `continue` would give more blocks that wrong position until the
-  intersection observer corrects it, so it needs its own fix.
+  intersection observer corrects it, so it needs its own fix. **Fixed** in
+  `47380b51f`: it skips blocks that aren't measured yet, goes on with the
+  others, and keeps the 24px minimum.
 - `ui:update-rects` is declared (`events/index.ts:342`) and only the directive
   provider listens to it; nothing emits it.
 

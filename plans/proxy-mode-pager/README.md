@@ -203,24 +203,22 @@ project's `proxy.vue` renders.
 
 ## Step 2: the project renders it (opt-in)
 
-- **The slot:** it gets the shown index (`v-slot="{ items, shownIndex }"`), and
-  a field can say that its project renders the shown block itself while editing.
-  The slot then renders as real editing content: children rendered with
-  `<BlokkliItem>` are real blocks, with editable nested fields.
-- **`<BlokkliEntityContext>`** (name open) ties the markup inside it to a child,
-  so that `<BlokkliEditable>` and the directives inside it edit that child's
-  fields.
-  - `<BlokkliEditable>` injects the context, so a wrapper is enough for it.
-  - The directives read the context of the component whose template they're
-    written in (`src/runtime/plugins/blokkliDirectives.ts:37`), so they need a
-    lookup through the element tree.
-- **Rules:**
-  - each child is rendered as a block at most once (Swiper's loop mode clones
-    slides);
-  - hidden slides stay out;
-  - we need to decide which element counts as the child for selection when it's
-    spread over a scene.
-- **Step 1 mustn't need changes for this.**
+Planned in [`step-2.md`](./step-2.md), from svv's story (the project the
+feedback came from). Its decisions, in short:
+
+- **The opt-in:** `proxy-mode="slot"`. The slot then renders while editing,
+  below the band, and gets the shown index (`v-slot="{ items, shownIndex }"`).
+- **Markup as the shown block:** a `<BlokkliItem>` with a default slot, around
+  all the places the block's markup sits in. It provides the block's context and
+  registers its element; the directives find it through the element tree. The
+  working name here was `<BlokkliEntityContext>`.
+- **Only the shown block is a block:** every other child's `<BlokkliItem>`
+  renders as on the site, so each child is a block at most once and hidden
+  slides stay out.
+- **What a layout can't show,** the slot renders as a plain `<BlokkliItem>`,
+  with a warning in development when it doesn't.
+- **The sandbox gets a story block** to build and test against.
+- **Step 1 doesn't change.**
 
 ## Open decisions
 
@@ -252,8 +250,8 @@ project's `proxy.vue` renders.
 5. ~~What a page shows~~: decided, above (the type's icon and name; the real
    component with `isThumbnail` as a follow-up).
 6. ~~The API~~: decided, above (`proxy-mode` becomes the pager; `proxy.vue`
-   stays for the Structure view). Still open: the name of step 2's opt-in, which
-   step 2's plan decides.
+   stays for the Structure view). Step 2's opt-in is `proxy-mode="slot"`
+   (`step-2.md`, decision 1).
 7. **The add buttons in a pager field: the tricky part** (the user, 2026-11-08).
    Below, under smaller questions, until it gets its own section.
 
