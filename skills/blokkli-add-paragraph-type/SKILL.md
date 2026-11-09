@@ -443,9 +443,18 @@ that editors edit like any other. Clicking a page shows its child.
   - It gets the same props.
   - It doesn't call `defineBlokkli`.
   - It may use `v-blokkli-droppable` and `v-blokkli-editable`.
-- **A scene loses its composition while editing.** A design that composes the
-  children (their titles as tabs, the current child's text beside them) shows
-  one child at a time below the band.
+- **A scene keeps its composition with `proxy-mode="slot"`.** A design that
+  composes the children (each one's picture beside its text, their titles as
+  tabs) otherwise shows one child at a time below the band, as its own
+  component. With `"slot"`, the slot renders while editing too, below the band:
+  - It gets `shownIndex`, the index of the child the field shows, `null` on the
+    site.
+  - Render that child as a `<BlokkliItem>` keyed by its uuid, with a default
+    slot around all of its markup: the markup is then the child, edited in place
+    with `v-blokkli-editable` and a `<BlokkliField>` for its nested field.
+  - What the layout can't show, render as
+    `<BlokkliItem :key="item.uuid" v-bind="item" />`.
+  - The sandbox's story (`Paragraph/Story/`) does all of it.
 - To switch between proxy mode and a normal list with an option, use two
   `BlokkliField`s with `v-if`/`v-else`: `proxy-mode` is read once.
 - Proxy mode only exists for paragraphs fields. A single paragraph with a

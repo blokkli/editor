@@ -9,6 +9,31 @@
     :parent-type="parentType"
     :item-props
   />
+  <!--
+    In the slot of a field in proxy mode that renders the shown block itself
+    (proxy-mode="slot"), while editing: the shown block is the real block, the
+    others render as on the site. Keyed by both, so that a block switches.
+  -->
+  <Component
+    :is="pagerSlot.component"
+    v-else-if="pagerSlot && isInPagerSlot"
+    :key="pagerSlotKey"
+    :uuid
+    :bundle
+    :is-shown="isShownInPagerSlot"
+    :has-slot="!!$slots.default"
+  >
+    <slot v-if="$slots.default" />
+    <Component :is="component" v-else-if="component" v-bind="itemProps" />
+    <Component
+      :is="blockNotImplemented"
+      v-else-if="isEditingComponent && blockNotImplemented"
+      :uuid
+      :bundle
+    />
+  </Component>
+  <!-- The project's markup as the block. -->
+  <slot v-else-if="$slots.default" />
   <Component
     :is="component"
     v-else-if="component"
@@ -35,6 +60,7 @@ import {
   INJECT_FIELD_USES_PROXY,
   INJECT_GLOBAL_PROXY_MODE,
   INJECT_ITEM_PROPS_OVERRIDE,
+  INJECT_PAGER_SLOT,
   INJECT_PROVIDER_TYPE,
 } from '../helpers/injections'
 import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
@@ -78,8 +104,29 @@ const isGlobalProxyMode = inject(INJECT_GLOBAL_PROXY_MODE, null)
 const fieldListType = inject(INJECT_FIELD_LIST_TYPE, undefined)
 const providerType = inject(INJECT_PROVIDER_TYPE, undefined)
 
+// Provided by the editor's pager to the slot of a field in proxy mode that
+// renders the shown block itself. The blocks of fields nested in it inherit it,
+// so it only counts for the field's own blocks.
+const pagerSlot = inject(INJECT_PAGER_SLOT, null)
+const isInPagerSlot = computed(
+  () => !!pagerSlot && pagerSlot.uuids.value.includes(componentProps.uuid),
+)
+const isShownInPagerSlot = computed(
+  () =>
+    isInPagerSlot.value && pagerSlot!.shownUuid.value === componentProps.uuid,
+)
+const pagerSlotKey = computed(
+  () => componentProps.uuid + (isShownInPagerSlot.value ? ':shown' : ':other'),
+)
+
+// Whether the block is edited: where the editor renders it, or as the shown
+// block of a field whose slot renders it.
+const isEditingBlock = computed(
+  () => componentProps.isEditing || isShownInPagerSlot.value,
+)
+
 const itemProps = computed<Record<string, string>>(() => {
-  if (mutatedItemProps && componentProps.isEditing) {
+  if (mutatedItemProps && isEditingBlock.value) {
     const mutatedProps = mutatedItemProps[componentProps.uuid]
     if (mutatedProps) {
       return {
@@ -118,7 +165,7 @@ const item = computed<InjectedBlokkliItem>(() => ({
   index,
   uuid: componentProps.uuid || '',
   options: componentProps.options || {},
-  isEditing: componentProps.isEditing,
+  isEditing: isEditingBlock.value,
   parentType: componentProps.parentType as BlockBundleWithNested,
   fragmentName:
     componentProps.bundle === fragmentBlockBundle

@@ -15,7 +15,10 @@ import type {
   MutatedOptions,
 } from '#blokkli/editor/types/state'
 import type { DefineBlokkliContext } from '#blokkli/types/definitions'
-import type { InjectedBlokkliItem } from '#blokkli/types/field'
+import type {
+  InjectedBlokkliItem,
+  PagerSlotContext,
+} from '#blokkli/types/field'
 import type { Eventbus } from '#blokkli/editor/events'
 import type { DomProvider } from '#blokkli/editor/providers/dom'
 import type { DefinitionProvider } from '#blokkli/editor/providers/definition'
@@ -127,13 +130,22 @@ export const INJECT_FIELD_LIST_BLOCKS = Symbol(
 ) as InjectionKey<ComputedRef<FieldListItemTyped[]>>
 
 /**
- * Whether the block renders in the slot of a field in proxy mode: on the site,
- * in the preview, or in a field the editor can't edit. The block isn't
- * registered in the editor.
+ * Whether the block renders in the slot of a field in proxy mode as it does on
+ * the site: on the site, in the preview, in a field the editor can't edit, or,
+ * in a field whose slot renders the shown block (`proxy-mode="slot"`), as a
+ * block that isn't shown. The block isn't registered in the editor.
  */
 export const INJECT_FIELD_USES_PROXY = Symbol(
   'blokkli_field_uses_proxy',
 ) as InjectionKey<boolean>
+
+/**
+ * Provided by the editor's pager to the slot of a field in proxy mode that
+ * renders the shown block itself (`proxy-mode="slot"`).
+ */
+export const INJECT_PAGER_SLOT = Symbol(
+  'blokkli_pager_slot',
+) as InjectionKey<PagerSlotContext>
 
 /**
  * Whether the global proxy mode setting is enabled in the editor.

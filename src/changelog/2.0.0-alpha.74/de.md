@@ -48,6 +48,9 @@ direkt auf der Seite:
   oder, solange der Slider ausgewählt ist, am Ende der Seiten. Ziehen Sie
   Seiten, um ihre Reihenfolge zu ändern, oder ziehen Sie Blöcke auf die Leiste.
 - Haben nicht alle Seiten Platz, werden die letzten abgeschnitten.
+- Wo die Website es unterstützt, behält ein Block mit eigener Darstellung diese
+  beim Bearbeiten, z. B. das Bild jedes Abschnitts neben seinem Text, und Sie
+  bearbeiten den gezeigten Block direkt darin.
 
 Dies ersetzt die Liste, die bisher über solchen Blöcken erschien, solange etwas
 ausgewählt war.

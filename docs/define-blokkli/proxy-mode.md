@@ -53,7 +53,8 @@ yourself, as the `<Carousel>` does in this example. Use `<BlokkliItem>` to
 render a block, or render components from the items' props however you wish.
 
 While editing, the slot doesn't render: the editor renders the band and the
-block the field shows.
+block the field shows. A field whose layout matters can render the shown block
+itself (below).
 
 - `class` goes on the element that holds the band and the block. It takes the
   field's place in its parent, so put classes for that place here, such as a
@@ -67,6 +68,90 @@ The prop is read once. To switch between proxy mode and a normal field, for
 example with an option, render two fields with `v-if` and `v-else`.
 
 A wrapper with `position: relative` isn't needed.
+
+## Rendering the Shown Block Yourself
+
+The editor renders the shown block on its own, as its type's component. For a
+block whose layout matters, such as a scene with each section's picture on the
+left and its text on the right, the field's slot can render it instead: set
+`proxy-mode="slot"`. While editing, the slot then renders below the band, and
+gets `shownIndex`, the index of the shown block in `items`. It's `null` on the
+site, in the preview and for an empty field.
+
+Render the shown block as a `<BlokkliItem>`, keyed by its uuid, with a default
+slot around the markup that belongs to it. That markup is the block: editors
+select it, edit it inline and add to its nested fields where it is.
+
+::: code-group
+
+```vue [Story/index.vue]
+<template>
+  <BlokkliField
+    v-slot="{ items, shownIndex }"
+    name="sections"
+    :list="sections"
+    proxy-mode="slot"
+  >
+    <StoryScene :items :shown-index />
+  </BlokkliField>
+</template>
+```
+
+```vue [Story/Scene.vue]
+<template>
+  <div class="grid gap-12">
+    <BlokkliItem v-for="item in visible" :key="item.uuid" v-bind="item">
+      <div class="grid grid-cols-2">
+        <img :src="item.props.imageUrl" alt="" />
+        <div>
+          <h3 v-blokkli-editable:field_title>{{ item.props.title }}</h3>
+          <BlokkliField name="field_blocks" :list="item.props.blocks" />
+        </div>
+      </div>
+    </BlokkliItem>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import type { FieldListItemTyped } from '#blokkli-build/generated-types'
+
+const props = defineProps<{
+  items: FieldListItemTyped[]
+  shownIndex: number | null
+}>()
+
+// On the site, every section; while editing, the one the field shows.
+const visible = computed(() => {
+  if (props.shownIndex === null) {
+    return props.items
+  }
+  const shown = props.items[props.shownIndex]
+  return shown ? [shown] : []
+})
+</script>
+```
+
+:::
+
+- **One `<BlokkliItem>` per block, around all its places.** When a block's
+  markup is in two places, such as a picture and its text, wrap an element that
+  holds both. Markup outside it is decoration: pressing it selects the block
+  that holds the field.
+- **What the layout can't show,** render as
+  `<BlokkliItem :key="item.uuid" v-bind="item" />`, without a slot: its type's
+  component, as the editor would render it. In development, the editor warns
+  when the shown block isn't rendered as a `<BlokkliItem>`.
+- **The other blocks' `<BlokkliItem>`s render as on the site.** They can't be
+  selected or edited where they are: their pages stand in for them. A slider
+  that renders every slide can keep doing so.
+- `class` goes on the element that holds the band and the slot. `tag`,
+  `list-class`, `edit-class` and `non-empty-class` do nothing, as on the site.
+- **Limits:**
+  - The first node inside the `<BlokkliItem>` must be an element or a component
+    with a single root: it's the block's element. Nothing teleported out of it
+    counts as the block.
+  - The blocks that aren't shown render their nested fields from their props, as
+    on the site.
 
 ## Structure View (`proxy.vue`)
 

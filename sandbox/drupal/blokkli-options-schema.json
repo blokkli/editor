@@ -689,6 +689,53 @@
       "type": "checkboxes"
     }
   },
+  "story": {
+    "bkVisibleLanguages": {
+      "default": [],
+      "description": {
+        "de": "Nur in bestimmten Sprachen anzeigen.",
+        "en": "Only show on specific languages.",
+        "fr": "Afficher uniquement dans certaines langues.",
+        "gsw_CH": "Nur uf bestimmte Sproche aazeige."
+      },
+      "label": {
+        "de": "Sichtbare Sprachen",
+        "en": "Visible languages",
+        "fr": "Langues visibles",
+        "gsw_CH": "Sichtbari Sproche"
+      },
+      "options": {},
+      "type": "checkboxes"
+    },
+    "layout": {
+      "default": "split",
+      "displayAs": "icons",
+      "label": {
+        "de": "Darstellung",
+        "en": "Layout",
+        "fr": "Mise en page"
+      },
+      "options": {
+        "images": {
+          "icon": "bk_mdi_image",
+          "label": {
+            "de": "Bilder",
+            "en": "Images",
+            "fr": "Images"
+          }
+        },
+        "split": {
+          "icon": "bk_mdi_vertical_split",
+          "label": {
+            "de": "Geteilt",
+            "en": "Split",
+            "fr": "Partagé"
+          }
+        }
+      },
+      "type": "radios"
+    }
+  },
   "table": {
     "bkVisibleLanguages": {
       "default": [],

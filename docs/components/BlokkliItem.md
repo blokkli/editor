@@ -129,6 +129,35 @@ defineProps<{
 </script>
 ```
 
+## Slots
+
+### default
+
+Renders your markup instead of the block type's component, as that block: the
+markup has the block's context, so `v-blokkli-editable`, `<BlokkliEditable>` and
+a `<BlokkliField>` inside it address the block's fields. Use it in a field with
+`proxy-mode="slot"`, whose slot renders the shown block in its own layout; see
+[Rendering the Shown Block Yourself](/define-blokkli/proxy-mode#rendering-the-shown-block-yourself).
+
+```vue
+<template>
+  <BlokkliItem :key="item.uuid" v-bind="item">
+    <div class="grid grid-cols-2">
+      <img :src="item.props.imageUrl" alt="" />
+      <h3 v-blokkli-editable:field_title>{{ item.props.title }}</h3>
+    </div>
+  </BlokkliItem>
+</template>
+```
+
+- **Key it by the block's uuid.** It resolves its component and its context when
+  it's created, so a `<BlokkliItem>` reused for another block keeps the first
+  one's.
+- **One per block,** around all the places its markup is in. While editing, its
+  first element is the block's element: it must be an element or a component
+  with a single root.
+- On the site, it renders the slot with the block's context.
+
 ## Notes
 
 - Must be used inside a `BlokkliProvider` component.

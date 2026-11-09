@@ -130,7 +130,7 @@ floating header field overlapping a content field).
 
 ### proxyMode
 
-- **Type:** `boolean`
+- **Type:** `boolean | 'slot'`
 - **Required:** No
 - **Default:** `false`
 
@@ -143,6 +143,12 @@ per block, and below it the block the field shows, as a real block. See
 While editing, `class` goes on the element that holds the band and the block;
 `tag`, `listClass`, `editClass` and `nonEmptyClass` go on the list that holds
 the block.
+
+With `'slot'`, the default slot renders the shown block while editing too, below
+the band, in the field's own layout. See
+[Rendering the Shown Block Yourself](/define-blokkli/proxy-mode#rendering-the-shown-block-yourself).
+`tag`, `listClass`, `editClass` and `nonEmptyClass` then do nothing, as on the
+site.
 
 ### shouldRenderItem
 
@@ -164,9 +170,16 @@ The default slot receives:
 
 The list of blocks after filtering (visibility, options, etc.).
 
+#### shownIndex
+
+- **Type:** `number | null`
+
+With `proxy-mode="slot"`, while editing: the index in `items` of the block the
+field shows. `null` on the site, in the preview and for an empty field.
+
 ### after
 
-Rendered after the blocks. Receives the same props as the default slot.
+Rendered after the blocks. Receives `items`.
 
 ## Examples
 

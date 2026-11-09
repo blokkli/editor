@@ -106,6 +106,33 @@ field_paragraphs:
           en: '<p>Both. The documents are available in German and French, and you speak in your own language. The mayor summarises each contribution in the other language.</p>'
           de: '<p>In beiden. Die Unterlagen gibt es auf Deutsch und auf Französisch, und Sie sprechen in Ihrer Sprache. Die Gemeindepräsidentin fasst jede Wortmeldung in der anderen Sprache zusammen.</p>'
           fr: '<p>Dans les deux. Les documents existent en allemand et en français, et vous vous exprimez dans votre langue. La maire résume chaque intervention dans l''autre langue.</p>'
+  - type: story
+    key: blocks-story
+    options: { layout: split }
+    field_title: { en: Blockingen then, de: Blockingen damals, fr: Bloquens autrefois }
+    field_paragraphs:
+      - type: teaser
+        field_title: { en: A fishing village, de: Ein Fischerdorf, fr: Un village de pêcheurs }
+        field_lead:
+          en: 'Around 1900, the fishermen pulled their boats up on the shore below the church.'
+          de: 'Um 1900 zogen die Fischer ihre Boote unterhalb der Kirche ans Ufer.'
+          fr: 'Vers 1900, les pêcheurs tiraient leurs barques sur la rive, au pied de l''église.'
+        field_media: { media: lakeshore-1900 }
+        field_link: { node: history }
+      - type: image
+        field_media: { media: old-town-lane-1930 }
+        field_caption: { en: A lane in the old town around 1930, de: Eine Altstadtgasse um 1930, fr: Une ruelle de la vieille ville vers 1930 }
+      - type: accordion
+        field_title:
+          en: 'What is left of it?'
+          de: 'Was ist davon geblieben?'
+          fr: 'Qu''en reste-t-il ?'
+        field_paragraphs:
+          - type: text
+            field_text:
+              en: '<p>The church, the lanes of the old town and two of the boat houses. The fishermen''s nets now hang in the museum.</p>'
+              de: '<p>Die Kirche, die Gassen der Altstadt und zwei der Bootshäuser. Die Netze der Fischer hängen heute im Museum.</p>'
+              fr: '<p>L''église, les ruelles de la vieille ville et deux des hangars à bateaux. Les filets des pêcheurs sont aujourd''hui au musée.</p>'
   - type: steps
     key: blocks-steps
     field_paragraphs:

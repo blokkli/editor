@@ -98,6 +98,8 @@ const BLOCKS: Record<string, Picture> = {
     },
   },
   steps: { key: 'blocks-steps', layout: 450 },
+  // Its top: the title and the first section, its picture beside its text.
+  story: { key: 'blocks-story', layout: 780 },
   table: { key: 'blocks-table', layout: 600, width: 360, align: 'start' },
   teaser: { key: 'blocks-teaser', layout: 1200, blockWidth: 330, width: 570 },
   teaser_list: {

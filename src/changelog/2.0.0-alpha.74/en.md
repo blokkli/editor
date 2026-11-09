@@ -45,6 +45,9 @@ on the page:
   the pages while the slider is selected. Drag pages to change their order, or
   drag blocks onto the bar.
 - If there are more pages than fit, the last ones are cut off.
+- Where the website supports it, a block with a layout of its own keeps it while
+  you edit, for example each section's picture beside its text, and you edit the
+  shown block right there.
 
 This replaces the list that appeared over such blocks while something was
 selected.

@@ -1,5 +1,9 @@
 <template>
-  <slot v-if="!isGlobalProxyMode && !rendersPager" :items="filteredList" />
+  <slot
+    v-if="!isGlobalProxyMode && !rendersPager"
+    :items="filteredList"
+    :shown-index="null"
+  />
   <Component
     :is="DraggableList"
     v-if="rendersEditorList"
@@ -20,7 +24,12 @@
     :tag
     :global-proxy-mode="!!isGlobalProxyMode"
     :should-render-item="shouldRenderItem"
-  />
+  >
+    <!-- The slot renders the shown block below the band. -->
+    <template v-if="rendersSlot" #default="slotProps">
+      <slot v-bind="slotProps" />
+    </template>
+  </Component>
   <component
     :is="tag"
     v-else-if="
@@ -164,10 +173,19 @@ const props = withDefaults(
      * block; `tag`, `listClass`, `editClass` and `nonEmptyClass` go on the list
      * that holds the block. On the site, the slot renders what it wants.
      *
+     * With `'slot'`, the default slot renders the shown block while editing
+     * too, below the band, for a field whose layout matters, such as a scene.
+     * Its `shownIndex` is the index of the block the field shows, and `null` on
+     * the site and in the preview. The slot renders that block as a keyed
+     * `<BlokkliItem>`, with a default slot around the markup that belongs to
+     * it; that markup is then the block, edited in place. Every other block's
+     * `<BlokkliItem>` renders as on the site. What the slot can't show, it
+     * renders as `<BlokkliItem v-bind="item" />`.
+     *
      * Read once: to switch between proxy mode and a normal field, render two
      * fields with `v-if` and `v-else`.
      */
-    proxyMode?: boolean
+    proxyMode?: boolean | 'slot'
 
     /**
      * Determine whether an item should be rendered.
@@ -197,7 +215,14 @@ defineOptions({
 })
 
 defineSlots<{
-  default(props: { items: FieldListItemTyped[] }): any
+  default(props: {
+    items: FieldListItemTyped[]
+    /**
+     * With `proxy-mode="slot"`, while editing: the index of the block the
+     * field shows. Else `null`.
+     */
+    shownIndex: number | null
+  }): any
   after(props: { items: FieldListItemTyped[] }): any
 }>()
 
@@ -238,7 +263,10 @@ const rendersEditorList = !!(
   canEdit &&
   !isOutsideState
 )
-const rendersPager = rendersEditorList && props.proxyMode
+const rendersPager = rendersEditorList && !!props.proxyMode
+
+// The slot renders the shown block below the band.
+const rendersSlot = rendersPager && props.proxyMode === 'slot'
 
 const fieldKey = computed<string>(() => {
   if (canEdit) {

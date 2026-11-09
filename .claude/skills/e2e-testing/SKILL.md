@@ -305,9 +305,12 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
   as readily as anything else.
 - **Pinned dates** must be in the future: Drupal rejects a schedule less than 2
   minutes after its own time.
-- **The content model:** a `page` allows neither `section` nor `call_to_action`,
-  an `editorial` node does; only editorial and office nodes allow fragments (the
-  front page, `home`, is editorial). While editing, a `page` always shows an H2
+- **The content model:** a `page` allows neither `section`, `call_to_action` nor
+  `story`, an `editorial` node does; only editorial and office nodes allow
+  fragments (the front page, `home`, is editorial). The story
+  (`Paragraph/Story`) renders its shown section itself while editing
+  (`proxy-mode="slot"`); its fixture is `nodes/story.yml`
+  (`features/pager/scene.test.ts`). While editing, a `page` always shows an H2
   ("Related topics"); blökkli doesn't manage its `field_related`: the editor
   shows it as it's stored, and it takes no paragraphs. Text fields are `frame`,
   string fields `plain`; a paragraph's `field_title` holds 255 characters at

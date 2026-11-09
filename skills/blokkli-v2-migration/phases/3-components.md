@@ -128,8 +128,10 @@ available within the editor. In the build, this first compiles to
 `const isEditing = false`. Rollup/rolldown then tree shakes any code like
 `<EditorInfo v-if="isEditing">` or `if (isEditing) {}`.
 
-Note that this only works for components that call `defineBlokkli` or
-`defineBlokkliFragment`! In any other code this will ALWAYS resolve to `false`!
+Note that this only works in `.vue` files: in the components that call
+`defineBlokkli` or `defineBlokkliFragment`, and in every `.vue` component they
+import, directly or through Nuxt's auto-imports, which get an editing version
+too. In `.ts` files it ALWAYS resolves to `false`!
 
 ## Fields in proxy mode
 
@@ -148,8 +150,19 @@ Its slot only renders on the site and in the preview.
   `list-class` and `edit-class` go on the list that holds the shown child. In
   proxy mode, they did nothing before.
 - A slot that composes the children into a scene (titles as tabs, the current
-  child's text beside them) loses that composition while editing. Tell the
-  project: the editor shows one child at a time.
+  child's text beside them) loses that composition while editing, unless the
+  field opts in with `proxy-mode="slot"`: its slot then renders below the band
+  while editing too. Ask the project which it wants. To opt in:
+  - render the shown child, `items[shownIndex]`, as a `<BlokkliItem>` keyed by
+    its uuid, with a default slot around all of the child's markup; it's then
+    the child, edited in place. `shownIndex` is `null` on the site;
+  - render what the layout can't show as
+    `<BlokkliItem :key="item.uuid" v-bind="item" />`, the child's own component;
+  - remove what the project built for it: finding the selected child itself
+    (`useBlokkli()` and `selection.uuids`), an overview of the children, a
+    button that adds children (the band and the add buttons do that now).
+
+  See "Rendering the Shown Block Yourself" in the proxy mode docs.
 
 ## Done when
 

@@ -42,7 +42,12 @@
     :field-data="data"
     :list-class
     :is-muted
-  />
+    :renders-slot="proxyMode === 'slot'"
+  >
+    <template v-if="proxyMode === 'slot'" #default="slotProps">
+      <slot v-bind="slotProps" />
+    </template>
+  </PagerList>
   <Component
     :is="tag"
     v-else
@@ -113,7 +118,8 @@ const props = withDefaults(
     allowedFragments?: BlokkliFragmentName[] | BlokkliFragmentName
     dropAlignment?: FieldDropAlignment
     zIndex?: number | string
-    proxyMode?: boolean
+    /** `'slot'`: the field's slot renders the shown block (PagerList). */
+    proxyMode?: boolean | 'slot'
     globalProxyMode?: boolean
     nestingLevel: number
     listClass?: VueClassProp
@@ -133,6 +139,14 @@ const props = withDefaults(
 )
 
 const attrs = useAttrs()
+
+defineSlots<{
+  /** The field's slot, for a field in proxy mode that renders the shown block. */
+  default(props: {
+    items: FieldListItemTyped[]
+    shownIndex: number | null
+  }): any
+}>()
 
 provide(INJECT_IS_EDITING, true)
 

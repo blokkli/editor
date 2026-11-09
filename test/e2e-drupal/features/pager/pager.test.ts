@@ -1,16 +1,11 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
-import type { Locator, Page } from 'playwright-core'
+import type { Page } from 'playwright-core'
 import type {
   Coord,
   Rectangle,
 } from '../../../../src/runtime/editor/types/geometry'
-import {
-  blockViewportRect,
-  fieldUuids,
-  nextFrames,
-  selectBlock,
-} from '../../support/blocks'
+import { blockViewportRect, fieldUuids, nextFrames } from '../../support/blocks'
 import { emitEvent } from '../../support/events'
 import { clickItemAction } from '../../support/itemActions'
 import {
@@ -25,6 +20,15 @@ import {
   revertAllChanges,
   withApp,
 } from '../../support/session'
+import {
+  band,
+  centerBand,
+  clickPage,
+  pageOf,
+  registeredAs,
+  show,
+} from '../../support/pager'
+import { selectedUuids } from '../../support/selection'
 import { openSidebar } from '../../support/sidebar'
 import {
   closeViewOptions,
@@ -54,43 +58,6 @@ const LONG_IMAGES = Array.from({ length: 20 }, (_, i) =>
 )
 const OUTRO = seedUuid('paragraph', 'pager-outro')
 
-/** The band of a gallery. */
-function band(page: Page, gallery: string): Locator {
-  return page.locator(`[data-bk-uuid="${gallery}"] [data-test="field-pager"]`)
-}
-
-/** The page of a block in its band. */
-function pageOf(page: Page, uuid: string): Locator {
-  return page.locator(`[data-test="field-pager-page"][data-bk-uuid="${uuid}"]`)
-}
-
-/**
- * The element the editor registered for a block: its page in the band, its
- * real element, or nothing.
- */
-function registeredAs(
-  page: Page,
-  uuid: string,
-): Promise<'page' | 'block' | null> {
-  return page.evaluate((uuid) => {
-    const element = window.__BLOKKLI__!.app!.dom.registeredBlocks.value[uuid]
-    if (!element) {
-      return null
-    }
-    return element.dataset.test === 'field-pager-page' ? 'page' : 'block'
-  }, uuid)
-}
-
-function selectedUuids(page: Page): Promise<string[]> {
-  return withApp(page, (app) => [...app.selection.uuids.value])
-}
-
-/** Show a block of a gallery, by selecting it, and wait until it's rendered. */
-async function show(page: Page, uuid: string): Promise<void> {
-  await selectBlock(page, uuid)
-  await expect.poll(() => registeredAs(page, uuid)).toBe('block')
-}
-
 /** The centre of a block's element in the viewport, once it's in view. */
 async function centerOf(page: Page, uuid: string): Promise<Coord> {
   await emitEvent(page, 'scrollIntoView', { uuid, immediate: true })
@@ -100,38 +67,6 @@ async function centerOf(page: Page, uuid: string): Promise<Coord> {
     throw new Error(`The block ${uuid} has no rectangle.`)
   }
   return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 }
-}
-
-/**
- * Centre a gallery's band in the viewport: dragging near an edge scrolls the
- * page, which moves the drop slots away from the pointer.
- */
-async function centerBand(page: Page, gallery: string): Promise<void> {
-  await page.evaluate((key) => {
-    const app = window.__BLOKKLI__!.app!
-    app.dom.refreshFieldRect(key)
-    const rect = app.dom.getFieldRect(key)
-    if (rect) {
-      app.eventBus.emit('scrollIntoView', { rect, immediate: true })
-    }
-  }, `${gallery}:${FIELD}`)
-  await nextFrames(page)
-}
-
-/** Click a page with the real pointer, holding a modifier key. */
-async function clickPage(
-  page: Page,
-  uuid: string,
-  modifier?: 'Shift' | 'Control',
-): Promise<void> {
-  const box = (await pageOf(page, uuid).boundingBox())!
-  if (modifier) {
-    await page.keyboard.down(modifier)
-  }
-  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2)
-  if (modifier) {
-    await page.keyboard.up(modifier)
-  }
 }
 
 /** The selected blocks, sorted, for comparing with a set. */

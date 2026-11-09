@@ -19,6 +19,7 @@ dependencies:
     - paragraphs.paragraphs_type.link_list
     - paragraphs.paragraphs_type.section
     - paragraphs.paragraphs_type.steps
+    - paragraphs.paragraphs_type.story
     - paragraphs.paragraphs_type.table
     - paragraphs.paragraphs_type.teaser
     - paragraphs.paragraphs_type.teaser_list
@@ -55,6 +56,7 @@ settings:
       link_list: link_list
       section: section
       steps: steps
+      story: story
       table: table
       teaser: teaser
       teaser_list: teaser_list

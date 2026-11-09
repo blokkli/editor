@@ -1,0 +1,11 @@
+fragment paragraphStory on ParagraphStory {
+  title: fieldTitle
+  paragraphs: fieldParagraphs {
+    ...paragraphsFieldItem
+    props {
+      ...paragraphTeaser
+      ...paragraphImage
+      ...paragraphAccordion
+    }
+  }
+}

@@ -375,6 +375,7 @@ describe('The selection add buttons', async () => {
         'link_list',
         'section',
         'steps',
+        'story',
         'table',
         'teaser',
         'teaser_list',
