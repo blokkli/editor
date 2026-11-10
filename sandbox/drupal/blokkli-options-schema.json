@@ -731,6 +731,14 @@
             "en": "Split",
             "fr": "Partagé"
           }
+        },
+        "tabs": {
+          "icon": "bk_mdi_side_navigation",
+          "label": {
+            "de": "Tabs",
+            "en": "Tabs",
+            "fr": "Onglets"
+          }
         }
       },
       "type": "radios"

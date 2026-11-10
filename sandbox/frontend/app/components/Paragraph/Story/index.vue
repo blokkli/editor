@@ -19,6 +19,12 @@
         :items
         :shown-index
       />
+      <ParagraphStoryTabs
+        v-else-if="options.layout === 'tabs'"
+        :items
+        :shown-index
+        :label="title"
+      />
       <ParagraphStorySplit v-else :items :shown-index />
     </BlokkliField>
   </section>
@@ -47,6 +53,10 @@ const block = defineBlokkli({
         split: {
           label: { en: 'Split', de: 'Geteilt', fr: 'Partagé' },
           icon: 'bk_mdi_vertical_split',
+        },
+        tabs: {
+          label: { en: 'Tabs', de: 'Tabs', fr: 'Onglets' },
+          icon: 'bk_mdi_side_navigation',
         },
         images: {
           label: { en: 'Images', de: 'Bilder', fr: 'Images' },

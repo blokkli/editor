@@ -1,11 +1,14 @@
-# Two stories (sandbox/frontend's Paragraph/Story), at /en/story. While editing,
-# their field renders the shown section itself (proxy-mode="slot",
+# Three stories (sandbox/frontend's Paragraph/Story), at /en/story. While
+# editing, their field renders the shown section itself (proxy-mode="slot",
 # features/pager/scene.test.ts):
 # - the split story: each section's visual and text in one block. Its accordion,
 #   between a teaser and an image, holds a text and a gallery as a slider, a
 #   pager of its own;
 # - the images story: only its image sections, all of them rendered, and its
-#   teaser as a teaser, since the layout can't show it.
+#   teaser as a teaser, since the layout can't show it;
+# - the tabs story: the titles of its teaser and accordion and the caption of
+#   its first picture as tabs, each section's content beside them. Its last
+#   picture has no caption, so it gets no tab.
 key: story
 type: editorial
 title: Story
@@ -62,6 +65,31 @@ field_paragraphs:
         key: story-images-teaser
         field_title: A teaser among the pictures
         field_link: { node: blocks }
+  - type: story
+    key: story-tabs
+    options: { layout: tabs }
+    field_title: The tabs
+    field_paragraphs:
+      - type: teaser
+        key: story-tabs-teaser
+        field_title: The teaser's tab
+        field_lead: The teaser's lead.
+        field_media: { media: lake }
+        field_link: { node: blocks }
+      - type: image
+        key: story-tabs-image
+        field_media: { media: hills }
+        field_caption: The picture's tab
+      - type: accordion
+        key: story-tabs-accordion
+        field_title: The accordion's tab
+        field_paragraphs:
+          - type: text
+            key: story-tabs-accordion-text
+            field_text: '<p>Inside the accordion.</p>'
+      - type: image
+        key: story-tabs-uncaptioned
+        field_media: { media: lake }
   - type: text
     key: story-outro
     field_text: '<p>After the stories.</p>'

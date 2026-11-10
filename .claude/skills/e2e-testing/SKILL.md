@@ -309,12 +309,13 @@ Where a helper takes a field, it defaults to `field_paragraphs`.
   `story`, an `editorial` node does; only editorial and office nodes allow
   fragments (the front page, `home`, is editorial). The story
   (`Paragraph/Story`) renders its shown section itself while editing
-  (`proxy-mode="slot"`); its fixture is `nodes/story.yml`
-  (`features/pager/scene.test.ts`). While editing, a `page` always shows an H2
-  ("Related topics"); blökkli doesn't manage its `field_related`: the editor
-  shows it as it's stored, and it takes no paragraphs. Text fields are `frame`,
-  string fields `plain`; a paragraph's `field_title` holds 255 characters at
-  most. A converted paragraph gets a new UUID.
+  (`proxy-mode="slot"`); its fixture is `nodes/story.yml`, a story per layout
+  (split, images, tabs; `features/pager/scene.test.ts`). While editing, a `page`
+  always shows an H2 ("Related topics"); blökkli doesn't manage its
+  `field_related`: the editor shows it as it's stored, and it takes no
+  paragraphs. Text fields are `frame`, string fields `plain`; a paragraph's
+  `field_title` holds 255 characters at most. A converted paragraph gets a new
+  UUID.
 - **Media:** numeric IDs follow the order of creation; don't rely on them.
   Adding one through the adapter needs its ID: find it in the media library by
   its name (`mediaLibraryGetResults`, see `features/analyze/alt-text`).

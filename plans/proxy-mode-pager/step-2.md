@@ -211,7 +211,8 @@ places:**
   selects the section; the story is selected through the band's free space.
 - **In the tabs layout,** only the content column can be wrapped: the list on
   the left holds every section's title. The list is decoration, and pressing it
-  selects the story.
+  selects the story. The sandbox's story has this layout too (`Story/Tabs.vue`,
+  added 2026-11-09).
 - **Possible follow-up** (decision 2's B): a `<BlokkliItem>` in each place. The
   first is the block's element, and the others count as the block, as the shown
   page does. Places would better be named than taken in document order, as
@@ -299,7 +300,11 @@ What the story would change, to check the API against the real case.
   - **images:** every image section stays mounted, the ones not shown hidden
     with a class (not `v-show`: the site renders on the server, under the CSP),
     so a mounted `<BlokkliItem>` switches. A section that isn't an image is a
-    plain `<BlokkliItem>`: what the layout can't show.
+    plain `<BlokkliItem>`: what the layout can't show;
+  - **tabs** (added 2026-11-09, as svv's): the titles of the teasers and
+    accordions and the images' captions as tabs, the shown section's content
+    beside them in its `<BlokkliItem>`. The list is the story's. A section
+    without a title gets no tab: while it's shown, it's a plain `<BlokkliItem>`.
 - **What it brings:** two places per section, a nested field in a section, a
   layout that leaves children out, items that switch, real content for visitors,
   and E2E fixtures.

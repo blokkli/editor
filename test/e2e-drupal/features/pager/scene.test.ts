@@ -40,8 +40,9 @@ import {
  *
  * On content/nodes/story.yml: a text; a story in the split layout (a teaser, an
  * accordion holding a text and a gallery as a slider, an image); a story in the
- * images layout (two images and a teaser, which the layout can't show); a
- * text.
+ * images layout (two images and a teaser, which the layout can't show); a story
+ * in the tabs layout (a teaser, a picture with a caption, an accordion holding
+ * a text, a picture without one); a text.
  */
 
 const STORY_EDITOR_PATH = editorPath('/en/story', 'story')
@@ -57,10 +58,31 @@ const IMAGE = seedUuid('paragraph', 'story-image')
 const PICTURES_STORY = seedUuid('paragraph', 'story-images')
 const PICTURES = [1, 2].map((i) => seedUuid('paragraph', `story-images-${i}`))
 const PICTURES_TEASER = seedUuid('paragraph', 'story-images-teaser')
+const TABS_STORY = seedUuid('paragraph', 'story-tabs')
+const TABS_TEASER = seedUuid('paragraph', 'story-tabs-teaser')
+const TABS_IMAGE = seedUuid('paragraph', 'story-tabs-image')
+const TABS_ACCORDION = seedUuid('paragraph', 'story-tabs-accordion')
+const TABS_ACCORDION_TEXT = seedUuid('paragraph', 'story-tabs-accordion-text')
+const TABS_UNCAPTIONED = seedUuid('paragraph', 'story-tabs-uncaptioned')
 
 /** A section as the story renders it. */
 function section(page: Page, uuid: string): Locator {
   return page.locator(`[data-test="story-section"][data-test-uuid="${uuid}"]`)
+}
+
+/** A tab of the tabs story. */
+function tab(page: Page, uuid: string): Locator {
+  return page.locator(`[data-test="story-tab"][data-test-uuid="${uuid}"]`)
+}
+
+/** The tabs of the tabs story, in order, and which one is active. */
+function tabs(page: Page): Promise<{ uuid: string; active: boolean }[]> {
+  return page.locator('[data-test="story-tab"]').evaluateAll((elements) =>
+    elements.map((element) => ({
+      uuid: (element as HTMLElement).dataset.testUuid!,
+      active: (element as HTMLElement).dataset.testActive === 'true',
+    })),
+  )
 }
 
 /** Whether the editor registered the story's markup of a section as its element. */
@@ -71,6 +93,21 @@ function registeredAsSection(page: Page, uuid: string): Promise<boolean> {
       `[data-test="story-section"][data-test-uuid="${uuid}"]`,
     )
   }, uuid)
+}
+
+/** Whether the element the editor registered for a block is in a story's layout. */
+function registeredInScene(
+  page: Page,
+  uuid: string,
+  layout: 'split' | 'images' | 'tabs',
+): Promise<boolean> {
+  return page.evaluate(
+    ({ uuid, layout }) =>
+      !!window.__BLOKKLI__!.app!.dom.registeredBlocks.value[uuid]?.closest(
+        `[data-test="story-scene"][data-test-layout="${layout}"]`,
+      ),
+    { uuid, layout },
+  )
 }
 
 /**
@@ -113,11 +150,13 @@ async function scrollTo(page: Page, uuid: string): Promise<void> {
 }
 
 /**
- * Double-click the middle of an element with the real pointer, once the editor
- * has scrolled it into the middle of the viewport: a section of the story can
- * be wider than the viewport.
+ * The middle of an element, once the editor has scrolled it into the middle of
+ * the viewport: a section of the story can be wider than the viewport.
  */
-async function doubleClick(page: Page, locator: Locator): Promise<void> {
+async function middleOf(
+  page: Page,
+  locator: Locator,
+): Promise<{ x: number; y: number }> {
   await locator.evaluate((el) => {
     const app = window.__BLOKKLI__!.app!
     const rect = app.ui.getAbsoluteElementRect(el as HTMLElement)
@@ -125,7 +164,13 @@ async function doubleClick(page: Page, locator: Locator): Promise<void> {
   })
   await nextFrames(page)
   const box = (await locator.boundingBox())!
-  await page.mouse.dblclick(box.x + box.width / 2, box.y + box.height / 2)
+  return { x: box.x + box.width / 2, y: box.y + box.height / 2 }
+}
+
+/** Double-click the middle of an element with the real pointer. */
+async function doubleClick(page: Page, locator: Locator): Promise<void> {
+  const { x, y } = await middleOf(page, locator)
+  await page.mouse.dblclick(x, y)
 }
 
 /**
@@ -295,14 +340,7 @@ describe('A field in proxy mode whose slot renders the shown block', async () =>
     await show(page, PICTURES_TEASER)
 
     expect(await registeredAsSection(page, PICTURES_TEASER)).toBe(false)
-    const inStory = await page.evaluate(
-      (uuid) =>
-        !!window.__BLOKKLI__!.app!.dom.registeredBlocks.value[uuid]?.closest(
-          '[data-test="story-scene"][data-test-layout="images"]',
-        ),
-      PICTURES_TEASER,
-    )
-    expect(inStory).toBe(true)
+    expect(await registeredInScene(page, PICTURES_TEASER, 'images')).toBe(true)
     expect(await gapToEdge(page, PICTURES_TEASER)).toBe(0)
     expect(await section(page, PICTURES[0]!).isVisible()).toBe(false)
   })
@@ -321,5 +359,63 @@ describe('A field in proxy mode whose slot renders the shown block', async () =>
     expect(await section(page, PICTURES[1]!).isVisible()).toBe(true)
     expect(await editableFields(page, PICTURES[1]!)).toEqual(['field_caption'])
     expect(await editableFields(page, PICTURES[0]!)).toEqual([])
+  })
+
+  test("the tabs layout marks the shown section's tab, and its content is the block", async () => {
+    await show(page, TABS_ACCORDION)
+
+    // The last picture has no caption, so no tab.
+    expect(await tabs(page)).toEqual([
+      { uuid: TABS_TEASER, active: false },
+      { uuid: TABS_IMAGE, active: false },
+      { uuid: TABS_ACCORDION, active: true },
+    ])
+    expect(await registeredAsSection(page, TABS_ACCORDION)).toBe(true)
+    expect(await registeredAs(page, TABS_TEASER)).toBe('page')
+    await expect
+      .poll(() =>
+        section(page, TABS_ACCORDION)
+          .locator(`[data-bk-uuid="${TABS_ACCORDION_TEXT}"]`)
+          .count(),
+      )
+      .toBe(1)
+  })
+
+  test("a picture's caption is its tab, and the picture is its content", async () => {
+    await show(page, TABS_IMAGE)
+
+    expect(await tab(page, TABS_IMAGE).textContent()).toContain(
+      "The picture's tab",
+    )
+    expect(await tab(page, TABS_IMAGE).getAttribute('data-test-active')).toBe(
+      'true',
+    )
+    expect(await registeredAsSection(page, TABS_IMAGE)).toBe(true)
+    expect(await section(page, TABS_IMAGE).locator('img').count()).toBe(1)
+  })
+
+  test("a title in the tab list is the story's: pressing it selects the story", async () => {
+    await show(page, TABS_TEASER)
+    await emitEvent(page, 'select:unselect')
+
+    // Only the teaser's lead is in its block; its title is in the list, which
+    // registers nothing.
+    expect(await editableFields(page, TABS_TEASER)).toEqual(['field_lead'])
+    expect(await editableFields(page, TABS_STORY)).toEqual(['field_title'])
+
+    const { x, y } = await middleOf(page, tab(page, TABS_ACCORDION))
+    await page.mouse.click(x, y)
+    await expect.poll(() => selectedUuids(page)).toEqual([TABS_STORY])
+    // The teaser stays shown: the accordion's page shows the accordion.
+    expect(await registeredAsSection(page, TABS_TEASER)).toBe(true)
+  })
+
+  test('a picture without a caption gets no tab, and shows as its type, nested in the story', async () => {
+    await show(page, TABS_UNCAPTIONED)
+
+    expect(await registeredAsSection(page, TABS_UNCAPTIONED)).toBe(false)
+    expect(await registeredInScene(page, TABS_UNCAPTIONED, 'tabs')).toBe(true)
+    expect((await tabs(page)).filter((tab) => tab.active)).toEqual([])
+    expect(await gapToEdge(page, TABS_UNCAPTIONED)).toBe(0)
   })
 })

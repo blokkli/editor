@@ -133,6 +133,41 @@ field_paragraphs:
               en: '<p>The church, the lanes of the old town and two of the boat houses. The fishermen''s nets now hang in the museum.</p>'
               de: '<p>Die Kirche, die Gassen der Altstadt und zwei der Bootshäuser. Die Netze der Fischer hängen heute im Museum.</p>'
               fr: '<p>L''église, les ruelles de la vieille ville et deux des hangars à bateaux. Les filets des pêcheurs sont aujourd''hui au musée.</p>'
+  - type: story
+    key: blocks-story-tabs
+    options: { layout: tabs }
+    field_title: { en: Blockingen today, de: Blockingen heute, fr: Bloquens aujourd'hui }
+    field_paragraphs:
+      - type: teaser
+        field_title: { en: By the lake, de: Am See, fr: Au bord du lac }
+        field_lead:
+          en: 'In summer, the town meets at the lakeside pool and on the jetty.'
+          de: 'Im Sommer trifft sich das Dorf im Strandbad und auf dem Steg.'
+          fr: 'En été, la commune se retrouve à la plage et sur le ponton.'
+        field_media: { media: lakeside-pool }
+        field_link: { node: lakeside-pool }
+      - type: teaser
+        field_title: { en: In the old town, de: In der Altstadt, fr: Dans la vieille ville }
+        field_lead:
+          en: 'On Saturdays, the market fills the lanes where the fishermen used to live.'
+          de: 'Samstags füllt der Markt die Gassen, in denen früher die Fischer wohnten.'
+          fr: 'Le samedi, le marché anime les ruelles où vivaient autrefois les pêcheurs.'
+        field_media: { media: market }
+        field_link: { node: old-town-tour }
+      - type: image
+        field_media: { media: town-from-lake }
+        field_caption: { en: Blockingen from the lake, de: Blockingen vom See aus, fr: Bloquens vu du lac }
+      - type: accordion
+        field_title:
+          en: 'What''s on in summer?'
+          de: 'Was läuft im Sommer?'
+          fr: 'Que se passe-t-il en été ?'
+        field_paragraphs:
+          - type: text
+            field_text:
+              en: '<p>The open-air cinema on the village square in July, the regatta in August. All dates are in the events calendar.</p>'
+              de: '<p>Im Juli das Openair-Kino auf dem Dorfplatz, im August die Regatta. Alle Daten finden Sie im Veranstaltungskalender.</p>'
+              fr: '<p>En juillet, le cinéma en plein air sur la place du village, en août, la régate. Toutes les dates figurent dans l''agenda des manifestations.</p>'
   - type: steps
     key: blocks-steps
     field_paragraphs:
