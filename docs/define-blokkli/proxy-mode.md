@@ -52,6 +52,11 @@ The slot renders on the site and in the preview, so you render the nested blocks
 yourself, as the `<Carousel>` does in this example. Use `<BlokkliItem>` to
 render a block, or render components from the items' props however you wish.
 
+A `<BlokkliItem>` of one of the field's blocks gets its index and its parent's
+bundle from the field, as the blocks of any other field do: `renderFor` and the
+block's `parentType` see it nested in your block. Pass `index` or `parent-type`
+to change them.
+
 While editing, the slot doesn't render: the editor renders the band and the
 block the field shows. A field whose layout matters can render the shown block
 itself (below).

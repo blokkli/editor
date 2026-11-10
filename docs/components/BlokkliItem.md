@@ -42,19 +42,23 @@ The bundle (block type) of the block, used to resolve which component to render.
 
 - **Type:** `number`
 - **Required:** No
-- **Default:** `0`
+- **Default:** in a field's slot, the block's index in the field; else `0`
 
 The index of the block within its field. This is passed automatically when
-rendering via `BlokkliField`.
+rendering via `BlokkliField`. In the slot of a field, a `<BlokkliItem>` of one
+of the field's blocks gets it from the field.
 
 ### parentType
 
 - **Type:** `string`
 - **Required:** No
-- **Default:** `''`
+- **Default:** in a field's slot, the bundle of the block that holds the field;
+  else `''`
 
 The bundle of the parent block, used for context-based component rendering (e.g.
-rendering a different component depending on the parent block type).
+rendering a different component depending on the parent block type). In the slot
+of a field, a `<BlokkliItem>` of one of the field's blocks gets it from the
+field, as the blocks `BlokkliField` renders itself do.
 
 ### isEditing
 

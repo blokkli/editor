@@ -145,6 +145,12 @@ Its slot only renders on the site and in the preview.
   slider's buttons) no longer runs: remove it.
 - `<BlokkliItem>` in the slot is fine now. Its directives no longer clash with
   the editor's list.
+- A `<BlokkliItem>` of one of the field's children gets its index and its
+  parent's bundle from the field now, on the site too: before, the slot's
+  children rendered as if they were at the top of the page, at index 0. A child
+  whose component checks `parentType` or has a `renderFor` variant for the
+  parent renders as nested, as the editor renders it. Check those components on
+  the site; drop a `parent-type` or `index` passed only to make up for it.
 - A `proxy.vue` only renders in the editor's Structure view now. Keep it there.
 - `class` goes on the element that holds the band and the shown child. `tag`,
   `list-class` and `edit-class` go on the list that holds the shown child. In

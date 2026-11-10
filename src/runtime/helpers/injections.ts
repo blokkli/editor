@@ -130,6 +130,15 @@ export const INJECT_FIELD_LIST_BLOCKS = Symbol(
 ) as InjectionKey<ComputedRef<FieldListItemTyped[]>>
 
 /**
+ * The type of the block that holds the field, '' for a field of the page. The
+ * field passes it to the blocks it renders itself; a `<BlokkliItem>` of one of
+ * its blocks that its slot renders gets it from here (getItemPlacement).
+ */
+export const INJECT_FIELD_PARENT_TYPE = Symbol(
+  'blokkli_field_parent_type',
+) as InjectionKey<string>
+
+/**
  * Whether the block renders in the slot of a field in proxy mode as it does on
  * the site: on the site, in the preview, in a field the editor can't edit, or,
  * in a field whose slot renders the shown block (`proxy-mode="slot"`), as a

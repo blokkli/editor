@@ -31,7 +31,10 @@
         </figcaption>
       </figure>
     </BlokkliItem>
-    <!-- A section this layout can't show, while it's shown: its own type. -->
+    <!--
+      A section this layout can't show, while it's shown: its own type, nested
+      in the story, as the field renders its blocks.
+    -->
     <BlokkliItem v-if="otherShown" :key="otherShown.uuid" v-bind="otherShown" />
   </div>
 </template>

@@ -169,7 +169,8 @@ places:**
 
 - **On the site,** it renders the slot with its context and registers nothing:
   the same template serves both. `index` and `parentType` are what the project
-  passes, as on the site, so the editor renders what the site renders.
+  passes, else what the field passes to the blocks it renders itself (decision
+  6), on the site as while editing.
 
 ## Only the shown block is a block
 
@@ -412,3 +413,13 @@ What the story would change, to check the API against the real case.
    - **A:** a story block, with real content;
    - **B:** a block for the tests only, like the widget;
    - **C:** only the gallery, opted in.
+6. ~~A `<BlokkliItem>`'s index and parent type in a slot~~: decided, A, the
+   field fills them in (the user, 2026-11-09). The sandbox's tabs layout showed
+   it: a picture that the slot rendered as its own type took itself for a block
+   at the top of the page and kept a detail page's sidebar free, since the
+   slot's `items` have no parent type. A `<BlokkliItem>` of one of the field's
+   blocks now gets its index in the field and the field's parent type when it
+   isn't given them (`getItemPlacement`), on the site too. The options were:
+   - **A:** the field fills them in;
+   - **B:** the slot's items carry them;
+   - **C:** projects pass them.

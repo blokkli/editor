@@ -6,7 +6,7 @@
     :bundle="bundle"
     :uuid="uuid"
     :field-list-type="fieldListType"
-    :parent-type="parentType"
+    :parent-type="placement.parentType"
     :item-props
   />
   <!--
@@ -56,13 +56,16 @@ import {
   INJECT_ALL_COMPONENTS_CHUNK,
   INJECT_BLOCK_ITEM,
   INJECT_ENTITY_CONTEXT,
+  INJECT_FIELD_LIST_BLOCKS,
   INJECT_FIELD_LIST_TYPE,
+  INJECT_FIELD_PARENT_TYPE,
   INJECT_FIELD_USES_PROXY,
   INJECT_GLOBAL_PROXY_MODE,
   INJECT_ITEM_PROPS_OVERRIDE,
   INJECT_PAGER_SLOT,
   INJECT_PROVIDER_TYPE,
 } from '../helpers/injections'
+import { getItemPlacement } from '../helpers/itemPlacement'
 import type { BlockBundleWithNested } from '#blokkli-build/generated-types'
 import { fragmentBlockBundle, itemEntityType } from '#blokkli-build/config'
 import type {
@@ -80,15 +83,16 @@ const componentProps = withDefaults(
     editContext?: BlockEditContext
     props?: any
 
-    // From BlokkliField.
+    // From BlokkliField. In the field's slot, one of its blocks gets the index
+    // and the parent type from the field when they aren't passed.
     index?: number
     parentType?: string
     isEditing?: boolean
   }>(),
   {
-    index: 0,
+    index: undefined,
     isEditing: false,
-    parentType: '',
+    parentType: undefined,
     options: () => ({}),
     props: () => ({}),
     editContext: undefined,
@@ -103,6 +107,27 @@ const fieldUsesProxy = inject(INJECT_FIELD_USES_PROXY, false)
 const isGlobalProxyMode = inject(INJECT_GLOBAL_PROXY_MODE, null)
 const fieldListType = inject(INJECT_FIELD_LIST_TYPE, undefined)
 const providerType = inject(INJECT_PROVIDER_TYPE, undefined)
+const fieldBlocks = inject(INJECT_FIELD_LIST_BLOCKS, null)
+const fieldParentType = inject(INJECT_FIELD_PARENT_TYPE, '')
+
+// Its index and the type of the block holding its field: as passed, or, for a
+// block of the field whose slot renders it, as the field passes them to the
+// blocks it renders itself.
+const placement = computed(() =>
+  getItemPlacement(
+    {
+      uuid: componentProps.uuid,
+      index: componentProps.index,
+      parentType: componentProps.parentType,
+    },
+    fieldBlocks
+      ? {
+          parentType: fieldParentType,
+          getUuids: () => fieldBlocks.value.map((block) => block.uuid),
+        }
+      : null,
+  ),
+)
 
 // Provided by the editor's pager to the slot of a field in proxy mode that
 // renders the shown block itself. The blocks of fields nested in it inherit it,
@@ -149,7 +174,7 @@ const component =
         componentProps.bundle,
         {
           fieldListType: fieldListType?.value || 'default',
-          parentBundle: componentProps.parentType,
+          parentBundle: placement.value.parentType,
           providerType,
         },
         allComponentsChunk,
@@ -160,13 +185,13 @@ const blockNotImplemented =
     ? defineAsyncComponent(() => import('./Blocks/NotImplemented/index.vue'))
     : null
 
-const index = computed<number>(() => componentProps.index)
+const blockIndex = computed<number>(() => placement.value.index)
 const item = computed<InjectedBlokkliItem>(() => ({
-  index,
+  index: blockIndex,
   uuid: componentProps.uuid || '',
   options: componentProps.options || {},
   isEditing: isEditingBlock.value,
-  parentType: componentProps.parentType as BlockBundleWithNested,
+  parentType: placement.value.parentType as BlockBundleWithNested,
   fragmentName:
     componentProps.bundle === fragmentBlockBundle
       ? componentProps.props?.name

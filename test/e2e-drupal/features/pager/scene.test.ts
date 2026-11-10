@@ -73,6 +73,23 @@ function registeredAsSection(page: Page, uuid: string): Promise<boolean> {
   }, uuid)
 }
 
+/**
+ * How far the content of the element registered for a block ends before the
+ * right edge of the story's layout: 0 when it fills its column, as a block
+ * nested in the story does. One at the top of the page brings its container,
+ * whose padding narrows it.
+ */
+function gapToEdge(page: Page, uuid: string): Promise<number> {
+  return page.evaluate((uuid) => {
+    const element = window.__BLOKKLI__!.app!.dom.registeredBlocks.value[uuid]!
+    const scene = element.closest('[data-test="story-scene"]')!
+    const contentRight =
+      element.getBoundingClientRect().right -
+      parseFloat(getComputedStyle(element).paddingRight)
+    return Math.round(scene.getBoundingClientRect().right - contentRight)
+  }, uuid)
+}
+
 /** The fields of a block with an editable registered for them. */
 function editableFields(page: Page, uuid: string): Promise<string[]> {
   return page.evaluate(
@@ -286,6 +303,7 @@ describe('A field in proxy mode whose slot renders the shown block', async () =>
       PICTURES_TEASER,
     )
     expect(inStory).toBe(true)
+    expect(await gapToEdge(page, PICTURES_TEASER)).toBe(0)
     expect(await section(page, PICTURES[0]!).isVisible()).toBe(false)
   })
 

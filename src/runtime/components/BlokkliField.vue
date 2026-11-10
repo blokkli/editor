@@ -50,7 +50,7 @@
       v-for="(item, i) in filteredList"
       :key="item.uuid + fieldListType"
       v-bind="item"
-      :parent-type="isNested ? entity?.bundle : ''"
+      :parent-type
       :data-bk-uuid="isPreview ? item.uuid : undefined"
       :index="i"
     />
@@ -86,6 +86,7 @@ import {
   INJECT_PROVIDER_CONTEXT,
   INJECT_GLOBAL_PROXY_MODE,
   INJECT_FIELD_USES_PROXY,
+  INJECT_FIELD_PARENT_TYPE,
 } from '../helpers/injections'
 import type { FieldDropAlignment } from '#blokkli/types/field'
 import type { VueClassProp } from '#blokkli/types/vue'
@@ -240,6 +241,9 @@ if (!entity) {
   throw new Error('Missing entity context.')
 }
 
+// The type of the block that holds the field: its blocks are nested in it.
+const parentType = isNested ? entity.bundle : ''
+
 const providerEntity = inject(INJECT_PROVIDER_CONTEXT)!
 
 if (!providerEntity) {
@@ -338,6 +342,8 @@ provide(INJECT_NESTING_LEVEL, nestingLevel + 1)
 provide(INJECT_FIELD_Z_INDEX, Number(props.zIndex))
 provide(INJECT_FIELD_LIST_TYPE, fieldListType)
 provide(INJECT_FIELD_LIST_BLOCKS, filteredList)
+// For a <BlokkliItem> of one of the blocks that the slot renders.
+provide(INJECT_FIELD_PARENT_TYPE, parentType)
 
 // The slot renders the blocks, outside the editor.
 if (props.proxyMode && !rendersPager) {
