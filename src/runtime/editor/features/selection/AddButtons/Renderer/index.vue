@@ -44,10 +44,21 @@ import {
   type ShapeType,
   type SiblingInput,
 } from '../geometry'
-import type { AddTargetId, AddTargets, Side } from '../types'
+import type {
+  AddTarget,
+  AddTargetId,
+  AddTargets,
+  FieldAddTarget,
+  Side,
+} from '../types'
 
 const props = defineProps<{
   targets: AddTargets | null
+  /**
+   * The ends of the fields in proxy mode, whatever is selected: drawn in the
+   * room their band leaves after the pages.
+   */
+  pagerTargets: FieldAddTarget[]
   activeTargetId: AddTargetId | null
 }>()
 
@@ -142,7 +153,7 @@ let measuredBlockTime = 0
 
 function isEnabled(): boolean {
   return (
-    !!props.targets &&
+    (!!props.targets || props.pagerTargets.length > 0) &&
     !selection.isDragging.value &&
     !selection.isMultiSelecting.value &&
     !selection.activeFieldLabel.value &&
@@ -232,24 +243,71 @@ function refreshFieldRects(targets: AddTargets) {
 }
 
 function getFrame(ctx: RenderContext): Frame | null {
+  const scale = ctx.artboardScale
+  const offset = ctx.artboardOffset
+
+  const fields: FieldInput[] = []
+  let siblings: SiblingInput | null = null
+
+  // The selection's targets, while the selected block is rendered.
   const targets = props.targets
-  if (!targets) {
+  const block = targets?.uuid ? getRenderedRect(targets.uuid) : null
+  if (targets && (!targets.uuid || block)) {
+    refreshFieldRects(targets)
+    siblings = getSiblingInput(targets, block, scale, offset)
+    fields.push(...getFieldInputs(targets, scale, offset))
+  }
+
+  for (const target of props.pagerTargets) {
+    if (!dom.isFieldVisible(target.field.key)) {
+      continue
+    }
+    const rect = dom.getAddAreaRect(target.field.key)
+    if (!rect) {
+      continue
+    }
+    // Drawn as an empty field is: the area, with its knob in the middle.
+    fields.push({
+      id: target.id,
+      rect: toScreen(rect, scale, offset),
+      isEmpty: true,
+      flow: target.flow,
+      last: null,
+      secondLast: null,
+    })
+  }
+
+  if (!siblings && !fields.length) {
     return null
   }
 
-  refreshFieldRects(targets)
+  return buildFrame({
+    scale,
+    transition: ctx.changeOptionsTransition,
+    pointer: { x: ctx.mouseX, y: ctx.mouseY },
+    isTouch,
+    viewport: ui.visibleViewport.value,
+    activeId: props.activeTargetId,
+    siblings,
+    fields,
+  })
+}
 
-  const scale = ctx.artboardScale
-  const offset = ctx.artboardOffset
+/**
+ * The before/after tabs of the selected block, if its field can take another
+ * block.
+ */
+function getSiblingInput(
+  targets: AddTargets,
+  block: Rectangle | null,
+  scale: number,
+  offset: Coord,
+): SiblingInput | null {
   const screen = (rect: Rectangle | null) =>
     rect ? toScreen(rect, scale, offset) : null
 
   let siblings: SiblingInput | null = null
-  if (targets.uuid) {
-    const block = getRenderedRect(targets.uuid)
-    if (!block) {
-      return null
-    }
+  if (targets.uuid && block) {
     const sibling = targets.list.find((target) => target.kind === 'before')
     if (sibling) {
       // The pages above the block that a field in proxy mode shows aren't its
@@ -268,6 +326,19 @@ function getFrame(ctx: RenderContext): Frame | null {
       }
     }
   }
+  return siblings
+}
+
+/**
+ * The ends of the selected block's fields, or of the host's.
+ */
+function getFieldInputs(
+  targets: AddTargets,
+  scale: number,
+  offset: Coord,
+): FieldInput[] {
+  const screen = (rect: Rectangle | null) =>
+    rect ? toScreen(rect, scale, offset) : null
 
   const fields: FieldInput[] = []
   for (const target of targets.list) {
@@ -278,12 +349,9 @@ function getFrame(ctx: RenderContext): Frame | null {
     if (!rect) {
       continue
     }
-    // A field in proxy mode ends after its last page, as the band's flow does:
-    // its last blocks may be the one it shows, below the band.
-    const [last, secondLast] =
-      target.isEmpty || target.field.isPager
-        ? [null, null]
-        : findLastRendered(target.childUuids)
+    const [last, secondLast] = target.isEmpty
+      ? [null, null]
+      : findLastRendered(target.childUuids)
     fields.push({
       id: target.id,
       rect: toScreen(rect, scale, offset),
@@ -293,17 +361,7 @@ function getFrame(ctx: RenderContext): Frame | null {
       secondLast: screen(secondLast),
     })
   }
-
-  return buildFrame({
-    scale,
-    transition: ctx.changeOptionsTransition,
-    pointer: { x: ctx.mouseX, y: ctx.mouseY },
-    isTouch,
-    viewport: ui.visibleViewport.value,
-    activeId: props.activeTargetId,
-    siblings,
-    fields,
-  })
+  return fields
 }
 
 function moveElement(
@@ -325,8 +383,9 @@ function moveElement(
 function updateTooltip(frame: Frame | null) {
   const el = tooltipEl.value
   const request = frame?.tooltip
-  const target = request
-    ? props.targets?.list.find((v) => v.id === request.targetId)
+  const target: AddTarget | undefined = request
+    ? (props.targets?.list.find((v) => v.id === request.targetId) ??
+      props.pagerTargets.find((v) => v.id === request.targetId))
     : undefined
 
   if (!el || !request || !target) {

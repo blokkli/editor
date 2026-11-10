@@ -75,3 +75,45 @@ export async function clickPage(
     await page.keyboard.up(modifier)
   }
 }
+
+/** The room a band leaves after its pages for the add button. */
+export function addArea(page: Page, hostUuid: string): Locator {
+  return band(page, hostUuid).locator('[data-test="pager-add-area"]')
+}
+
+/** The tooltip of the add button under the pointer, by its target. */
+export function addButtonTooltip(page: Page, targetId: string): Locator {
+  return page.locator(
+    `[data-test="add-buttons-tooltip"][data-test-target="${targetId}"]`,
+  )
+}
+
+/**
+ * Move the pointer onto the add button of a field's band, after its pages,
+ * until it shows its tooltip, and return where that is: the canvas draws it
+ * in a later frame. Centre the band first.
+ */
+export async function pointAtAddButton(
+  page: Page,
+  hostUuid: string,
+  fieldName = 'field_paragraphs',
+): Promise<{ x: number; y: number }> {
+  const key = `${hostUuid}:${fieldName}`
+  let point = { x: 0, y: 0 }
+  await expect
+    .poll(async () => {
+      const rect = await page.evaluate((key) => {
+        const app = window.__BLOKKLI__!.app!
+        const rect = app.dom.getAddAreaRect(key)
+        return rect ? app.ui.getViewportRelativeRect(rect) : null
+      }, key)
+      if (!rect) {
+        return false
+      }
+      point = { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 }
+      await page.mouse.move(point.x, point.y)
+      return addButtonTooltip(page, `field:${key}`).isVisible()
+    })
+    .toBe(true)
+  return point
+}

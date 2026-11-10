@@ -21,9 +21,9 @@
 
     <!--
       The room next to the label. The list hugs its pages, so that the field's
-      rectangle ends after the last one; without pages, it fills the room and is
-      as high as a page. Padding, so that the outline of the selected page isn't
-      clipped.
+      rectangle ends after the last one, and what follows them comes right after;
+      without pages, it fills the room and is as high as a page. Padding, so that
+      the outline of the selected page isn't clipped.
     -->
     <div ref="room" class="flex flex-1 min-w-0">
       <div
@@ -50,6 +50,11 @@
             />
           </slot>
         </template>
+      </div>
+
+      <!-- What follows the pages: its width is taken from their room. -->
+      <div ref="end" class="flex shrink-0">
+        <slot name="end" />
       </div>
     </div>
   </div>
@@ -105,22 +110,42 @@ defineSlots<{
    * A page. Without the slot, a plain one.
    */
   page?(props: FieldPagerPageProps): unknown
+
+  /**
+   * What follows the pages, such as where a block is added at the end.
+   */
+  end?(): unknown
 }>()
 
 const room = useTemplateRef('room')
 const list = useTemplateRef('list')
+const end = useTemplateRef('end')
+
+const roomWidth = ref<number | null>(null)
+const endWidth = ref(0)
+
+onElementResize(room, ({ width }) => {
+  roomWidth.value = width
+})
+
+onElementResize(end, ({ width }) => {
+  endWidth.value = width
+})
 
 /**
  * How many pages fit next to the label at their smallest, once measured.
  */
-const capacity = ref<number | null>(null)
-
-onElementResize(room, ({ width }) => {
-  capacity.value = Math.max(
-    1,
-    Math.floor((width - LIST_PADDING + PAGE_GAP) / (PAGE_MIN_WIDTH + PAGE_GAP)),
-  )
-})
+const capacity = computed<number | null>(() =>
+  roomWidth.value === null
+    ? null
+    : Math.max(
+        1,
+        Math.floor(
+          (roomWidth.value - endWidth.value - LIST_PADDING + PAGE_GAP) /
+            (PAGE_MIN_WIDTH + PAGE_GAP),
+        ),
+      ),
+)
 
 /**
  * The pages that fit. The others are cut off: they aren't rendered, so that

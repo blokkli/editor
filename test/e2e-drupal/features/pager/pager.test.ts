@@ -21,10 +21,13 @@ import {
   withApp,
 } from '../../support/session'
 import {
+  addArea,
+  addButtonTooltip,
   band,
   centerBand,
   clickPage,
   pageOf,
+  pointAtAddButton,
   registeredAs,
   show,
 } from '../../support/pager'
@@ -387,6 +390,29 @@ describe('A field in proxy mode', async () => {
     await show(page, LONG_IMAGES[count - 1]!)
     await page.keyboard.press('Tab')
     await expect.poll(() => selectedUuids(page)).toEqual([OUTRO])
+  })
+
+  test('with nothing selected, a band offers to add at its end, after the pages that fit', async () => {
+    await centerBand(page, GALLERY)
+    await pointAtAddButton(page, GALLERY)
+    expect(
+      await addButtonTooltip(page, `field:${GALLERY}:${FIELD}`).textContent(),
+    ).toBe('Add "Image" inside Gallery » Images')
+    expect(await selectedUuids(page)).toEqual([])
+
+    // Right after the last page.
+    const area = (await addArea(page, GALLERY).boundingBox())!
+    const lastPage = (await pageOf(page, IMAGES[2]!).boundingBox())!
+    expect(area.x).toBeGreaterThanOrEqual(lastPage.x + lastPage.width)
+
+    // A band whose pages don't all fit keeps room for it.
+    await centerBand(page, LONG_GALLERY)
+    await pointAtAddButton(page, LONG_GALLERY)
+    const longArea = (await addArea(page, LONG_GALLERY).boundingBox())!
+    const longBand = (await band(page, LONG_GALLERY).boundingBox())!
+    expect(longArea.x + longArea.width).toBeLessThanOrEqual(
+      longBand.x + longBand.width,
+    )
   })
 
   test('Shift+Click selects the pages in between, from the shown one', async () => {

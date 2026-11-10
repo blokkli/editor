@@ -41,9 +41,9 @@ on the page:
   other block: its texts, its options and the blocks inside it.
 - Click a page to show its block. A block that you select elsewhere, for example
   in "Structure", the search or a comment, is shown too.
-- Add blocks with the buttons on both sides of the shown block, or at the end of
-  the pages while the slider is selected. Drag pages to change their order, or
-  drag blocks onto the bar.
+- Add blocks with the buttons on both sides of the shown block, or with the
+  button after the last page, which is always there. Drag pages to change their
+  order, or drag blocks onto the bar.
 - If there are more pages than fit, the last ones are cut off.
 - Where the website supports it, a block with a layout of its own keeps it while
   you edit, for example each section's picture beside its text, and you edit the

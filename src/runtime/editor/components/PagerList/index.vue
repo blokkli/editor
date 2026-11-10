@@ -9,6 +9,15 @@
         <ShownPage v-if="page.isShown" v-bind="page" />
         <BlockPage v-else v-bind="page" />
       </template>
+      <!-- Room for the add buttons' button: they draw it on the canvas. -->
+      <template #end>
+        <div
+          v-if="canAdd && list.length"
+          ref="addArea"
+          class="ml-5 my-10 w-40"
+          data-test="pager-add-area"
+        />
+      </template>
     </FieldPager>
     <!-- The field's slot renders the shown block (proxy-mode="slot"). -->
     <slot v-if="rendersSlot" :items="slotItems" :shown-index />
@@ -45,6 +54,7 @@ import type { VueClassProp } from '#blokkli/types/vue'
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 import { fromLibraryBlockBundle } from '#blokkli-build/config'
 import { onElementResize } from '#blokkli/editor/composables'
+import { getFieldAddBundles } from '#blokkli/editor/helpers/dropTargets'
 import { INJECT_PAGER_SLOT } from '#blokkli/helpers/injections'
 import BlokkliItem from './../../../components/BlokkliItem.vue?blokkliEditing=true'
 import FieldPager from '../FieldPager/index.vue'
@@ -84,11 +94,14 @@ defineSlots<{
   }): any
 }>()
 
-const { dom, pager, types, state } = useBlokkli()
+const { dom, pager, types, state, fields, permissions, adapter } = useBlokkli()
 
 const band = useTemplateRef('band')
 const wrapper = useTemplateRef('wrapper')
 const listElement = useTemplateRef('list')
+const addArea = useTemplateRef<HTMLDivElement>('addArea')
+
+const maxNestingLevel = adapter.getMaxNestingLevel?.()
 
 const label = computed(
   () =>
@@ -188,6 +201,60 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   dom.unregisterField(props.entity, props.name)
+})
+
+/**
+ * Whether the user may add a block at the end of the field. The add buttons
+ * then offer it in the band, whatever is selected.
+ */
+const canAdd = computed(() => {
+  if (state.editMode.value !== 'editing') {
+    return false
+  }
+  const field = fields.find(props.entity.uuid, props.name)
+  return (
+    !!field &&
+    getFieldAddBundles(field, props.list.length, {
+      canChange: permissions.canChangeField(props.entity, props.name),
+      maxNestingLevel,
+      isBundlePermitted: (bundle) =>
+        permissions.checkBlockBundlePermission(bundle, 'add'),
+    }).length > 0
+  )
+})
+
+/**
+ * Where the add buttons draw their button: the room after the pages, or the
+ * empty list of pages.
+ */
+const addAreaElement = computed<HTMLElement | null>(() => {
+  if (!canAdd.value) {
+    return null
+  }
+  if (props.list.length) {
+    return addArea.value
+  }
+  const element = band.value?.list
+  return element instanceof HTMLElement ? element : null
+})
+
+watch(
+  addAreaElement,
+  (element, previous) => {
+    if (previous) {
+      dom.unregisterAddArea(props.fieldKey, previous)
+    }
+    if (element) {
+      dom.registerAddArea(props.fieldKey, element)
+    }
+  },
+  { flush: 'post' },
+)
+
+onBeforeUnmount(() => {
+  if (addAreaElement.value) {
+    dom.unregisterAddArea(props.fieldKey, addAreaElement.value)
+  }
 })
 
 // Showing another block, its component loading late or an edit change the

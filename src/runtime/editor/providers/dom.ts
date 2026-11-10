@@ -1,4 +1,11 @@
-import { reactive, ref, computed, type ComputedRef, onMounted } from '#imports'
+import {
+  reactive,
+  ref,
+  computed,
+  shallowReactive,
+  type ComputedRef,
+  onMounted,
+} from '#imports'
 import type { EntityContext } from '#blokkli/types'
 import { falsy, onlyUnique } from '#blokkli/helpers'
 import type { UiProvider } from './ui'
@@ -208,6 +215,37 @@ export type DomProvider = {
    * @param el - The element that stood in for it
    */
   unregisterStandIn(uuid: string, el: HTMLElement): void
+
+  /**
+   * Register where a field in proxy mode offers to add a block at its end: the
+   * room after its last page, or its empty list of pages. The add buttons draw
+   * their button there, whatever is selected.
+   *
+   * @param fieldKey - The field key (uuid:fieldName)
+   * @param el - The element of the area
+   */
+  registerAddArea(fieldKey: string, el: HTMLElement): void
+
+  /**
+   * Unregister the add area of a field in proxy mode.
+   *
+   * @param fieldKey - The field key (uuid:fieldName)
+   * @param el - The element of the area
+   */
+  unregisterAddArea(fieldKey: string, el: HTMLElement): void
+
+  /**
+   * The keys of the fields that have an add area. Reactive.
+   */
+  getAddAreaFieldKeys(): string[]
+
+  /**
+   * The rectangle of a field's add area, measured now: there are few, and
+   * they aren't observed.
+   *
+   * @param fieldKey - The field key (uuid:fieldName)
+   */
+  getAddAreaRect(fieldKey: string): Rectangle | undefined
 
   /**
    * Where the pointer finds blocks: the element of every visible block, and
@@ -420,6 +458,8 @@ export default function (
   // Elements that stand in for blocks: the page of the block that a field in
   // proxy mode shows.
   const standIns = new Map<string, HTMLElement>()
+  // Where fields in proxy mode offer to add a block at their end.
+  const addAreas = shallowReactive(new Map<string, HTMLElement>())
   let initTimeout: null | number = null
   const isInitalizing = ref(true)
 
@@ -931,6 +971,27 @@ export default function (
       : undefined
   }
 
+  function registerAddArea(fieldKey: string, el: HTMLElement) {
+    addAreas.set(fieldKey, el)
+  }
+
+  function unregisterAddArea(fieldKey: string, el: HTMLElement) {
+    if (addAreas.get(fieldKey) === el) {
+      addAreas.delete(fieldKey)
+    }
+  }
+
+  function getAddAreaFieldKeys(): string[] {
+    return [...addAreas.keys()]
+  }
+
+  function getAddAreaRect(fieldKey: string): Rectangle | undefined {
+    const element = addAreas.get(fieldKey)
+    return element?.isConnected
+      ? ui.getAbsoluteElementRect(element.getBoundingClientRect())
+      : undefined
+  }
+
   function getPointerAreas(): BlockPointerArea[] {
     const areas: BlockPointerArea[] = []
     for (const uuid of visibleBlocks) {
@@ -1202,6 +1263,10 @@ export default function (
     isFieldVisible,
     registerStandIn,
     unregisterStandIn,
+    registerAddArea,
+    unregisterAddArea,
+    getAddAreaFieldKeys,
+    getAddAreaRect,
     getPointerAreas,
     getRectInField,
     getBlockOrder,

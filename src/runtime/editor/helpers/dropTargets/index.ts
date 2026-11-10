@@ -19,8 +19,8 @@ export function getGapSize(
   ) {
     const gap =
       orientation === 'vertical'
-        ? computedStyle.rowGap || computedStyle.gridRowGap
-        : computedStyle.columnGap || computedStyle.gridColumnGap
+        ? computedStyle.rowGap
+        : computedStyle.columnGap
 
     if (gap) {
       // Extract the first value.
@@ -237,4 +237,30 @@ export function determineCanAddChildren(
   }
 
   return true
+}
+
+/**
+ * The bundles a user may add to a field that holds `count` blocks: none when
+ * the user may not change the field (`canChange`), a new block would be nested
+ * deeper than the adapter allows (`maxNestingLevel`, undefined for no limit),
+ * or the field is full. Of the field's bundles, those the user may add
+ * (`isBundlePermitted`).
+ */
+export function getFieldAddBundles(
+  field: BlokkliFieldElement,
+  count: number,
+  options: {
+    canChange: boolean
+    maxNestingLevel: number | undefined
+    isBundlePermitted: (bundle: string) => boolean
+  },
+): string[] {
+  if (
+    !options.canChange ||
+    !fitsNestingLimit(field.nestingLevel, 1, options.maxNestingLevel) ||
+    !determineCanAddChildren(field, [], [], count, 1, [])
+  ) {
+    return []
+  }
+  return field.allowedBundles.filter(options.isBundlePermitted)
 }

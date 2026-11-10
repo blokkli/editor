@@ -45,7 +45,7 @@ direkt auf der Seite:
   anderswo auswählen, z. B. in «Struktur», in der Suche oder in einem Kommentar,
   wird gezeigt.
 - Blöcke fügen Sie mit den Buttons auf beiden Seiten des gezeigten Blocks hinzu
-  oder, solange der Slider ausgewählt ist, am Ende der Seiten. Ziehen Sie
+  oder mit dem Button nach der letzten Seite, der immer da ist. Ziehen Sie
   Seiten, um ihre Reihenfolge zu ändern, oder ziehen Sie Blöcke auf die Leiste.
 - Haben nicht alle Seiten Platz, werden die letzten abgeschnitten.
 - Wo die Website es unterstützt, behält ein Block mit eigener Darstellung diese

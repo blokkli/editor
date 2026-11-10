@@ -13,6 +13,8 @@ field then renders as a pager:
 - Below the band, the field shows one block as a real block. Editors edit it
   like any other block: inline, its options, its nested fields, the buttons to
   add blocks before or after it.
+- After the last page, the band has a button that adds a block at the end of the
+  field, whatever is selected.
 - Clicking a page selects its block, which shows it. The field also shows a
   block when the block, or a block inside it, is selected anywhere else: in the
   structure, search, history or comments.

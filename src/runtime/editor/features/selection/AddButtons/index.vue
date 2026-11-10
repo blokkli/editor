@@ -21,6 +21,7 @@
       v-if="!isLocked"
       :key="animation.renderKey.value"
       :targets
+      :pager-targets
       :active-target-id="addData?.target.id ?? null"
       @activate="activate"
     />
@@ -35,9 +36,8 @@ import {
   BundleSelector,
 } from '#blokkli/editor/components'
 import {
-  determineCanAddChildren,
-  fitsNestingLimit,
   getChildrenFlow,
+  getFieldAddBundles,
 } from '#blokkli/editor/helpers/dropTargets'
 import { isInternalBundle } from '#blokkli/editor/helpers/bundles'
 import Renderer from './Renderer/index.vue'
@@ -92,12 +92,20 @@ function getBundleLabel(bundle: string): string {
 }
 
 /**
- * The bundles the user may add to the field.
+ * The bundles the user may add to the field, which holds `count` blocks:
+ * none when it can't take another one.
  */
-function getAddableBundles(field: BlokkliFieldElement): string[] {
-  return field.allowedBundles.filter((bundle) =>
-    permissions.checkBlockBundlePermission(bundle, 'add'),
-  )
+function getAddBundles(
+  field: BlokkliFieldElement,
+  count: number,
+  canChange: boolean,
+): string[] {
+  return getFieldAddBundles(field, count, {
+    canChange,
+    maxNestingLevel,
+    isBundlePermitted: (bundle) =>
+      permissions.checkBlockBundlePermission(bundle, 'add'),
+  })
 }
 
 /**
@@ -107,13 +115,6 @@ function getAddableBundles(field: BlokkliFieldElement): string[] {
 function getDirectBundle(bundles: string[]): string | null {
   const bundle = bundles.length === 1 ? bundles[0] : undefined
   return bundle && !isInternalBundle(bundle) ? bundle : null
-}
-
-/**
- * Whether the field can take another block (its cardinality).
- */
-function hasRoom(field: BlokkliFieldElement, count: number): boolean {
-  return determineCanAddChildren(field, [], [], count, 1, [])
 }
 
 function getSiblingLabel(
@@ -138,7 +139,8 @@ function getSiblingLabel(
 }
 
 /**
- * @param parentLabel - The label of the block the field belongs to, or null for a field of the host.
+ * The label of a field's button. The parent label is the label of the block
+ * the field belongs to, or null for a field of the host.
  */
 function getFieldLabel(
   fieldLabel: string,
@@ -182,11 +184,53 @@ function getChildUuids(entityUuid: string, fieldName: string): string[] {
 }
 
 /**
- * A target for every field of the entity that can take another block: the
- * user may change it, it's rendered, deep enough in the nesting limit, has
- * room and allows a bundle the user may add.
- *
- * @param parentLabel - The label of the block, or null for the host.
+ * The target at the end of a field, if it can take another block: the user
+ * may change it, it's deep enough in the nesting limit, has room and allows a
+ * bundle the user may add. The parent label is the label of the block holding
+ * the field, or null for a field of the host.
+ */
+function getFieldTarget(
+  field: BlokkliFieldElement,
+  id: AddTargetId,
+  parentLabel: string | null,
+): FieldAddTarget | null {
+  const childUuids = getChildUuids(field.hostEntityUuid, field.name)
+  const bundles = getAddBundles(
+    field,
+    childUuids.length,
+    permissions.canChangeField(
+      {
+        type: field.hostEntityType,
+        bundle: field.hostEntityBundle,
+        uuid: field.hostEntityUuid,
+      },
+      field.name,
+    ),
+  )
+  if (!bundles.length) {
+    return null
+  }
+  const directBundle = getDirectBundle(bundles)
+  return {
+    id,
+    kind: 'field',
+    field,
+    label: getFieldLabel(field.label || field.name, parentLabel, directBundle),
+    bundles,
+    directBundle,
+    // Add at the end of the field.
+    preceedingUuid: childUuids[childUuids.length - 1] ?? null,
+    flow: getChildrenFlow(field.element, field.dropAlignment),
+    isEmpty: !childUuids.length,
+    childUuids,
+  }
+}
+
+/**
+ * A target for every rendered field of the entity that can take another
+ * block. Not for a field in proxy mode: its band offers that, whatever is
+ * selected (pagerTargets). The parent label is the label of the block, or null
+ * for the host.
  */
 function getFieldTargets(
   entity: EntityContext,
@@ -196,42 +240,41 @@ function getFieldTargets(
     .forEntityTypeAndBundle(entity.type, entity.bundle)
     .flatMap((config): FieldAddTarget[] => {
       const field = fields.find(entity.uuid, config.name)
-      if (!field || !permissions.canChangeField(entity, config.name)) {
+      if (!field || field.isPager) {
         return []
       }
-      if (!fitsNestingLimit(field.nestingLevel, 1, maxNestingLevel)) {
-        return []
-      }
-      const childUuids = getChildUuids(entity.uuid, config.name)
-      if (!hasRoom(field, childUuids.length)) {
-        return []
-      }
-      const bundles = getAddableBundles(field)
-      if (!bundles.length) {
-        return []
-      }
-      const directBundle = getDirectBundle(bundles)
-      return [
-        {
-          id: `field:${config.name}`,
-          kind: 'field',
-          field,
-          label: getFieldLabel(
-            config.label || config.name,
-            parentLabel,
-            directBundle,
-          ),
-          bundles,
-          directBundle,
-          // Add at the end of the field.
-          preceedingUuid: childUuids[childUuids.length - 1] ?? null,
-          flow: getChildrenFlow(field.element, field.dropAlignment),
-          isEmpty: !childUuids.length,
-          childUuids,
-        },
-      ]
+      const target = getFieldTarget(field, `field:${config.name}`, parentLabel)
+      return target ? [target] : []
     })
 }
+
+/**
+ * A target for every field in proxy mode whose band has room for the button,
+ * whatever is selected: at the end of the field.
+ */
+const pagerTargets = computed<FieldAddTarget[]>(() => {
+  // Recompute when the state changed.
+  void state.refreshKey.value
+
+  return dom.getAddAreaFieldKeys().flatMap((key): FieldAddTarget[] => {
+    const separator = key.indexOf(':')
+    const field = fields.find(
+      key.substring(0, separator),
+      key.substring(separator + 1),
+    )
+    if (!field) {
+      return []
+    }
+    const target = getFieldTarget(
+      field,
+      `field:${key}`,
+      field.hostEntityType === itemEntityType
+        ? getBundleLabel(field.hostEntityBundle)
+        : null,
+    )
+    return target ? [target] : []
+  })
+})
 
 /**
  * The before/after targets of the selected block, if its field can take
@@ -242,14 +285,14 @@ function getSiblingTargets(
   siblingUuids: string[],
 ): SiblingAddTarget[] {
   const parent = fields.find(item.host.uuid, item.host.fieldName)
-  if (
-    !parent ||
-    !permissions.canChangeBlockField(item.uuid) ||
-    !hasRoom(parent, siblingUuids.length)
-  ) {
+  if (!parent) {
     return []
   }
-  const bundles = getAddableBundles(parent)
+  const bundles = getAddBundles(
+    parent,
+    siblingUuids.length,
+    permissions.canChangeBlockField(item.uuid),
+  )
   if (!bundles.length) {
     return []
   }
@@ -344,7 +387,9 @@ function activate(e: { id: AddTargetId; anchor: Coord }) {
     return closeOverlay()
   }
 
-  const target = targets.value?.list.find((v) => v.id === e.id)
+  const target =
+    targets.value?.list.find((v) => v.id === e.id) ??
+    pagerTargets.value.find((v) => v.id === e.id)
   if (!target) {
     return closeOverlay()
   }
@@ -431,6 +476,10 @@ function getTargetCenter(target: AddTarget): Coord {
 // The selection can change through many events: close the bundle selector
 // when it belongs to a selection that's gone.
 watch(() => targets.value?.key, closeOverlay)
+
+// The canvas only draws on request, and the bands' buttons come and go without
+// a change of the selection.
+watch(pagerTargets, () => animation.requestDraw())
 
 onBlokkliEvent('dragging:start', closeOverlay)
 

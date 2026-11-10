@@ -21,6 +21,11 @@ keeps what was left open.
   `getRectInField`, `getDragImageElement`, `getBlockOrder`), so the features
   don't know about pagers. Only the add buttons (`field.isPager`) and the
   `pager` provider do.
+- **Adding:** the shown block's tabs, left and right, and the band's button
+  after the last page, whatever is selected. The band leaves room for it
+  (`dom.registerAddArea`: the room after the pages, or the empty list of pages)
+  and the add buttons draw it there, as an empty field's area and knob. It's
+  only there when a block can be added (`getFieldAddBundles`).
 - **A page** shows the index, the type's icon and its name
   (`FieldPagerItem = { uuid, bundle, isMuted }`). Pages are 120 × 80 and shrink
   to 72 × 48 (`PAGE_MIN_WIDTH`). The band renders as many as fit at 72px; the
@@ -40,7 +45,7 @@ scrolls sideways: with 30 blocks, scrolling through thumbnails is no better.
   unless it's shown. No outline, hover, drag, drop slot, comment marker or
   analysis; Tab skips it and the CSV export puts it last. Navigation still
   reaches it (the scroll shows it and waits). If it's the shown block, no page
-  is marked; the count says which one it is. The end bar adds past it.
+  is marked; the count says which one it is. The band's add button adds past it.
 - **Hit targets:** if dots stand in for blocks as pages do, each one is a hit
   target, and every block's rectangle is at least 24 × 24 (`MIN_RECT_SIZE`,
   `helpers/geometry`). 30 dots need about 720px plus the label, which a narrow
@@ -79,21 +84,6 @@ be a dead end once pages render the real component.
   - The page's text is what search and the agent find for a block that isn't
     shown (today the type's name), so it gets better, but it's the thumbnail's
     text. The band carries `bk-skip-analyze` and `aria-hidden`; keep both.
-
-### The band's own +
-
-No + in the band (decided 2026-11-08). Adding uses the shown block's tabs, left
-and right, and the field's end bar, which shows while the block holding the
-field, or a page, is selected and the pointer is over the band. An empty field
-gets the dashed area with its knob.
-
-- **How it would work:** a CSS-styled element in the band, with a band renderer
-  that draws nothing and claims its clicks (`Renderer` has `onClick` and
-  `cursor`, `providers/animation.ts`), sets the cursor and a hover class.
-- **What moves:** the checks and the adding (`getFieldTargets`, `activate` in
-  `features/selection/AddButtons/index.vue`) move out of the add buttons'
-  component, so both use them. The add buttons then skip a pager field's end bar
-  and empty area.
 
 ### The responsive preview shows the shown block
 

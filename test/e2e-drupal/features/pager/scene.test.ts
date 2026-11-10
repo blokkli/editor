@@ -10,9 +10,14 @@ import {
 import { emitEvent, nextEvent } from '../../support/events'
 import { nextMutation } from '../../support/mutations'
 import {
+  bundleSelector,
+  bundleSelectorItemIds,
+} from '../../support/bundleSelector'
+import {
   band,
   centerBand,
   clickPage,
+  pointAtAddButton,
   registeredAs,
   show,
 } from '../../support/pager'
@@ -326,6 +331,24 @@ describe('A field in proxy mode whose slot renders the shown block', async () =>
       )
       .toBe(1)
     await expect.poll(() => registeredAs(page, uuid!)).toBe('block')
+  })
+
+  test("with nothing selected, the band's add button opens the story's section types", async () => {
+    await centerBand(page, SPLIT)
+    const point = await pointAtAddButton(page, SPLIT)
+    await page.mouse.click(point.x, point.y)
+
+    await bundleSelector(page).waitFor({ state: 'visible' })
+    expect((await bundleSelectorItemIds(page, 'blocks')).sort()).toEqual([
+      'accordion',
+      'image',
+      'teaser',
+    ])
+    expect(await selectedUuids(page)).toEqual([])
+
+    // The button of the open selector closes it.
+    await page.mouse.click(point.x, point.y)
+    await bundleSelector(page).waitFor({ state: 'hidden' })
   })
 
   test('selecting a block in an accordion that is not shown shows it', async () => {
