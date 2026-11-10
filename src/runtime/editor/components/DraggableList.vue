@@ -133,6 +133,7 @@ const props = withDefaults(
     zIndex: 0,
     dropAlignment: undefined,
     language: undefined,
+    proxyMode: false,
     shouldRenderItem: undefined,
     listClass: '',
   },
