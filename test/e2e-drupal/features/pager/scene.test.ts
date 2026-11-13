@@ -179,6 +179,20 @@ async function doubleClick(page: Page, locator: Locator): Promise<void> {
   await page.mouse.dblclick(x, y)
 }
 
+/** The blocks that the canvas finds at a point of the viewport. */
+function blocksAt(page: Page, point: { x: number; y: number }) {
+  return page.evaluate(({ x, y }) => {
+    const app = window.__BLOKKLI__!.app!
+    return app.dom
+      .getPointerAreas()
+      .filter(({ rect }) => {
+        const r = app.ui.getViewportRelativeRect(rect)
+        return x > r.x && x < r.x + r.width && y > r.y && y < r.y + r.height
+      })
+      .map(({ uuid }) => uuid)
+  }, point)
+}
+
 /**
  * Start a drag with the real pointer and return what the drag overlay copies:
  * the copied element's `data-test` and block. Ends the drag without a drop.
@@ -283,8 +297,16 @@ describe('A field in proxy mode whose slot renders the shown block', async () =>
     await expect.poll(() => selectedUuids(page)).toEqual([TEASER])
 
     // Within a double click's time, the image's section takes the teaser's
-    // place under the pointer.
+    // place under the pointer. The canvas finds it there a frame or more after
+    // it's registered.
     await show(page, IMAGE)
+    await expect
+      .poll(async () =>
+        (await blocksAt(page, { x, y })).filter(
+          (uuid) => uuid === TEASER || uuid === IMAGE,
+        ),
+      )
+      .toEqual([IMAGE])
     const doubleClicked = Promise.race([
       nextEvent(page, 'item:doubleClick').then(() => true),
       new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 1000)),
