@@ -89,7 +89,7 @@ const markupCompletion = async (
         },
         { role: 'user', content: prompt },
       ],
-      model: 'gpt-3.5-turbo-1106',
+      model: 'gpt-5.6-terra',
     })
     const content = completion.choices[0].message.content || ''
     return {
