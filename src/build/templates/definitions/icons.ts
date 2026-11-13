@@ -61,13 +61,15 @@ export default defineCodeTemplate(
       (v) => v.startsWith('bk_mdi_') && ctx.icons.isValidIconName(v),
     )
 
+    // Relative to the build directory, as the files above: the project may not
+    // be able to resolve the package, which is the module's dependency.
+    const materialIconsDir = ctx.helper.toModuleBuildRelative(
+      ctx.icons.materialIconsDir,
+    )
     for (const icon of materialIcons) {
       const importName = 'icon_' + toValidVariableName(icon)
       const mdiImportName = icon.replace('bk_mdi_', '')
-      imports.set(
-        importName,
-        `@material-symbols/svg-600/rounded/${mdiImportName}.svg?raw`,
-      )
+      imports.set(importName, `${materialIconsDir}/${mdiImportName}.svg?raw`)
       icons.set(icon, importName)
     }
 

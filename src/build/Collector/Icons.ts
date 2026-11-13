@@ -11,6 +11,12 @@ import type { WatchEvent } from 'nuxt/schema'
 export class IconCollector extends Collector {
   protected override needsFileContents = false
   private srcFromModule: string
+
+  /**
+   * The directory of the Material Symbols icons, resolved from this module:
+   * a project may not be able to resolve the package itself.
+   */
+  public readonly materialIconsDir: string
   private validMaterialIconNames: Set<string>
   private validFileIconNames: Set<string> = new Set()
 
@@ -18,6 +24,12 @@ export class IconCollector extends Collector {
     super(helper)
     this.srcFromModule = helper.resolvers.module.resolve(
       './runtime/editor/icons/svg',
+    )
+    // Resolve the path to the package by finding a known file.
+    this.materialIconsDir = dirname(
+      createRequire(import.meta.url).resolve(
+        '@material-symbols/svg-600/rounded/search.svg',
+      ),
     )
     this.validMaterialIconNames = this.loadValidMaterialIconNames()
   }
@@ -33,12 +45,7 @@ export class IconCollector extends Collector {
    * Load all valid Material Symbols icon names from the package.
    */
   private loadValidMaterialIconNames(): Set<string> {
-    const require = createRequire(import.meta.url)
-    // Resolve the path to the package by finding a known file.
-    const packagePath = dirname(
-      require.resolve('@material-symbols/svg-600/rounded/search.svg'),
-    )
-    const files = readdirSync(packagePath)
+    const files = readdirSync(this.materialIconsDir)
 
     const iconNames = files
       .filter((file) => file.endsWith('.svg'))
