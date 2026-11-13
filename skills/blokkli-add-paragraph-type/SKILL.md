@@ -426,10 +426,12 @@ that editors edit like any other. Clicking a page shows its child.
 
 - `<BlokkliField proxy-mode v-slot="{ items }">`. It needs no wrapper with
   `position: relative`.
-- **The slot only renders on the site and in the preview.** Render the children
-  there however the design needs: directly from `items`, or with
-  `<BlokkliItem>`. Pass it `parent-type` if a child adapts to its parent. While
-  editing, the editor renders the shown child itself.
+- **The slot renders on the site and in the preview.** Render the children there
+  however the design needs: directly from `items`, or with `<BlokkliItem>`. A
+  `<BlokkliItem>` of a child gets its index and its parent's type from the
+  field: a child that adapts to its parent (`renderFor`, `parentType`) needs no
+  prop for it. While editing, the editor renders the shown child itself, unless
+  the field has `proxy-mode="slot"` (below).
 - **Classes:**
   - `class` goes on the element that holds the band and the shown child: the
     field's place in its parent, such as a grid cell.
