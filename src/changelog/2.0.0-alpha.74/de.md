@@ -134,3 +134,8 @@ ausgewählt war.
   Sprache ausgeblendet sind.
 - In Diagrammen werden Fussnoten und der Kategoriefilter korrekt dargestellt,
   und der Diagramm-Editor behält die Verknüpfung mit einer Datenquelle.
+- Ein Doppelklick öffnet das Formular eines Blocks nur noch, wenn beide Klicks
+  auf diesem Block liegen. Bisher öffnete ein schneller Klick auf einen Block,
+  der gerade unter dem Mauszeiger erschienen war, zum Beispiel nachdem Sie eine
+  andere Seite eines Sliders angezeigt hatten, das Formular des zuvor
+  angeklickten Blocks.

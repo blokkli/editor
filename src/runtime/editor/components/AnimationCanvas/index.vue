@@ -104,6 +104,16 @@ type InteractedElement = {
   y: number
 }
 
+/** Whether two interactions are with the same block, editable or droppable. */
+function isSameTarget(a: InteractedElement, b: InteractedElement): boolean {
+  return (
+    a.uuid === b.uuid &&
+    a.editableFieldName === b.editableFieldName &&
+    a.droppableFieldName === b.droppableFieldName &&
+    a.droppableEntityUuid === b.droppableEntityUuid
+  )
+}
+
 let lastInteractedElement: InteractedElement | null = null
 let pointerDownElement: InteractedElement | null = null
 let mouseStartCoordinates: Coord | null = null
@@ -466,14 +476,14 @@ function onPointerUp(e: PointerEvent) {
 
   const clicked = getInteractedElement(e)
 
-  // Handle double clicking.
+  // Handle double clicking: both clicks on the same block, editable or
+  // droppable. What's under the pointer can change between them, such as the
+  // section a pager shows.
   if (
     clicked &&
     pointerUpTimestamp &&
     lastInteractedElement &&
-    (clicked.uuid === lastInteractedElement.uuid ||
-      clicked.editableFieldName === lastInteractedElement.editableFieldName ||
-      clicked.droppableFieldName === lastInteractedElement.droppableFieldName)
+    isSameTarget(clicked, lastInteractedElement)
   ) {
     const deltaTime = Date.now() - pointerUpTimestamp
     const deltaX = Math.abs(lastInteractedElement.x - e.clientX)

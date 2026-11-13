@@ -125,3 +125,7 @@ selected.
   current language.
 - Charts show their footnotes and category filter correctly, and the chart
   editor keeps the link to a data source.
+- A double click only opens a block's form when both clicks are on that block.
+  Before, a quick click on a block that had just appeared under the pointer, for
+  example after showing another page of a slider, opened the form of the block
+  clicked before.

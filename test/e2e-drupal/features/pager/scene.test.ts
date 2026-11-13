@@ -242,6 +242,32 @@ describe('A field in proxy mode whose slot renders the shown block', async () =>
     await expect.poll(() => selectedUuids(page)).toEqual([TEASER])
   })
 
+  test('a click on the section now where the last click was selects it, without a double click', async () => {
+    await show(page, TEASER)
+    await emitEvent(page, 'select:unselect')
+    await scrollTo(page, TEASER)
+    const box = (await section(page, TEASER).boundingBox())!
+    const x = box.x + box.width / 4
+    const y = box.y + box.height / 2
+    // A press within 400ms of the last one, at the same spot, is a double
+    // click: wait out a press before this test.
+    await page.waitForTimeout(400)
+    await page.mouse.click(x, y)
+    await expect.poll(() => selectedUuids(page)).toEqual([TEASER])
+
+    // Within a double click's time, the image's section takes the teaser's
+    // place under the pointer.
+    await show(page, IMAGE)
+    const doubleClicked = Promise.race([
+      nextEvent(page, 'item:doubleClick').then(() => true),
+      new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 1000)),
+    ])
+    await page.mouse.click(x, y)
+
+    await expect.poll(() => selectedUuids(page)).toEqual([IMAGE])
+    expect(await doubleClicked).toBe(false)
+  })
+
   test('clicking a page shows its section in the story', async () => {
     await show(page, TEASER)
     await centerBand(page, SPLIT)
