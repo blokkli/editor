@@ -57,7 +57,7 @@ paragraph types.
 In your Nuxt project, install blökkli and the GraphQL middleware:
 
 ```bash
-npm install @blokkli/editor nuxt-graphql-middleware
+npm install @blokkli/editor nuxt-graphql-middleware graphql
 ```
 
 ## Step 5: Configure Nuxt
