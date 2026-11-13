@@ -17,6 +17,7 @@ import {
   band,
   centerBand,
   clickPage,
+  pageOf,
   pointAtAddButton,
   registeredAs,
   show,
@@ -179,6 +180,32 @@ async function doubleClick(page: Page, locator: Locator): Promise<void> {
 }
 
 /**
+ * Start a drag with the real pointer and return what the drag overlay copies:
+ * the copied element's `data-test` and block. Ends the drag without a drop.
+ */
+async function dragCopyOf(
+  page: Page,
+  from: { x: number; y: number },
+): Promise<{ test: string; uuid: string }> {
+  const copy = page.locator('[data-test="dragging-overlay-copy"] > *')
+  await page.mouse.move(from.x, from.y)
+  await page.mouse.down()
+  try {
+    await page.mouse.move(from.x, from.y + 12, { steps: 4 })
+    await copy.waitFor({ state: 'attached' })
+    return await copy.evaluate((el) => ({
+      test: (el as HTMLElement).dataset.test ?? '',
+      uuid: (el as HTMLElement).dataset.bkUuid ?? '',
+    }))
+  } finally {
+    // Ended before the pointer goes up, which would drop.
+    await emitEvent(page, 'dragging:end')
+    await page.mouse.up()
+    await copy.waitFor({ state: 'detached' })
+  }
+}
+
+/**
  * Page lifecycle: one editor page. Every test shows the sections it needs
  * first: the stories keep showing what they showed last. `afterEach` discards
  * the changes of the tests that edit or add.
@@ -277,6 +304,27 @@ describe('A field in proxy mode whose slot renders the shown block', async () =>
     await expect.poll(() => registeredAsSection(page, IMAGE)).toBe(true)
     expect(await registeredAs(page, TEASER)).toBe('page')
     expect(await section(page, TEASER).count()).toBe(0)
+  })
+
+  test('a drag of the shown section shows what it starts on: the section, or its page', async () => {
+    await show(page, TEASER)
+    await scrollTo(page, TEASER)
+    const box = (await section(page, TEASER).boundingBox())!
+    expect(
+      await dragCopyOf(page, {
+        x: box.x + box.width / 4,
+        y: box.y + box.height / 2,
+      }),
+    ).toEqual({ test: 'story-section', uuid: TEASER })
+
+    await centerBand(page, SPLIT)
+    const pageBox = (await pageOf(page, TEASER).boundingBox())!
+    expect(
+      await dragCopyOf(page, {
+        x: pageBox.x + pageBox.width / 2,
+        y: pageBox.y + pageBox.height / 2,
+      }),
+    ).toEqual({ test: 'field-pager-page', uuid: TEASER })
   })
 
   test("a section's title edited in the story is stored, and shows", async () => {

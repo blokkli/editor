@@ -428,7 +428,7 @@ onMounted(() => {
     .map((item, index) => {
       const element =
         item.itemType === 'existing'
-          ? dom.getDragImageElement(item)
+          ? dom.getDragImageElement(item, props.startCoords)
           : item.element()
       if (!element) {
         return
@@ -486,108 +486,99 @@ onMounted(() => {
   width.value = bounds.width
   height.value = bounds.height
 
-  rects.value = elRects
-    .map((item) => {
-      const isTop = item.index === boundRect.index
-      const rect = item.rect
-      const element =
-        item.item.itemType === 'existing'
-          ? dom.getDragImageElement(item.item)
-          : item.item.element()
-      if (!element) {
-        return
-      }
-      const baseRect = element.getBoundingClientRect()
-      const targetScaleX = Math.min(bounds.width / item.element.offsetWidth, 1)
-      const targetScaleY = targetScaleX
+  rects.value = elRects.map((item) => {
+    const isTop = item.index === boundRect.index
+    const rect = item.rect
+    const baseRect = item.element.getBoundingClientRect()
+    const targetScaleX = Math.min(bounds.width / item.element.offsetWidth, 1)
+    const targetScaleY = targetScaleX
 
-      const originX = 0
-      const originY = 0
+    const originX = 0
+    const originY = 0
 
-      const from: AnimationRectangleValues = {
-        opacity: isTop ? 1 : 0.9,
-        // Use offsetWidth/offsetHeight (layout size without transforms) as denominator.
-        // baseRect includes both artboard scale and element's own transforms.
-        // offsetWidth is the layout size (no transforms).
-        // The ratio gives us the total scale factor needed (can be > 1 when zoomed in).
-        scaleX: baseRect.width / item.element.offsetWidth,
-        scaleY: baseRect.height / item.element.offsetHeight,
-        x: props.isTouch ? rect.x - translateX.value : rect.x - boundsX,
-        y: props.isTouch
-          ? -rect.height -
-            (window.innerHeight -
-              bounds.height -
-              rect.y -
-              rect.height +
-              translateY.value)
-          : rect.y - boundsY,
-      }
+    const from: AnimationRectangleValues = {
+      opacity: isTop ? 1 : 0.9,
+      // Use offsetWidth/offsetHeight (layout size without transforms) as denominator.
+      // baseRect includes both artboard scale and element's own transforms.
+      // offsetWidth is the layout size (no transforms).
+      // The ratio gives us the total scale factor needed (can be > 1 when zoomed in).
+      scaleX: baseRect.width / item.element.offsetWidth,
+      scaleY: baseRect.height / item.element.offsetHeight,
+      x: props.isTouch ? rect.x - translateX.value : rect.x - boundsX,
+      y: props.isTouch
+        ? -rect.height -
+          (window.innerHeight -
+            bounds.height -
+            rect.y -
+            rect.height +
+            translateY.value)
+        : rect.y - boundsY,
+    }
 
-      const to: AnimationRectangleValues = {
-        opacity: isTop ? 1 : 0.1,
-        x: 0,
-        y: 0,
-        scaleX: targetScaleX,
-        scaleY: targetScaleY,
-      }
+    const to: AnimationRectangleValues = {
+      opacity: isTop ? 1 : 0.1,
+      x: 0,
+      y: 0,
+      scaleX: targetScaleX,
+      scaleY: targetScaleY,
+    }
 
-      // Get the clone and let the method check its size.
-      // For elements with a very large DOM the cloning can become quite a
-      // performance issue which results in a noticeable lag. In this case
-      // we instead render a simple fallback.
-      const clone =
-        (elRects.length < 6 || isTop) && !ui.lowPerformanceMode.value
-          ? dom.getDropElementClone(item.item, true)
-          : undefined
-      let bundle: string | undefined
-      let label = ''
+    // Get the clone and let the method check its size.
+    // For elements with a very large DOM the cloning can become quite a
+    // performance issue which results in a noticeable lag. In this case
+    // we instead render a simple fallback.
+    const clone =
+      (elRects.length < 6 || isTop) && !ui.lowPerformanceMode.value
+        ? dom.getDropElementClone(item.item, true, props.startCoords)
+        : undefined
+    let bundle: string | undefined
+    let label = ''
 
-      if (!clone) {
-        if ('itemBundle' in item.item) {
-          bundle = item.item.itemBundle
-          if (bundle) {
-            const definition = types.getBlockBundleDefinition(bundle)
-            if (definition) {
-              label = definition.label
-            }
+    if (!clone) {
+      if ('itemBundle' in item.item) {
+        bundle = item.item.itemBundle
+        if (bundle) {
+          const definition = types.getBlockBundleDefinition(bundle)
+          if (definition) {
+            label = definition.label
           }
         }
       }
+    }
 
-      // Compute border radius from the original element so it's available on the first frame.
-      const borderRadius = isTop
-        ? theme.getDraggableStyle(item.element).radiusMin
-        : 4
+    // Compute border radius from the original element so it's available on the first frame.
+    const borderRadius = isTop
+      ? theme.getDraggableStyle(item.element).radiusMin
+      : 4
 
-      return {
-        isTop,
-        from:
-          ui.lowPerformanceMode.value ||
-          (!mouseInsideBound && !isExisting.value) ||
-          (item.item.itemType === 'existing' && item.item.isCopy)
-            ? to
-            : from,
-        to,
-        width: item.element.offsetWidth,
-        height: item.element.offsetHeight,
-        transformOrigin: `${originX}px ${originY}px`,
-        clone,
-        background:
-          item.item.itemType === 'existing'
-            ? realBackgroundColor(item.element)
-            : '',
-        prevVisibility:
-          (item.item.itemType === 'existing' && !item.item.isCopy) ||
-          item.item.itemType === 'existing_structure'
-            ? item.element.style.visibility
-            : undefined,
-        element: item.element,
-        bundle,
-        label,
-        borderRadius,
-      }
-    })
-    .filter(falsy)
+    return {
+      isTop,
+      from:
+        ui.lowPerformanceMode.value ||
+        (!mouseInsideBound && !isExisting.value) ||
+        (item.item.itemType === 'existing' && item.item.isCopy)
+          ? to
+          : from,
+      to,
+      width: item.element.offsetWidth,
+      height: item.element.offsetHeight,
+      transformOrigin: `${originX}px ${originY}px`,
+      clone,
+      background:
+        item.item.itemType === 'existing'
+          ? realBackgroundColor(item.element)
+          : '',
+      prevVisibility:
+        (item.item.itemType === 'existing' && !item.item.isCopy) ||
+        item.item.itemType === 'existing_structure'
+          ? item.element.style.visibility
+          : undefined,
+      element: item.element,
+      bundle,
+      label,
+      borderRadius,
+    }
+  })
 
   elRects.forEach((item) => {
     if (

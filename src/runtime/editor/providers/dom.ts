@@ -11,7 +11,7 @@ import { falsy, onlyUnique } from '#blokkli/helpers'
 import type { UiProvider } from './ui'
 import { cloneWithInlineStyles } from '../helpers/dom'
 import { orderBlockElements } from '../helpers/blockOrder'
-import { MIN_RECT_SIZE } from '../helpers/geometry'
+import { isInsideRect, MIN_RECT_SIZE } from '../helpers/geometry'
 import {
   onBlokkliEvent,
   useDelayedIntersectionObserver,
@@ -63,10 +63,16 @@ export type DomProvider = {
 
   /**
    * Return a copy of a draggable item's element, for the drag overlay.
+   *
+   * @param item - The dragged item
+   * @param checkSize - Whether a large element gets a cheaper copy
+   * @param startCoords - Where the drag started, relative to the viewport (see
+   * getDragImageElement)
    */
   getDropElementClone(
     item: DraggableItem | RenderedFieldListItem,
     checkSize?: boolean,
+    startCoords?: Coord,
   ): Element | undefined
 
   /**
@@ -370,11 +376,17 @@ export type DomProvider = {
 
   /**
    * The element that a dragged block shows. The block that a field in proxy
-   * mode shows is dragged as its page, the one standing in for it in the band,
-   * where its drop slots are. Any other block as its element.
+   * mode shows has two: its element below the band, and its page standing in
+   * for it in the band, where its drop slots are. A drag that starts on the
+   * element shows the element, any other the page. Any other block shows its
+   * element.
+   *
+   * @param block - The dragged block
+   * @param startCoords - Where the drag started, relative to the viewport
    */
   getDragImageElement: (
     block: DraggableExistingBlock | RenderedFieldListItem,
+    startCoords?: Coord,
   ) => HTMLElement | undefined
 
   /**
@@ -729,16 +741,17 @@ export default function (
   const getDropElementClone = (
     item: DraggableItem | RenderedFieldListItem,
     checkSize?: boolean,
+    startCoords?: Coord,
   ): Element | undefined => {
     const getElement = () => {
       if ('itemType' in item) {
         if (item.itemType === 'existing') {
-          return getDragImageElement(item)
+          return getDragImageElement(item, startCoords)
         }
         return item.element()
       }
 
-      return getDragImageElement(item)
+      return getDragImageElement(item, startCoords)
     }
     const el = getElement()
     if (!el) {
@@ -933,13 +946,23 @@ export default function (
 
   function getDragImageElement(
     block: DraggableExistingBlock | RenderedFieldListItem,
+    startCoords?: Coord,
   ) {
     const item = 'itemType' in block ? block.block : block
     if (!item) {
       return
     }
+    const el = registeredBlocks[item.uuid]
     const standIn = standIns.get(item.uuid)
-    return standIn?.isConnected ? standIn : registeredBlocks[item.uuid]
+    if (!standIn?.isConnected) {
+      return el
+    }
+    // The drag overlay finds the element that the drag starts on the same way.
+    const startsOnElement =
+      !!el &&
+      !!startCoords &&
+      isInsideRect(startCoords.x, startCoords.y, getBoundingClientRect(el))
+    return startsOnElement ? el : standIn
   }
 
   function isBlockVisible(uuid: string): boolean {
