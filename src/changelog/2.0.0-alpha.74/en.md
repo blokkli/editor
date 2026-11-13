@@ -129,3 +129,5 @@ selected.
   Before, a quick click on a block that had just appeared under the pointer, for
   example after showing another page of a slider, opened the form of the block
   clicked before.
+- "Anchor links" no longer shows the ids of elements such as tabs, and shows one
+  link per block instead of several on top of each other.

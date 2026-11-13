@@ -139,3 +139,5 @@ ausgewählt war.
   der gerade unter dem Mauszeiger erschienen war, zum Beispiel nachdem Sie eine
   andere Seite eines Sliders angezeigt hatten, das Formular des zuvor
   angeklickten Blocks.
+- «Ankerlinks» zeigt keine IDs von Elementen wie Tabs mehr an, und pro Block nur
+  noch einen Link statt mehrere übereinander.

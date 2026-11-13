@@ -42,44 +42,49 @@
       </button>
     </div>
 
-    <BlokkliItem v-if="active" :key="active.uuid" v-bind="active">
-      <div
-        :id="panelId"
-        role="tabpanel"
-        :aria-labelledby="tabId(active.uuid)"
-        data-test="story-section"
-        :data-test-uuid="active.uuid"
-      >
-        <template v-if="active.bundle === 'teaser'">
-          <MediaImage
-            v-if="active.props.image"
-            v-bind="active.props.image"
-            img-class="aspect-[3/2] w-full object-cover"
+    <!--
+      The panel is around the section's block, not the block's element: the
+      editor takes the id of a block's element for its anchor.
+    -->
+    <div
+      v-if="active"
+      :id="panelId"
+      role="tabpanel"
+      :aria-labelledby="tabId(active.uuid)"
+    >
+      <BlokkliItem :key="active.uuid" v-bind="active">
+        <div data-test="story-section" :data-test-uuid="active.uuid">
+          <template v-if="active.bundle === 'teaser'">
+            <MediaImage
+              v-if="active.props.image"
+              v-bind="active.props.image"
+              img-class="aspect-[3/2] w-full object-cover"
+            />
+            <p
+              v-if="active.props.lead || isEditing"
+              v-blokkli-editable:field_lead
+              :data-placeholder="$texts('placeholder.text', 'Text')"
+              class="editable-placeholder mt-3 text-lead"
+            >
+              {{ active.props.lead }}
+            </p>
+          </template>
+          <template v-else-if="active.bundle === 'image'">
+            <MediaImage
+              v-if="active.props.media"
+              v-bind="active.props.media"
+              img-class="aspect-[3/2] w-full object-cover"
+            />
+          </template>
+          <BlokkliField
+            v-else
+            name="field_paragraphs"
+            :list="active.props.paragraphs"
+            edit-class="min-h-16"
           />
-          <p
-            v-if="active.props.lead || isEditing"
-            v-blokkli-editable:field_lead
-            :data-placeholder="$texts('placeholder.text', 'Text')"
-            class="editable-placeholder mt-3 text-lead"
-          >
-            {{ active.props.lead }}
-          </p>
-        </template>
-        <template v-else-if="active.bundle === 'image'">
-          <MediaImage
-            v-if="active.props.media"
-            v-bind="active.props.media"
-            img-class="aspect-[3/2] w-full object-cover"
-          />
-        </template>
-        <BlokkliField
-          v-else
-          name="field_paragraphs"
-          :list="active.props.paragraphs"
-          edit-class="min-h-16"
-        />
-      </div>
-    </BlokkliItem>
+        </div>
+      </BlokkliItem>
+    </div>
     <!--
       A section without a tab, while it's shown: its own type, nested in the
       story, as the field renders its blocks.
