@@ -6,7 +6,7 @@ export default defineBuildConfig({
      * Exclude styleguide stories and unit tests from the published package.
      *
      * Story definitions (`**\/story.ts`) and their helper components
-     * (`**\/*.story.vue`) are only consumed by the playground styleguide, and
+     * (`**\/*.story.vue`) are only consumed by the sandbox's styleguide, and
      * `*.spec`/`*.test` files are tests — none of them belong in `dist`. mkdist
      * forwards each entry's `pattern` to its glob (negation supported), so we
      * append the ignores to every directory entry — including the `src/runtime`
@@ -182,16 +182,11 @@ export default defineBuildConfig({
     'ufo',
     'ohash',
     'typescript',
-    'estree-walker',
     'oxc-walker',
     'micromatch',
     'acorn',
     'pathe',
     'graphql',
-    'consola',
-    'webpack-sources',
-    'webpack-virtual-modules',
-    '@jridgewell/sourcemap-codec',
     'nuxt-graphql-middleware/utils',
     '#nuxt-graphql-middleware/sources',
     '#graphql-operations',

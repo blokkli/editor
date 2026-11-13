@@ -12,8 +12,9 @@ import { editorPath, openEditor, revertAllChanges } from '../../support/session'
 
 /**
  * The anchors feature is a toolbar view option (`anchor`). When enabled it scans
- * the rendered page for elements with an `id`, finds the owning block and draws a
- * left-edge indicator showing `#<id>`. Clicking the indicator copies a link —
+ * the rendered page for anchors: an `id` on a block's element or on a heading.
+ * For each block with one, it draws a left-edge indicator showing `#<id>`, the
+ * block's element's id first. Clicking the indicator copies a link —
  * `adapter.buildAnchorLink(id, uuid)`, which the Drupal adapter always has: the
  * entity's link path and `#<id>`. The overlay recomputes its items on mount and on
  * every `state:reloaded`, so it tracks block add/delete/option changes. Each
@@ -104,6 +105,36 @@ async function addAnchored(
   const uuid = await addContentBlock(page, 'title', afterUuid)
   await setAnchor(page, uuid, anchor)
   return uuid
+}
+
+/**
+ * Give a block's element an id of its own (`own`) and children with ids, in the
+ * page: no block of the sandbox has several anchors, nor ids that aren't. The
+ * overlay reads the DOM, so it takes these as any other.
+ */
+async function addIds(
+  page: Page,
+  uuid: string,
+  ids: { own?: string; children: { tag: string; id: string }[] },
+): Promise<void> {
+  await page.waitForFunction(
+    (uuid) => !!window.__BLOKKLI__!.app!.dom.registeredBlocks.value[uuid],
+    uuid,
+  )
+  await page.evaluate(
+    ({ uuid, ids }) => {
+      const block = window.__BLOKKLI__!.app!.dom.registeredBlocks.value[uuid]!
+      if (ids.own) {
+        block.id = ids.own
+      }
+      for (const child of ids.children) {
+        const element = document.createElement(child.tag)
+        element.id = child.id
+        block.append(element)
+      }
+    },
+    { uuid, ids },
+  )
 }
 
 function deleteBlock(page: Page, uuid: string): Promise<void> {
@@ -255,6 +286,38 @@ describe('The anchors feature', async () => {
 
     expect(await anchorIndicator(page, anchored).count()).toBe(1)
     expect(await anchorIndicator(page, plain).count()).toBe(0)
+  })
+
+  test("a block with several anchors gets one indicator, for its element's id", async () => {
+    const uuid = await addContentBlock(page, 'call_to_action')
+    await addIds(page, uuid, {
+      own: 'own',
+      children: [{ tag: 'h3', id: 'heading' }],
+    })
+
+    await enableAnchors(page, 'heading')
+    const indicator = anchorIndicator(page, uuid)
+    await indicator.first().waitFor({ state: 'attached' })
+
+    expect(await indicator.count()).toBe(1)
+    expect((await indicator.textContent())?.trim()).toBe('#own')
+  })
+
+  test("the ids of other elements, such as a tab list's, aren't anchors", async () => {
+    // An anchored title proves the overlay is active.
+    const anchored = await addAnchored(page, ANCHOR)
+    const tabs = await addContentBlock(page, 'call_to_action', anchored)
+    await addIds(page, tabs, {
+      children: [
+        { tag: 'button', id: 'tab' },
+        { tag: 'div', id: 'panel' },
+      ],
+    })
+
+    await enableAnchors(page, 'panel')
+    await anchorIndicator(page, anchored).waitFor({ state: 'attached' })
+
+    expect(await anchorIndicator(page, tabs).count()).toBe(0)
   })
 
   test('each anchored block gets its own indicator', async () => {

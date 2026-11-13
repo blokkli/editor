@@ -24,8 +24,15 @@
 
 @config '../tailwind.config.ts';
 
-/* Keep class candidates from the sandbox (Drupal and its Nuxt app) out of the editor CSS. */
-@source not '../sandbox';
+/*
+ * Keep class candidates from the sandbox (Drupal and its Nuxt apps) out of the
+ * editor CSS, except those of its editor features (the styleguide, the test
+ * cases). An exclusion wins over a nested @source, so it lists what to skip.
+ */
+@source not '../sandbox/{drupal,control}';
+@source not '../sandbox/frontend/{app,public,server,shared}';
+@source not '../sandbox/frontend/blokkli/{prompts,skills,tools}';
+@source not '../sandbox/frontend/*.ts';
 @source not '../.ddev';
 
 @font-face {

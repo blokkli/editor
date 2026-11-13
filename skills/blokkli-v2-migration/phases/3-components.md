@@ -128,8 +128,47 @@ available within the editor. In the build, this first compiles to
 `const isEditing = false`. Rollup/rolldown then tree shakes any code like
 `<EditorInfo v-if="isEditing">` or `if (isEditing) {}`.
 
-Note that this only works for components that call `defineBlokkli` or
-`defineBlokkliFragment`! In any other code this will ALWAYS resolve to `false`!
+Note that this only works in `.vue` files: in the components that call
+`defineBlokkli` or `defineBlokkliFragment`, and in every `.vue` component they
+import, directly or through Nuxt's auto-imports, which get an editing version
+too. In `.ts` files it ALWAYS resolves to `false`!
+
+## Fields in proxy mode
+
+A `<BlokkliField proxy-mode>` now renders as a pager while editing: a band of
+pages, one per child, and below it the child the field shows, as a real block.
+Its slot only renders on the site and in the preview.
+
+- Remove the wrapper with `position: relative` that the old proxy list needed.
+  It does no harm.
+- Code in the slot's components that only ran while editing (such as disabling a
+  slider's buttons) no longer runs: remove it.
+- `<BlokkliItem>` in the slot is fine now. Its directives no longer clash with
+  the editor's list.
+- A `<BlokkliItem>` of one of the field's children gets its index and its
+  parent's bundle from the field now, on the site too: before, the slot's
+  children rendered as if they were at the top of the page, at index 0. A child
+  whose component checks `parentType` or has a `renderFor` variant for the
+  parent renders as nested, as the editor renders it. Check those components on
+  the site; drop a `parent-type` or `index` passed only to make up for it.
+- A `proxy.vue` only renders in the editor's Structure view now. Keep it there.
+- `class` goes on the element that holds the band and the shown child. `tag`,
+  `list-class` and `edit-class` go on the list that holds the shown child. In
+  proxy mode, they did nothing before.
+- A slot that composes the children into a scene (titles as tabs, the current
+  child's text beside them) loses that composition while editing, unless the
+  field opts in with `proxy-mode="slot"`: its slot then renders below the band
+  while editing too. Ask the project which it wants. To opt in:
+  - render the shown child, `items[shownIndex]`, as a `<BlokkliItem>` keyed by
+    its uuid, with a default slot around all of the child's markup; it's then
+    the child, edited in place. `shownIndex` is `null` on the site;
+  - render what the layout can't show as
+    `<BlokkliItem :key="item.uuid" v-bind="item" />`, the child's own component;
+  - remove what the project built for it: finding the selected child itself
+    (`useBlokkli()` and `selection.uuids`), an overview of the children, a
+    button that adds children (the band and the add buttons do that now).
+
+  See "Rendering the Shown Block Yourself" in the proxy mode docs.
 
 ## Done when
 

@@ -37,6 +37,7 @@ import type { DragDropProvider } from '../providers/dragdrop'
 import type { CacheProvider } from '../providers/cache'
 import type { WorkspacesProvider } from '../providers/workspaces'
 import type { ConfigProvider } from '../providers/config'
+import type { PagerProvider } from '../providers/pager'
 
 export interface BlokkliApp {
   /**
@@ -84,4 +85,5 @@ export interface BlokkliApp {
   cache: CacheProvider
   workspaces: WorkspacesProvider
   config: ConfigProvider
+  pager: PagerProvider
 }

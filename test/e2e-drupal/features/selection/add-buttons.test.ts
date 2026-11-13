@@ -1,8 +1,15 @@
 import { setup } from '@nuxt/test-utils/e2e'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import type { Locator, Page } from 'playwright-core'
-import { blockCount, selectBlock } from '../../support/blocks'
+import type {
+  Coord,
+  Rectangle,
+} from '../../../../src/runtime/editor/types/geometry'
+import { KNOB_SIZE } from '../../../../src/runtime/editor/features/selection/AddButtons/geometry'
+import { blockCount, fieldUuids, selectBlock } from '../../support/blocks'
+import { editableOverlay, saveByClickAway } from '../../support/editable'
 import { emitEvent } from '../../support/events'
+import { nextMutation } from '../../support/mutations'
 import { closeFormOverlay, formOverlay } from '../../support/overlays'
 import {
   bundleSelector,
@@ -16,16 +23,19 @@ import {
   seedUuid,
   workerSandbox,
 } from '../../support/sandbox'
-import { editorPath, openEditor } from '../../support/session'
+import { editorPath, openEditor, withApp } from '../../support/session'
 
 /**
  * The "add buttons" (selection/AddButtons feature) are drawn on the WebGL
- * canvas, so there is no DOM element to click. Instead we drive them with the
+ * canvas: tabs before and after the selected block, and a button at the end of
+ * each of its fields that can take another block (an empty field's always, a
+ * filled field's while the pointer is over it). Most tests drive them with the
  * `selection:add-button:trigger` event, which the feature handles exactly like
- * a canvas click on the corresponding button of the current selection — and,
- * like the canvas buttons, only acts when the button would actually be shown.
- * When the target field allows more than one bundle, this opens the
- * `BundleSelector` overlay (`data-test="bundle-selector"`).
+ * a canvas click on that button of the current selection — and, like the
+ * canvas, only acts when the button would actually be shown. The tests of the
+ * buttons themselves use the real pointer. When the target field allows more
+ * than one bundle, a button opens the `BundleSelector` overlay
+ * (`data-test="bundle-selector"`).
  *
  * On the front page (content/nodes/home.yml): its paragraphs field is the only
  * one that allows fragments. It holds a text, a call to action with four links
@@ -34,8 +44,54 @@ import { editorPath, openEditor } from '../../support/session'
 
 const HOME_EDITOR_PATH = editorPath('/en', 'home')
 const TEXT = seedUuid('paragraph', 'home-text')
+const CALL_TO_ACTION = seedUuid('paragraph', 'home-call-to-action')
 const LINK = seedUuid('paragraph', 'home-link')
 const COLUMNS = seedUuid('paragraph', 'home-columns')
+
+/** A field of the columns in viewport coordinates, as the canvas hit-tests it. */
+function columnsFieldRect(
+  page: Page,
+  fieldName: string,
+): Promise<Rectangle | null> {
+  return page.evaluate((key) => {
+    const app = window.__BLOKKLI__!.app!
+    app.dom.refreshFieldRect(key)
+    const rect = app.dom.getFieldRect(key)
+    return rect ? app.ui.getViewportRelativeRect(rect) : null
+  }, `${COLUMNS}:${fieldName}`)
+}
+
+/** The tooltip of the add button under the pointer, by its target. */
+function addButtonTooltip(page: Page, targetId: string): Locator {
+  return page.locator(
+    `[data-test="add-buttons-tooltip"][data-test-target="${targetId}"]`,
+  )
+}
+
+/**
+ * Move the pointer onto the add button of a field of the columns until it shows
+ * its tooltip, and return where that is: the canvas draws it in a later frame,
+ * and the editor may still be scrolling the columns into view.
+ */
+async function pointAtFieldButton(
+  page: Page,
+  fieldName: string,
+  position: (rect: Rectangle) => Coord,
+): Promise<Coord> {
+  let point: Coord = { x: 0, y: 0 }
+  await expect
+    .poll(async () => {
+      const rect = await columnsFieldRect(page, fieldName)
+      if (!rect) {
+        return false
+      }
+      point = position(rect)
+      await page.mouse.move(point.x, point.y)
+      return addButtonTooltip(page, `field:${fieldName}`).isVisible()
+    })
+    .toBe(true)
+  return point
+}
 
 /**
  * Select the front page's text and trigger its "after" add button (the
@@ -108,10 +164,16 @@ describe('The selection add buttons', async () => {
         await closeFormOverlay(page, id)
       }
     }
+    // An added title opens its editable; unchanged, it saves nothing.
+    if (await editableOverlay(page).isVisible()) {
+      await saveByClickAway(page)
+      await editableOverlay(page).waitFor({ state: 'detached' })
+    }
     // Deselecting also closes the bundle selector: its close button may be
     // out of reach, as the selector opens at the top of the page when the
     // event triggers it, under the editor's toolbar.
     await emitEvent(page, 'select:unselect')
+    await emitEvent(page, 'select:host:unselect')
     await bundleSelector(page).waitFor({ state: 'hidden' })
   })
 
@@ -143,14 +205,31 @@ describe('The selection add buttons', async () => {
     expect(await blockCount(page)).toBe(before)
   })
 
+  test('a full field has no add button', async () => {
+    const before = await blockCount(page)
+
+    // The call to action's `field_links` holds four links, as many as it
+    // allows: there's no button at its end.
+    await selectBlock(page, CALL_TO_ACTION)
+    await emitEvent(page, 'selection:add-button:trigger', {
+      position: 'field',
+      fieldName: 'field_links',
+    })
+
+    // The field only allows links: a button that shouldn't be there would add
+    // one right away.
+    await page.waitForTimeout(300)
+    expect(await bundleSelector(page).count()).toBe(0)
+    expect(await blockCount(page)).toBe(before)
+  })
+
   test("the columns' empty left field offers its paragraph types and both actions", async () => {
-    // Selecting the columns surfaces the add button of their empty field
-    // (`field_right` has a text, so `field_left` is the only empty one →
-    // index 0); triggering it opens the selector scoped to `field_left`.
+    // Selecting the columns surfaces the add button of each of their fields;
+    // triggering the one of `field_left` opens the selector scoped to it.
     await selectBlock(page, COLUMNS)
     await emitEvent(page, 'selection:add-button:trigger', {
       position: 'field',
-      index: 0,
+      fieldName: 'field_left',
     })
 
     await bundleSelector(page).waitFor({ state: 'visible' })
@@ -178,6 +257,86 @@ describe('The selection add buttons', async () => {
       ['library', 'template'].sort(),
     )
     expect(await bundleSelectorItemIds(page, 'fragments')).toEqual([])
+  })
+
+  test('the button of a filled field adds at its end', async () => {
+    await selectBlock(page, COLUMNS)
+    const last = (await fieldUuids(page, 'field_right', COLUMNS)).at(-1)
+    expect(last).toBeDefined()
+
+    const added = nextMutation(page, 'pbAddParagraph')
+    await emitEvent(page, 'selection:add-button:trigger', {
+      position: 'field',
+      fieldName: 'field_right',
+    })
+    await bundleSelector(page).waitFor({ state: 'visible' })
+    await pickBundle(page, 'title')
+
+    expect(await added).toMatchObject({
+      type: 'title',
+      hostUuid: COLUMNS,
+      hostFieldName: 'field_right',
+      afterUuid: last,
+    })
+  })
+
+  test("an empty field gets room in the editor, and keeps the site's larger minimum height", async () => {
+    const sizes = await page.evaluate((uuid) => {
+      const element = window.__BLOKKLI__!.app!.fields.find(
+        uuid,
+        'field_left',
+      )!.element
+      return {
+        height: element.offsetHeight,
+        minHeight: Number.parseFloat(getComputedStyle(element).minHeight),
+        room: getComputedStyle(element, '::before').height,
+      }
+    }, COLUMNS)
+
+    // The editor's room for an empty field, whatever the site's styles.
+    expect(sizes.room).toBe('48px')
+    // The columns give their fields more while editing (`min-h-16`): it still
+    // applies, the editor's CSS doesn't override it.
+    expect(sizes.minHeight).toBeGreaterThan(48)
+    expect(sizes.height).toBeGreaterThanOrEqual(sizes.minHeight)
+  })
+
+  test('clicking the button of an empty field opens its selector', async () => {
+    await selectBlock(page, COLUMNS)
+    await emitEvent(page, 'scrollIntoView', { uuid: COLUMNS, immediate: true })
+
+    // The button of an empty field is in its middle.
+    const point = await pointAtFieldButton(page, 'field_left', (rect) => ({
+      x: rect.x + rect.width / 2,
+      y: rect.y + rect.height / 2,
+    }))
+    await page.mouse.click(point.x, point.y)
+
+    await bundleSelector(page).waitFor({ state: 'visible' })
+    // The selector of `field_left` (no fragments), and the click selected
+    // nothing else.
+    expect(await bundleSelectorItemIds(page, 'fragments')).toEqual([])
+    expect(
+      await withApp(page, (app) => [...app.selection.uuids.value]),
+    ).toEqual([COLUMNS])
+  })
+
+  test('pointing at a filled field shows the button at its end, which opens its selector', async () => {
+    await selectBlock(page, COLUMNS)
+    await emitEvent(page, 'scrollIntoView', { uuid: COLUMNS, immediate: true })
+
+    // Only shown while the pointer is over the field: inside it, against its
+    // bottom edge, after its last block.
+    const point = await pointAtFieldButton(page, 'field_right', (rect) => ({
+      x: rect.x + rect.width / 2,
+      y: rect.y + rect.height - KNOB_SIZE / 2,
+    }))
+    await page.mouse.click(point.x, point.y)
+
+    await bundleSelector(page).waitFor({ state: 'visible' })
+    expect(
+      await withApp(page, (app) => [...app.selection.uuids.value]),
+    ).toEqual([COLUMNS])
   })
 
   test('starting a drag closes the bundle selector', async () => {
@@ -216,6 +375,7 @@ describe('The selection add buttons', async () => {
         'link_list',
         'section',
         'steps',
+        'story',
         'table',
         'teaser',
         'teaser_list',
@@ -319,5 +479,32 @@ describe('The selection add buttons', async () => {
     await page
       .locator('[data-test="form-overlay-library"]')
       .waitFor({ state: 'visible' })
+  })
+
+  // Adds a block at the end of the page, after which the other tests' blocks
+  // would no longer be the last ones: runs last.
+  test('with the page selected, the button of its field adds at the end of the page', async () => {
+    const last = (await fieldUuids(page)).at(-1)
+    expect(last).toBeDefined()
+
+    await emitEvent(page, 'select:host')
+    const added = nextMutation(page, 'pbAddParagraph')
+    await emitEvent(page, 'selection:add-button:trigger', {
+      position: 'field',
+      fieldName: 'field_paragraphs',
+    })
+    await bundleSelector(page).waitFor({ state: 'visible' })
+    // The page's field is the one that allows fragments.
+    expect(
+      (await bundleSelectorItemIds(page, 'fragments')).length,
+    ).toBeGreaterThan(0)
+    await pickBundle(page, 'title')
+
+    expect(await added).toMatchObject({
+      type: 'title',
+      hostType: 'node',
+      hostFieldName: 'field_paragraphs',
+      afterUuid: last,
+    })
   })
 })

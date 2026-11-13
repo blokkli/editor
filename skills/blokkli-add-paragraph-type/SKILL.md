@@ -420,20 +420,43 @@ field.
 ## 8. Proxy mode
 
 For a container whose rendering hides its children, such as a slider that shows
-one image at a time. The editor then shows the children in a list of their own
-while the container is selected, where they can be dragged and edited.
+one image at a time. While editing, the field renders as a pager: a band of
+pages, one per child, and below it the child the field shows, as a real block
+that editors edit like any other. Clicking a page shows its child.
 
-- `<BlokkliField proxy-mode v-slot="{ items }">` inside an element with
+- `<BlokkliField proxy-mode v-slot="{ items }">`. It needs no wrapper with
   `position: relative`.
-- Each child type can have a `proxy.vue` next to its `index.vue`, rendered in
-  that list:
+- **The slot renders on the site and in the preview.** Render the children there
+  however the design needs: directly from `items`, or with `<BlokkliItem>`. A
+  `<BlokkliItem>` of a child gets its index and its parent's type from the
+  field: a child that adapts to its parent (`renderFor`, `parentType`) needs no
+  prop for it. While editing, the editor renders the shown child itself, unless
+  the field has `proxy-mode="slot"` (below).
+- **Classes:**
+  - `class` goes on the element that holds the band and the shown child: the
+    field's place in its parent, such as a grid cell.
+  - `tag`, `list-class` and `edit-class` go on the list that holds the shown
+    child.
+  - The shown child gets its `parentType`, so it can adapt with `renderFor` or
+    `edit-class`.
+- **`proxy.vue`:** a child type can have one next to its `index.vue`. It only
+  renders in the editor's Structure view; the pager's pages show the type's icon
+  and name.
   - It gets the same props.
   - It doesn't call `defineBlokkli`.
   - It may use `v-blokkli-droppable` and `v-blokkli-editable`.
-- **Render the visible content directly from `items`,** not with
-  `<BlokkliItem>`. `items` is the live list while editing. Items rendered with
-  `<BlokkliItem>` lose their parent type, and their directives clash with those
-  in `proxy.vue`.
+- **A scene keeps its composition with `proxy-mode="slot"`.** A design that
+  composes the children (each one's picture beside its text, their titles as
+  tabs) otherwise shows one child at a time below the band, as its own
+  component. With `"slot"`, the slot renders while editing too, below the band:
+  - It gets `shownIndex`, the index of the child the field shows, `null` on the
+    site.
+  - Render that child as a `<BlokkliItem>` keyed by its uuid, with a default
+    slot around all of its markup: the markup is then the child, edited in place
+    with `v-blokkli-editable` and a `<BlokkliField>` for its nested field.
+  - What the layout can't show, render as
+    `<BlokkliItem :key="item.uuid" v-bind="item" />`.
+  - The sandbox's story (`Paragraph/Story/`) does all of it.
 - To switch between proxy mode and a normal list with an option, use two
   `BlokkliField`s with `v-if`/`v-else`: `proxy-mode` is read once.
 - Proxy mode only exists for paragraphs fields. A single paragraph with a

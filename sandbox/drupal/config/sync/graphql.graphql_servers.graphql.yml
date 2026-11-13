@@ -244,6 +244,8 @@ schema_configuration:
           enabled: true
         steps:
           enabled: true
+        story:
+          enabled: true
         table:
           enabled: true
         teaser:

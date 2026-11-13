@@ -30,6 +30,28 @@ further details. Now the "Add files" dialog opens for them:
   paste them, with a message that names the file. A file that couldn't be
   uploaded can be removed from the dialog, and the others still be added.
 
+#### Sliders
+
+Blocks that show one block at a time, such as a slider, can now be edited right
+on the page:
+
+- A dark bar above the slider shows its blocks as small pages, with their number
+  and type. On the left, which one is shown, like "2 / 6".
+- Below the bar, the slider shows one of its blocks, which you edit like any
+  other block: its texts, its options and the blocks inside it.
+- Click a page to show its block. A block that you select elsewhere, for example
+  in "Structure", the search or a comment, is shown too.
+- Add blocks with the buttons on both sides of the shown block, or with the
+  button after the last page, which is always there. Drag pages to change their
+  order, or drag blocks onto the bar.
+- If there are more pages than fit, the last ones are cut off.
+- Where the website supports it, a block with a layout of its own keeps it while
+  you edit, for example each section's picture beside its text, and you edit the
+  shown block right there.
+
+This replaces the list that appeared over such blocks while something was
+selected.
+
 ### Improvements
 
 - When the website refuses a change, the editor gives the reason, for example
@@ -103,3 +125,9 @@ further details. Now the "Add files" dialog opens for them:
   current language.
 - Charts show their footnotes and category filter correctly, and the chart
   editor keeps the link to a data source.
+- A double click only opens a block's form when both clicks are on that block.
+  Before, a quick click on a block that had just appeared under the pointer, for
+  example after showing another page of a slider, opened the form of the block
+  clicked before.
+- "Anchor links" no longer shows the ids of elements such as tabs, and shows one
+  link per block instead of several on top of each other.

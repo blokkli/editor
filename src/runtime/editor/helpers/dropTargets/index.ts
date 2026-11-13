@@ -19,8 +19,8 @@ export function getGapSize(
   ) {
     const gap =
       orientation === 'vertical'
-        ? computedStyle.rowGap || computedStyle.gridRowGap
-        : computedStyle.columnGap || computedStyle.gridColumnGap
+        ? computedStyle.rowGap
+        : computedStyle.columnGap
 
     if (gap) {
       // Extract the first value.
@@ -65,6 +65,43 @@ export function getChildrenOrientation(element: HTMLElement): Orientation {
 
   // Default to vertical for block elements and other displays
   return 'vertical'
+}
+
+/**
+ * How the children of a field are laid out.
+ */
+export type ChildrenFlow = {
+  orientation: Orientation
+
+  /** The field's text direction is right to left. */
+  rtl: boolean
+
+  /** The children run in reverse: flex row-reverse or column-reverse. */
+  reversed: boolean
+}
+
+/**
+ * Determine how the children of a field are laid out.
+ *
+ * @param element - The field's element.
+ * @param forced - An orientation set on the field (its drop alignment).
+ */
+export function getChildrenFlow(
+  element: HTMLElement,
+  forced?: Orientation | null,
+): ChildrenFlow {
+  const style = window.getComputedStyle(element)
+  const orientation = forced || getChildrenOrientation(element)
+  const reversed =
+    style.display.includes('flex') &&
+    style.flexDirection ===
+      (orientation === 'horizontal' ? 'row-reverse' : 'column-reverse')
+
+  return {
+    orientation,
+    rtl: style.direction === 'rtl',
+    reversed,
+  }
 }
 
 /**
@@ -200,4 +237,30 @@ export function determineCanAddChildren(
   }
 
   return true
+}
+
+/**
+ * The bundles a user may add to a field that holds `count` blocks: none when
+ * the user may not change the field (`canChange`), a new block would be nested
+ * deeper than the adapter allows (`maxNestingLevel`, undefined for no limit),
+ * or the field is full. Of the field's bundles, those the user may add
+ * (`isBundlePermitted`).
+ */
+export function getFieldAddBundles(
+  field: BlokkliFieldElement,
+  count: number,
+  options: {
+    canChange: boolean
+    maxNestingLevel: number | undefined
+    isBundlePermitted: (bundle: string) => boolean
+  },
+): string[] {
+  if (
+    !options.canChange ||
+    !fitsNestingLimit(field.nestingLevel, 1, options.maxNestingLevel) ||
+    !determineCanAddChildren(field, [], [], count, 1, [])
+  ) {
+    return []
+  }
+  return field.allowedBundles.filter(options.isBundlePermitted)
 }

@@ -658,6 +658,12 @@ host, with ddev running: `bun run test:e2e-drupal` or
   E2E specs (the `e2e-testing` skill). Only where the agent's mock is: the
   hosted build ignores its folder, and the hydration tests' fragments (Nuxt's
   `ignore`; `devOnly` would leave them out of the E2E build too).
+- **The styleguide** (`blokkli/features/styleguide/`): the editor's components
+  and their variants, from the app menu or `?bkOverlay=styleguide`. A
+  component's `story.ts` sits next to it in `src/`; snippets and examples are in
+  the feature's folder, all listed in its `registry.ts`. `devOnly`: only on the
+  dev server. The editor's CSS skips `sandbox/` but scans `blokkli/features/`
+  (`css/index.css`), so the classes of these templates exist.
 - **Server:** `/api/chart-data[/id]` (the charts' data sources, also used by the
   agent's tool); `server/graphqlMiddleware.serverOptions.ts` picks the endpoint
   by the client context's language. `app/graphqlMiddleware.clientOptions.ts` has

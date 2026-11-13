@@ -27,6 +27,7 @@ import cssButton from './snippets/button'
 import cssPill from './snippets/pill'
 import cssShortcut from './snippets/shortcut'
 import examplePanel from './examples/Panel'
+import exampleProxyMode from './examples/ProxyMode'
 
 /**
  * Manual registry of styleguide entries.
@@ -61,6 +62,7 @@ export const editorEntries: EditorEntry[] = [
   richText,
   richTextRenderer,
   examplePanel,
+  exampleProxyMode,
   cssButton,
   cssPill,
   cssShortcut,

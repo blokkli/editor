@@ -3,15 +3,18 @@
  * single-block (or host) selection — the same effect as clicking the button on
  * the canvas, without needing its screen coordinates.
  *
- *  - `before` / `after`: the insert-before / insert-after buttons (only act
- *    when the field can actually accept another block, mirroring the canvas
- *    buttons' visibility);
- *  - `field`: the empty-field button at `index` (the n-th empty block field of
- *    the selected block, or empty host field when the host is selected).
+ *  - `before` / `after`: the tabs that add a block before or after the
+ *    selected block;
+ *  - `field`: the button that adds a block at the end of the field
+ *    `fieldName` of the selected block (or of the host, when the host is
+ *    selected).
+ *
+ * Like the canvas buttons, it does nothing when the block can't be added
+ * there: the field is full, read-only or not editable by the user.
  */
 export type SelectionAddButtonTriggerEvent =
   | { position: 'before' | 'after' }
-  | { position: 'field'; index: number }
+  | { position: 'field'; fieldName: string }
 
 declare module '#blokkli/editor/events' {
   interface EventbusEvents {

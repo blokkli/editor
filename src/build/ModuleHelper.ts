@@ -318,6 +318,43 @@ export class ModuleHelper implements ValidationInterface {
   }
 
   /**
+   * How to name a package in Vite's `optimizeDeps.include`. Vite resolves the
+   * names from the project, which can't resolve the module's own dependencies
+   * with a strict package manager such as pnpm. When the module is installed
+   * as a package, a package it declares is named through it
+   * (`@blokkli/editor > fzf`); other packages, such as a project module's, keep
+   * their name.
+   */
+  private getOptimizeNameFactory(): (name: string) => string {
+    const moduleDir = this.resolvers.module.resolve('.')
+    if (!moduleDir.split(/[\\/]/).includes('node_modules')) {
+      return (name) => name
+    }
+    const manifest = JSON.parse(
+      readFileSync(this.resolvers.module.resolve('../package.json'), 'utf8'),
+    ) as {
+      name: string
+      dependencies?: Record<string, string>
+      peerDependencies?: Record<string, string>
+    }
+    const declared = new Set([
+      ...Object.keys(manifest.dependencies ?? {}),
+      ...Object.keys(manifest.peerDependencies ?? {}),
+    ])
+    return (name) => {
+      // Already named through a package.
+      if (name.includes('>')) {
+        return name
+      }
+      const parts = name.split('/')
+      const packageName = name.startsWith('@')
+        ? parts.slice(0, 2).join('/')
+        : parts[0]!
+      return declared.has(packageName) ? `${manifest.name} > ${name}` : name
+    }
+  }
+
+  /**
    * Apply collected build configuration to the Nuxt/Vite config.
    *
    * Called once by the core module after every module's setup has run, so it
@@ -328,12 +365,18 @@ export class ModuleHelper implements ValidationInterface {
     this.nuxt.options.vite.optimizeDeps ??= {}
     const include = (this.nuxt.options.vite.optimizeDeps.include ??= [])
     const exclude = this.nuxt.options.vite.optimizeDeps.exclude ?? []
+    const toOptimizeName = this.getOptimizeNameFactory()
     for (const name of this.packageDependencies) {
+      const optimizeName = toOptimizeName(name)
       // Skip duplicates and anything a project has explicitly opted out of.
-      if (include.includes(name) || exclude.includes(name)) {
+      if (
+        include.includes(name) ||
+        include.includes(optimizeName) ||
+        exclude.includes(name)
+      ) {
         continue
       }
-      include.push(name)
+      include.push(optimizeName)
     }
 
     this.nuxt.options.vite.resolve ??= {}

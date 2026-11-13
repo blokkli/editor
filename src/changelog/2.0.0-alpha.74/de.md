@@ -32,6 +32,29 @@ Angaben hochgeladen. Jetzt öffnet sich dafür der Dialog «Dateien hinzufügen�
   nicht hochgeladen werden konnte, entfernen Sie aus dem Dialog und fügen die
   übrigen trotzdem hinzu.
 
+#### Slider
+
+Blöcke, die jeweils einen Block zeigen, z. B. ein Slider, bearbeiten Sie jetzt
+direkt auf der Seite:
+
+- Eine dunkle Leiste über dem Slider zeigt seine Blöcke als kleine Seiten, mit
+  ihrer Nummer und ihrem Typ. Links steht, welcher gezeigt wird, z. B. «2 / 6».
+- Unter der Leiste zeigt der Slider einen seiner Blöcke, den Sie wie jeden
+  anderen Block bearbeiten: seine Texte, seine Optionen und die Blöcke darin.
+- Klicken Sie auf eine Seite, um ihren Block zu zeigen. Auch ein Block, den Sie
+  anderswo auswählen, z. B. in «Struktur», in der Suche oder in einem Kommentar,
+  wird gezeigt.
+- Blöcke fügen Sie mit den Buttons auf beiden Seiten des gezeigten Blocks hinzu
+  oder mit dem Button nach der letzten Seite, der immer da ist. Ziehen Sie
+  Seiten, um ihre Reihenfolge zu ändern, oder ziehen Sie Blöcke auf die Leiste.
+- Haben nicht alle Seiten Platz, werden die letzten abgeschnitten.
+- Wo die Website es unterstützt, behält ein Block mit eigener Darstellung diese
+  beim Bearbeiten, z. B. das Bild jedes Abschnitts neben seinem Text, und Sie
+  bearbeiten den gezeigten Block direkt darin.
+
+Dies ersetzt die Liste, die bisher über solchen Blöcken erschien, solange etwas
+ausgewählt war.
+
 ### Verbesserungen
 
 - Lehnt die Website eine Änderung ab, nennt der Editor den Grund, z. B. dass ein
@@ -111,3 +134,10 @@ Angaben hochgeladen. Jetzt öffnet sich dafür der Dialog «Dateien hinzufügen�
   Sprache ausgeblendet sind.
 - In Diagrammen werden Fussnoten und der Kategoriefilter korrekt dargestellt,
   und der Diagramm-Editor behält die Verknüpfung mit einer Datenquelle.
+- Ein Doppelklick öffnet das Formular eines Blocks nur noch, wenn beide Klicks
+  auf diesem Block liegen. Bisher öffnete ein schneller Klick auf einen Block,
+  der gerade unter dem Mauszeiger erschienen war, zum Beispiel nachdem Sie eine
+  andere Seite eines Sliders angezeigt hatten, das Formular des zuvor
+  angeklickten Blocks.
+- «Ankerlinks» zeigt keine IDs von Elementen wie Tabs mehr an, und pro Block nur
+  noch einen Link statt mehrere übereinander.

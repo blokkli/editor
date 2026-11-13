@@ -216,8 +216,10 @@ export default defineNuxtModule<ModuleOptions>({
       '@tiptap/extension-task-list',
       '@tiptap/starter-kit',
       '@tiptap/vue-3',
-      '@vue/devtools-core',
-      '@vue/devtools-kit',
+      // Nuxt DevTools' packages, named through it: a project with a strict
+      // package manager can't resolve them itself.
+      'nuxt > @nuxt/devtools > @vue/devtools-core',
+      'nuxt > @nuxt/devtools > @vue/devtools-kit',
       'fzf',
       'get-video-id',
       'html-diff-ts',

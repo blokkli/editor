@@ -1,6 +1,12 @@
 import type { Rectangle, Coord, Size } from '#blokkli/editor/types/geometry'
 import { easeOutSine } from '../easing'
 
+/**
+ * The smallest width and height of an element's rectangle in the artboard: a
+ * block that renders nothing, or very little, can still be pointed at.
+ */
+export const MIN_RECT_SIZE = 24
+
 export function getBounds(rects: Rectangle[]): Rectangle | undefined {
   if (!rects.length) {
     return

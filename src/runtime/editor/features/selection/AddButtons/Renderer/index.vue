@@ -1,910 +1,661 @@
 <template>
   <Teleport to="#bk-canvas-overlay">
+    <!--
+      Updated directly from the render loop, not through Vue: the text has to
+      be there when the tooltip is measured, in the same frame.
+    -->
     <div
+      ref="tooltipEl"
       class="bk bk-add-button-tooltip"
-      :class="{ 'bk-is-field': tooltipData?.isField }"
-      :style="{
-        position: 'fixed',
-        left: (tooltipData?.x ?? 0) + 'px',
-        top: (tooltipData?.y ?? 0) + 'px',
-        transform: tooltipData?.transform ?? 'translate(0, 0)',
-        visibility: tooltipData ? 'visible' : 'hidden',
-      }"
-    >
-      {{ tooltipData?.text ?? '' }}
-    </div>
+      data-test="add-buttons-tooltip"
+    />
   </Teleport>
 </template>
 
 <script lang="ts" setup>
-import { useBlokkli, computed, ref } from '#imports'
-import type { BufferInfo } from '#blokkli/editor/libraries/twgl'
-import vs from './vertex.glsl?raw'
-import fs from './fragment.glsl?raw'
-import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
-import { getFieldKey } from '#blokkli/helpers'
-import { toShaderColor } from '#blokkli/editor/helpers/color'
 import {
-  getChildrenOrientation,
-  type Orientation,
-  determineCanAddChildren,
-} from '#blokkli/editor/helpers/dropTargets'
-import { isInternalBundle } from '#blokkli/editor/helpers/bundles'
-import { itemEntityType } from '#blokkli-build/config'
+  useBlokkli,
+  computed,
+  useTemplateRef,
+  onMounted,
+  onBeforeUnmount,
+} from '#imports'
+import type { BufferInfo } from '#blokkli/editor/libraries/twgl'
+import vertexSource from './vertex.glsl?raw'
+import fragmentSource from './fragment.glsl?raw'
+import { RectangleBufferCollector } from '#blokkli/editor/helpers/webgl'
+import { rgbaToString, toShaderColor } from '#blokkli/editor/helpers/color'
 import { defineRenderer, onBlokkliEvent } from '#blokkli/editor/composables'
-import type { Rectangle } from '#blokkli/editor/types/geometry'
-
-const {
-  animation,
-  theme,
-  dom,
-  selection,
-  state,
-  types,
-  ui,
-  $t,
-  blocks,
-  fields,
-  permissions,
-} = useBlokkli()
-
-// Store field tooltips for empty field buttons
-const emptyFieldTooltips = ref<string[]>([])
-
-// Store current UUID and bundle label
-const currentUuid = ref<string>('')
-const currentBundleLabel = ref<string>('')
-const currentSingleAllowedBundleLabel = ref<string | null>(null)
-
-// Tooltip data for hovered button
-const tooltipData = computed<{
-  x: number
-  y: number
-  transform: string
-  position: 'top' | 'bottom' | 'left' | 'right'
-  text: string
-  isField: boolean
-} | null>(() => {
-  if (hoveredCircle.value < 0 || ui.openTooltip.value) {
-    return null
-  }
-
-  const index = hoveredCircle.value
-  const artboardX = circlePositions[index * 2]
-  const artboardY = circlePositions[index * 2 + 1]
-
-  if (artboardX === undefined || artboardY === undefined) {
-    return null
-  }
-
-  // Convert artboard coordinates to screen coordinates
-  const scale = ui.artboardScale.value
-  const offset = ui.artboardOffset.value
-
-  const screenX = artboardX * scale + offset.x
-  const screenY = artboardY * scale + offset.y
-
-  // Determine tooltip position based on button type and orientation
-  let transform: string
-  let position: 'top' | 'bottom' | 'left' | 'right'
-  let text: string
-  let isField = false
-
-  if (index === 0 || index === 1) {
-    // Before/after buttons - position based on orientation
-    const orientation = currentOrientation.value
-
-    // Compute tooltip text
-    if (currentSingleAllowedBundleLabel.value) {
-      if (index === 0) {
-        text = $t('addButtonBundleBefore', 'Add "@bundle" before').replace(
-          '@bundle',
-          currentSingleAllowedBundleLabel.value,
-        )
-      } else {
-        text = $t('addButtonBundleAfter', 'Add "@bundle" after').replace(
-          '@bundle',
-          currentSingleAllowedBundleLabel.value,
-        )
-      }
-    } else {
-      if (index === 0) {
-        text = $t('addButtonBeforeBundle', 'Add before', { more: true })
-      } else {
-        text = $t('addButtonAfterBundle', 'Add after', { more: true })
-      }
-    }
-
-    if (orientation === 'horizontal') {
-      if (index === 0) {
-        // Left button - tooltip to the right
-        transform = `translate(${TOOLTIP_MARGIN}px, -50%)`
-        position = 'right'
-      } else {
-        // Right button - tooltip to the left
-        transform = `translate(calc(-100% - ${TOOLTIP_MARGIN}px), -50%)`
-        position = 'left'
-      }
-    } else {
-      // Vertical orientation
-      if (index === 0) {
-        // Top button - tooltip below
-        transform = `translate(-50%, ${TOOLTIP_MARGIN}px)`
-        position = 'bottom'
-      } else {
-        // Bottom button - tooltip above
-        transform = `translate(-50%, calc(-100% - ${TOOLTIP_MARGIN}px))`
-        position = 'top'
-      }
-    }
-  } else {
-    // Empty field buttons - show above by default
-    transform = `translate(-50%, calc(-100% - ${TOOLTIP_MARGIN}px))`
-    position = 'top'
-    isField = true
-
-    const fieldIndex = index - 2
-    text = emptyFieldTooltips.value[fieldIndex] || 'Add to field'
-  }
-
-  return { x: screenX, y: screenY, transform, position, text, isField }
-})
+import type { RenderContext } from '#blokkli/editor/providers/animation'
+import type { Coord, Rectangle } from '#blokkli/editor/types/geometry'
+import {
+  BAND_OPACITY,
+  MAX_SHAPES,
+  TAB_DEPTH,
+  TAB_FLARE,
+  TAB_RADIUS,
+  buildFrame,
+  hitTest,
+  isHorizontalEdge,
+  placeLabel,
+  type FieldInput,
+  type Frame,
+  type Shape,
+  type ShapeType,
+  type SiblingInput,
+} from '../geometry'
+import type {
+  AddTarget,
+  AddTargetId,
+  AddTargets,
+  FieldAddTarget,
+  Side,
+} from '../types'
 
 const props = defineProps<{
-  hostEmptyFieldKeys: string[]
-  hostEmptyFieldTooltips: string[]
+  targets: AddTargets | null
+  /**
+   * The ends of the fields in proxy mode, whatever is selected: drawn in the
+   * room their band leaves after the pages.
+   */
+  pagerTargets: FieldAddTarget[]
+  activeTargetId: AddTargetId | null
 }>()
 
 const emit = defineEmits<{
-  (
-    e: 'toggle',
-    data: {
-      position: 'before' | 'after'
-      coordinates: { x: number; y: number }
-    },
-  ): void
-  (
-    e: 'toggleField',
-    data: { index: number; coordinates: { x: number; y: number } },
-  ): void
+  (e: 'activate', data: { id: AddTargetId; anchor: Coord }): void
 }>()
 
-// Total number of circles we support (2 for before/after + 8 for empty fields)
-const MAX_CIRCLES = 10
+const { animation, theme, dom, selection, ui } = useBlokkli()
 
-// Button radius in pixels
-const BUTTON_RADIUS = 12
+// One source for the sizes the shaders use.
+function injectConstants(source: string): string {
+  return source
+    .replace(/__MAX_SHAPES__/g, String(MAX_SHAPES))
+    .replace(/__TAB_DEPTH__/g, TAB_DEPTH.toFixed(1))
+    .replace(/__TAB_RADIUS__/g, TAB_RADIUS.toFixed(1))
+    .replace(/__TAB_FLARE__/g, TAB_FLARE.toFixed(1))
+    .replace(/__BAND_OPACITY__/g, BAND_OPACITY.toFixed(2))
+}
+const vs = injectConstants(vertexSource)
+const fs = injectConstants(fragmentSource)
 
-// Tooltip margin in pixels (distance from button center to tooltip edge)
-const TOOLTIP_MARGIN = 20
-
-// Minimum distance between buttons before repositioning (in screen pixels)
-// This is approximately 3x the button radius to ensure comfortable spacing
-const MIN_BUTTON_DISTANCE = BUTTON_RADIUS * 3
-
-// Outward shift for before/after buttons in pixels
-
-type CircleRectangle = Rectangle & {
-  id: string
-  index: number
+const SHAPE_TYPES: Record<ShapeType, number> = {
+  tab: 1,
+  knob: 2,
+  band: 3,
+  bar: 4,
+  outline: 5,
+  area: 6,
 }
 
-class CircleBufferCollector extends RectangleBufferCollector<CircleRectangle> {}
+const SIDES: Record<Side, number> = { top: 0, right: 1, bottom: 2, left: 3 }
 
-// Cache for bufferInfo (created on first render)
-let bufferInfoCache: BufferInfo | null = null
+const shapeRects = new Float32Array(MAX_SHAPES * 4)
+const shapeStyles = new Float32Array(MAX_SHAPES * 4)
 
-// Circle state
-const circlePositions = new Float32Array(MAX_CIRCLES * 2) // x, y for each circle
-const circleVisible = new Float32Array(MAX_CIRCLES) // visibility for each circle
+const colors = computed(() => ({
+  accent: theme.accent.value[600],
+  accentHover: theme.accent.value[500],
+  line: theme.accent.value[500],
+  tint: theme.accent.value[50],
+}))
 
-// Track which circle is being hovered (-1 for none)
-const hoveredCircle = ref<number>(-1)
+const shaderColors = computed(() => ({
+  u_color_accent: toShaderColor(colors.value.accent),
+  u_color_accent_hover: toShaderColor(colors.value.accentHover),
+  u_color_line: toShaderColor(colors.value.line),
+  u_color_tint: toShaderColor(colors.value.tint),
+}))
 
-const color = computed(() => {
-  return theme.accent.value[600]
-})
+// The last interaction was a touch: then there's no hover, and all filled
+// fields show their end bar.
+let isTouch = !!window.matchMedia?.('(hover: none)').matches
 
-const colorHover = computed(() => {
-  return theme.accent.value[500]
-})
-
-const colorField = computed(() => {
-  return theme.accent.value[400]
-})
-
-const colorFieldHover = computed(() => {
-  return theme.accent.value[300]
-})
-
-// Cache orientation per UUID for performance
-const orientationCache = new Map<string, Orientation>()
-const currentOrientation = ref<Orientation>('horizontal')
-
-// Cache for computed block state
-type BlockStateCache = {
-  canShowBeforeAfter: boolean
-  emptyFieldKeys: string[]
-  emptyFieldTooltips: string[]
-  bundleLabel: string
-  singleAllowedBundleLabel: string | null
+function onPointerUp(e: PointerEvent) {
+  isTouch = e.pointerType === 'touch'
 }
 
-const blockStateCache = new Map<string, BlockStateCache>()
-
-function getOrientationForUuid(uuid: string): Orientation {
-  let cached = orientationCache.get(uuid)
-  if (!cached) {
-    const item = blocks.getBlock(uuid)
-    if (item) {
-      const field = fields.find(item.host.uuid, item.host.fieldName)
-      if (field) {
-        cached = getChildrenOrientation(field.element)
-        orientationCache.set(uuid, cached)
-      }
-    }
+function onPointerMove(e: PointerEvent) {
+  if (e.pointerType === 'mouse') {
+    isTouch = false
   }
-  return cached || 'horizontal'
 }
 
-function getBlockState(uuid: string): BlockStateCache {
-  let cached = blockStateCache.get(uuid)
-  if (!cached) {
-    // Compute canShowBeforeAfter
-    let canShowBeforeAfter = false
-    let singleAllowedBundleLabel: string | null = null
-    const block = blocks.getBlock(uuid)
-    if (!block) {
-      // Don't cache - block might appear in DOM later
-      return {
-        canShowBeforeAfter: false,
-        emptyFieldKeys: [],
-        emptyFieldTooltips: [],
-        bundleLabel: '',
-        singleAllowedBundleLabel: null,
-      }
-    }
-    if (block) {
-      const field = fields.find(block.host.uuid, block.host.fieldName)
-      if (!field) {
-        // Don't cache - field might appear in DOM later
-        return {
-          canShowBeforeAfter: false,
-          emptyFieldKeys: [],
-          emptyFieldTooltips: [],
-          bundleLabel: '',
-          singleAllowedBundleLabel: null,
-        }
-      }
-      if (field) {
-        const fieldChildren = [...field.element.children] as HTMLElement[]
-        const currentCount = state.getFieldBlockCount(field.key)
-        canShowBeforeAfter =
-          permissions.canChangeBlockField(uuid) &&
-          determineCanAddChildren(
-            field,
-            fieldChildren,
-            [], // Not moving any blocks, adding a new one
-            currentCount,
-            1, // Adding 1 new block
-            [], // Don't know which bundle will be added
-          )
-
-        // Check if there's a single allowed bundle
-        const allowedBundles = field.allowedBundles.filter(
-          (bundle) => !isInternalBundle(bundle),
-        )
-        if (allowedBundles.length === 1) {
-          const bundle = allowedBundles[0]
-          if (bundle) {
-            singleAllowedBundleLabel =
-              types.getBlockBundleDefinition(bundle)?.label || bundle
-          }
-        }
-      }
-    }
-
-    // Get bundle label
-    const bundleLabel = block
-      ? types.getBlockBundleDefinition(block.bundle)?.label || block.bundle
-      : ''
-
-    // Compute emptyFieldKeys and tooltips
-    const emptyFieldKeys: string[] = []
-    const emptyFieldTooltips: string[] = []
-    if (block) {
-      const fieldConfigs = types.fieldConfig.forEntityTypeAndBundle(
-        itemEntityType,
-        block.bundle,
-      )
-
-      const host = { type: itemEntityType, bundle: block.bundle, uuid }
-      for (const fieldConfig of fieldConfigs) {
-        const key = getFieldKey(uuid, fieldConfig.name)
-        const count = state.getFieldBlockCount(key)
-        if (count === 0 && permissions.canChangeField(host, fieldConfig.name)) {
-          emptyFieldKeys.push(key)
-
-          // Build tooltip for this field
-          const fieldLabel = fieldConfig.label || fieldConfig.name
-
-          // Get field element to check allowed bundles
-          const fieldElement = fields.find(uuid, fieldConfig.name)
-          if (fieldElement) {
-            const allowedBundles = fieldElement.allowedBundles.filter(
-              (bundle) => !isInternalBundle(bundle),
-            )
-
-            if (allowedBundles.length === 1) {
-              const bundle = allowedBundles[0]
-              if (bundle) {
-                const singleBundleLabel =
-                  types.getBlockBundleDefinition(bundle)?.label || bundle
-                const tooltip = $t(
-                  'addButtonBundleInsideField',
-                  'Add "@bundle" inside @parentBundle » @fieldLabel',
-                )
-                  .replace('@bundle', singleBundleLabel)
-                  .replace('@parentBundle', bundleLabel)
-                  .replace('@fieldLabel', fieldLabel)
-                emptyFieldTooltips.push(tooltip)
-              } else {
-                emptyFieldTooltips.push(
-                  $t(
-                    'addButtonInsideField',
-                    'Add inside @parentBundle » @fieldLabel',
-                    { more: true },
-                  )
-                    .replace('@parentBundle', bundleLabel)
-                    .replace('@fieldLabel', fieldLabel),
-                )
-              }
-            } else {
-              emptyFieldTooltips.push(
-                $t(
-                  'addButtonInsideField',
-                  'Add inside @parentBundle » @fieldLabel',
-                  { more: true },
-                )
-                  .replace('@parentBundle', bundleLabel)
-                  .replace('@fieldLabel', fieldLabel),
-              )
-            }
-          } else {
-            emptyFieldTooltips.push(
-              $t(
-                'addButtonInsideField',
-                'Add inside @parentBundle » @fieldLabel',
-                { more: true },
-              )
-                .replace('@parentBundle', bundleLabel)
-                .replace('@fieldLabel', fieldLabel),
-            )
-          }
-        }
-      }
-    }
-
-    cached = {
-      canShowBeforeAfter,
-      emptyFieldKeys,
-      emptyFieldTooltips,
-      bundleLabel,
-      singleAllowedBundleLabel,
-    }
-    blockStateCache.set(uuid, cached)
-  }
-
-  return cached
-}
-
-// Clear cache when state reloads
-onBlokkliEvent('state:reloaded', () => {
-  orientationCache.clear()
-  blockStateCache.clear()
+onMounted(() => {
+  window.addEventListener('pointerup', onPointerUp, {
+    capture: true,
+    passive: true,
+  })
+  window.addEventListener('pointermove', onPointerMove, {
+    capture: true,
+    passive: true,
+  })
 })
 
-/**
- * Check if an empty field button would overlap with before/after buttons.
- * If so, returns the adjusted position (block center). Otherwise returns the original position.
- */
-function adjustEmptyFieldButtonPosition(
-  fieldX: number,
-  fieldY: number,
-  blockRect: Rectangle,
-  artboardScale: number,
-): { x: number; y: number } {
-  // Only check if before/after buttons are visible (indices 0 and 1)
-  if (circleVisible[0]! <= 0 || circleVisible[1]! <= 0) {
-    return { x: fieldX, y: fieldY }
-  }
+onBeforeUnmount(() => {
+  window.removeEventListener('pointerup', onPointerUp, { capture: true })
+  window.removeEventListener('pointermove', onPointerMove, { capture: true })
+})
 
-  // Get before/after button positions
-  const beforeX = circlePositions[0]!
-  const beforeY = circlePositions[1]!
-  const afterX = circlePositions[2]!
-  const afterY = circlePositions[3]!
+const tooltipEl = useTemplateRef<HTMLDivElement>('tooltipEl')
 
-  // Calculate minimum distance threshold in artboard coordinates
-  const minDistanceArtboard = MIN_BUTTON_DISTANCE / artboardScale
+let tooltipTransform = ''
+let isTooltipShown = false
 
-  // Calculate distance between field button and before/after buttons
-  const distToBefore = Math.sqrt(
-    (fieldX - beforeX) ** 2 + (fieldY - beforeY) ** 2,
+let lastFrame: Frame | null = null
+let lastRenderTime = -1
+let bufferInfo: BufferInfo | null = null
+
+// The targets and block size the field rects were last measured for.
+let measuredTargets: AddTargets | null = null
+let measuredBlockTime = 0
+
+function isEnabled(): boolean {
+  return (
+    (!!props.targets || props.pagerTargets.length > 0) &&
+    !selection.isDragging.value &&
+    !selection.isMultiSelecting.value &&
+    !selection.activeFieldLabel.value &&
+    !ui.isAnimating.value &&
+    !ui.hasTransformOverlayOpen.value &&
+    !ui.isApproving.value &&
+    (!ui.openTooltip.value || ui.openTooltip.value === 'add-buttons')
   )
-  const distToAfter = Math.sqrt((fieldX - afterX) ** 2 + (fieldY - afterY) ** 2)
+}
 
-  // If too close to either button, reposition to block center
-  if (distToBefore < minDistanceArtboard || distToAfter < minDistanceArtboard) {
-    return {
-      x: blockRect.x + blockRect.width / 2,
-      y: blockRect.y + blockRect.height / 2,
-    }
+function toScreen(rect: Rectangle, scale: number, offset: Coord): Rectangle {
+  return {
+    x: rect.x * scale + offset.x,
+    y: rect.y * scale + offset.y,
+    width: rect.width * scale,
+    height: rect.height * scale,
   }
+}
 
-  return { x: fieldX, y: fieldY }
+function getRenderedRect(uuid: string | undefined): Rectangle | null {
+  if (!uuid) {
+    return null
+  }
+  const rect = dom.getBlockRect(uuid)
+  return rect && rect.width > 0 ? rect : null
 }
 
 /**
- * Check if a point (in artboard coordinates) is inside any visible circle.
- * Returns the circle index if found, -1 otherwise.
+ * The nearest rendered block before or after an index: a block can be hidden,
+ * e.g. by its options.
  */
-function getCircleAtPoint(x: number, y: number): number {
-  // Disable hit detection when scale is too small (buttons are faded out)
-  if (ui.artboardScale.value <= 0.4) {
-    return -1
+function findRenderedSibling(
+  uuids: string[],
+  index: number,
+  step: -1 | 1,
+): Rectangle | null {
+  if (index < 0) {
+    return null
+  }
+  for (let i = index + step; i >= 0 && i < uuids.length; i += step) {
+    const rect = getRenderedRect(uuids[i])
+    if (rect) {
+      return rect
+    }
+  }
+  return null
+}
+
+/**
+ * The last two rendered blocks of a field, the last one first.
+ */
+function findLastRendered(
+  uuids: string[],
+): [Rectangle | null, Rectangle | null] {
+  let last: Rectangle | null = null
+  for (let i = uuids.length - 1; i >= 0; i--) {
+    const rect = getRenderedRect(uuids[i])
+    if (!rect) {
+      continue
+    }
+    if (last) {
+      return [last, rect]
+    }
+    last = rect
+  }
+  return [last, null]
+}
+
+/**
+ * Field rects aren't observed for size changes: measure the fields again when
+ * the selection, the state or the size of the selected block changed.
+ */
+function refreshFieldRects(targets: AddTargets) {
+  const blockTime = targets.uuid
+    ? (dom.getBlockRect(targets.uuid)?.time ?? 0)
+    : 0
+  if (targets === measuredTargets && blockTime === measuredBlockTime) {
+    return
+  }
+  measuredTargets = targets
+  measuredBlockTime = blockTime
+  for (const target of targets.list) {
+    if (target.kind === 'field') {
+      dom.refreshFieldRect(target.field.key)
+    }
+  }
+}
+
+function getFrame(ctx: RenderContext): Frame | null {
+  const scale = ctx.artboardScale
+  const offset = ctx.artboardOffset
+
+  const fields: FieldInput[] = []
+  let siblings: SiblingInput | null = null
+
+  // The selection's targets, while the selected block is rendered.
+  const targets = props.targets
+  const block = targets?.uuid ? getRenderedRect(targets.uuid) : null
+  if (targets && (!targets.uuid || block)) {
+    refreshFieldRects(targets)
+    siblings = getSiblingInput(targets, block, scale, offset)
+    fields.push(...getFieldInputs(targets, scale, offset))
   }
 
-  // Buttons are rendered at constant screen size, so radius in artboard space
-  // needs to be adjusted by the inverse of the scale
-  // Use scale 0.5 as minimum to avoid the fade-out scaling
-  const effectiveScale = Math.max(ui.artboardScale.value, 0.5)
-  const radius = BUTTON_RADIUS / effectiveScale
+  for (const target of props.pagerTargets) {
+    if (!dom.isFieldVisible(target.field.key)) {
+      continue
+    }
+    const rect = dom.getAddAreaRect(target.field.key)
+    if (!rect) {
+      continue
+    }
+    // Drawn as an empty field is: the area, with its knob in the middle.
+    fields.push({
+      id: target.id,
+      rect: toScreen(rect, scale, offset),
+      isEmpty: true,
+      flow: target.flow,
+      last: null,
+      secondLast: null,
+    })
+  }
 
-  for (let i = 0; i < MAX_CIRCLES; i++) {
-    if (circleVisible[i]! > 0) {
-      const cx = circlePositions[i * 2]!
-      const cy = circlePositions[i * 2 + 1]!
-      const dx = x - cx
-      const dy = y - cy
-      const distance = Math.sqrt(dx * dx + dy * dy)
-      if (distance <= radius) {
-        return i
+  if (!siblings && !fields.length) {
+    return null
+  }
+
+  return buildFrame({
+    scale,
+    transition: ctx.changeOptionsTransition,
+    pointer: { x: ctx.mouseX, y: ctx.mouseY },
+    isTouch,
+    viewport: ui.visibleViewport.value,
+    activeId: props.activeTargetId,
+    siblings,
+    fields,
+  })
+}
+
+/**
+ * The before/after tabs of the selected block, if its field can take another
+ * block.
+ */
+function getSiblingInput(
+  targets: AddTargets,
+  block: Rectangle | null,
+  scale: number,
+  offset: Coord,
+): SiblingInput | null {
+  const screen = (rect: Rectangle | null) =>
+    rect ? toScreen(rect, scale, offset) : null
+
+  let siblings: SiblingInput | null = null
+  if (targets.uuid && block) {
+    const sibling = targets.list.find((target) => target.kind === 'before')
+    if (sibling) {
+      // The pages above the block that a field in proxy mode shows aren't its
+      // neighbours: the sides come from the band's flow, left and right.
+      const isPager = sibling.field.isPager
+      const index = targets.siblingUuids.indexOf(targets.uuid)
+      siblings = {
+        block: toScreen(block, scale, offset),
+        prev: isPager
+          ? null
+          : screen(findRenderedSibling(targets.siblingUuids, index, -1)),
+        next: isPager
+          ? null
+          : screen(findRenderedSibling(targets.siblingUuids, index, 1)),
+        flow: sibling.flow,
       }
     }
   }
-  return -1
+  return siblings
 }
 
-// Register WebGL renderer with zIndex 350 (interaction layer)
+/**
+ * The ends of the selected block's fields, or of the host's.
+ */
+function getFieldInputs(
+  targets: AddTargets,
+  scale: number,
+  offset: Coord,
+): FieldInput[] {
+  const screen = (rect: Rectangle | null) =>
+    rect ? toScreen(rect, scale, offset) : null
+
+  const fields: FieldInput[] = []
+  for (const target of targets.list) {
+    if (target.kind !== 'field' || !dom.isFieldVisible(target.field.key)) {
+      continue
+    }
+    const rect = dom.getFieldRect(target.field.key)
+    if (!rect) {
+      continue
+    }
+    const [last, secondLast] = target.isEmpty
+      ? [null, null]
+      : findLastRendered(target.childUuids)
+    fields.push({
+      id: target.id,
+      rect: toScreen(rect, scale, offset),
+      isEmpty: target.isEmpty,
+      flow: target.flow,
+      last: screen(last),
+      secondLast: screen(secondLast),
+    })
+  }
+  return fields
+}
+
+function moveElement(
+  el: HTMLElement | null,
+  position: Coord,
+  previous: string,
+): string {
+  const transform = `translate(${Math.round(position.x)}px, ${Math.round(position.y)}px)`
+  if (el && transform !== previous) {
+    el.style.transform = transform
+  }
+  return transform
+}
+
+/**
+ * Show and place the tooltip of the button under the pointer. Its text is set
+ * right away, so that it can be measured in the same frame.
+ */
+function updateTooltip(frame: Frame | null) {
+  const el = tooltipEl.value
+  const request = frame?.tooltip
+  const target: AddTarget | undefined = request
+    ? (props.targets?.list.find((v) => v.id === request.targetId) ??
+      props.pagerTargets.find((v) => v.id === request.targetId))
+    : undefined
+
+  if (!el || !request || !target) {
+    el?.classList.remove('bk-is-visible')
+    isTooltipShown = false
+    return
+  }
+
+  if (el.textContent !== target.label) {
+    el.textContent = target.label
+  }
+  el.classList.toggle('bk-is-field', target.kind === 'field')
+  el.classList.add('bk-is-visible')
+  el.dataset.testTarget = target.id
+  tooltipTransform = moveElement(
+    el,
+    placeLabel(
+      request.anchor,
+      { width: el.offsetWidth, height: el.offsetHeight },
+      request.side,
+      8,
+      ui.visibleViewportPadded.value,
+    ),
+    tooltipTransform,
+  )
+  isTooltipShown = true
+}
+
+function startFrame(ctx: RenderContext): Frame | null {
+  lastRenderTime = ctx.time
+  lastFrame = getFrame(ctx)
+  updateTooltip(lastFrame)
+  return lastFrame
+}
+
+function packShapes(shapes: Shape[]) {
+  shapeStyles.fill(0)
+  for (let i = 0; i < shapes.length; i++) {
+    const shape = shapes[i]!
+    const offset = i * 4
+    shapeRects[offset] = shape.rect.x
+    shapeRects[offset + 1] = shape.rect.y
+    shapeRects[offset + 2] = shape.rect.width
+    shapeRects[offset + 3] = shape.rect.height
+    shapeStyles[offset] = SHAPE_TYPES[shape.type]
+    shapeStyles[offset + 1] = SIDES[shape.side]
+    shapeStyles[offset + 2] = shape.hovered ? 1 : 0
+    shapeStyles[offset + 3] = shape.alpha
+  }
+}
+
+function drawPlus(
+  ctx2d: CanvasRenderingContext2D,
+  center: Coord,
+  arm: number,
+  thickness: number,
+) {
+  ctx2d.fillRect(center.x - arm, center.y - thickness / 2, arm * 2, thickness)
+  ctx2d.fillRect(center.x - thickness / 2, center.y - arm, thickness, arm * 2)
+}
+
+function drawDashedBox(
+  ctx2d: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  dpi: number,
+  alpha: number,
+) {
+  const inset = 1 * dpi
+  ctx2d.strokeStyle = rgbaToString(colors.value.line, alpha)
+  ctx2d.lineWidth = 1.5 * dpi
+  ctx2d.setLineDash([6 * dpi, 4 * dpi])
+  ctx2d.beginPath()
+  ctx2d.roundRect(
+    x + inset,
+    y + inset,
+    width - inset * 2,
+    height - inset * 2,
+    3 * dpi,
+  )
+  ctx2d.stroke()
+}
+
+/**
+ * Draw a shape on the 2D canvas, like the shaders do.
+ */
+function drawShape2d(
+  ctx2d: CanvasRenderingContext2D,
+  shape: Shape,
+  dpi: number,
+) {
+  const x = shape.rect.x * dpi
+  const y = shape.rect.y * dpi
+  const width = shape.rect.width * dpi
+  const height = shape.rect.height * dpi
+  const center = { x: x + width / 2, y: y + height / 2 }
+
+  ctx2d.save()
+  ctx2d.globalAlpha = shape.alpha
+
+  switch (shape.type) {
+    case 'tab': {
+      // Drawn like a tab pointing up from the middle of its flat side, then
+      // turned to its side.
+      const horizontal = isHorizontalEdge(shape.side)
+      const length = horizontal ? width : height
+      const depth = horizontal ? height : width
+      const scale = depth / (TAB_DEPTH * dpi)
+      const flare = TAB_FLARE * dpi * scale
+      const radius = TAB_RADIUS * dpi * scale
+      const half = length / 2 - flare
+      const base = {
+        top: { x: center.x, y: y + height, angle: 0 },
+        bottom: { x: center.x, y, angle: Math.PI },
+        left: { x: x + width, y: center.y, angle: -Math.PI / 2 },
+        right: { x, y: center.y, angle: Math.PI / 2 },
+      }[shape.side]
+      ctx2d.translate(base.x, base.y)
+      ctx2d.rotate(base.angle)
+      ctx2d.fillStyle = rgbaToString(
+        shape.hovered ? colors.value.accentHover : colors.value.accent,
+      )
+      ctx2d.beginPath()
+      ctx2d.moveTo(-half - flare, 0)
+      ctx2d.arc(-half - flare, -flare, flare, Math.PI / 2, 0, true)
+      ctx2d.lineTo(-half, -depth + radius)
+      ctx2d.arcTo(-half, -depth, -half + radius, -depth, radius)
+      ctx2d.lineTo(half - radius, -depth)
+      ctx2d.arcTo(half, -depth, half, -depth + radius, radius)
+      ctx2d.lineTo(half, -flare)
+      ctx2d.arc(half + flare, -flare, flare, Math.PI, Math.PI / 2, true)
+      ctx2d.closePath()
+      ctx2d.fill()
+      ctx2d.fillStyle = 'white'
+      drawPlus(ctx2d, { x: 0, y: -depth / 2 }, depth * 0.28, 2 * dpi)
+      break
+    }
+
+    case 'knob': {
+      const radius = Math.min(width, height) / 2
+      ctx2d.fillStyle = shape.hovered
+        ? rgbaToString(colors.value.tint)
+        : 'white'
+      ctx2d.beginPath()
+      ctx2d.arc(center.x, center.y, radius, 0, Math.PI * 2)
+      ctx2d.fill()
+      ctx2d.strokeStyle = rgbaToString(colors.value.accent)
+      ctx2d.lineWidth = 2 * dpi
+      ctx2d.beginPath()
+      ctx2d.arc(center.x, center.y, Math.max(radius - dpi, 0), 0, Math.PI * 2)
+      ctx2d.stroke()
+      ctx2d.fillStyle = rgbaToString(colors.value.accent)
+      drawPlus(ctx2d, center, radius * 0.45, 2 * dpi)
+      break
+    }
+
+    case 'band':
+      ctx2d.fillStyle = rgbaToString(colors.value.accent, BAND_OPACITY)
+      ctx2d.beginPath()
+      ctx2d.roundRect(x, y, width, height, 2 * dpi)
+      ctx2d.fill()
+      break
+
+    case 'bar': {
+      if (!shape.hovered) {
+        ctx2d.globalAlpha = shape.alpha * 0.75
+      }
+      const halo = 1.5 * dpi
+      ctx2d.fillStyle = 'white'
+      ctx2d.beginPath()
+      ctx2d.roundRect(
+        x - halo,
+        y - halo,
+        width + halo * 2,
+        height + halo * 2,
+        2 * dpi + halo,
+      )
+      ctx2d.fill()
+      ctx2d.fillStyle = rgbaToString(colors.value.line)
+      ctx2d.beginPath()
+      ctx2d.roundRect(x, y, width, height, 2 * dpi)
+      ctx2d.fill()
+      break
+    }
+
+    case 'outline':
+      drawDashedBox(ctx2d, x, y, width, height, dpi, 0.8)
+      break
+
+    case 'area':
+      ctx2d.fillStyle = rgbaToString(
+        colors.value.line,
+        shape.hovered ? 0.14 : 0.07,
+      )
+      ctx2d.beginPath()
+      ctx2d.roundRect(x, y, width, height, 3 * dpi)
+      ctx2d.fill()
+      drawDashedBox(ctx2d, x, y, width, height, dpi, shape.hovered ? 0.9 : 0.6)
+      break
+  }
+
+  ctx2d.restore()
+}
+
+// The renderer isn't called while it's disabled: hide the tooltip then.
+onBlokkliEvent('canvas:draw', (e) => {
+  if (e.time !== lastRenderTime && (lastFrame || isTooltipShown)) {
+    lastFrame = null
+    updateTooltip(null)
+  }
+})
+
 const { collector } = await defineRenderer('add-buttons', {
   zIndex: 1000,
   collector: () => {
-    const c = new CircleBufferCollector()
-    // Add MAX_CIRCLES dummy rectangles once
-    for (let i = 0; i < MAX_CIRCLES; i++) {
-      c.addRectangle(
-        {
-          id: `circle-${i}`,
-          x: 0,
-          y: 0,
-          width: 40,
-          height: 40,
-        },
-        i,
-      )
+    const c = new RectangleBufferCollector()
+    // A placeholder quad per shape: the shaders place them.
+    for (let i = 0; i < MAX_SHAPES; i++) {
+      c.addRectangle({ id: `shape-${i}`, x: 0, y: 0, width: 1, height: 1 }, 0)
     }
     return c
   },
   program: () => ({ shaders: [vs, fs] }),
-  enabled: () => {
-    // Show when exactly one block is selected OR when host is selected
-    if (
-      selection.uuids.value.length !== 1 &&
-      !selection.hasHostSelected.value
-    ) {
+  enabled: isEnabled,
+  cursor: () => (lastFrame?.pointerId ? 'pointer' : null),
+  onClick: ({ mouse }) => {
+    const frame = lastFrame
+    if (!frame) {
       return false
     }
-    if (ui.openTooltip.value && ui.openTooltip.value !== 'add-buttons') {
+    const zone = hitTest(frame.zones, mouse, isTouch ? 8 : 2)
+    const anchor = zone ? frame.anchors.get(zone.targetId) : undefined
+    if (!zone || !anchor) {
       return false
     }
-    if (ui.hasTransformOverlayOpen.value || ui.isApproving.value) {
-      return false
-    }
+    emit('activate', {
+      id: zone.targetId,
+      anchor: ui.toArtboardCoords(anchor),
+    })
     return true
   },
-  cursor: () => (hoveredCircle.value >= 0 ? 'pointer' : null),
-  onClick: ({ mouseArtboard }) => {
-    // Handle clicks when exactly one block is selected OR when host is selected
-    if (
-      selection.uuids.value.length !== 1 &&
-      !selection.hasHostSelected.value
-    ) {
-      return false
-    }
-
-    const clickedCircle = getCircleAtPoint(mouseArtboard.x, mouseArtboard.y)
-    if (clickedCircle >= 0) {
-      // Get the circle center coordinates
-      const cx = circlePositions[clickedCircle * 2]!
-      const cy = circlePositions[clickedCircle * 2 + 1]!
-
-      if (clickedCircle === 0 || clickedCircle === 1) {
-        // Circle 0 is "before", circle 1 is "after" - only for block selection
-        if (!selection.hasHostSelected.value) {
-          const position = clickedCircle === 0 ? 'before' : 'after'
-          emit('toggle', {
-            position,
-            coordinates: { x: cx, y: cy },
-          })
-        }
-      } else {
-        // Circles 2-9 are empty field buttons
-        const fieldIndex = clickedCircle - 2
-        emit('toggleField', {
-          index: fieldIndex,
-          coordinates: { x: cx, y: cy },
-        })
-      }
-      return true
-    }
-
-    return false
-  },
   render: (ctx, gl, program, twgl) => {
-    // Create bufferInfo on first render
-    if (!bufferInfoCache) {
-      bufferInfoCache = collector.createBufferInfo(gl, twgl)
-    }
-
-    if (!bufferInfoCache) {
+    const frame = startFrame(ctx)
+    if (!frame?.shapes.length) {
       return
     }
 
-    // Reset all circles to invisible
-    circleVisible.fill(0)
-
-    // Check if host is selected
-    const isHostSelected = selection.hasHostSelected.value
-
-    // Render when exactly one block is selected OR when host is selected
-    if (ctx.selectedUuids.length !== 1 && !isHostSelected) {
-      return
-    }
-
-    let blockState: BlockStateCache | null = null
-    let blockRect: Rectangle | undefined
-
-    if (isHostSelected) {
-      // Host is selected - use props for empty field data, skip before/after buttons
-      // blockState remains null, we'll use props directly for empty fields
-    } else {
-      // Block is selected
-      const uuid = ctx.selectedUuids[0]
-      if (!uuid) {
-        return
-      }
-
-      // Get cached block state (logs only on first computation)
-      blockState = getBlockState(uuid)
-
-      // Get block rect - needed for both before/after and empty field buttons
-      blockRect = dom.getBlockRect(uuid)
-      if (!blockRect || blockRect.width === 0) {
-        return
-      }
-
-      // Get cached orientation
-      const orientation = getOrientationForUuid(uuid)
-      currentOrientation.value = orientation
-
-      // Check if we should show before/after buttons
-      if (blockState.canShowBeforeAfter) {
-        const BUTTON_SHIFT = 2 / ctx.artboardScale
-
-        if (orientation === 'horizontal') {
-          // Horizontal layout: buttons at left and right edges
-          // Circle 0: Left edge center (shifted left)
-          circlePositions[0] = blockRect.x - BUTTON_SHIFT // x
-          circlePositions[1] = blockRect.y + blockRect.height / 2 // y
-          circleVisible[0] = 1
-
-          // Circle 1: Right edge center (shifted right)
-          circlePositions[2] = blockRect.x + blockRect.width + BUTTON_SHIFT // x
-          circlePositions[3] = blockRect.y + blockRect.height / 2 // y
-          circleVisible[1] = 1
-        } else {
-          // Vertical layout: buttons at top and bottom edges
-          // Circle 0: Top edge center (shifted up)
-          circlePositions[0] = blockRect.x + blockRect.width / 2 // x
-          circlePositions[1] = blockRect.y - BUTTON_SHIFT // y
-          circleVisible[0] = 1
-
-          // Circle 1: Bottom edge center (shifted down)
-          circlePositions[2] = blockRect.x + blockRect.width / 2 // x
-          circlePositions[3] = blockRect.y + blockRect.height + BUTTON_SHIFT // y
-          circleVisible[1] = 1
-        }
-      }
-
-      // Update tooltip data
-      currentUuid.value = uuid
-      currentBundleLabel.value = blockState.bundleLabel
-      currentSingleAllowedBundleLabel.value =
-        blockState.singleAllowedBundleLabel
-    }
-
-    // Determine which empty field keys and tooltips to use
-    const emptyFieldKeys = isHostSelected
-      ? props.hostEmptyFieldKeys
-      : blockState?.emptyFieldKeys || []
-    const emptyFieldTooltipsData = isHostSelected
-      ? props.hostEmptyFieldTooltips
-      : blockState?.emptyFieldTooltips || []
-
-    // Render empty field buttons (circles 2-9)
-    if (emptyFieldKeys.length > 0) {
-      // Update the field tooltips
-      emptyFieldTooltips.value = emptyFieldTooltipsData
-
-      for (let i = 0; i < emptyFieldKeys.length && i < 8; i++) {
-        const fieldKey = emptyFieldKeys[i]
-        if (!fieldKey) {
-          continue
-        }
-
-        const fieldRect = dom.getFieldRect(fieldKey)
-        if (!fieldRect) {
-          continue
-        }
-
-        // Calculate initial position at center of field
-        const initialX = fieldRect.x + fieldRect.width / 2
-        const initialY = fieldRect.y + fieldRect.height / 2
-
-        // For host selection, no need to adjust for before/after buttons
-        // For block selection, adjust position if too close to before/after buttons
-        let finalX = initialX
-        let finalY = initialY
-
-        if (blockRect) {
-          const adjusted = adjustEmptyFieldButtonPosition(
-            initialX,
-            initialY,
-            blockRect,
-            ctx.artboardScale,
-          )
-          finalX = adjusted.x
-          finalY = adjusted.y
-        }
-
-        const circleIndex = i + 2 // Start from circle 2
-        circlePositions[circleIndex * 2] = finalX
-        circlePositions[circleIndex * 2 + 1] = finalY
-        circleVisible[circleIndex] = 1
-      }
-    } else {
-      emptyFieldTooltips.value = []
-    }
-
-    // Check if mouse is hovering over any visible circle
-    hoveredCircle.value = getCircleAtPoint(
-      ctx.mouseArtboard.x,
-      ctx.mouseArtboard.y,
-    )
+    bufferInfo ||= collector.createBufferInfo(gl, twgl)
+    packShapes(frame.shapes)
 
     gl.useProgram(program.program)
-
     twgl.setUniforms(program, {
-      u_circle_positions: circlePositions,
-      u_circle_visible: circleVisible,
-      u_color: toShaderColor(color.value),
-      u_color_hover: toShaderColor(colorHover.value),
-      u_color_field: toShaderColor(colorField.value),
-      u_color_field_hover: toShaderColor(colorFieldHover.value),
-      u_hovered_circle: hoveredCircle.value,
-      u_radius: BUTTON_RADIUS,
-      u_scale_transition: ctx.changeOptionsTransition,
+      u_shape_rect: shapeRects,
+      u_shape_style: shapeStyles,
+      ...shaderColors.value,
     })
     animation.setSharedUniforms(gl, program)
-
-    twgl.setBuffersAndAttributes(gl, program, bufferInfoCache)
-    twgl.drawBufferInfo(gl, bufferInfoCache, gl.TRIANGLES)
+    twgl.setBuffersAndAttributes(gl, program, bufferInfo)
+    twgl.drawBufferInfo(gl, bufferInfo, gl.TRIANGLES)
   },
   renderFallback: (ctx, ctx2d) => {
-    // Reset all circles to invisible
-    circleVisible.fill(0)
-
-    // Check if host is selected
-    const isHostSelected = selection.hasHostSelected.value
-
-    // Render when exactly one block is selected OR when host is selected
-    if (ctx.selectedUuids.length !== 1 && !isHostSelected) {
+    const frame = startFrame(ctx)
+    if (!frame) {
       return
     }
-
-    let blockState: BlockStateCache | null = null
-    let blockRect: Rectangle | undefined
-
-    if (isHostSelected) {
-      // Host is selected - use props for empty field data, skip before/after buttons
-      // blockState remains null, we'll use props directly for empty fields
-    } else {
-      // Block is selected
-      const uuid = ctx.selectedUuids[0]
-      if (!uuid) {
-        return
-      }
-
-      // Get cached block state
-      blockState = getBlockState(uuid)
-
-      // Get block rect - needed for both before/after and empty field buttons
-      blockRect = dom.getBlockRect(uuid)
-      if (!blockRect || blockRect.width === 0) {
-        return
-      }
-
-      // Get cached orientation
-      const orientation = getOrientationForUuid(uuid)
-      currentOrientation.value = orientation
-
-      // Check if we should show before/after buttons
-      if (blockState.canShowBeforeAfter) {
-        const BUTTON_SHIFT = 2 / ctx.artboardScale
-
-        if (orientation === 'horizontal') {
-          // Horizontal layout: buttons at left and right edges
-          circlePositions[0] = blockRect.x - BUTTON_SHIFT
-          circlePositions[1] = blockRect.y + blockRect.height / 2
-          circleVisible[0] = 1
-
-          circlePositions[2] = blockRect.x + blockRect.width + BUTTON_SHIFT
-          circlePositions[3] = blockRect.y + blockRect.height / 2
-          circleVisible[1] = 1
-        } else {
-          // Vertical layout: buttons at top and bottom edges
-          circlePositions[0] = blockRect.x + blockRect.width / 2
-          circlePositions[1] = blockRect.y - BUTTON_SHIFT
-          circleVisible[0] = 1
-
-          circlePositions[2] = blockRect.x + blockRect.width / 2
-          circlePositions[3] = blockRect.y + blockRect.height + BUTTON_SHIFT
-          circleVisible[1] = 1
-        }
-      }
-
-      // Update tooltip data
-      currentUuid.value = uuid
-      currentBundleLabel.value = blockState.bundleLabel
-      currentSingleAllowedBundleLabel.value =
-        blockState.singleAllowedBundleLabel
-    }
-
-    // Determine which empty field keys and tooltips to use
-    const emptyFieldKeys = isHostSelected
-      ? props.hostEmptyFieldKeys
-      : blockState?.emptyFieldKeys || []
-    const emptyFieldTooltipsData = isHostSelected
-      ? props.hostEmptyFieldTooltips
-      : blockState?.emptyFieldTooltips || []
-
-    // Render empty field buttons (circles 2-9)
-    if (emptyFieldKeys.length > 0) {
-      emptyFieldTooltips.value = emptyFieldTooltipsData
-
-      for (let i = 0; i < emptyFieldKeys.length && i < 8; i++) {
-        const fieldKey = emptyFieldKeys[i]
-        if (!fieldKey) {
-          continue
-        }
-
-        const fieldRect = dom.getFieldRect(fieldKey)
-        if (!fieldRect) {
-          continue
-        }
-
-        // Calculate initial position at center of field
-        const initialX = fieldRect.x + fieldRect.width / 2
-        const initialY = fieldRect.y + fieldRect.height / 2
-
-        // For host selection, no need to adjust for before/after buttons
-        // For block selection, adjust position if too close to before/after buttons
-        let finalX = initialX
-        let finalY = initialY
-
-        if (blockRect) {
-          const adjusted = adjustEmptyFieldButtonPosition(
-            initialX,
-            initialY,
-            blockRect,
-            ctx.artboardScale,
-          )
-          finalX = adjusted.x
-          finalY = adjusted.y
-        }
-
-        const circleIndex = i + 2
-        circlePositions[circleIndex * 2] = finalX
-        circlePositions[circleIndex * 2 + 1] = finalY
-        circleVisible[circleIndex] = 1
-      }
-    } else {
-      emptyFieldTooltips.value = []
-    }
-
-    // Check if mouse is hovering over any visible circle
-    hoveredCircle.value = getCircleAtPoint(
-      ctx.mouseArtboard.x,
-      ctx.mouseArtboard.y,
-    )
-
-    // Helper to convert RGB to CSS string
-    const rgbToCss = (rgb: [number, number, number]) => {
-      return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`
-    }
-
-    const borderWidth = 2 * ctx.dpi
-    const radius = BUTTON_RADIUS * ctx.dpi * ctx.changeOptionsTransition
-    const innerRadius = radius - borderWidth
-
-    // Draw all visible circles
-    for (let i = 0; i < MAX_CIRCLES; i++) {
-      if (circleVisible[i]! <= 0) {
-        continue
-      }
-
-      const artboardX = circlePositions[i * 2]!
-      const artboardY = circlePositions[i * 2 + 1]!
-
-      // Transform to viewport coordinates
-      const viewportX =
-        (artboardX * ctx.artboardScale + ctx.artboardOffset.x) * ctx.dpi
-      const viewportY =
-        (artboardY * ctx.artboardScale + ctx.artboardOffset.y) * ctx.dpi
-
-      // Determine if this is a field button (circles 2-9)
-      const isFieldButton = i >= 2
-
-      // Determine color based on hover state
-      const isHovered = hoveredCircle.value === i
-      let fillColor: [number, number, number]
-      if (isFieldButton) {
-        fillColor = isHovered ? colorFieldHover.value : colorField.value
-      } else {
-        fillColor = isHovered ? colorHover.value : color.value
-      }
-
-      // 1. Draw colored circle with white border
-      ctx2d.fillStyle = rgbToCss(fillColor)
-      ctx2d.strokeStyle = 'rgb(255, 255, 255)'
-      ctx2d.lineWidth = borderWidth
-      ctx2d.beginPath()
-      ctx2d.arc(viewportX, viewportY, radius, 0, Math.PI * 2)
-      ctx2d.fill()
-      ctx2d.stroke()
-
-      // 2. Draw white plus sign
-      const plusThickness = (ctx.dpi <= 0.5 ? 1.25 : 1.5) * ctx.dpi
-      const plusLength = innerRadius * 0.5
-
-      ctx2d.fillStyle = 'rgb(255, 255, 255)'
-
-      // Horizontal bar
-      ctx2d.fillRect(
-        viewportX - plusLength,
-        viewportY - plusThickness,
-        plusLength * 2,
-        plusThickness * 2,
-      )
-
-      // Vertical bar
-      ctx2d.fillRect(
-        viewportX - plusThickness,
-        viewportY - plusLength,
-        plusThickness * 2,
-        plusLength * 2,
-      )
+    // The 2D canvas paints the bottom shape first.
+    for (let i = frame.shapes.length - 1; i >= 0; i--) {
+      drawShape2d(ctx2d, frame.shapes[i]!, ctx.dpi)
     }
   },
 })
@@ -918,15 +669,20 @@ export default {
 
 <style lang="postcss">
 .bk.bk-add-button-tooltip {
-  @apply absolute whitespace-nowrap pointer-events-none;
+  @apply fixed left-0 top-0 whitespace-nowrap pointer-events-none invisible;
   @apply bg-accent-600 font-semibold text-white rounded-full px-10 text-sm leading-none;
   @apply will-change-transform;
   @apply h-30;
   @apply border-2 border-white flex items-center justify-center;
   @apply z-add-buttons-label;
 
+  /* Adding inside a field: outlined, like its knob. */
   &.bk-is-field {
-    @apply bg-accent-400;
+    @apply bg-white text-accent-700 border-accent-500;
+  }
+
+  &.bk-is-visible {
+    @apply visible;
   }
 }
 </style>

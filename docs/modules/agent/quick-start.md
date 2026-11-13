@@ -79,8 +79,9 @@ NUXT_BLOKKLI_AGENT_AUTH_SECRET=my-secret  # Any random string for HMAC signing
 The backend signs the agent's tokens with the same secret (step 4). Keep both
 out of version control.
 
-The provider's SDK is a peer dependency: install `@anthropic-ai/sdk` (or
-`openai`) in your Nuxt app.
+The agent's packages are peer dependencies. Install them in your Nuxt app: the
+provider's SDK, `@anthropic-ai/sdk` (or `openai`), and `mammoth` and `turndown`,
+which turn documents and web pages into text for the agent.
 
 ## Step 4: Set Up the Adapter
 

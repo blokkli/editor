@@ -377,9 +377,8 @@ defineBlokkli({
 
 ## fieldLayout
 
-Define how the nested fields should be structured when the block is rendered
-without its component, for example when using `:proxy-mode="true"` on
-`<BlokkliField>`.
+Define how the nested fields are laid out when the block is rendered without its
+component: as a proxy, in the editor's Structure view.
 
 Each array should define an array of field names.
 

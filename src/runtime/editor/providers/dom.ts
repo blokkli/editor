@@ -1,8 +1,17 @@
-import { reactive, ref, computed, type ComputedRef, onMounted } from '#imports'
+import {
+  reactive,
+  ref,
+  computed,
+  shallowReactive,
+  type ComputedRef,
+  onMounted,
+} from '#imports'
 import type { EntityContext } from '#blokkli/types'
 import { falsy, onlyUnique } from '#blokkli/helpers'
 import type { UiProvider } from './ui'
 import { cloneWithInlineStyles } from '../helpers/dom'
+import { orderBlockElements } from '../helpers/blockOrder'
+import { isInsideRect, MIN_RECT_SIZE } from '../helpers/geometry'
 import {
   onBlokkliEvent,
   useDelayedIntersectionObserver,
@@ -27,6 +36,23 @@ type RegisteredFieldType = {
 
 type MeasuredBlockRect = Rectangle & { time: number }
 
+/**
+ * An area where the pointer finds a block.
+ */
+export type BlockPointerArea = {
+  /** Unique per area: a block can have two, its element and a stand-in. */
+  id: string
+
+  /** The block's UUID. */
+  uuid: string
+
+  /** The area's rectangle, in artboard coordinates. */
+  rect: Rectangle
+
+  /** The element of the area. */
+  element: HTMLElement
+}
+
 export type DomProvider = {
   /**
    * Get the bounding client rect for an element.
@@ -37,10 +63,16 @@ export type DomProvider = {
 
   /**
    * Return a copy of a draggable item's element, for the drag overlay.
+   *
+   * @param item - The dragged item
+   * @param checkSize - Whether a large element gets a cheaper copy
+   * @param startCoords - Where the drag started, relative to the viewport (see
+   * getDragImageElement)
    */
   getDropElementClone(
     item: DraggableItem | RenderedFieldListItem,
     checkSize?: boolean,
+    startCoords?: Coord,
   ): Element | undefined
 
   /**
@@ -165,6 +197,103 @@ export type DomProvider = {
   isBlockVisible(uuid: string): boolean
 
   /**
+   * Check if a field is currently visible in the viewport.
+   *
+   * @param key - The field key (uuid:fieldName)
+   * @returns True if the field is visible
+   */
+  isFieldVisible(key: string): boolean
+
+  /**
+   * Register an element that stands in for a block somewhere else: the page of
+   * the block that a field in proxy mode shows, whose element is the block
+   * below the band. Pointer interactions count it as the block.
+   *
+   * @param uuid - The block's UUID
+   * @param el - The element that stands in for it
+   */
+  registerStandIn(uuid: string, el: HTMLElement): void
+
+  /**
+   * Unregister the element that stands in for a block.
+   *
+   * @param uuid - The block's UUID
+   * @param el - The element that stood in for it
+   */
+  unregisterStandIn(uuid: string, el: HTMLElement): void
+
+  /**
+   * Register where a field in proxy mode offers to add a block at its end: the
+   * room after its last page, or its empty list of pages. The add buttons draw
+   * their button there, whatever is selected.
+   *
+   * @param fieldKey - The field key (uuid:fieldName)
+   * @param el - The element of the area
+   */
+  registerAddArea(fieldKey: string, el: HTMLElement): void
+
+  /**
+   * Unregister the add area of a field in proxy mode.
+   *
+   * @param fieldKey - The field key (uuid:fieldName)
+   * @param el - The element of the area
+   */
+  unregisterAddArea(fieldKey: string, el: HTMLElement): void
+
+  /**
+   * The keys of the fields that have an add area. Reactive.
+   */
+  getAddAreaFieldKeys(): string[]
+
+  /**
+   * The rectangle of a field's add area, measured now: there are few, and
+   * they aren't observed.
+   *
+   * @param fieldKey - The field key (uuid:fieldName)
+   */
+  getAddAreaRect(fieldKey: string): Rectangle | undefined
+
+  /**
+   * Where the pointer finds blocks: the element of every visible block, and
+   * the elements that stand in for blocks, such as the page of the block that a
+   * field in proxy mode shows. A block can have two areas.
+   *
+   * For everything that asks which block is at a point or inside a rectangle:
+   * clicks, dragging, hovering, selecting with a rectangle.
+   */
+  getPointerAreas(): BlockPointerArea[]
+
+  /**
+   * Where a block is in its field, among its siblings. The block that a field
+   * in proxy mode shows is where its page is in the band; any other block is
+   * where its element is.
+   *
+   * For everything that compares a block with its siblings: drop slots,
+   * selecting a range.
+   *
+   * @param uuid - The block's UUID
+   */
+  getRectInField(uuid: string): Rectangle | undefined
+
+  /**
+   * The uuids of the rendered blocks in their order on the page, as for Tab.
+   *
+   * The block that a field in proxy mode shows comes where its page is in the
+   * band, followed by the blocks inside it.
+   */
+  getBlockOrder(): string[]
+
+  /**
+   * Measure a field's rectangle again.
+   *
+   * Field rects are not observed for size changes, so a feature that needs an
+   * exact rect (e.g. after its block resized) refreshes it.
+   *
+   * @param key - The field key (uuid:fieldName)
+   */
+  refreshFieldRect(key: string): void
+
+  /**
    * Get rectangles for all registered blocks.
    *
    * @returns Record mapping UUIDs to their measured rectangles with timestamps
@@ -172,7 +301,9 @@ export type DomProvider = {
   getBlockRects: () => Record<string, MeasuredBlockRect | undefined>
 
   /**
-   * Get the rectangle for a specific block.
+   * Get the rectangle for a specific block. A block that was just registered
+   * is measured when it's asked for: the observers report it a frame or more
+   * later.
    *
    * @param uuid - The block's UUID
    * @param refresh - Whether to refresh the rect before returning
@@ -241,6 +372,21 @@ export type DomProvider = {
    */
   getDragElement: (
     block: DraggableExistingBlock | RenderedFieldListItem,
+  ) => HTMLElement | undefined
+
+  /**
+   * The element that a dragged block shows. The block that a field in proxy
+   * mode shows has two: its element below the band, and its page standing in
+   * for it in the band, where its drop slots are. A drag that starts on the
+   * element shows the element, any other the page. Any other block shows its
+   * element.
+   *
+   * @param block - The dragged block
+   * @param startCoords - Where the drag started, relative to the viewport
+   */
+  getDragImageElement: (
+    block: DraggableExistingBlock | RenderedFieldListItem,
+    startCoords?: Coord,
   ) => HTMLElement | undefined
 
   /**
@@ -321,6 +467,11 @@ export default function (
   const blockRects: Record<string, MeasuredBlockRect | undefined> = {}
   const fieldRects: Record<string, Rectangle> = {}
   const blockUuidCurrentKey: Record<string, string | undefined> = {}
+  // Elements that stand in for blocks: the page of the block that a field in
+  // proxy mode shows.
+  const standIns = new Map<string, HTMLElement>()
+  // Where fields in proxy mode offer to add a block at their end.
+  const addAreas = shallowReactive(new Map<string, HTMLElement>())
   let initTimeout: null | number = null
   const isInitalizing = ref(true)
 
@@ -361,18 +512,20 @@ export default function (
       .filter(falsy)
   })
 
+  // Keeps the sizes of measured blocks up to date. Where a block is comes from
+  // measuring it (getBlockRect(), the IntersectionObserver).
   const resizeObserver = new ResizeObserver(function (
     entries: ResizeObserverEntry[],
   ) {
     for (const entry of entries) {
       if (!(entry.target instanceof HTMLElement)) {
-        return
+        continue
       }
 
       const uuid = blockElementToUuid.get(entry.target)
 
       if (!uuid) {
-        return
+        continue
       }
 
       // Skip if block is no longer registered (prevents race condition with unregisterBlock)
@@ -380,30 +533,29 @@ export default function (
         continue
       }
 
+      // A block that was just registered isn't measured yet. The entry only
+      // has its size, not where it is.
       const currentRect = blockRects[uuid]
+      if (!currentRect) {
+        continue
+      }
 
       const now = performance.now()
 
-      if (!currentRect) {
-        blockRects[uuid] = rectWithTime(
-          {
-            x: entry.contentRect.x,
-            y: entry.contentRect.y,
-            width: entry.borderBoxSize[0]!.inlineSize,
-            height: entry.borderBoxSize[0]!.blockSize,
-          },
-          now,
-        )
-        return
-      }
-
       if (currentRect.time > now) {
-        return
+        continue
       }
 
-      blockRects[uuid]!.width = entry.borderBoxSize[0]!.inlineSize
-      blockRects[uuid]!.height = entry.borderBoxSize[0]!.blockSize
-      blockRects[uuid]!.time = now
+      // At least the size that measuring gives.
+      currentRect.width = Math.max(
+        entry.borderBoxSize[0]!.inlineSize,
+        MIN_RECT_SIZE,
+      )
+      currentRect.height = Math.max(
+        entry.borderBoxSize[0]!.blockSize,
+        MIN_RECT_SIZE,
+      )
+      currentRect.time = now
     }
   })
 
@@ -504,6 +656,16 @@ export default function (
     data: RegisterFieldData,
   ) => {
     const key = `${entity.uuid}:${fieldName}`
+
+    // Another element of the field is still observed, e.g. the Structure view's
+    // list after it was turned off: its callbacks would overwrite this one's
+    // rect and visibility.
+    const existingElement = registeredFields[key]?.element
+    if (existingElement && existingElement !== element) {
+      intersectionObserver.unobserve(existingElement)
+      fieldElementToFieldKey.delete(existingElement)
+    }
+
     registeredFields[key] = {
       element,
       entity,
@@ -579,16 +741,17 @@ export default function (
   const getDropElementClone = (
     item: DraggableItem | RenderedFieldListItem,
     checkSize?: boolean,
+    startCoords?: Coord,
   ): Element | undefined => {
     const getElement = () => {
       if ('itemType' in item) {
         if (item.itemType === 'existing') {
-          return getDragElement(item)
+          return getDragImageElement(item, startCoords)
         }
         return item.element()
       }
 
-      return getDragElement(item)
+      return getDragImageElement(item, startCoords)
     }
     const el = getElement()
     if (!el) {
@@ -639,7 +802,11 @@ export default function (
     uuid: string,
     refresh?: boolean,
   ): MeasuredBlockRect | undefined {
-    if (refresh) {
+    // Until the observers report a block that was just registered, it has no
+    // rect. Measure it now, or a feature would miss it in between: the block
+    // that a field in proxy mode shows is registered anew when it's shown,
+    // while its page is measured on every frame.
+    if (refresh || (!blockRects[uuid] && registeredBlocks[uuid])) {
       refreshBlockRect(uuid)
     }
     return blockRects[uuid]
@@ -777,8 +944,109 @@ export default function (
     return registeredBlocks[item.uuid]
   }
 
+  function getDragImageElement(
+    block: DraggableExistingBlock | RenderedFieldListItem,
+    startCoords?: Coord,
+  ) {
+    const item = 'itemType' in block ? block.block : block
+    if (!item) {
+      return
+    }
+    const el = registeredBlocks[item.uuid]
+    const standIn = standIns.get(item.uuid)
+    if (!standIn?.isConnected) {
+      return el
+    }
+    // The drag overlay finds the element that the drag starts on the same way.
+    const startsOnElement =
+      !!el &&
+      !!startCoords &&
+      isInsideRect(startCoords.x, startCoords.y, getBoundingClientRect(el))
+    return startsOnElement ? el : standIn
+  }
+
   function isBlockVisible(uuid: string): boolean {
     return visibleBlocks.has(uuid)
+  }
+
+  function isFieldVisible(key: string): boolean {
+    return visibleFields.has(key)
+  }
+
+  function registerStandIn(uuid: string, el: HTMLElement) {
+    standIns.set(uuid, el)
+  }
+
+  function unregisterStandIn(uuid: string, el: HTMLElement) {
+    if (standIns.get(uuid) === el) {
+      standIns.delete(uuid)
+    }
+  }
+
+  /**
+   * The rectangle of a block's stand-in, measured now: there are few, and they
+   * aren't observed.
+   */
+  function getStandInRect(uuid: string): Rectangle | undefined {
+    const element = standIns.get(uuid)
+    return element?.isConnected
+      ? ui.getAbsoluteElementRect(element.getBoundingClientRect())
+      : undefined
+  }
+
+  function registerAddArea(fieldKey: string, el: HTMLElement) {
+    addAreas.set(fieldKey, el)
+  }
+
+  function unregisterAddArea(fieldKey: string, el: HTMLElement) {
+    if (addAreas.get(fieldKey) === el) {
+      addAreas.delete(fieldKey)
+    }
+  }
+
+  function getAddAreaFieldKeys(): string[] {
+    return [...addAreas.keys()]
+  }
+
+  function getAddAreaRect(fieldKey: string): Rectangle | undefined {
+    const element = addAreas.get(fieldKey)
+    return element?.isConnected
+      ? ui.getAbsoluteElementRect(element.getBoundingClientRect())
+      : undefined
+  }
+
+  function getPointerAreas(): BlockPointerArea[] {
+    const areas: BlockPointerArea[] = []
+    for (const uuid of visibleBlocks) {
+      const rect = blockRects[uuid]
+      const element = registeredBlocks[uuid]
+      if (rect && element) {
+        areas.push({ id: uuid, uuid, rect, element })
+      }
+    }
+    for (const [uuid, element] of standIns) {
+      const rect = getStandInRect(uuid)
+      if (rect) {
+        areas.push({ id: 'stand-in:' + uuid, uuid, rect, element })
+      }
+    }
+    return areas
+  }
+
+  function getRectInField(uuid: string): Rectangle | undefined {
+    return getStandInRect(uuid) ?? getBlockRect(uuid)
+  }
+
+  function getBlockOrder(): string[] {
+    return orderBlockElements(
+      element.queryAll(
+        ui.providerElement,
+        '.bk-field-list-item',
+        'getBlockOrder',
+      ),
+      (el) => el.dataset.bkUuid,
+      (el, other) => el.contains(other),
+    )
   }
 
   function refreshAllBlockRects() {
@@ -840,6 +1108,9 @@ export default function (
         uuid,
       )
       unregisterBlock(key, uuid)
+      // Unregistering clears the key, which would let the previous location
+      // unregister this block when it unmounts after this.
+      blockUuidCurrentKey[uuid] = key
     }
 
     const item = state.getFieldListItem(uuid)
@@ -1010,7 +1281,18 @@ export default function (
     getBlockRect,
     getFieldRect,
     refreshBlockRect,
+    refreshFieldRect,
     isBlockVisible,
+    isFieldVisible,
+    registerStandIn,
+    unregisterStandIn,
+    registerAddArea,
+    unregisterAddArea,
+    getAddAreaFieldKeys,
+    getAddAreaRect,
+    getPointerAreas,
+    getRectInField,
+    getBlockOrder,
     isReady: computed(
       () =>
         mutationsReady.value && intersectionReady.value && !isInitalizing.value,
@@ -1018,6 +1300,7 @@ export default function (
     settleKey: computed(() => settleKey.value),
     init,
     getDragElement,
+    getDragImageElement,
     updateVisibleRects,
     registeredFieldTypes,
     registerBlock,

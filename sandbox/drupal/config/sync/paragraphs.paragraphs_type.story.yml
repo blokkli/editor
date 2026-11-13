@@ -1,0 +1,14 @@
+uuid: 6a9064e5-2eff-4d4f-aa76-657747bf8878
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli
+id: story
+label: Story
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins:
+  paragraphs_blokkli_data:
+    enabled: true

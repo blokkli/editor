@@ -7,6 +7,7 @@ import {
   getDraggingBlockCount,
   getDraggingBundleGroups,
   getDraggingDepth,
+  getFieldAddBundles,
 } from './index'
 
 function buildField(values: Partial<BlokkliFieldElement>): BlokkliFieldElement {
@@ -161,5 +162,54 @@ describe('fitsNestingLimit', () => {
 
   test('without a limit, blocks fit anywhere', () => {
     expect(fitsNestingLimit(100, 100, undefined)).toBe(true)
+  })
+})
+
+describe('getFieldAddBundles', () => {
+  const field = buildField({
+    allowedBundles: ['text', 'image', 'video'],
+    nestingLevel: 1,
+  })
+  const everyBundle = () => true
+
+  test('gives the bundles the field allows and the user may add', () => {
+    expect(
+      getFieldAddBundles(field, 3, {
+        canChange: true,
+        maxNestingLevel: undefined,
+        isBundlePermitted: (bundle) => bundle !== 'video',
+      }),
+    ).toEqual(['text', 'image'])
+  })
+
+  test('gives none when the user may not change the field', () => {
+    expect(
+      getFieldAddBundles(field, 0, {
+        canChange: false,
+        maxNestingLevel: undefined,
+        isBundlePermitted: everyBundle,
+      }),
+    ).toEqual([])
+  })
+
+  test('gives none when a new block would be nested too deep', () => {
+    const options = { canChange: true, isBundlePermitted: everyBundle }
+    expect(
+      getFieldAddBundles(field, 0, { ...options, maxNestingLevel: 1 }),
+    ).toEqual([])
+    expect(
+      getFieldAddBundles(field, 0, { ...options, maxNestingLevel: 2 }),
+    ).toHaveLength(3)
+  })
+
+  test('gives none when the field is full', () => {
+    const limited = buildField({ ...field, cardinality: 2 })
+    const options = {
+      canChange: true,
+      maxNestingLevel: undefined,
+      isBundlePermitted: everyBundle,
+    }
+    expect(getFieldAddBundles(limited, 2, options)).toEqual([])
+    expect(getFieldAddBundles(limited, 1, options)).toHaveLength(3)
   })
 })

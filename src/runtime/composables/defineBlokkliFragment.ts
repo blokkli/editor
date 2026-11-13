@@ -1,5 +1,6 @@
 import {
   INJECT_EDIT_CONTEXT,
+  INJECT_FIELD_USES_PROXY,
   INJECT_FRAGMENT_CONTEXT,
 } from '../helpers/injections'
 import { inject, computed } from '#imports'
@@ -35,7 +36,14 @@ export function defineBlokkliFragment<
 
   const editContext = inject(INJECT_EDIT_CONTEXT, null)
 
-  if (editContext?.dom && editContext.useBlockRegistration) {
+  // As a block registers (defineBlokkli): only where it's edited, not in a
+  // preview, nor where a field in proxy mode renders it as on the site.
+  if (
+    editContext?.dom &&
+    editContext.useBlockRegistration &&
+    ctx.isEditing &&
+    !inject(INJECT_FIELD_USES_PROXY, false)
+  ) {
     editContext.useBlockRegistration(editContext.dom, ctx.uuid)
   }
 

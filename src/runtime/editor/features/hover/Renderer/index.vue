@@ -210,16 +210,14 @@ function updateHoverState(
   const artboardMouseX = mouseX / scale - offset.x / scale
   const artboardMouseY = mouseY / scale - offset.y / scale
 
-  // Find all hovered blocks.
+  // Find all hovered blocks. A block can have two areas: the page of the block
+  // that a field in proxy mode shows stands in for it.
   const hoveredUuids: string[] = []
-  const visibleBlocks = dom.getVisibleBlocks()
 
-  for (let i = 0; i < visibleBlocks.length; i++) {
-    const uuid = visibleBlocks[i]
-    if (!uuid) continue
-
-    const rawRect = dom.getBlockRect(uuid)
-    if (!rawRect) continue
+  for (const { uuid, rect: rawRect } of dom.getPointerAreas()) {
+    if (hoveredUuids.includes(uuid)) {
+      continue
+    }
 
     const rect = ui.getViewportRelativeRect(rawRect, scale, offset)
     const blockRect = {

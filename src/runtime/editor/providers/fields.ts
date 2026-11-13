@@ -1,5 +1,5 @@
 import { onBlokkliEvent } from '#blokkli/editor/composables'
-import type { BlokkliFieldElement } from '../types/field'
+import type { BlokkliFieldElement, RegisteredField } from '../types/field'
 import type { DomProvider } from './dom'
 import type { BlockDefinitionProvider } from './types'
 import type { StateProvider } from './state'
@@ -17,7 +17,9 @@ export type FieldsProvider = {
    * - HTML element reference
    * - Drop alignment settings
    *
-   * Results are cached and invalidated on state reload.
+   * Results are cached and invalidated on state reload, and when the field
+   * registers again: inside a block that a field in proxy mode shows anew, it
+   * has another element.
    *
    * @param uuid - The host entity UUID
    * @param fieldName - The name of the field
@@ -50,7 +52,12 @@ export default function (
   types: BlockDefinitionProvider,
   state: StateProvider,
 ): FieldsProvider {
-  const fieldCache = new Map<string, BlokkliFieldElement>()
+  // Each field with the registration it was built from. A field that is no
+  // longer registered keeps its entry.
+  const fieldCache = new Map<
+    string,
+    { registered: RegisteredField; field: BlokkliFieldElement }
+  >()
   const fieldInfoCache = new Map<string, FieldInfo>()
   const comparisonCache = new Map<string, number>()
 
@@ -59,12 +66,12 @@ export default function (
     fieldName: string,
   ): BlokkliFieldElement | undefined {
     const key = uuid + ':' + fieldName
+    const registeredField = dom.getRegisteredField(uuid, fieldName)
     const cached = fieldCache.get(key)
-    if (cached) {
-      return cached
+    if (cached && (!registeredField || cached.registered === registeredField)) {
+      return cached.field
     }
 
-    const registeredField = dom.getRegisteredField(uuid, fieldName)
     if (!registeredField) {
       return
     }
@@ -91,9 +98,10 @@ export default function (
       cardinality: definition.cardinality,
       element: registeredField.element,
       dropAlignment: registeredField.dropAlignment,
+      isPager: registeredField.isPager,
     }
 
-    fieldCache.set(key, fieldElement)
+    fieldCache.set(key, { registered: registeredField, field: fieldElement })
     return fieldElement
   }
 

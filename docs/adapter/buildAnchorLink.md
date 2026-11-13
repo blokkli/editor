@@ -28,8 +28,9 @@ This method builds the complete URL that users can copy and share to link
 directly to a specific block on the page. The URL typically includes the page
 URL plus a hash fragment with the anchor ID.
 
-The anchor link feature requires blocks to have an option or field that provides
-an anchor ID.
+The editor shows an anchor link for a block whose element has an `id`, or else
+for the first heading (`h1` to `h6`) in the block with one. Other ids, such as
+those of a tab list, aren't anchors.
 
 ## Example
 

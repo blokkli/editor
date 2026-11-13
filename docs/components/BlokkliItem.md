@@ -42,19 +42,23 @@ The bundle (block type) of the block, used to resolve which component to render.
 
 - **Type:** `number`
 - **Required:** No
-- **Default:** `0`
+- **Default:** in a field's slot, the block's index in the field; else `0`
 
 The index of the block within its field. This is passed automatically when
-rendering via `BlokkliField`.
+rendering via `BlokkliField`. In the slot of a field, a `<BlokkliItem>` of one
+of the field's blocks gets it from the field.
 
 ### parentType
 
 - **Type:** `string`
 - **Required:** No
-- **Default:** `''`
+- **Default:** in a field's slot, the bundle of the block that holds the field;
+  else `''`
 
 The bundle of the parent block, used for context-based component rendering (e.g.
-rendering a different component depending on the parent block type).
+rendering a different component depending on the parent block type). In the slot
+of a field, a `<BlokkliItem>` of one of the field's blocks gets it from the
+field, as the blocks `BlokkliField` renders itself do.
 
 ### isEditing
 
@@ -101,9 +105,10 @@ item.
 
 ### Rendering a Field Manually
 
-When a field is in proxy mode, you are responsible for rendering its nested
-blocks yourself. The `items` slot prop provides the (filtered) block items,
-which you can pass straight to `BlokkliItem` using `v-bind`:
+When a field is in proxy mode, its slot renders the nested blocks on the site
+and in the preview, and you are responsible for rendering them yourself. The
+`items` slot prop provides the (filtered) block items, which you can pass
+straight to `BlokkliItem` using `v-bind`:
 
 ```vue
 <template>
@@ -127,6 +132,35 @@ defineProps<{
 }>()
 </script>
 ```
+
+## Slots
+
+### default
+
+Renders your markup instead of the block type's component, as that block: the
+markup has the block's context, so `v-blokkli-editable`, `<BlokkliEditable>` and
+a `<BlokkliField>` inside it address the block's fields. Use it in a field with
+`proxy-mode="slot"`, whose slot renders the shown block in its own layout; see
+[Rendering the Shown Block Yourself](/define-blokkli/proxy-mode#rendering-the-shown-block-yourself).
+
+```vue
+<template>
+  <BlokkliItem :key="item.uuid" v-bind="item">
+    <div class="grid grid-cols-2">
+      <img :src="item.props.imageUrl" alt="" />
+      <h3 v-blokkli-editable:field_title>{{ item.props.title }}</h3>
+    </div>
+  </BlokkliItem>
+</template>
+```
+
+- **Key it by the block's uuid.** It resolves its component and its context when
+  it's created, so a `<BlokkliItem>` reused for another block keeps the first
+  one's.
+- **One per block,** around all the places its markup is in. While editing, its
+  first element is the block's element: it must be an element or a component
+  with a single root.
+- On the site, it renders the slot with the block's context.
 
 ## Notes
 

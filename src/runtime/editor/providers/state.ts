@@ -7,7 +7,6 @@ import {
   readonly,
   provide,
 } from 'vue'
-import { refreshNuxtData, useState } from 'nuxt/app'
 import {
   StateUnavailableError,
   type BlokkliAdapter,
@@ -19,7 +18,7 @@ import { onBlokkliEvent, addElementClasses } from '#blokkli/editor/composables'
 import type { FieldListItem } from '#blokkli/types'
 import { falsy, getFieldKey } from '#blokkli/helpers'
 import { emitMessage, type BlokkliEventBus } from '#blokkli/editor/events'
-import { nextTick } from '#imports'
+import { nextTick, refreshNuxtData, useState } from '#imports'
 import type { TextProvider } from './texts'
 import type { PublishOptions } from '../features/publish/types'
 import type {

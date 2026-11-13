@@ -1,0 +1,31 @@
+uuid: 98766dde-f840-4faf-ab1b-b58e39cf53b4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_paragraphs
+    - paragraphs.paragraphs_type.accordion
+    - paragraphs.paragraphs_type.image
+    - paragraphs.paragraphs_type.story
+    - paragraphs.paragraphs_type.teaser
+  module:
+    - entity_reference_revisions
+id: paragraph.story.field_paragraphs
+field_name: field_paragraphs
+entity_type: paragraph
+bundle: story
+label: Sections
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      accordion: accordion
+      image: image
+      teaser: teaser
+    negate: 0
+field_type: entity_reference_revisions

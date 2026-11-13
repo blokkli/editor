@@ -19,11 +19,7 @@
         </figcaption>
       </figure>
     </div>
-    <div
-      v-if="slides.length > 1"
-      class="mt-3 flex justify-end gap-2"
-      :class="{ 'pointer-events-none': isEditing }"
-    >
+    <div v-if="slides.length > 1" class="mt-3 flex justify-end gap-2">
       <button
         type="button"
         class="flex size-11 items-center justify-center border border-line hover:border-ink"
@@ -47,11 +43,10 @@
 <script lang="ts" setup>
 import type { FieldListItemTyped } from '#blokkli-build/generated-types'
 
-// The slides are rendered directly, not as blocks: in proxy mode, the editor
-// shows the image blocks in its own list (Image/proxy.vue).
+// The slides are rendered directly, not as blocks. While editing, the field
+// renders as a pager instead: the editor shows one image block at a time.
 const props = defineProps<{
   items: FieldListItemTyped[]
-  isEditing: boolean
 }>()
 
 const track = useTemplateRef('track')

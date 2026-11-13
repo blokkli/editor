@@ -26,43 +26,37 @@ const route = useRoute()
 
 const { adapter, ui } = useBlokkli()
 
+/**
+ * The elements whose id is an anchor: a block's own element and headings. Other
+ * ids, such as those of a tab list and its panel, connect elements for
+ * assistive technology and are often generated.
+ */
+const ANCHOR_SELECTOR = '[data-bk-uuid][id], :is(h1, h2, h3, h4, h5, h6)[id]'
+
+/**
+ * One item per block: its first anchor, in document order. A block's own
+ * element comes before its children, so its id wins over a heading's. An
+ * indicator is per block.
+ */
 function getAnchorItems(): Item[] {
-  const anchorItems: Item[] = []
+  const anchorItems = new Map<string, Item>()
 
-  const nodes = [...ui.providerElement.querySelectorAll('[id]')]
-
-  for (const element of nodes) {
-    if (!(element instanceof HTMLElement)) {
+  for (const element of ui.providerElement.querySelectorAll(ANCHOR_SELECTOR)) {
+    if (
+      !(element instanceof HTMLElement) ||
+      !element.id ||
+      element.closest('form')
+    ) {
       continue
     }
 
-    const block = element.closest('[data-bk-uuid]')
-    if (!(block instanceof HTMLElement)) {
-      continue
-    }
-
-    if (element.closest('form')) {
-      continue
-    }
-
-    const uuid = block.dataset.bkUuid
-    if (!uuid) {
-      continue
-    }
-
-    if (!element || !uuid) {
-      continue
-    }
-
-    if (element.id) {
-      anchorItems.push({
-        id: element.id,
-        uuid,
-      })
+    const uuid = element.closest<HTMLElement>('[data-bk-uuid]')?.dataset.bkUuid
+    if (uuid && !anchorItems.has(uuid)) {
+      anchorItems.set(uuid, { id: element.id, uuid })
     }
   }
 
-  return anchorItems
+  return [...anchorItems.values()]
 }
 
 const items = ref<Item[]>([])

@@ -1,4 +1,9 @@
 import type { BlokkliApp } from '#blokkli/editor/types/app'
+import { fromLibraryBlockBundle, itemEntityType } from '#blokkli-build/config'
+import {
+  findSlotItem,
+  resolveDirectiveEntity,
+} from '#blokkli/helpers/directiveEntity'
 import {
   INJECT_APP,
   INJECT_ENTITY_CONTEXT,
@@ -52,6 +57,26 @@ function getEntityContext(
   return getInjection<EntityContext>(vnode, INJECT_ENTITY_CONTEXT, el)
 }
 
+/**
+ * The entity whose field the directive edits. The markup that the slot of a
+ * field in proxy mode ties to one of its blocks is that block's, though its
+ * template is the one of the block holding the field.
+ */
+function getDirectiveEntity(
+  vnode: VNode,
+  el: HTMLElement,
+  app: BlokkliApp,
+): EntityContext | null {
+  return resolveDirectiveEntity({
+    owner: getEntityContext(vnode, el),
+    slotItem: findSlotItem(el),
+    getHostUuid: (uuid) => app.state.getFieldListForBlock(uuid)?.entityUuid,
+    getBundle: (uuid) => app.state.getFieldListItem(uuid)?.bundle,
+    itemEntityType,
+    fromLibraryBundle: fromLibraryBlockBundle,
+  })
+}
+
 function isOutsideState(vnode: VNode): boolean {
   return !!getInjection(vnode, INJECT_IS_OUTSIDE_STATE)
 }
@@ -77,6 +102,13 @@ function createDirective(
 ): ObjectDirective<HTMLElement, 'name'> {
   const dataset =
     type === 'editable' ? 'blokkliEditableField' : 'blokkliDroppableField'
+
+  // The registrations of this directive, by element.
+  const registered = new WeakMap<
+    HTMLElement,
+    { app: BlokkliApp; fieldName: string; entity: EntityContext }
+  >()
+
   return {
     created(el, binding, vnode) {
       if (import.meta.client) {
@@ -109,37 +141,32 @@ function createDirective(
       if (!app) {
         return
       }
-      const entity = getEntityContext(vnode, el)
-      if (!entity) {
-        return
-      }
       const fieldName = getFieldName(binding)
       if (!fieldName) {
+        return
+      }
+      const entity = getDirectiveEntity(vnode, el, app)
+      if (!entity) {
         return
       }
 
       app.directive.registerDirectiveElement(el, fieldName, entity, type, false)
+      registered.set(el, { app, fieldName, entity })
     },
-    beforeUnmount(el: HTMLElement, binding, vnode) {
-      if (!isEditing()) {
+    beforeUnmount(el: HTMLElement) {
+      // What it registered: finding the entity again would need the element
+      // still in its place, and the field name may have changed.
+      const registration = registered.get(el)
+      if (!registration) {
         return
       }
-
-      const app = getBlokkliApp(vnode, el)
-
-      if (!app) {
-        return
-      }
-      const entity = getEntityContext(vnode, el)
-      if (!entity) {
-        return
-      }
-      const fieldName = getFieldName(binding)
-      if (!fieldName) {
-        return
-      }
-
-      app.directive.unregisterDirectiveElement(el, fieldName, entity, type)
+      registered.delete(el)
+      registration.app.directive.unregisterDirectiveElement(
+        el,
+        registration.fieldName,
+        registration.entity,
+        type,
+      )
     },
   }
 }

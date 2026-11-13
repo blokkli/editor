@@ -1,8 +1,12 @@
 <template>
-  <slot v-if="!isGlobalProxyMode" :items="filteredList" />
+  <slot
+    v-if="!isGlobalProxyMode && !rendersPager"
+    :items="filteredList"
+    :shown-index="null"
+  />
   <Component
     :is="DraggableList"
-    v-if="DraggableList && isEditing && canEdit && !isOutsideState && entity"
+    v-if="rendersEditorList"
     :list="filteredList"
     :name
     :entity
@@ -11,12 +15,8 @@
     :nesting-level
     :drop-alignment
     :field-list-type
-    :class="[
-      attrs.class,
-      listClass,
-      editClass,
-      { [nonEmptyClass]: filteredList.length },
-    ]"
+    :class="proxyMode ? attrs.class : [attrs.class, editorListClass]"
+    :list-class="proxyMode ? editorListClass : undefined"
     :is-nested
     :z-index
     :language="providerEntity?.language"
@@ -24,7 +24,12 @@
     :tag
     :global-proxy-mode="!!isGlobalProxyMode"
     :should-render-item="shouldRenderItem"
-  />
+  >
+    <!-- The slot renders the shown block below the band. -->
+    <template v-if="rendersSlot" #default="slotProps">
+      <slot v-bind="slotProps" />
+    </template>
+  </Component>
   <component
     :is="tag"
     v-else-if="
@@ -45,7 +50,7 @@
       v-for="(item, i) in filteredList"
       :key="item.uuid + fieldListType"
       v-bind="item"
-      :parent-type="isNested ? entity?.bundle : ''"
+      :parent-type
       :data-bk-uuid="isPreview ? item.uuid : undefined"
       :index="i"
     />
@@ -79,9 +84,9 @@ import {
   INJECT_MUTATED_FIELDS_MAP,
   INJECT_EDIT_FIELD_LIST_COMPONENT,
   INJECT_PROVIDER_CONTEXT,
-  INJECT_FIELD_PROXY_MODE,
   INJECT_GLOBAL_PROXY_MODE,
   INJECT_FIELD_USES_PROXY,
+  INJECT_FIELD_PARENT_TYPE,
 } from '../helpers/injections'
 import type { FieldDropAlignment } from '#blokkli/types/field'
 import type { VueClassProp } from '#blokkli/types/vue'
@@ -157,15 +162,31 @@ const props = withDefaults(
     zIndex?: number | string
 
     /**
-     * Renders proxy blocks during editing.
+     * Renders the field as a pager while editing, for a field that shows one
+     * block at a time, such as a slider.
      *
-     * Doing this will *not* render the actual block components.
+     * On the site and in the preview, the default slot renders the blocks from
+     * its `items`. While editing, the editor renders a band of pages, one per
+     * block, and below it the block the field shows, as a real block.
+     * Selecting a page shows its block.
      *
-     * During editing, a separate element is rendered with "position: absolute"
-     * that contains "proxy blocks" for drag and drop interactions. This means
-     * that you need to have a wrapper somewhere with "position: relative".
+     * While editing, `class` goes on the element that holds the band and the
+     * block; `tag`, `listClass`, `editClass` and `nonEmptyClass` go on the list
+     * that holds the block. On the site, the slot renders what it wants.
+     *
+     * With `'slot'`, the default slot renders the shown block while editing
+     * too, below the band, for a field whose layout matters, such as a scene.
+     * Its `shownIndex` is the index of the block the field shows, and `null` on
+     * the site and in the preview. The slot renders that block as a keyed
+     * `<BlokkliItem>`, with a default slot around the markup that belongs to
+     * it; that markup is then the block, edited in place. Every other block's
+     * `<BlokkliItem>` renders as on the site. What the slot can't show, it
+     * renders as `<BlokkliItem v-bind="item" />`.
+     *
+     * Read once: to switch between proxy mode and a normal field, render two
+     * fields with `v-if` and `v-else`.
      */
-    proxyMode?: boolean
+    proxyMode?: boolean | 'slot'
 
     /**
      * Determine whether an item should be rendered.
@@ -195,7 +216,14 @@ defineOptions({
 })
 
 defineSlots<{
-  default(props: { items: FieldListItemTyped[] }): any
+  default(props: {
+    items: FieldListItemTyped[]
+    /**
+     * With `proxy-mode="slot"`, while editing: the index of the block the
+     * field shows. Else `null`.
+     */
+    shownIndex: number | null
+  }): any
   after(props: { items: FieldListItemTyped[] }): any
 }>()
 
@@ -213,6 +241,9 @@ if (!entity) {
   throw new Error('Missing entity context.')
 }
 
+// The type of the block that holds the field: its blocks are nested in it.
+const parentType = isNested ? entity.bundle : ''
+
 const providerEntity = inject(INJECT_PROVIDER_CONTEXT)!
 
 if (!providerEntity) {
@@ -226,6 +257,20 @@ if (!providerEntity) {
 const canEdit =
   !editContext ||
   editContext.isFieldEditable(entity.type, entity.bundle, props.name)
+
+// The editor renders the field: as a list of blocks, or as a pager for a field
+// in proxy mode, whose slot then doesn't render. Read once, like the provides
+// below.
+const rendersEditorList = !!(
+  DraggableList &&
+  isEditing &&
+  canEdit &&
+  !isOutsideState
+)
+const rendersPager = rendersEditorList && !!props.proxyMode
+
+// The slot renders the shown block below the band.
+const rendersSlot = rendersPager && props.proxyMode === 'slot'
 
 const fieldKey = computed<string>(() => {
   if (canEdit) {
@@ -285,15 +330,24 @@ const filteredList = computed<FieldListItemTyped[]>(() => {
   return list.filter(filterVisible) as FieldListItemTyped[]
 })
 
+// The classes of the list holding the blocks while editing.
+const editorListClass = computed(() => [
+  props.listClass,
+  props.editClass,
+  { [props.nonEmptyClass]: filteredList.value.length },
+])
+
 provide(INJECT_IS_NESTED, true)
 provide(INJECT_NESTING_LEVEL, nestingLevel + 1)
 provide(INJECT_FIELD_Z_INDEX, Number(props.zIndex))
 provide(INJECT_FIELD_LIST_TYPE, fieldListType)
 provide(INJECT_FIELD_LIST_BLOCKS, filteredList)
+// For a <BlokkliItem> of one of the blocks that the slot renders.
+provide(INJECT_FIELD_PARENT_TYPE, parentType)
 
-if (props.proxyMode) {
+// The slot renders the blocks, outside the editor.
+if (props.proxyMode && !rendersPager) {
   provide(INJECT_IS_EDITING, false)
-  provide(INJECT_FIELD_PROXY_MODE, false)
   provide(INJECT_FIELD_USES_PROXY, true)
 }
 

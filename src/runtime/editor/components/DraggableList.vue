@@ -1,14 +1,12 @@
 <template>
+  <!-- The Structure view: every block as a proxy. -->
   <div
-    v-if="proxyMode || globalProxyMode"
+    v-if="globalProxyMode"
     class="bk bk-field-list-proxy"
-    :class="[
-      {
-        'bk-is-visible': proxyVisible,
-      },
+    :class="
       'bk-is-' +
-        (dropAlignment || (nestingLevel === 0 ? 'vertical' : 'horizontal')),
-    ]"
+      (dropAlignment || (nestingLevel === 0 ? 'vertical' : 'horizontal'))
+    "
   >
     <div
       ref="root"
@@ -33,12 +31,33 @@
       />
     </div>
   </div>
+  <PagerList
+    v-else-if="proxyMode"
+    :class="attrs.class"
+    :name
+    :field-key
+    :list
+    :entity
+    :tag
+    :field-data="data"
+    :list-class
+    :is-muted
+    :renders-slot="proxyMode === 'slot'"
+  >
+    <template v-if="proxyMode === 'slot'" #default="slotProps">
+      <slot v-bind="slotProps" />
+    </template>
+  </PagerList>
   <Component
     :is="tag"
     v-else
     ref="root"
     class="bk-vars"
-    :class="['bk-draggable-list-container', attrs.class]"
+    :class="[
+      'bk-draggable-list-container',
+      attrs.class,
+      { 'bk-is-empty': !list.length },
+    ]"
   >
     <BlokkliItem
       v-for="(item, i) in list"
@@ -72,18 +91,17 @@ import type { FieldListItem, EntityContext } from '#blokkli/types'
 import type { BlokkliFragmentName } from '#blokkli-build/definitions'
 import BlokkliItem from './../../components/BlokkliItem.vue?blokkliEditing=true'
 import { isVisibleByOptions } from '#blokkli/helpers/runtimeHelpers'
-import {
-  INJECT_FIELD_PROXY_MODE,
-  INJECT_IS_EDITING,
-} from '#blokkli/helpers/injections'
+import { INJECT_IS_EDITING } from '#blokkli/helpers/injections'
 import type {
   FieldListItemTyped,
   ValidFieldListTypes,
 } from '#blokkli-build/generated-types'
 import type { FieldDropAlignment } from '#blokkli/types/field'
+import type { VueClassProp } from '#blokkli/types/vue'
 import type { RegisterFieldData } from '../types/field'
+import PagerList from './PagerList/index.vue'
 
-const { dom, selection } = useBlokkli()
+const { dom } = useBlokkli()
 
 const root = useTemplateRef('root')
 
@@ -100,9 +118,11 @@ const props = withDefaults(
     allowedFragments?: BlokkliFragmentName[] | BlokkliFragmentName
     dropAlignment?: FieldDropAlignment
     zIndex?: number | string
-    proxyMode?: boolean
+    /** `'slot'`: the field's slot renders the shown block (PagerList). */
+    proxyMode?: boolean | 'slot'
     globalProxyMode?: boolean
     nestingLevel: number
+    listClass?: VueClassProp
     shouldRenderItem?: (item: FieldListItem | FieldListItemTyped) => boolean
   }>(),
   {
@@ -113,23 +133,23 @@ const props = withDefaults(
     zIndex: 0,
     dropAlignment: undefined,
     language: undefined,
+    proxyMode: false,
     shouldRenderItem: undefined,
+    listClass: '',
   },
 )
 
 const attrs = useAttrs()
 
-provide(INJECT_FIELD_PROXY_MODE, props.proxyMode)
-provide(INJECT_IS_EDITING, true)
+defineSlots<{
+  /** The field's slot, for a field in proxy mode that renders the shown block. */
+  default(props: {
+    items: FieldListItemTyped[]
+    shownIndex: number | null
+  }): any
+}>()
 
-const proxyVisible = computed(
-  () =>
-    props.proxyMode &&
-    (selection.uuids.value.length ||
-      selection.isDragging.value ||
-      selection.isMultiSelecting.value ||
-      selection.hasHostSelected.value),
-)
+provide(INJECT_IS_EDITING, true)
 
 // @TODO: This should be handled differently to prevent constant updates in the
 // component when the options change.
@@ -164,6 +184,7 @@ const data = computed<RegisterFieldData>(() => {
     nestingLevel: props.nestingLevel,
     dropAlignment: props.dropAlignment ?? null,
     zIndex: Number.isNaN(zIndex) ? 0 : zIndex,
+    isPager: false,
   }
 })
 
@@ -215,25 +236,26 @@ if (import.meta.hot) {
   }
 }
 
-.bk.bk-field-list-proxy {
-  @apply z-dialog w-full min-h-40 p-20 absolute;
-  @apply w-full left-0 top-0;
+/*
+ * An empty field gets room and a faint outline in the editor, even when the
+ * site gives it no height, so there is always a place to add a block. Through
+ * a pseudo element instead of min-height: the editor's CSS isn't in a cascade
+ * layer, so a min-height here would override a larger one of the site.
+ */
+.bk-vars.bk-draggable-list-container.bk-is-empty {
+  @apply outline-dashed outline-1 outline-accent-400/40 -outline-offset-1;
 
-  @apply transition-opacity duration-100;
-
-  @apply opacity-0 pointer-events-none;
-
-  html.bk-is-proxy-mode & {
-    @apply opacity-100 pointer-events-auto static;
-    @apply mx-10 max-w-full min-w-0 w-auto;
-
-    .bk-block-proxy {
-      @apply min-w-[200px];
-    }
+  &::before {
+    content: '';
+    @apply block h-[48px] pointer-events-none;
   }
+}
 
-  &.bk-is-visible {
-    @apply opacity-100 pointer-events-auto;
+.bk.bk-field-list-proxy {
+  @apply min-h-40 p-20 mx-10 max-w-full min-w-0 pointer-events-auto;
+
+  .bk-block-proxy {
+    @apply min-w-[200px];
   }
 
   &.bk-is-horizontal {

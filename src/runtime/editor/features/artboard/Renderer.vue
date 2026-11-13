@@ -81,7 +81,8 @@ const props = defineProps<{
 
 addElementClasses(document.documentElement, 'bk-is-artboard')
 
-const { context, storage, ui, animation, $t, dom, selection } = useBlokkli()
+const { context, storage, ui, animation, $t, dom, selection, state, pager } =
+  useBlokkli()
 
 const { isVisible: isOverviewVisible } = defineViewOption({
   id: 'artboardOverview',
@@ -402,30 +403,68 @@ onBlokkliEvent('keyPressed', (e) => {
   }
 })
 
+/**
+ * Run the callback once the blocks have an element. A block without one, e.g.
+ * inside a block that a field in proxy mode doesn't show, is shown first. The
+ * callback runs once it's registered, or after a second without it.
+ */
+function whenRendered(uuids: string[], callback: () => void) {
+  const missing = uuids.filter(
+    (uuid) => !dom.registeredBlocks.value[uuid] && state.getFieldListItem(uuid),
+  )
+  if (!missing.length) {
+    callback()
+    return
+  }
+
+  for (const uuid of missing) {
+    pager.show(uuid)
+  }
+
+  const done = () => {
+    window.clearTimeout(timeout)
+    stop()
+    callback()
+  }
+  const timeout = window.setTimeout(done, 1000)
+  const stop = watch(
+    () => missing.every((uuid) => !!dom.registeredBlocks.value[uuid]),
+    (isRendered) => {
+      if (isRendered) {
+        done()
+      }
+    },
+  )
+}
+
+function scrollToBlock(uuid: string, immediate?: boolean) {
+  dom.refreshBlockRect(uuid)
+  const rect = dom.getBlockRect(uuid)
+  if (!rect) {
+    return
+  }
+
+  const viewportRelativeRect = ui.getViewportRelativeRect(rect)
+
+  // Skip scrolling if at least half of the block is already visible.
+  if (
+    calculateIntersection(viewportRelativeRect, ui.visibleViewport.value) >=
+    0.75
+  ) {
+    return
+  }
+
+  artboard.scrollIntoView(rect, {
+    scale: 'none',
+    axis: 'y',
+    behavior: immediate ? 'instant' : 'auto',
+    area: 'blocking',
+  })
+}
+
 onBlokkliEvent('scrollIntoView', (e) => {
   if ('uuid' in e) {
-    dom.refreshBlockRect(e.uuid)
-    const rect = dom.getBlockRect(e.uuid)
-    if (!rect) {
-      return
-    }
-
-    const viewportRelativeRect = ui.getViewportRelativeRect(rect)
-
-    // Skip scrolling if at least half of the block is already visible.
-    if (
-      calculateIntersection(viewportRelativeRect, ui.visibleViewport.value) >=
-      0.75
-    ) {
-      return
-    }
-
-    artboard.scrollIntoView(rect, {
-      scale: 'none',
-      axis: 'y',
-      behavior: e.immediate ? 'instant' : 'auto',
-      area: 'blocking',
-    })
+    whenRendered([e.uuid], () => scrollToBlock(e.uuid, e.immediate))
   } else if ('rect' in e) {
     // Always center the given artboard-space rect on both axes within the full
     // viewport, regardless of how much of it is already visible.
@@ -468,11 +507,15 @@ onBlokkliEvent('setArtboardOffset', (e) => {
 })
 
 onBlokkliEvent('scrollSelectionIntoView', (e) => {
-  const uuids = selection.uuids.value
+  const uuids = [...selection.uuids.value]
   if (uuids.length === 0) {
     return
   }
 
+  whenRendered(uuids, () => scrollToBlocks(uuids, e.immediate))
+})
+
+function scrollToBlocks(uuids: string[], immediate?: boolean) {
   // Calculate the bounding rect that covers all selected blocks.
   let minX = Infinity
   let minY = Infinity
@@ -516,9 +559,9 @@ onBlokkliEvent('scrollSelectionIntoView', (e) => {
   artboard.scrollIntoView(boundingRect, {
     scale: 'none',
     axis: 'both',
-    behavior: e.immediate ? 'instant' : 'auto',
+    behavior: immediate ? 'instant' : 'auto',
   })
-})
+}
 </script>
 
 <style lang="postcss">
