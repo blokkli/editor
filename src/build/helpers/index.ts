@@ -83,6 +83,13 @@ const SFC_SCRIPT_RE =
 export function extractScriptContent(sfc: string) {
   const contents: Array<{ loader: 'tsx' | 'ts'; code: string }> = []
 
+  // Only a single-file component, which starts with a tag, has script blocks:
+  // a TypeScript file can hold one in a string (an example in a skill).
+  if (!/^\s*</.test(sfc)) {
+    contents.push({ loader: 'ts', code: sfc.trim() })
+    return contents
+  }
+
   let hasMatch = false
   for (const match of sfc.matchAll(SFC_SCRIPT_RE)) {
     hasMatch = true
