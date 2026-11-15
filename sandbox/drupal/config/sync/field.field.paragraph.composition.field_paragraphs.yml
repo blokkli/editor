@@ -1,0 +1,31 @@
+uuid: dde65fdf-393f-4c54-b383-3cf999ce1e62
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_paragraphs
+    - paragraphs.paragraphs_type.composition
+    - paragraphs.paragraphs_type.image
+    - paragraphs.paragraphs_type.text
+    - paragraphs.paragraphs_type.title
+  module:
+    - entity_reference_revisions
+id: paragraph.composition.field_paragraphs
+field_name: field_paragraphs
+entity_type: paragraph
+bundle: composition
+label: Parts
+description: 'The images, titles and texts that the composition places in its markup.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      image: image
+      title: title
+      text: text
+    negate: 0
+field_type: entity_reference_revisions

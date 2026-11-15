@@ -3840,6 +3840,105 @@ type ParagraphColumns implements Paragraph & Entity & EntityRevisionable {
   isLatestRevision: Boolean
 }
 
+"Composition {entity_type: paragraph, bundle: composition}"
+type ParagraphComposition implements Paragraph & Entity & EntityRevisionable {
+  "{field: status} "
+  statusRawField: FieldItemListBoolean
+
+  "{value} {field: status} "
+  status: Boolean
+
+  "{field: created} The time that the Paragraph was created."
+  createdRawField: FieldItemListCreated
+
+  "{value} {field: created} The time that the Paragraph was created."
+  created: String
+
+  "{field: parent_id} The ID of the parent entity of which this entity is referenced."
+  parentIdRawField: FieldItemListString
+
+  "{value} {field: parent_id} The ID of the parent entity of which this entity is referenced."
+  parentId: String
+
+  "{field: parent_type} The entity parent type to which this entity is referenced."
+  parentTypeRawField: FieldItemListString
+
+  "{value} {field: parent_type} The entity parent type to which this entity is referenced."
+  parentType: String
+
+  "{field: parent_field_name} The entity parent field name to which this entity is referenced."
+  parentFieldNameRawField: FieldItemListString
+
+  "{value} {field: parent_field_name} The entity parent field name to which this entity is referenced."
+  parentFieldName: String
+
+  "{field: behavior_settings} The behavior plugin settings"
+  behaviorSettingsRawField: FieldItemListStringLong
+
+  "{value} {field: behavior_settings} The behavior plugin settings"
+  behaviorSettings: String
+
+  "{field: default_langcode} A flag indicating whether this is the default translation."
+  defaultLangcodeRawField: FieldItemListBoolean
+
+  "{value} {field: default_langcode} A flag indicating whether this is the default translation."
+  defaultLangcode: Boolean
+
+  "{field: field_paragraphs} The images, titles and texts that the composition places in its markup."
+  fieldParagraphsRawField: FieldItemListEntityReferenceRevisions
+
+  "{value} {field: field_paragraphs} The images, titles and texts that the composition places in its markup."
+  fieldParagraphs: [Paragraph]
+
+  "The untyped paragraph options."
+  paragraphsBlokkliOptions: ParagraphsBlokkliOptions
+
+  "The status of the paragraph."
+  isPublished: Boolean
+
+  ""
+  props: Paragraph
+
+  ""
+  paragraphsBlokkliEditContext: ParagraphsBlokkliParagraphEditContext
+
+  "Whether the paragraph should be rendered."
+  paragraphsBlokkliIsVisible: Boolean!
+
+  ""
+  id: String
+
+  "The unique UUID."
+  uuid: String!
+
+  "The label of this entity."
+  label: String
+
+  "The langcode of this entity."
+  langcode: String
+
+  "The bundle ID of the entity."
+  entityBundle: String!
+
+  "The entity type ID."
+  entityTypeId: String!
+
+  "Determines whether the entity is new."
+  isNew: Boolean!
+
+  "Check entity access for the given operation, defaults to view."
+  accessCheck(operation: String): Boolean!
+
+  "The revision identifier of the entity, or NULL if the entity does not have a revision identifier."
+  entityRevisionId: String
+
+  "TRUE if the entity object was a revision, FALSE otherwise."
+  wasDefaultRevision: Boolean
+
+  "Checks if this entity is the latest revision."
+  isLatestRevision: Boolean
+}
+
 "Contact {entity_type: paragraph, bundle: contact}"
 type ParagraphContact implements Paragraph & Entity & EntityRevisionable {
   "{field: status} "
@@ -6078,18 +6177,6 @@ type Query {
   currentUser: User
 }
 
-"Interface for an URL."
-interface Url {
-  ""
-  path: String
-}
-
-""
-type DefaultUrl implements Url {
-  ""
-  path: String
-}
-
 ""
 type Mutation {
   ""
@@ -6223,6 +6310,18 @@ type Mutation {
   pbUploadToken: String
 
   paragraphsBlokkliTemplateDelete(uuid: String!): ParagraphsBlokkliMutationResult!
+}
+
+"Interface for an URL."
+interface Url {
+  ""
+  path: String
+}
+
+""
+type DefaultUrl implements Url {
+  ""
+  path: String
 }
 
 "The point of an image that crops keep in view, set by its editors."
@@ -6611,43 +6710,25 @@ type ParagraphsBlokkliTranslationResult {
 
 ""
 type ParagraphsEditMutationState {
-  "Adds a new paragraph of type Video (Remote)."
-  add_video_remote(
-    "The video URL."
-    url: String!
-
-    "The entity type of the target host."
-    hostType: String!
-
-    "The UUID of the target host."
-    hostUuid: String!
-
-    "The field name of the target host."
-    hostFieldName: String!
-
-    "The UUID of the paragraph after which to add this one."
-    afterUuid: String
-
-    "The paragraph bundle to use (optional)."
-    paragraphBundle: String
-  ): ParagraphsBlokkliMutationResult
-
-  "Replace referenced media."
-  replace_media(
-    "The UUID of the paragraph."
+  "Sets a composition's source and its children."
+  update_composition(
+    "The UUID of the composition."
     uuid: String!
 
-    "The langcode."
-    langcode: String!
+    "The language of the children's texts."
+    langcode: String
 
-    "The name of the field."
+    "The option that holds the source."
+    optionKey: String!
+
+    "The option's value."
+    value: String!
+
+    "The field of the children."
     fieldName: String!
 
-    "The new media ID."
-    mediaId: String!
-
-    "Whether to replace the media in every translation of the paragraph, if the field is translatable."
-    allLanguages: Boolean
+    "The children as JSON: uuid, bundle, values and options of each."
+    children: String!
   ): ParagraphsBlokkliMutationResult
 
   "Adds a new paragraph with the pasted text."
@@ -6671,27 +6752,24 @@ type ParagraphsEditMutationState {
     bundle: String
   ): ParagraphsBlokkliMutationResult
 
-  "Adds multiple paragraphs at once."
-  add_multiple(
-    "Array of paragraphs with uuid, bundle and optional values."
-    items: [ParagraphsBlokkliAddMultipleItemInput]!
+  "Copies all paragraphs from an existing entity."
+  copy_from_existing(
+    "The UUID of the entity from which to copy the paragraphs."
+    sourceUuid: String!
 
-    "The entity type of the target host."
-    hostType: String!
-
-    "The UUID of the target host."
-    hostUuid: String!
-
-    "The field name of the target host."
-    hostFieldName: String!
-
-    "The UUID of the paragraph after which to add these."
-    afterUuid: String
+    "The names of the fields to copy."
+    fields: [String]!
   ): ParagraphsBlokkliMutationResult
 
-  "Move multiple paragraphs to another position."
-  move_multiple(
-    "The UUIDs of the paragraphs being moved."
+  "Updates multiple options of the host."
+  update_host_options(
+    "A list of arrays with keys: key and value."
+    items: [ParagraphsBlokkliUpdateHostOptionsInput]!
+  ): ParagraphsBlokkliMutationResult
+
+  "Rearrange paragraphs within a field."
+  rearrange(
+    "The UUIDs defining the new order."
     uuids: [String]!
 
     "The entity type of the target host."
@@ -6702,15 +6780,30 @@ type ParagraphsEditMutationState {
 
     "The field name of the target host."
     hostFieldName: String!
-
-    "The UUID of the preceeding paragraph."
-    afterUuid: String
   ): ParagraphsBlokkliMutationResult
 
-  "Adds a new paragraph of type video for an ID"
-  add_media_video_reference(
-    "The ID of the media video."
-    id: String!
+  "Marks a specific translation of one or more paragraphs as no longer outdated."
+  clear_outdated_translation(
+    "The UUIDs of the paragraphs."
+    uuids: [String]!
+
+    "The langcode of the translation to clear."
+    langcode: String!
+  ): ParagraphsBlokkliMutationResult
+
+  "Updates multiple field values across different translations on paragraphs and/or the host entity."
+  bulk_translate_field_values(
+    "A list of arrays with keys: uuid, name, value, langcode."
+    items: [ParagraphsBlokkliBulkTranslateFieldValuesInput]!
+
+    "Whether to mark translations as no longer outdated."
+    clearOutdated: Boolean
+  ): ParagraphsBlokkliMutationResult
+
+  "Imports paragraphs from a portable JSON envelope (cross-page or cross-environment paste)."
+  import(
+    "The JSON-encoded transferable payload, as returned by paragraphsBlokkliExportParagraphs.transferable."
+    transferable: String!
 
     "The entity type of the target host."
     hostType: String!
@@ -6721,92 +6814,8 @@ type ParagraphsEditMutationState {
     "The field name of the target host."
     hostFieldName: String!
 
-    "The UUID of the paragraph after which to add this one."
+    "The UUID of the paragraph after which to insert."
     afterUuid: String
-
-    "The paragraph bundle to use (optional)."
-    paragraphBundle: String
-  ): ParagraphsBlokkliMutationResult
-
-  "Updates multiple behavior settings."
-  bulk_update_behavior_settings(
-    "A list of arrays with keys: uuid, pluginId, key, value."
-    items: [ParagraphsBlokkliBulkUpdateBehaviorSettingsInput]!
-  ): ParagraphsBlokkliMutationResult
-
-  "Adds a new paragraph of type image for an ID"
-  add_media_image_reference(
-    "The ID of the media image."
-    id: String!
-
-    "The entity type of the target host."
-    hostType: String!
-
-    "The UUID of the target host."
-    hostUuid: String!
-
-    "The field name of the target host."
-    hostFieldName: String!
-
-    "The UUID of the paragraph after which to add this one."
-    afterUuid: String
-
-    "The paragraph bundle to use (optional)."
-    paragraphBundle: String
-  ): ParagraphsBlokkliMutationResult
-
-  "Translate multiple paragraphs."
-  translate_multiple: ParagraphsBlokkliMutationResult
-
-  "Remove one or more identifiers from the ignored analyze list."
-  unignore_analyze(
-    "The analyze identifiers to unignore."
-    ids: [String]!
-  ): ParagraphsBlokkliMutationResult
-
-  "Swap the positions of two paragraphs."
-  swap(
-    "The UUID of the first paragraph to swap."
-    uuid1: String!
-
-    "The UUID of the second paragraph to swap."
-    uuid2: String!
-  ): ParagraphsBlokkliMutationResult
-
-  "Updates multiple field values on paragraphs and/or the host entity."
-  bulk_update_field_values(
-    "The langcode."
-    langcode: String!
-
-    "A list of arrays with keys: uuid, name, value."
-    items: [ParagraphsBlokkliBulkUpdateFieldValuesInput]!
-  ): ParagraphsBlokkliMutationResult
-
-  "Atomically replace the items of a droppable (reference) field on a paragraph or the host entity with the given ordered list of entity IDs."
-  update_droppable_field(
-    "The UUID of the paragraph. Omit to target a field on the host entity."
-    paragraphUuid: String
-
-    "The name of the droppable field."
-    fieldName: String!
-
-    "The new ordered list of referenced entity IDs."
-    itemIds: [String]!
-  ): ParagraphsBlokkliMutationResult
-
-  "Replace referenced media."
-  replace_host_entity_media(
-    "The langcode."
-    langcode: String!
-
-    "The name of the field."
-    fieldName: String!
-
-    "The new media ID."
-    mediaId: String!
-
-    "Whether to replace the media in every translation of the host entity, if the field is translatable."
-    allLanguages: Boolean
   ): ParagraphsBlokkliMutationResult
 
   "Duplicates multiple paragraphs, in place or into another field."
@@ -6827,61 +6836,100 @@ type ParagraphsEditMutationState {
     hostFieldName: String
   ): ParagraphsBlokkliMutationResult
 
-  "Update a single field value on the host entity."
-  update_host_entity_field_value(
+  "Handles file upload, creating a media entity and adding a matching paragraph."
+  add_file(
+    "The base64 encoded file data."
+    data: String!
+
+    "The name of the file."
+    fileName: String!
+
+    "The entity type of the target host."
+    hostType: String!
+
+    "The UUID of the target host."
+    hostUuid: String!
+
+    "The field name of the target host."
+    hostFieldName: String!
+
+    "The UUID of the paragraph after which to add this one."
+    afterUuid: String
+
+    "The paragraph bundle to use."
+    paragraphBundle: String
+  ): ParagraphsBlokkliMutationResult
+
+  "Remove a paragraph."
+  remove(
+    "The UUID of the paragraph being removed."
+    uuid: String!
+  ): ParagraphsBlokkliMutationResult
+
+  "Detaches reusable paragraphs."
+  detach_reusable(
+    "The paragraphs to detach."
+    uuids: [String]!
+  ): ParagraphsBlokkliMutationResult
+
+  "Adds a new paragraph of type Video (Remote)."
+  add_video_remote(
+    "The video URL."
+    url: String!
+
+    "The entity type of the target host."
+    hostType: String!
+
+    "The UUID of the target host."
+    hostUuid: String!
+
+    "The field name of the target host."
+    hostFieldName: String!
+
+    "The UUID of the paragraph after which to add this one."
+    afterUuid: String
+
+    "The paragraph bundle to use (optional)."
+    paragraphBundle: String
+  ): ParagraphsBlokkliMutationResult
+
+  "Swap the positions of two paragraphs."
+  swap(
+    "The UUID of the first paragraph to swap."
+    uuid1: String!
+
+    "The UUID of the second paragraph to swap."
+    uuid2: String!
+  ): ParagraphsBlokkliMutationResult
+
+  "Replaces the entity reference on an existing paragraph."
+  replace_entity_reference(
+    "The UUID of the paragraph."
+    uuid: String!
+
+    "The entity type of the referenced entity."
+    targetType: String!
+
+    "The entity bundle of the referenced entity."
+    targetBundle: String!
+
+    "The ID of the referenced entity."
+    targetId: String!
+
+    "The specific paragraph field to update."
+    fieldName: String
+
+    "Whether to replace the reference in every translation of the paragraph, if the field is translatable."
+    allLanguages: Boolean
+  ): ParagraphsBlokkliMutationResult
+
+  "Edit a paragraph."
+  edit(
+    "The UUID of the paragraph being edited."
+    uuid: String!
+
     "The langcode."
     langcode: String!
-
-    "The name of the field."
-    fieldName: String!
-
-    "The updated field value."
-    value: String!
-  ): ParagraphsBlokkliMutationResult
-
-  "Adds a new paragraph."
-  add(
-    "The paragraph type."
-    type: String!
-
-    "The entity type of the target host."
-    hostType: String!
-
-    "The UUID of the target host."
-    hostUuid: String!
-
-    "The field name of the target host."
-    hostFieldName: String!
-
-    "The UUID of the paragraph after which to add this one."
-    afterUuid: String
-
-    "The UUID to use for the new paragraph."
-    paragraphUuid: String
-  ): ParagraphsBlokkliMutationResult
-
-  "Updates multiple options of the host."
-  update_host_options(
-    "A list of arrays with keys: key and value."
-    items: [ParagraphsBlokkliUpdateHostOptionsInput]!
-  ): ParagraphsBlokkliMutationResult
-
-  "Add a reusable paragraph."
-  add_reusable(
-    "The UUID of the paragraphs library item entity."
-    libraryItemUuid: String!
-
-    "The entity type of the target host."
-    hostType: String!
-
-    "The UUID of the target host."
-    hostUuid: String!
-
-    "The field name of the target host."
-    hostFieldName: String!
-
-    "The UUID of the paragraph after which to add this one."
-    afterUuid: String
   ): ParagraphsBlokkliMutationResult
 
   "Update a single field value of a paragraph."
@@ -6899,100 +6947,10 @@ type ParagraphsEditMutationState {
     value: String!
   ): ParagraphsBlokkliMutationResult
 
-  "Rearrange paragraphs within a field."
-  rearrange(
-    "The UUIDs defining the new order."
-    uuids: [String]!
-
-    "The entity type of the target host."
-    hostType: String!
-
-    "The UUID of the target host."
-    hostUuid: String!
-
-    "The field name of the target host."
-    hostFieldName: String!
-  ): ParagraphsBlokkliMutationResult
-
-  "PMove a paragraph to another position."
-  move(
-    "The UUID of the paragraph being moved."
-    uuid: String!
-
-    "The entity type of the target host."
-    hostType: String!
-
-    "The UUID of the target host."
-    hostUuid: String!
-
-    "The field name of the target host."
-    hostFieldName: String!
-
-    "The UUID of the preceeding paragraph."
-    afterUuid: String
-  ): ParagraphsBlokkliMutationResult
-
-  "Adds a new paragraph for the given entity reference."
-  add_entity_reference(
-    "The entity type of the referenced entity."
-    targetType: String!
-
-    "The entity bundle of the referenced entity."
-    targetBundle: String!
-
-    "The ID of the referenced entity."
-    targetId: String!
-
-    "The paragraph bundle."
-    paragraphBundle: String!
-
-    "The entity type of the target host."
-    hostType: String!
-
-    "The UUID of the target host."
-    hostUuid: String!
-
-    "The field name of the target host."
-    hostFieldName: String!
-
-    "The UUID of the paragraph after which to add this one."
-    afterUuid: String
-  ): ParagraphsBlokkliMutationResult
-
-  "Ignore one or more analyze identifiers."
-  ignore_analyze(
-    "The analyze identifiers to ignore."
+  "Remove one or more identifiers from the ignored analyze list."
+  unignore_analyze(
+    "The analyze identifiers to unignore."
     ids: [String]!
-  ): ParagraphsBlokkliMutationResult
-
-  "Edit a paragraph."
-  edit(
-    "The UUID of the paragraph being edited."
-    uuid: String!
-
-    "The langcode."
-    langcode: String!
-  ): ParagraphsBlokkliMutationResult
-
-  "Remove a paragraph."
-  remove(
-    "The UUID of the paragraph being removed."
-    uuid: String!
-  ): ParagraphsBlokkliMutationResult
-
-  "Marks a specific translation of one or more paragraphs as no longer outdated."
-  clear_outdated_translation(
-    "The UUIDs of the paragraphs."
-    uuids: [String]!
-
-    "The langcode of the translation to clear."
-    langcode: String!
-  ): ParagraphsBlokkliMutationResult
-
-  "Remove multiple paragraphs."
-  remove_multiple(
-    "The UUIDs of the paragraphs being removed."
-    uuids: [String]!
   ): ParagraphsBlokkliMutationResult
 
   "Adds a new text paragraph."
@@ -7022,35 +6980,44 @@ type ParagraphsEditMutationState {
     afterUuid: String
   ): ParagraphsBlokkliMutationResult
 
-  "Duplicates an existing paragraph."
-  duplicate(
-    "The UUID of the paragraph being duplicated."
-    uuid: String!
+  "Update a single field value on the host entity."
+  update_host_entity_field_value(
+    "The langcode."
+    langcode: String!
 
-    "The UUID of the paragraph after which to duplicate this one."
-    afterUuid: String
-  ): ParagraphsBlokkliMutationResult
+    "The name of the field."
+    fieldName: String!
 
-  "Updates a single behavior setting."
-  update_behavior_setting(
-    "The UUID of the paragraph to update the option of."
-    uuid: String!
-
-    "The plugin ID of the setting."
-    pluginId: String!
-
-    "The key of the setting."
-    key: String!
-
-    "The value of the setting."
+    "The updated field value."
     value: String!
   ): ParagraphsBlokkliMutationResult
 
-  "Replaces the entity reference on an existing paragraph."
-  replace_entity_reference(
-    "The UUID of the paragraph."
-    uuid: String!
+  "Ignore one or more analyze identifiers."
+  ignore_analyze(
+    "The analyze identifiers to ignore."
+    ids: [String]!
+  ): ParagraphsBlokkliMutationResult
 
+  "Adds new paragraphs for the given entity references."
+  add_entity_reference_multiple(
+    "The entity references."
+    references: [ParagraphsBlokkliAddEntityReferenceMultipleInput]!
+
+    "The entity type of the target host."
+    hostType: String!
+
+    "The UUID of the target host."
+    hostUuid: String!
+
+    "The field name of the target host."
+    hostFieldName: String!
+
+    "The UUID of the paragraph after which to add this one."
+    afterUuid: String
+  ): ParagraphsBlokkliMutationResult
+
+  "Adds a new paragraph for the given entity reference."
+  add_entity_reference(
     "The entity type of the referenced entity."
     targetType: String!
 
@@ -7060,23 +7027,8 @@ type ParagraphsEditMutationState {
     "The ID of the referenced entity."
     targetId: String!
 
-    "The specific paragraph field to update."
-    fieldName: String
-
-    "Whether to replace the reference in every translation of the paragraph, if the field is translatable."
-    allLanguages: Boolean
-  ): ParagraphsBlokkliMutationResult
-
-  "Detaches reusable paragraphs."
-  detach_reusable(
-    "The paragraphs to detach."
-    uuids: [String]!
-  ): ParagraphsBlokkliMutationResult
-
-  "Adds new paragraphs for the given entity references."
-  add_entity_reference_multiple(
-    "The entity references."
-    references: [ParagraphsBlokkliAddEntityReferenceMultipleInput]!
+    "The paragraph bundle."
+    paragraphBundle: String!
 
     "The entity type of the target host."
     hostType: String!
@@ -7115,40 +7067,49 @@ type ParagraphsEditMutationState {
     paragraphBundle: String
   ): ParagraphsBlokkliMutationResult
 
-  "Updates multiple field values across different translations on paragraphs and/or the host entity."
-  bulk_translate_field_values(
-    "A list of arrays with keys: uuid, name, value, langcode."
-    items: [ParagraphsBlokkliBulkTranslateFieldValuesInput]!
+  "Replace referenced media."
+  replace_host_entity_media(
+    "The langcode."
+    langcode: String!
 
-    "Whether to mark translations as no longer outdated."
-    clearOutdated: Boolean
+    "The name of the field."
+    fieldName: String!
+
+    "The new media ID."
+    mediaId: String!
+
+    "Whether to replace the media in every translation of the host entity, if the field is translatable."
+    allLanguages: Boolean
   ): ParagraphsBlokkliMutationResult
 
-  "Makes a paragraph reusable."
-  make_reusable(
-    "The paragraph to make reusable."
+  "Updates a single behavior setting."
+  update_behavior_setting(
+    "The UUID of the paragraph to update the option of."
     uuid: String!
 
-    "The label for the reusable paragraph."
-    label: String!
+    "The plugin ID of the setting."
+    pluginId: String!
+
+    "The key of the setting."
+    key: String!
+
+    "The value of the setting."
+    value: String!
   ): ParagraphsBlokkliMutationResult
 
-  "Copies all paragraphs from an existing entity."
-  copy_from_existing(
-    "The UUID of the entity from which to copy the paragraphs."
-    sourceUuid: String!
+  "Duplicates an existing paragraph."
+  duplicate(
+    "The UUID of the paragraph being duplicated."
+    uuid: String!
 
-    "The names of the fields to copy."
-    fields: [String]!
+    "The UUID of the paragraph after which to duplicate this one."
+    afterUuid: String
   ): ParagraphsBlokkliMutationResult
 
-  "Handles file upload, creating a media entity and adding a matching paragraph."
-  add_file(
-    "The base64 encoded file data."
-    data: String!
-
-    "The name of the file."
-    fileName: String!
+  "Adds a new paragraph of type image for an ID"
+  add_media_image_reference(
+    "The ID of the media image."
+    id: String!
 
     "The entity type of the target host."
     hostType: String!
@@ -7162,14 +7123,14 @@ type ParagraphsEditMutationState {
     "The UUID of the paragraph after which to add this one."
     afterUuid: String
 
-    "The paragraph bundle to use."
+    "The paragraph bundle to use (optional)."
     paragraphBundle: String
   ): ParagraphsBlokkliMutationResult
 
-  "Imports paragraphs from a portable JSON envelope (cross-page or cross-environment paste)."
-  import(
-    "The JSON-encoded transferable payload, as returned by paragraphsBlokkliExportParagraphs.transferable."
-    transferable: String!
+  "Add a reusable paragraph."
+  add_reusable(
+    "The UUID of the paragraphs library item entity."
+    libraryItemUuid: String!
 
     "The entity type of the target host."
     hostType: String!
@@ -7180,23 +7141,182 @@ type ParagraphsEditMutationState {
     "The field name of the target host."
     hostFieldName: String!
 
-    "The UUID of the paragraph after which to insert."
+    "The UUID of the paragraph after which to add this one."
     afterUuid: String
   ): ParagraphsBlokkliMutationResult
 
-  "Converts existing paragraphs to another type."
-  convert_multiple(
-    "The UUIDs of the paragraphs being converted."
+  "PMove a paragraph to another position."
+  move(
+    "The UUID of the paragraph being moved."
+    uuid: String!
+
+    "The entity type of the target host."
+    hostType: String!
+
+    "The UUID of the target host."
+    hostUuid: String!
+
+    "The field name of the target host."
+    hostFieldName: String!
+
+    "The UUID of the preceeding paragraph."
+    afterUuid: String
+  ): ParagraphsBlokkliMutationResult
+
+  "Atomically replace the items of a droppable (reference) field on a paragraph or the host entity with the given ordered list of entity IDs."
+  update_droppable_field(
+    "The UUID of the paragraph. Omit to target a field on the host entity."
+    paragraphUuid: String
+
+    "The name of the droppable field."
+    fieldName: String!
+
+    "The new ordered list of referenced entity IDs."
+    itemIds: [String]!
+  ): ParagraphsBlokkliMutationResult
+
+  "Adds multiple paragraphs at once."
+  add_multiple(
+    "Array of paragraphs with uuid, bundle and optional values."
+    items: [ParagraphsBlokkliAddMultipleItemInput]!
+
+    "The entity type of the target host."
+    hostType: String!
+
+    "The UUID of the target host."
+    hostUuid: String!
+
+    "The field name of the target host."
+    hostFieldName: String!
+
+    "The UUID of the paragraph after which to add these."
+    afterUuid: String
+  ): ParagraphsBlokkliMutationResult
+
+  "Remove multiple paragraphs."
+  remove_multiple(
+    "The UUIDs of the paragraphs being removed."
+    uuids: [String]!
+  ): ParagraphsBlokkliMutationResult
+
+  "Adds a new paragraph of type video for an ID"
+  add_media_video_reference(
+    "The ID of the media video."
+    id: String!
+
+    "The entity type of the target host."
+    hostType: String!
+
+    "The UUID of the target host."
+    hostUuid: String!
+
+    "The field name of the target host."
+    hostFieldName: String!
+
+    "The UUID of the paragraph after which to add this one."
+    afterUuid: String
+
+    "The paragraph bundle to use (optional)."
+    paragraphBundle: String
+  ): ParagraphsBlokkliMutationResult
+
+  "Makes a paragraph reusable."
+  make_reusable(
+    "The paragraph to make reusable."
+    uuid: String!
+
+    "The label for the reusable paragraph."
+    label: String!
+  ): ParagraphsBlokkliMutationResult
+
+  "Move multiple paragraphs to another position."
+  move_multiple(
+    "The UUIDs of the paragraphs being moved."
     uuids: [String]!
 
-    "The bundle to which the paragraph should be converted."
-    targetBundle: String!
+    "The entity type of the target host."
+    hostType: String!
+
+    "The UUID of the target host."
+    hostUuid: String!
+
+    "The field name of the target host."
+    hostFieldName: String!
+
+    "The UUID of the preceeding paragraph."
+    afterUuid: String
+  ): ParagraphsBlokkliMutationResult
+
+  "Updates multiple behavior settings."
+  bulk_update_behavior_settings(
+    "A list of arrays with keys: uuid, pluginId, key, value."
+    items: [ParagraphsBlokkliBulkUpdateBehaviorSettingsInput]!
+  ): ParagraphsBlokkliMutationResult
+
+  "Translate multiple paragraphs."
+  translate_multiple: ParagraphsBlokkliMutationResult
+
+  "Replace referenced media."
+  replace_media(
+    "The UUID of the paragraph."
+    uuid: String!
+
+    "The langcode."
+    langcode: String!
+
+    "The name of the field."
+    fieldName: String!
+
+    "The new media ID."
+    mediaId: String!
+
+    "Whether to replace the media in every translation of the paragraph, if the field is translatable."
+    allLanguages: Boolean
+  ): ParagraphsBlokkliMutationResult
+
+  "Adds a new paragraph."
+  add(
+    "The paragraph type."
+    type: String!
+
+    "The entity type of the target host."
+    hostType: String!
+
+    "The UUID of the target host."
+    hostUuid: String!
+
+    "The field name of the target host."
+    hostFieldName: String!
+
+    "The UUID of the paragraph after which to add this one."
+    afterUuid: String
+
+    "The UUID to use for the new paragraph."
+    paragraphUuid: String
+  ): ParagraphsBlokkliMutationResult
+
+  "Updates multiple field values on paragraphs and/or the host entity."
+  bulk_update_field_values(
+    "The langcode."
+    langcode: String!
+
+    "A list of arrays with keys: uuid, name, value."
+    items: [ParagraphsBlokkliBulkUpdateFieldValuesInput]!
   ): ParagraphsBlokkliMutationResult
 
   "Converts an existing paragraph to another type."
   convert(
     "The UUID of the paragraph being converted."
     uuid: String!
+
+    "The bundle to which the paragraph should be converted."
+    targetBundle: String!
+  ): ParagraphsBlokkliMutationResult
+
+  "Converts existing paragraphs to another type."
+  convert_multiple(
+    "The UUIDs of the paragraphs being converted."
+    uuids: [String]!
 
     "The bundle to which the paragraph should be converted."
     targetBundle: String!
@@ -8738,6 +8858,9 @@ type TextsLoader {
   getTextMultiple(texts: [TextsInput]): [TextsInterface]
 }
 
+"Generic type for untyped values."
+scalar MapData
+
 input UrlOptions {
   "Force generating the URL in the given langcode."
   language: Langcode
@@ -8748,9 +8871,6 @@ input UrlOptions {
   "Whether to force the output to be an absolute link (beginning with http:). Useful for links that will be displayed outside the site, such as in an RSS feed."
   absolute: Boolean
 }
-
-"Generic type for untyped values."
-scalar MapData
 
 enum EntityQuerySortOrder {
   ASC
@@ -8883,6 +9003,25 @@ input ParagraphsBlokkliTranslationInput {
   isMarkup: Boolean!
 }
 
+input ParagraphsBlokkliUpdateHostOptionsInput {
+  key: String!
+  value: String!
+}
+
+input ParagraphsBlokkliBulkTranslateFieldValuesInput {
+  uuid: String
+  name: String!
+  value: String!
+  langcode: String!
+}
+
+input ParagraphsBlokkliAddEntityReferenceMultipleInput {
+  targetType: String!
+  targetBundle: String!
+  targetId: String!
+  paragraphBundle: String!
+}
+
 input ParagraphsBlokkliAddMultipleItemInput {
   uuid: String!
   bundle: String!
@@ -8902,25 +9041,6 @@ input ParagraphsBlokkliBulkUpdateFieldValuesInput {
   uuid: String
   name: String!
   value: String!
-}
-
-input ParagraphsBlokkliUpdateHostOptionsInput {
-  key: String!
-  value: String!
-}
-
-input ParagraphsBlokkliAddEntityReferenceMultipleInput {
-  targetType: String!
-  targetBundle: String!
-  targetId: String!
-  paragraphBundle: String!
-}
-
-input ParagraphsBlokkliBulkTranslateFieldValuesInput {
-  uuid: String
-  name: String!
-  value: String!
-  langcode: String!
 }
 
 input ParagraphsBlokkliSetParagraphScheduleInput {

@@ -432,6 +432,14 @@ msgctxt "aiAgentCreateChartRunning"
 msgid "Creating chart"
 msgstr ""
 
+msgctxt "aiAgentCreateCompositionDone"
+msgid "Added composition"
+msgstr ""
+
+msgctxt "aiAgentCreateCompositionRunning"
+msgid "Creating composition"
+msgstr ""
+
 msgctxt "aiAgentCreatePlan"
 msgid "Plan: @label"
 msgstr ""
@@ -510,6 +518,14 @@ msgstr ""
 
 msgctxt "aiAgentDuplicateBlocksToFieldDone"
 msgid "Duplicated @count blocks to @field"
+msgstr ""
+
+msgctxt "aiAgentEditCompositionDone"
+msgid "Edited composition"
+msgstr ""
+
+msgctxt "aiAgentEditCompositionRunning"
+msgid "Editing composition"
 msgstr ""
 
 msgctxt "aiAgentErrorAuthentication"
@@ -666,6 +682,22 @@ msgstr ""
 
 msgctxt "aiAgentGetChildBlocksNone"
 msgid "@bundle has no child fields"
+msgstr ""
+
+msgctxt "aiAgentGetCompositionDone"
+msgid "Read the composition"
+msgstr ""
+
+msgctxt "aiAgentGetCompositionGuideDone"
+msgid "Read the style guide"
+msgstr ""
+
+msgctxt "aiAgentGetCompositionGuideRunning"
+msgid "Reading the style guide"
+msgstr ""
+
+msgctxt "aiAgentGetCompositionRunning"
+msgid "Reading the composition"
 msgstr ""
 
 msgctxt "aiAgentGetContentFieldsDone"
@@ -964,6 +996,14 @@ msgstr ""
 
 msgctxt "aiAgentUpdateChartRunning"
 msgid "Updating chart"
+msgstr ""
+
+msgctxt "aiAgentUpdateCompositionDone"
+msgid "Updated composition"
+msgstr ""
+
+msgctxt "aiAgentUpdateCompositionRunning"
+msgid "Updating composition"
 msgstr ""
 
 msgctxt "aiAgentUpdateOptionsOnBlockDone"
@@ -1351,6 +1391,10 @@ msgstr "Afficher uniquement dans certaines langues."
 msgctxt "blockOption_bkVisibleLanguages_label"
 msgid "Visible languages"
 msgstr "Langues visibles"
+
+msgctxt "blockPlacedByHost"
+msgid "This block stays where the block around it places it."
+msgstr "Ce bloc reste là où le bloc parent le place."
 
 msgctxt "blockSchedulerDialogLead"
 msgid ""
@@ -2274,6 +2318,10 @@ msgstr ""
 
 msgctxt "complexOptionsSaveError"
 msgid "The data could not be saved."
+msgstr ""
+
+msgctxt "compositionEditSourceTitle"
+msgid "Composition (source)"
 msgstr ""
 
 msgctxt "conversionsConvertTo"

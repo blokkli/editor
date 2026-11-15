@@ -1,0 +1,18 @@
+uuid: 2752dfa0-040f-431f-8f4c-1ba613f7d7f2
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs_blokkli
+    - paragraphs_library
+third_party_settings:
+  paragraphs_library:
+    allow_library_conversion: true
+id: composition
+label: Composition
+icon_uuid: null
+icon_default: null
+description: 'A bespoke section built from primitives and design tokens.'
+behavior_plugins:
+  paragraphs_blokkli_data:
+    enabled: true

@@ -32,6 +32,7 @@
   "analyzerReadabiliyOkDescription": "Testo che potrebbe essere più facile da leggere.",
   "analyzerReadabiliyOkTitle": "Il testo potrebbe essere più semplice",
   "apply": "Applica",
+  "blockPlacedByHost": "Questo blocco resta dove lo colloca il blocco padre.",
   "blockSchedulerDialogLeadLanguages": "Pianifica date di pubblicazione e di rimozione automatiche per i blocchi selezionati. Una data impostata qui vale per tutte le lingue.",
   "blockSchedulerDiffersPerLanguage": "Diverso per lingua",
   "blockSchedulerOverrideLanguages": "Imposta la data per tutte le lingue",

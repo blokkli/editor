@@ -224,6 +224,8 @@ schema_configuration:
           enabled: true
         columns:
           enabled: true
+        composition:
+          enabled: true
         contact:
           enabled: true
         embed:

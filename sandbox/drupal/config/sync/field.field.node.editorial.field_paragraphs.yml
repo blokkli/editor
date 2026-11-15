@@ -10,6 +10,7 @@ dependencies:
     - paragraphs.paragraphs_type.call_to_action
     - paragraphs.paragraphs_type.chart
     - paragraphs.paragraphs_type.columns
+    - paragraphs.paragraphs_type.composition
     - paragraphs.paragraphs_type.contact
     - paragraphs.paragraphs_type.embed
     - paragraphs.paragraphs_type.from_library
@@ -47,6 +48,7 @@ settings:
       call_to_action: call_to_action
       chart: chart
       columns: columns
+      composition: composition
       contact: contact
       embed: embed
       from_library: from_library

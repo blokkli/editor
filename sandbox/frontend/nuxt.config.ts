@@ -9,6 +9,7 @@ import { removeSizes } from 'nuxt-svg-icon-sprite/processors'
 import drupal from './../../src/modules/drupal'
 import agent from './../../src/modules/agent'
 import charts from './../../src/modules/charts'
+import composition from './../../src/modules/composition'
 import iframes from './../../src/modules/iframes'
 import readability from './../../src/modules/readability'
 import tableOfContents from './../../src/modules/table-of-contents'
@@ -116,6 +117,8 @@ export default defineNuxtConfig({
     // change.
     '/api/graphql_middleware/**': { security: { xssValidator: false } },
     '/api/blokkli/agent/**': { security: { xssValidator: false } },
+    // A composition's source, which the server compiles and checks.
+    '/api/blokkli/composition/**': { security: { xssValidator: false } },
   },
 
   // Self-hosted fonts: Source Serif 4 with its optical size axis.
@@ -342,6 +345,7 @@ export default defineNuxtConfig({
         ],
       }),
       charts(),
+      composition(),
       tableOfContents(),
       iframes({
         viewports: {

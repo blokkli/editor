@@ -326,6 +326,7 @@
   "blockOption_bkHiddenGlobally_label": "Global verstecke",
   "blockOption_bkVisibleLanguages_description": "Nur uf bestimmte Sproche aazeige.",
   "blockOption_bkVisibleLanguages_label": "Sichtbari Sproche",
+  "blockPlacedByHost": "Dä Block bliibt det, wo ne dä übergeordneti Block platziert.",
   "blockSchedulerDialogLead": "Automatischi Veröffentlichigs- und Depublikationsdate für d'usgwählte Blöck plane.",
   "blockSchedulerDialogLeadLanguages": "Automatischi Veröffentlichigs- und Depublikationsdate für d'usgwählte Blöck plane. Es Datum, wo do gsetzt wird, gilt für alli Sprache.",
   "blockSchedulerDialogPublishOn": "Veröffentliche am",

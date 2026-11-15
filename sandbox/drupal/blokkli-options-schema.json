@@ -248,6 +248,18 @@
       "type": "radios"
     }
   },
+  "composition": {
+    "document": {
+      "dataType": "composition",
+      "default": "{\"version\":2,\"source\":\"\"}",
+      "label": {
+        "de": "Komposition",
+        "en": "Composition",
+        "fr": "Composition"
+      },
+      "type": "json"
+    }
+  },
   "contact": {
     "bkVisibleLanguages": {
       "default": [],

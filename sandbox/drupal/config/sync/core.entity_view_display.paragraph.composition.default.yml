@@ -1,0 +1,15 @@
+uuid: eee65b93-307c-433f-acf2-40f9ffb6f64e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.composition.field_paragraphs
+    - paragraphs.paragraphs_type.composition
+id: paragraph.composition.default
+targetEntityType: paragraph
+bundle: composition
+mode: default
+content: {  }
+hidden:
+  field_paragraphs: true
+  search_api_excerpt: true

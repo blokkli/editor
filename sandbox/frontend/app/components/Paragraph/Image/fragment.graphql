@@ -3,4 +3,24 @@ fragment paragraphImage on ParagraphImage {
     ...mediaImage
   }
   caption: fieldCaption
+  # The sizes for srcset, in a composition (Composition.vue).
+  sources: fieldMedia {
+    image: fieldMediaImage {
+      medium: derivative(style: MEDIUM) {
+        urlPath
+        width
+        height
+      }
+      large: derivative(style: LARGE) {
+        urlPath
+        width
+        height
+      }
+      content: derivative(style: CONTENT) {
+        urlPath
+        width
+        height
+      }
+    }
+  }
 }

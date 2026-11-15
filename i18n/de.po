@@ -445,6 +445,14 @@ msgctxt "aiAgentCreateChartRunning"
 msgid "Creating chart"
 msgstr "Diagramm wird erstellt"
 
+msgctxt "aiAgentCreateCompositionDone"
+msgid "Added composition"
+msgstr ""
+
+msgctxt "aiAgentCreateCompositionRunning"
+msgid "Creating composition"
+msgstr ""
+
 msgctxt "aiAgentCreatePlan"
 msgid "Plan: @label"
 msgstr "Plan: @label"
@@ -524,6 +532,14 @@ msgstr "Blöcke duplizieren"
 msgctxt "aiAgentDuplicateBlocksToFieldDone"
 msgid "Duplicated @count blocks to @field"
 msgstr "@count Blöcke nach @field dupliziert"
+
+msgctxt "aiAgentEditCompositionDone"
+msgid "Edited composition"
+msgstr ""
+
+msgctxt "aiAgentEditCompositionRunning"
+msgid "Editing composition"
+msgstr ""
 
 msgctxt "aiAgentErrorAuthentication"
 msgid "API authentication failed. Please check your API key."
@@ -688,6 +704,22 @@ msgstr "Kind-Blöcke von @bundle abgerufen"
 msgctxt "aiAgentGetChildBlocksNone"
 msgid "@bundle has no child fields"
 msgstr "@bundle hat keine Kind-Felder"
+
+msgctxt "aiAgentGetCompositionDone"
+msgid "Read the composition"
+msgstr ""
+
+msgctxt "aiAgentGetCompositionGuideDone"
+msgid "Read the style guide"
+msgstr ""
+
+msgctxt "aiAgentGetCompositionGuideRunning"
+msgid "Reading the style guide"
+msgstr ""
+
+msgctxt "aiAgentGetCompositionRunning"
+msgid "Reading the composition"
+msgstr ""
 
 msgctxt "aiAgentGetContentFieldsDone"
 msgid "Got content fields of @bundle block"
@@ -988,6 +1020,14 @@ msgstr "Diagramm aktualisiert"
 msgctxt "aiAgentUpdateChartRunning"
 msgid "Updating chart"
 msgstr "Diagramm wird aktualisiert"
+
+msgctxt "aiAgentUpdateCompositionDone"
+msgid "Updated composition"
+msgstr ""
+
+msgctxt "aiAgentUpdateCompositionRunning"
+msgid "Updating composition"
+msgstr ""
 
 msgctxt "aiAgentUpdateOptionsOnBlockDone"
 msgid "Updated @count option(s) on block"
@@ -1399,6 +1439,10 @@ msgstr "Nur in bestimmten Sprachen anzeigen."
 msgctxt "blockOption_bkVisibleLanguages_label"
 msgid "Visible languages"
 msgstr "Sichtbare Sprachen"
+
+msgctxt "blockPlacedByHost"
+msgid "This block stays where the block around it places it."
+msgstr "Dieser Block bleibt, wo ihn der übergeordnete Block platziert."
 
 msgctxt "blockSchedulerDialogLead"
 msgid ""
@@ -2371,6 +2415,10 @@ msgstr "Zeigt alle Kommentare auf der aktuellen Seite an."
 msgctxt "complexOptionsSaveError"
 msgid "The data could not be saved."
 msgstr "Die Daten konnten nicht gespeichert werden."
+
+msgctxt "compositionEditSourceTitle"
+msgid "Composition (source)"
+msgstr ""
 
 msgctxt "conversionsConvertTo"
 msgid "Convert to: @bundle"

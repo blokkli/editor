@@ -14,6 +14,7 @@ export type TemplateDependency =
   | 'agent-prompts'
   | 'module-css'
   | 'chart-types'
+  | 'composition-primitives'
 
 /**
  * Where the template should be available:

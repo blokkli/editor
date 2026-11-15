@@ -1,4 +1,7 @@
 @import 'tailwindcss';
+/* The compositions' primitives, and every class a composition can render
+   (written by the composition module). */
+@source '../../../blokkli/composition';
 
 /*
  * The design system of Blockingen / Bloquens, shown at /<lang>/design-system.
@@ -9,7 +12,9 @@
  * would win over this theme while editing. For the same reason, templates use
  * no tracking-* or leading-* utilities: the text tokens carry both.
  */
-@theme {
+/* static: every variable is emitted, also the ones no class uses. The
+   compositions' CSS uses them (blokkli/composition/tokens.ts). */
+@theme static {
   /* The resets come first: a reset also removes what's declared before it. */
   --color-*: initial;
   --text-*: initial;

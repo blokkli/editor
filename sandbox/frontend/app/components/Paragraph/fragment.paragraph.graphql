@@ -7,6 +7,7 @@ fragment paragraph on Paragraph {
   ...paragraphAccordion
   ...paragraphColumns
   ...paragraphStory
+  ...paragraphComposition
   ...paragraphFromLibrary
   ...paragraphBlokkliFragment
   ...paragraphStep

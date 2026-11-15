@@ -31,6 +31,7 @@ permissions:
   - 'view paragraph content call_to_action'
   - 'view paragraph content chart'
   - 'view paragraph content columns'
+  - 'view paragraph content composition'
   - 'view paragraph content contact'
   - 'view paragraph content embed'
   - 'view paragraph content from_library'

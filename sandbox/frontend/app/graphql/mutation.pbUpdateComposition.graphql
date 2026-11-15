@@ -1,0 +1,30 @@
+# A composition's whole state: its source and the paragraphs it places
+# (blokkli_playground's update_composition mutation). The children's texts are
+# written in the editor's language.
+mutation pbUpdateComposition(
+  $entityType: EntityType!
+  $entityUuid: String!
+  $langcode: String!
+  $uuid: String!
+  $optionKey: String!
+  $value: String!
+  $fieldName: String!
+  $children: String!
+) {
+  state: paragraphsEditMutationState(
+    entityType: $entityType
+    entityUuid: $entityUuid
+    langcode: $langcode
+  ) {
+    action: update_composition(
+      uuid: $uuid
+      langcode: $langcode
+      optionKey: $optionKey
+      value: $value
+      fieldName: $fieldName
+      children: $children
+    ) {
+      ...paragraphsBlokkliMutationResult
+    }
+  }
+}

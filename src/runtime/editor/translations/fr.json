@@ -36,6 +36,7 @@
   "blockOption_bkHiddenGlobally_label": "Masquer partout",
   "blockOption_bkVisibleLanguages_description": "Afficher uniquement dans certaines langues.",
   "blockOption_bkVisibleLanguages_label": "Langues visibles",
+  "blockPlacedByHost": "Ce bloc reste là où le bloc parent le place.",
   "blockSchedulerDialogLeadLanguages": "Planifiez des dates de publication et de dépublication automatiques pour les blocs sélectionnés. Une date définie ici s'applique à toutes les langues.",
   "blockSchedulerDiffersPerLanguage": "Diffère selon la langue",
   "blockSchedulerOverrideLanguages": "Définir la date pour toutes les langues",

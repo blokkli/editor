@@ -1,0 +1,10 @@
+fragment paragraphComposition on ParagraphComposition {
+  paragraphs: fieldParagraphs {
+    ...paragraphsFieldItem
+    props {
+      ...paragraphImage
+      ...paragraphTitle
+      ...paragraphText
+    }
+  }
+}
