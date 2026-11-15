@@ -185,6 +185,7 @@ const data = computed<RegisterFieldData>(() => {
     dropAlignment: props.dropAlignment ?? null,
     zIndex: Number.isNaN(zIndex) ? 0 : zIndex,
     isPager: false,
+    hostPlacesBlocks: false,
   }
 })
 

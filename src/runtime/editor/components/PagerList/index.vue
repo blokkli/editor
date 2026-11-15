@@ -195,6 +195,7 @@ onMounted(() => {
       // The pages are always a row.
       dropAlignment: null,
       isPager: true,
+      hostPlacesBlocks: false,
     })
   }
 })

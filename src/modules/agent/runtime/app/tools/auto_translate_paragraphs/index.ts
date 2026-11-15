@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import {
   requireBundlePermission,
-  requireCanChangeBlockField,
+  requireCanChangeBlockContent,
 } from '../../helpers/validation'
 import { onlyUnique } from '#blokkli/helpers'
 import { fieldDiffResultSchema, stringArrayParam } from '../schemas'
@@ -93,7 +93,7 @@ export default defineBlokkliAgentTool({
       if (denied) return denied
     }
 
-    const ancestorDenied = requireCanChangeBlockField(ctx.app, keptUuids)
+    const ancestorDenied = requireCanChangeBlockContent(ctx.app, keptUuids)
     if (ancestorDenied) return ancestorDenied
 
     return {

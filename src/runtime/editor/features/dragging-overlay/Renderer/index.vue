@@ -740,7 +740,8 @@ const buildFieldRect = (key: string): FieldRect | undefined => {
     return
   }
   const field = fields.find(uuid, name)
-  if (!field) {
+  // A field whose host places its blocks has no place between them.
+  if (!field || field.hostPlacesBlocks) {
     return
   }
 

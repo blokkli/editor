@@ -64,6 +64,13 @@ const duplicateDisabledReason = computed<false | string>(() => {
 
   const selected = selection.items.value
 
+  if (selected.some((item) => permissions.isBlockPlacedByHost(item.uuid))) {
+    return $t(
+      'blockPlacedByHost',
+      'This block stays where the block around it places it.',
+    )
+  }
+
   // Check add permission.
   const denied = permissions.filterDeniedBundles(
     selected.map((v) => v.bundle),

@@ -4,7 +4,7 @@ import { readAgentFieldValue, resolveHost } from '../helpers'
 import { runReadabilityAnalysis } from '../readability'
 import {
   requireBundlePermission,
-  requireCanChangeBlockField,
+  requireCanChangeBlockContent,
 } from '../../helpers/validation'
 import { onlyUnique } from '#blokkli/helpers'
 import { fieldDiffResultSchema } from '../schemas'
@@ -137,7 +137,7 @@ export default defineBlokkliAgentTool({
       .filter((uuid) => uuid !== context.value.entityUuid)
       .filter(onlyUnique)
     if (blockUuids.length) {
-      const ancestorDenied = requireCanChangeBlockField(ctx.app, blockUuids)
+      const ancestorDenied = requireCanChangeBlockContent(ctx.app, blockUuids)
       if (ancestorDenied) return ancestorDenied
     }
 

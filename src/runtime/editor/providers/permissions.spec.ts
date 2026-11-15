@@ -67,6 +67,8 @@ function createProvider(
   options: {
     readOnly?: boolean
     permissions?: Record<string, BlockPermission[]>
+    /** Fields (`<host uuid>:<field name>`) whose host places their blocks. */
+    placedByHost?: string[]
   } = {},
 ) {
   const readOnly = options.readOnly ?? true
@@ -102,7 +104,17 @@ function createProvider(
     getDroppableFieldConfig: () =>
       Promise.resolve([field(itemEntityType, 'text', 'field_media', readOnly)]),
   }
-  return permissionsProvider(adapter as never, { getBlock: block } as never)
+  const dom = {
+    getRegisteredField: (uuid: string, fieldName: string) =>
+      options.placedByHost?.includes(uuid + ':' + fieldName)
+        ? { hostPlacesBlocks: true }
+        : undefined,
+  }
+  return permissionsProvider(
+    adapter as never,
+    { getBlock: block } as never,
+    dom as never,
+  )
 }
 
 describe('read-only paragraphs fields', () => {
@@ -216,5 +228,35 @@ describe('read-only text and reference fields', () => {
     expect(permissions.canEditFieldValue(hostOf('aside'), 'field_lead')).toBe(
       false,
     )
+  })
+})
+
+describe('a field whose host places its blocks', () => {
+  it('keeps its blocks where they are, but editable', async () => {
+    const permissions = await createProvider({
+      readOnly: false,
+      placedByHost: ['right:field_items'],
+    })
+    expect(permissions.isBlockPlacedByHost('rightText')).toBe(true)
+    expect(permissions.canChangeBlockField('rightText')).toBe(false)
+    expect(permissions.canChangeBlockContent('rightText')).toBe(true)
+    expect(permissions.canEditBlock('rightText')).toBe(true)
+    expect(permissions.getBlockPermissions('rightText')).toEqual([
+      'add',
+      'delete',
+      'edit',
+    ])
+  })
+
+  it('takes no blocks, and leaves the block holding it alone', async () => {
+    const permissions = await createProvider({
+      readOnly: false,
+      placedByHost: ['right:field_items'],
+    })
+    expect(permissions.canChangeField(hostOf('right'), 'field_items')).toBe(
+      false,
+    )
+    expect(permissions.isBlockPlacedByHost('right')).toBe(false)
+    expect(permissions.canChangeBlockField('right')).toBe(true)
   })
 })

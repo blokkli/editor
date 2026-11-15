@@ -99,6 +99,7 @@ export default function (
       element: registeredField.element,
       dropAlignment: registeredField.dropAlignment,
       isPager: registeredField.isPager,
+      hostPlacesBlocks: registeredField.hostPlacesBlocks,
     }
 
     fieldCache.set(key, { registered: registeredField, field: fieldElement })

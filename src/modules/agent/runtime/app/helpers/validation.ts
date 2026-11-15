@@ -129,19 +129,50 @@ export function validateBundlesAllowed(
 }
 
 /**
- * Check that the field holding each block can change: that it isn't read-only
- * and that no ancestor restricts editing. Returns a ToolError if any block is
- * in such a field, or undefined if all are in fields that can change. A UUID
- * that isn't a block, such as the page's, is in no field.
+ * Check that the field holding each block can change, so that the block can
+ * be moved, removed, duplicated or replaced: that the field isn't read-only,
+ * that no ancestor restricts editing, and that the block holding it doesn't
+ * place it itself. Returns a ToolError if any block is in such a field, or
+ * undefined if all are in fields that can change. A UUID that isn't a block,
+ * such as the page's, is in no field.
  */
 export function requireCanChangeBlockField(
   app: BlokkliApp,
   uuids: string[],
 ): ToolError | undefined {
   for (const uuid of uuids) {
+    if (!app.blocks.getBlock(uuid)) {
+      continue
+    }
+    if (app.permissions.isBlockPlacedByHost(uuid)) {
+      return {
+        error: `Paragraph ${uuid} is placed by the paragraph that holds it, which decides where it goes: it can be edited, but not moved, removed, duplicated or replaced on its own. Change the paragraph that holds it instead.`,
+      }
+    }
+    if (!app.permissions.canChangeBlockField(uuid)) {
+      return {
+        error:
+          'Permission denied: paragraph is in a field that is read-only, or inside a parent with restricted editing permissions',
+      }
+    }
+  }
+  return undefined
+}
+
+/**
+ * Check that what each block holds can change: that its field isn't read-only
+ * and that no ancestor restricts editing. A block that the block holding it
+ * places can still be edited. Returns a ToolError if any block can't, or
+ * undefined if all can. A UUID that isn't a block, such as the page's, passes.
+ */
+export function requireCanChangeBlockContent(
+  app: BlokkliApp,
+  uuids: string[],
+): ToolError | undefined {
+  for (const uuid of uuids) {
     if (
       app.blocks.getBlock(uuid) &&
-      !app.permissions.canChangeBlockField(uuid)
+      !app.permissions.canChangeBlockContent(uuid)
     ) {
       return {
         error:

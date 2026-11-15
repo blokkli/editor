@@ -84,6 +84,13 @@ export default defineCodeTemplate(
     const validGlobalOptions = Object.keys(globalOptions)
 
     const blockBundlesWithNested: string[] = []
+    // Options whose blocks render blocks of their own.
+    const nestingDataTypes = new Set(
+      ctx
+        .getComplexOptionTypes()
+        .filter((type) => type.nestsBlocks)
+        .map((type) => type.id),
+    )
     const validBlockBundles: string[] = []
     const propTypeImports: Record<
       string,
@@ -97,7 +104,15 @@ export default defineCodeTemplate(
       if (!file.definition || !isBlock(file.definition)) {
         continue
       }
-      if (file.hasBlokkliField) {
+      if (
+        file.hasBlokkliField ||
+        Object.values(file.definition.options ?? {}).some(
+          (option) =>
+            option.type === 'json' &&
+            'dataType' in option &&
+            nestingDataTypes.has(option.dataType as string),
+        )
+      ) {
         blockBundlesWithNested.push(file.definition.bundle)
       }
 

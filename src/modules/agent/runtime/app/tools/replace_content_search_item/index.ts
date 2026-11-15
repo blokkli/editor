@@ -3,7 +3,7 @@ import { defineBlokkliAgentTool } from '#blokkli/agent/app/composables'
 import { mutationResultSchema } from '../schemas'
 import {
   requireBundlePermission,
-  requireCanChangeBlockField,
+  requireCanChangeBlockContent,
 } from '../../helpers/validation'
 import type { SearchContentItem } from '#blokkli/editor/features/search/types'
 
@@ -57,7 +57,7 @@ export default defineBlokkliAgentTool({
     if (denied) return denied
 
     // Check ancestor restrictions
-    const ancestorDenied = requireCanChangeBlockField(ctx.app, [params.uuid])
+    const ancestorDenied = requireCanChangeBlockContent(ctx.app, [params.uuid])
     if (ancestorDenied) return ancestorDenied
 
     // Validate field exists and is a droppable field.

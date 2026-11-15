@@ -34,6 +34,17 @@ const deleteDisabledReason = computed<false | string>(() => {
     return false
   }
 
+  if (
+    selection.items.value.some((item) =>
+      permissions.isBlockPlacedByHost(item.uuid),
+    )
+  ) {
+    return $t(
+      'blockPlacedByHost',
+      'This block stays where the block around it places it.',
+    )
+  }
+
   const denied = permissions.filterDeniedBundles(bundles, 'delete')
   // Every selected block leaves its field, also one nested in another.
   const isLocked = selection.items.value.some(

@@ -33,6 +33,14 @@ export type BlokkliFieldElement = {
    * the block it shows renders below the band.
    */
   isPager: boolean
+
+  /**
+   * The block that holds the field places its blocks itself, e.g. in its own
+   * markup: they aren't a list, so nothing goes before, after or between them.
+   * They stay where they are: they can be edited, but not moved, removed,
+   * duplicated or replaced.
+   */
+  hostPlacesBlocks: boolean
 }
 
 export type RegisteredField = {
@@ -51,6 +59,14 @@ export type RegisteredField = {
    * the block it shows renders below the band.
    */
   isPager: boolean
+
+  /**
+   * The block that holds the field places its blocks itself, e.g. in its own
+   * markup: they aren't a list, so nothing goes before, after or between them.
+   * They stay where they are: they can be edited, but not moved, removed,
+   * duplicated or replaced.
+   */
+  hostPlacesBlocks: boolean
 }
 
 export type RegisterFieldData = Pick<
@@ -62,6 +78,7 @@ export type RegisterFieldData = Pick<
   | 'dropAlignment'
   | 'zIndex'
   | 'isPager'
+  | 'hostPlacesBlocks'
 >
 
 export type RenderedFieldListItem = {

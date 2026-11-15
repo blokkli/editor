@@ -6,7 +6,7 @@ import { validateOptionValue, getResolvedOptions } from '../helpers'
 import { onlyUnique } from '#blokkli/helpers'
 import {
   requireBundlePermission,
-  requireCanChangeBlockField,
+  requireCanChangeBlockContent,
 } from '../../helpers/validation'
 
 const paragraphOptionsSchema = z.object({
@@ -72,7 +72,7 @@ export default defineBlokkliAgentTool({
       if (denied) return denied
 
       // Check ancestor restrictions
-      const ancestorDenied = requireCanChangeBlockField(ctx.app, [
+      const ancestorDenied = requireCanChangeBlockContent(ctx.app, [
         blockEntry.uuid,
       ])
       if (ancestorDenied) return ancestorDenied

@@ -7,6 +7,7 @@ import type { RenderedFieldListItem } from '../types/field'
 import type { UserPermissions } from '../types/permissions'
 import type { EntityContext } from '#blokkli/types'
 import type { BlocksProvider } from './blocks'
+import type { DomProvider } from './dom'
 import { useStateBasedCache } from '#blokkli/editor/composables'
 import { itemEntityType } from '#blokkli-build/config'
 
@@ -53,24 +54,44 @@ export type PermissionsProvider = {
    * Whether blocks can be added to a field, moved into, out of or within it,
    * or removed from it.
    *
-   * The field must not be read-only, and a block that holds it must be
+   * The field must not be read-only, its host must not place its blocks
+   * itself (see isBlockPlacedByHost), and a block that holds it must be
    * editable (see canEditBlock).
    */
   canChangeField: (host: EntityContext, fieldName: string) => boolean
 
   /**
    * Whether the field holding a block can change: whether the block can be
-   * removed, moved, duplicated or swapped, as far as its field decides.
+   * removed, moved, duplicated, swapped or replaced, as far as its field
+   * decides.
    *
-   * The bundle permissions of the block are checked separately.
+   * Its content must be able to change (see canChangeBlockContent), and the
+   * block that holds it must not place it itself. The bundle permissions of
+   * the block are checked separately.
    */
   canChangeBlockField: (uuid: string) => boolean
 
   /**
+   * Whether what a block holds can change, as far as its field decides: its
+   * options, its texts, its fields.
+   *
+   * The field holding it must not be read-only, and no ancestor may restrict
+   * editing. A block that its host places can't leave its place, but its
+   * content can change. The bundle permissions are checked separately.
+   */
+  canChangeBlockContent: (uuid: string) => boolean
+
+  /**
+   * Whether the block holding a block's field places it itself, e.g. in its
+   * own markup (the field's `hostPlacesBlocks`): the block stays where it is.
+   */
+  isBlockPlacedByHost: (uuid: string) => boolean
+
+  /**
    * Whether a block can be edited: its options, its texts, its fields.
    *
-   * The bundle must have 'edit' permission and the field holding the block
-   * must be able to change.
+   * The bundle must have 'edit' permission and the block's content must be
+   * able to change (see canChangeBlockContent).
    */
   canEditBlock: (uuid: string) => boolean
 
@@ -85,7 +106,7 @@ export type PermissionsProvider = {
 
   /**
    * The permissions the user has for a block: those of its bundle, or none
-   * if the field holding the block can't change.
+   * if its content can't change (see canChangeBlockContent).
    */
   getBlockPermissions: (uuid: string) => BlockPermission[]
 }
@@ -116,6 +137,7 @@ function getReadOnlyKeys(fields: FieldWithReadOnly[]): Set<string> {
 export default async function (
   adapter: BlokkliAdapter<any>,
   blocks: BlocksProvider,
+  dom: DomProvider,
 ): Promise<PermissionsProvider> {
   const getAncestorCache = useStateBasedCache(() => new Map<string, boolean>())
   const [
@@ -271,7 +293,16 @@ export default async function (
     return undefined
   }
 
-  function canChangeBlockField(uuid: string): boolean {
+  function hostPlacesBlocks(hostUuid: string, fieldName: string): boolean {
+    return !!dom.getRegisteredField(hostUuid, fieldName)?.hostPlacesBlocks
+  }
+
+  function isBlockPlacedByHost(uuid: string): boolean {
+    const block = blocks.getBlock(uuid)
+    return !!block && hostPlacesBlocks(block.host.uuid, block.host.fieldName)
+  }
+
+  function canChangeBlockContent(uuid: string): boolean {
     const block = blocks.getBlock(uuid)
     if (!block) {
       return false
@@ -288,6 +319,10 @@ export default async function (
     )
   }
 
+  function canChangeBlockField(uuid: string): boolean {
+    return canChangeBlockContent(uuid) && !isBlockPlacedByHost(uuid)
+  }
+
   function canEditBlock(uuid: string): boolean {
     const block = blocks.getBlock(uuid)
     if (!block) {
@@ -295,12 +330,15 @@ export default async function (
     }
     return (
       checkBlockBundlePermission(block.bundle, 'edit') &&
-      canChangeBlockField(uuid)
+      canChangeBlockContent(uuid)
     )
   }
 
   function canChangeField(host: EntityContext, fieldName: string): boolean {
-    if (isFieldReadOnly(host.type, host.bundle, fieldName)) {
+    if (
+      isFieldReadOnly(host.type, host.bundle, fieldName) ||
+      hostPlacesBlocks(host.uuid, fieldName)
+    ) {
       return false
     }
     // A field of the page.
@@ -323,7 +361,7 @@ export default async function (
 
   function getBlockPermissions(uuid: string): BlockPermission[] {
     const block = blocks.getBlock(uuid)
-    if (!block || !canChangeBlockField(uuid)) {
+    if (!block || !canChangeBlockContent(uuid)) {
       return []
     }
     if (allBundlesUnrestricted) {
@@ -341,6 +379,8 @@ export default async function (
     isFieldReadOnly,
     canChangeField,
     canChangeBlockField,
+    canChangeBlockContent,
+    isBlockPlacedByHost,
     canEditBlock,
     canEditFieldValue,
     getBlockPermissions,

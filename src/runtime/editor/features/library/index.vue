@@ -251,6 +251,13 @@ const makeReusableDisabledReason = computed<false | string>(() => {
       'You do not have permission to edit this block.',
     )
   }
+  // It would replace the block with a reusable one.
+  if (item && permissions.isBlockPlacedByHost(item.uuid)) {
+    return $t(
+      'blockPlacedByHost',
+      'This block stays where the block around it places it.',
+    )
+  }
   if (!itemBundle?.value?.allowReusable) {
     return $t(
       'libraryAddNotSupported',

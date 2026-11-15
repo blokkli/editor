@@ -240,7 +240,7 @@ function getFieldTargets(
     .forEntityTypeAndBundle(entity.type, entity.bundle)
     .flatMap((config): FieldAddTarget[] => {
       const field = fields.find(entity.uuid, config.name)
-      if (!field || field.isPager) {
+      if (!field || field.isPager || field.hostPlacesBlocks) {
         return []
       }
       const target = getFieldTarget(field, `field:${config.name}`, parentLabel)
@@ -285,7 +285,8 @@ function getSiblingTargets(
   siblingUuids: string[],
 ): SiblingAddTarget[] {
   const parent = fields.find(item.host.uuid, item.host.fieldName)
-  if (!parent) {
+  // A block that its host places has no before or after.
+  if (!parent || parent.hostPlacesBlocks) {
     return []
   }
   const bundles = getAddBundles(

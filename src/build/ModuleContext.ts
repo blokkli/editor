@@ -25,6 +25,11 @@ export interface ComplexOptionTypeDefinition {
   editorComponentPath: string
   editTitle: { key: string; defaultTranslation: string }
   editorIcon: string
+  /**
+   * A block with an option of this type renders blocks of its own, as a
+   * `<BlokkliField>` does: it counts as a block with nested blocks.
+   */
+  nestsBlocks?: boolean
 }
 
 export class ModuleContext {

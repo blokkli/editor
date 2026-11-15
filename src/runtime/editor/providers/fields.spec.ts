@@ -22,6 +22,7 @@ function registration(element: HTMLElement): RegisteredField {
     dropAlignment: null,
     zIndex: 0,
     isPager: true,
+    hostPlacesBlocks: false,
   } as RegisteredField
 }
 

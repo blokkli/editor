@@ -85,12 +85,12 @@ const editDisabledReason = computed<false | string>(() => {
     return false
   }
 
-  // Nothing changes in a field that can't change, nor inside a restricted
-  // block. A reusable block edits its library item, which they don't
-  // restrict.
+  // Nothing changes in a read-only field, nor inside a restricted block; a
+  // block that its host places is edited where it is. A reusable block edits
+  // its library item, which they don't restrict.
   if (
     !item.library?.libraryItemUuid &&
-    !permissions.canChangeBlockField(item.uuid)
+    !permissions.canChangeBlockContent(item.uuid)
   ) {
     return $t(
       'noEditPermission',
