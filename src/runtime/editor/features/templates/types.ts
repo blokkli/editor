@@ -43,6 +43,11 @@ export type TemplatesSearchArguments = {
    * The field to add a template to: only templates whose blocks it allows.
    */
   host?: BlokkliItemHost & { bundle: string }
+  /**
+   * List the templates of every entity type and bundle, not only those that
+   * the edited entity offers. For managing templates.
+   */
+  everyHostBundle?: boolean
   includeItems: boolean
 } & AdapterSearchArguments
 

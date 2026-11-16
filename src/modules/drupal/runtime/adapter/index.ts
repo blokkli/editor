@@ -1949,6 +1949,11 @@ export default defineBlokkliEditAdapter<ParagraphsBlokkliEditStateFragment>(
             ...(e.host && {
               host: `${e.host.type}:${e.host.bundle}:${e.host.fieldName}`,
             }),
+            // The edited entity, not the field's host: only the templates
+            // that its entity type and bundle offer.
+            ...(!e.everyHostBundle && {
+              host_bundle: `${ctx.value.entityType.toLowerCase()}:${ctx.value.entityBundle}`,
+            }),
           }),
           page: e.page,
           includeItems: e.includeItems,

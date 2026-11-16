@@ -97,6 +97,7 @@ const filters = reactive<Record<string, any>>({})
 const searchParams = computed<TemplatesSearchArguments>(() => ({
   page: page.value,
   filters: { ...filters },
+  everyHostBundle: true,
   includeItems: false,
 }))
 
